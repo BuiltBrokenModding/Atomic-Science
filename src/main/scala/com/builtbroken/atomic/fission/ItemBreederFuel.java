@@ -20,9 +20,6 @@ public class ItemBreederFuel extends ItemRadioactive implements IReactorComponen
     @Override
     public void onReact(ItemStack itemStack, IReactor reactor)
     {
-        TileEntity tileEntity = (TileEntity) reactor;
-        World worldObj = tileEntity.worldObj;
-
         // Breeder fuel rods have half the normal energy potential of pure uranium.
         reactor.heat(ItemFissileFuel.ENERGY_PER_TICK / 2);
 

@@ -1,22 +1,20 @@
 package com.builtbroken.atomic.fission;
 
-import java.util.List;
-
+import com.builtbroken.jlib.data.Colors;
+import com.builtbroken.mc.lib.helper.LanguageUtility;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
 import org.lwjgl.input.Keyboard;
 
-import resonant.lib.render.EnumColor;
-import resonant.lib.utility.LanguageUtility;
+import java.util.List;
 
 /** Uranium */
 public class ItemUranium extends ItemRadioactive
 {
-    public ItemUranium(int itemID)
+    public ItemUranium()
     {
-        super(itemID);
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
     }
@@ -30,7 +28,7 @@ public class ItemUranium extends ItemRadioactive
         {
             if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
             {
-                list.add(LanguageUtility.getLocal("tooltip.noShift").replace("%0", EnumColor.AQUA.toString()).replace("%1", EnumColor.GREY.toString()));
+                list.add(LanguageUtility.getLocal("tooltip.noShift").replace("%0", Colors.AQUA.toString()).replace("%1", Colors.GREY.toString()));
             }
             else
             {
@@ -46,9 +44,9 @@ public class ItemUranium extends ItemRadioactive
     }
 
     @Override
-    public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List list)
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List list)
     {
-        list.add(new ItemStack(this, 1, 0));
-        list.add(new ItemStack(this, 1, 1));
+        list.add(new ItemStack(par1, 1, 0));
+        list.add(new ItemStack(par1, 1, 1));
     }
 }
