@@ -1,13 +1,12 @@
 package com.builtbroken.atomic.content.centrifuge;
 
+import com.builtbroken.atomic.Atomic;
+import com.builtbroken.mc.prefab.gui.ContainerBase;
+import com.builtbroken.mc.prefab.gui.slot.SlotEnergyItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
 import net.minecraft.item.ItemStack;
-import resonant.lib.gui.ContainerBase;
-import resonant.lib.prefab.slot.SlotEnergyItem;
-import com.builtbroken.atomic.Atomic;
 
 /** Centrifuge container */
 public class ContainerCentrifuge extends ContainerBase
@@ -15,7 +14,7 @@ public class ContainerCentrifuge extends ContainerBase
     private static final int slotCount = 4;
     private TileCentrifuge tileEntity;
 
-    public ContainerCentrifuge(InventoryPlayer par1InventoryPlayer, TileCentrifuge tileEntity)
+    public ContainerCentrifuge(EntityPlayer player, TileCentrifuge tileEntity)
     {
         super(tileEntity);
         this.tileEntity = tileEntity;
@@ -24,11 +23,10 @@ public class ContainerCentrifuge extends ContainerBase
         // Uranium Gas Tank
         this.addSlotToContainer(new Slot(tileEntity, 1, 25, 50));
         // Output Uranium 235
-        this.addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, tileEntity, 2, 81, 26));
+        this.addSlotToContainer(new SlotFurnace(player, tileEntity, 2, 81, 26));
         // Output Uranium 238
-        this.addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, tileEntity, 3, 101, 26));
-        this.addPlayerInventory(par1InventoryPlayer.player);
-        tileEntity.openChest();
+        this.addSlotToContainer(new SlotFurnace(player, tileEntity, 3, 101, 26));
+        this.addPlayerInventory(player);
     }
 
     @Override
