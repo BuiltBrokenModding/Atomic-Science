@@ -1,13 +1,14 @@
 package com.builtbroken.atomic.schematic;
 
-import java.util.HashMap;
-
-import net.minecraft.block.Block;
-import net.minecraftforge.common.ForgeDirection;
-import resonant.lib.schematic.Schematic;
-import resonant.lib.type.Pair;
 import com.builtbroken.atomic.Atomic;
-import universalelectricity.api.vector.Vector3;
+import com.builtbroken.jlib.type.Pair;
+import com.builtbroken.mc.lib.transform.vector.Pos;
+import com.builtbroken.mc.lib.world.schematic.Schematic;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.HashMap;
 
 public class SchematicFissionReactor extends Schematic
 {
@@ -18,9 +19,9 @@ public class SchematicFissionReactor extends Schematic
     }
 
     @Override
-    public HashMap<Vector3, Pair<Integer, Integer>> getStructure(ForgeDirection dir, int size)
+    public HashMap<Pos, Pair<Block, Integer>> getStructure(ForgeDirection dir, int size)
     {
-        HashMap<Vector3, Pair<Integer, Integer>> returnMap = new HashMap<Vector3, Pair<Integer, Integer>>();
+        HashMap<Pos, Pair<Block, Integer>> returnMap = new HashMap();
 
         if (size <= 1)
         {
@@ -30,8 +31,8 @@ public class SchematicFissionReactor extends Schematic
             {
                 for (int z = -r; z <= r; z++)
                 {
-                    Vector3 targetPosition = new Vector3(x, 0, z);
-                    returnMap.put(targetPosition, new Pair(Block.waterStill.blockID, 0));
+                    Pos targetPosition = new Pos(x, 0, z);
+                    returnMap.put(targetPosition, new Pair(Blocks.water, 0));
                 }
             }
 
@@ -42,22 +43,22 @@ public class SchematicFissionReactor extends Schematic
             {
                 for (int z = -r; z <= r; z++)
                 {
-                    Vector3 targetPosition = new Vector3(x, 1, z);
-                    returnMap.put(targetPosition, new Pair(Atomic.blockElectricTurbine.blockID, 0));
+                    Pos targetPosition = new Pos(x, 1, z);
+                    returnMap.put(targetPosition, new Pair(Atomic.blockElectricTurbine, 0));
 
-                    if (!((x == -r || x == r) && (z == -r || z == r)) && new Vector3(x, 0, z).getMagnitude() <= 1)
+                    if (!((x == -r || x == r) && (z == -r || z == r)) && new Pos(x, 0, z).magnitude() <= 1)
                     {
-                        returnMap.put(new Vector3(x, -1, z), new Pair(Atomic.blockControlRod.blockID, 0));
-                        returnMap.put(new Vector3(x, -2, z), new Pair(Block.pistonStickyBase.blockID, 1));
+                        returnMap.put(new Pos(x, -1, z), new Pair(Atomic.blockControlRod, 0));
+                        returnMap.put(new Pos(x, -2, z), new Pair(Blocks.piston, 1));
                     }
                 }
             }
 
-            returnMap.put(new Vector3(0, -1, 0), new Pair(Atomic.blockThermometer.blockID, 0));
+            returnMap.put(new Pos(0, -1, 0), new Pair(Atomic.blockThermometer, 0));
             // TODO: IF Siren is a Tile, don't do this. Redstone can't hold it.
-            returnMap.put(new Vector3(0, -3, 0), new Pair(Atomic.blockSiren.blockID, 0));
-            returnMap.put(new Vector3(0, -2, 0), new Pair(Block.redstoneWire.blockID, 0));
-            returnMap.put(new Vector3(), new Pair(Atomic.blockReactorCell.blockID, 0));
+            returnMap.put(new Pos(0, -3, 0), new Pair(Atomic.blockSiren, 0));
+            returnMap.put(new Pos(0, -2, 0), new Pair(Blocks.redstone_wire, 0));
+            returnMap.put(new Pos(), new Pair(Atomic.blockReactorCell, 0));
         }
         else
         {
@@ -69,47 +70,47 @@ public class SchematicFissionReactor extends Schematic
                 {
                     for (int z = -r; z <= r; z++)
                     {
-                        Vector3 targetPosition = new Vector3(x, y, z);
-                        Vector3 leveledPosition = new Vector3(0, y, 0);
+                        Pos targetPosition = new Pos(x, y, z);
+                        Pos leveledPosition = new Pos(0, y, 0);
 
                         if (y < size - 1)
                         {
                             if (targetPosition.distance(leveledPosition) == 2)
                             {
-                                returnMap.put(targetPosition, new Pair(Atomic.blockControlRod.blockID, 0));
+                                returnMap.put(targetPosition, new Pair(Atomic.blockControlRod, 0));
 
                                 /** Place piston base to push control rods in. */
                                 int rotationMetadata = 0;
-                                Vector3 offset = new Vector3(x, 0, z).normalize();
+                                Pos offset = new Pos(x, 0, z).normalize();
 
                                 for (ForgeDirection checkDir : ForgeDirection.VALID_DIRECTIONS)
                                 {
-                                    if (offset.x == checkDir.offsetX && offset.y == checkDir.offsetY && offset.z == checkDir.offsetZ)
+                                    if (offset.xi() == checkDir.offsetX && offset.yi() == checkDir.offsetY && offset.zi() == checkDir.offsetZ)
                                     {
                                         rotationMetadata = checkDir.getOpposite().ordinal();
                                         break;
                                     }
                                 }
 
-                                returnMap.put(targetPosition.clone().translate(offset), new Pair(Block.pistonStickyBase.blockID, rotationMetadata));
+                                returnMap.put(targetPosition.add(offset), new Pair(Blocks.sticky_piston, rotationMetadata));
                             }
                             else if (x == -r || x == r || z == -r || z == r)
                             {
-                                returnMap.put(targetPosition, new Pair(Block.glass.blockID, 0));
+                                returnMap.put(targetPosition, new Pair(Blocks.glass, 0));
 
                             }
                             else if (x == 0 && z == 0)
                             {
-                                returnMap.put(targetPosition, new Pair(Atomic.blockReactorCell.blockID, 0));
+                                returnMap.put(targetPosition, new Pair(Atomic.blockReactorCell, 0));
                             }
                             else
                             {
-                                returnMap.put(targetPosition, new Pair(Block.waterMoving.blockID, 0));
+                                returnMap.put(targetPosition, new Pair(Blocks.flowing_water, 0));
                             }
                         }
                         else if (targetPosition.distance(leveledPosition) < 2)
                         {
-                            returnMap.put(targetPosition, new Pair(Atomic.blockElectricTurbine.blockID, 0));
+                            returnMap.put(targetPosition, new Pair(Atomic.blockElectricTurbine, 0));
                         }
                     }
                 }

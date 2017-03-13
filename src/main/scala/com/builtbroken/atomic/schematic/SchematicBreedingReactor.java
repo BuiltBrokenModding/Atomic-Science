@@ -1,13 +1,14 @@
 package com.builtbroken.atomic.schematic;
 
-import java.util.HashMap;
-
-import net.minecraft.block.Block;
-import net.minecraftforge.common.ForgeDirection;
-import resonant.lib.schematic.Schematic;
-import resonant.lib.type.Pair;
 import com.builtbroken.atomic.Atomic;
-import universalelectricity.api.vector.Vector3;
+import com.builtbroken.jlib.type.Pair;
+import com.builtbroken.mc.lib.transform.vector.Pos;
+import com.builtbroken.mc.lib.world.schematic.Schematic;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.HashMap;
 
 public class SchematicBreedingReactor extends Schematic
 {
@@ -18,9 +19,9 @@ public class SchematicBreedingReactor extends Schematic
     }
 
     @Override
-    public HashMap<Vector3, Pair<Integer, Integer>> getStructure(ForgeDirection dir, int size)
+    public HashMap<Pos, Pair<Block, Integer>> getStructure(ForgeDirection dir, int size)
     {
-        HashMap<Vector3, Pair<Integer, Integer>> returnMap = new HashMap<Vector3, Pair<Integer, Integer>>();
+        HashMap<Pos, Pair<Block, Integer>> returnMap = new HashMap();
 
         int r = Math.max(size, 2);
 
@@ -28,7 +29,7 @@ public class SchematicBreedingReactor extends Schematic
         {
             for (int z = -r; z <= r; z++)
             {
-                returnMap.put(new Vector3(x, 0, z), new Pair(Block.waterStill.blockID, 0));
+                returnMap.put(new Pos(x, 0, z), new Pair(Blocks.water, 0));
             }
         }
 
@@ -38,30 +39,30 @@ public class SchematicBreedingReactor extends Schematic
         {
             for (int z = -r; z <= r; z++)
             {
-                Vector3 targetPosition = new Vector3(x, 1, z);
+                Pos targetPosition = new Pos(x, 1, z);
 
-                if (new Vector3(x, 0, z).getMagnitude() <= 2)
+                if (new Pos(x, 0, z).magnitude() <= 2)
                 {
                     if (!((x == -r || x == r) && (z == -r || z == r)))
                     {
-                        returnMap.put(new Vector3(x, 0, z), new Pair(Atomic.blockReactorCell.blockID, 0));
-                        returnMap.put(new Vector3(x, -1, z), new Pair(Atomic.blockThermometer.blockID, 0));
-                        returnMap.put(new Vector3(x, -3, z), new Pair(Atomic.blockSiren.blockID, 0));
-                        returnMap.put(new Vector3(x, -2, z), new Pair(Block.redstoneWire.blockID, 0));
+                        returnMap.put(new Pos(x, 0, z), new Pair(Atomic.blockReactorCell, 0));
+                        returnMap.put(new Pos(x, -1, z), new Pair(Atomic.blockThermometer, 0));
+                        returnMap.put(new Pos(x, -3, z), new Pair(Atomic.blockSiren, 0));
+                        returnMap.put(new Pos(x, -2, z), new Pair(Blocks.redstone_wire, 0));
 
                     }
                     else
                     {
-                        returnMap.put(new Vector3(x, -1, z), new Pair(Atomic.blockControlRod.blockID, 0));
-                        returnMap.put(new Vector3(x, -2, z), new Pair(Block.pistonStickyBase.blockID, 1));
+                        returnMap.put(new Pos(x, -1, z), new Pair(Atomic.blockControlRod, 0));
+                        returnMap.put(new Pos(x, -2, z), new Pair(Blocks.piston, 1));
                     }
                 }
             }
         }
 
-        returnMap.put(new Vector3(0, -2, 0), new Pair(Block.stone.blockID, 0));
-        returnMap.put(new Vector3(0, -3, 0), new Pair(Block.stone.blockID, 0));
-        returnMap.put(new Vector3(), new Pair(Atomic.blockReactorCell.blockID, 0));
+        returnMap.put(new Pos(0, -2, 0), new Pair(Blocks.stone, 0));
+        returnMap.put(new Pos(0, -3, 0), new Pair(Blocks.stone, 0));
+        returnMap.put(new Pos(), new Pair(Atomic.blockReactorCell, 0));
         return returnMap;
     }
 }

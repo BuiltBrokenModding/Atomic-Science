@@ -1,12 +1,13 @@
 package com.builtbroken.atomic.schematic;
 
-import java.util.HashMap;
-
-import net.minecraftforge.common.ForgeDirection;
-import resonant.lib.schematic.Schematic;
-import resonant.lib.type.Pair;
 import com.builtbroken.atomic.Atomic;
-import universalelectricity.api.vector.Vector3;
+import com.builtbroken.jlib.type.Pair;
+import com.builtbroken.mc.lib.transform.vector.Pos;
+import com.builtbroken.mc.lib.world.schematic.Schematic;
+import net.minecraft.block.Block;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.HashMap;
 
 public class SchematicAccelerator extends Schematic
 {
@@ -17,9 +18,9 @@ public class SchematicAccelerator extends Schematic
     }
 
     @Override
-    public HashMap<Vector3, Pair<Integer, Integer>> getStructure(ForgeDirection dir, int size)
+    public HashMap<Pos, Pair<Block, Integer>> getStructure(ForgeDirection dir, int size)
     {
-        HashMap<Vector3, Pair<Integer, Integer>> returnMap = new HashMap<Vector3, Pair<Integer, Integer>>();
+        HashMap<Pos, Pair<Block, Integer>> returnMap = new HashMap();
 
         int r = size;
 
@@ -31,7 +32,7 @@ public class SchematicAccelerator extends Schematic
                 {
                     if (x == -r || x == r - 1 || z == -r || z == r - 1)
                     {
-                        returnMap.put(new Vector3(x, y, z), new Pair(Atomic.blockElectromagnet.blockID, 0));
+                        returnMap.put(new Pos(x, y, z), new Pair(Atomic.blockElectromagnet, 0));
                     }
                 }
             }
@@ -47,7 +48,7 @@ public class SchematicAccelerator extends Schematic
                 {
                     if (x == -r || x == r - 1 || z == -r || z == r - 1)
                     {
-                        returnMap.put(new Vector3(x, y, z), new Pair(Atomic.blockElectromagnet.blockID, 0));
+                        returnMap.put(new Pos(x, y, z), new Pair(Atomic.blockElectromagnet, 0));
                     }
                 }
             }
@@ -65,11 +66,11 @@ public class SchematicAccelerator extends Schematic
                     {
                         if (y == -1 || y == 1)
                         {
-                            returnMap.put(new Vector3(x, y, z), new Pair(Atomic.blockElectromagnet.blockID, 1));
+                            returnMap.put(new Pos(x, y, z), new Pair(Atomic.blockElectromagnet, 1));
                         }
                         else if (y == 0)
                         {
-                            returnMap.put(new Vector3(x, y, z), new Pair(0, 0));
+                            returnMap.put(new Pos(x, y, z), new Pair(0, 0));
                         }
                     }
                 }

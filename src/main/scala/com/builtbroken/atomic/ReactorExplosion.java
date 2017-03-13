@@ -1,13 +1,14 @@
 package com.builtbroken.atomic;
 
-import java.util.Iterator;
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Iterator;
+import java.util.Random;
 
 /** Creates a reactor explosion.
  *
@@ -35,15 +36,15 @@ public class ReactorExplosion extends Explosion
         while (iterator.hasNext())
         {
             ChunkPosition chunkposition = (ChunkPosition) iterator.next();
-            int x = chunkposition.x;
-            int y = chunkposition.y;
-            int z = chunkposition.z;
-            int id = this.worldObj.getBlockId(x, y, z);
-            int i1 = this.worldObj.getBlockId(x, y - 1, z);
+            int x = chunkposition.chunkPosX;
+            int y = chunkposition.chunkPosY;
+            int z = chunkposition.chunkPosZ;
+            Block block = this.worldObj.getBlock(x, y, z);
+            Block bellow = this.worldObj.getBlock(x, y - 1, z);
 
-            if (id == 0 && Block.opaqueCubeLookup[i1] && this.explosionRAND.nextInt(3) == 0)
+            if (block.isAir(worldObj, x, y, z) && bellow.isSideSolid(worldObj, x, y - 1, z, ForgeDirection.UP) && this.explosionRAND.nextInt(3) == 0)
             {
-                this.worldObj.setBlock(x, y, z, Atomic.blockRadioactive.blockID);
+                this.worldObj.setBlock(x, y, z, Atomic.blockRadioactive);
             }
         }
     }
