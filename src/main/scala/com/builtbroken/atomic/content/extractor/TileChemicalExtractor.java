@@ -1,50 +1,40 @@
 package com.builtbroken.atomic.content.extractor;
 
+import com.builtbroken.atomic.Atomic;
 import com.builtbroken.atomic.content.TileProcess;
+import com.builtbroken.mc.api.energy.IEnergyBufferProvider;
+import com.builtbroken.mc.lib.energy.UniversalEnergySystem;
+import com.builtbroken.mc.prefab.energy.EnergyBuffer;
+import com.builtbroken.mc.prefab.inventory.ExternalInventory;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
-import resonant.api.IRotatable;
-import resonant.lib.network.Synced;
-import com.builtbroken.atomic.Atomic;
-import com.core.ResonantInduction;
-import com.core.Settings;
-import universalelectricity.api.CompatibilityModule;
-import universalelectricity.api.electricity.IVoltageInput;
-import universalelectricity.api.energy.EnergyStorageHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.*;
 
 /** Chemical extractor TileEntity */
 
-public class TileChemicalExtractor extends TileProcess implements ISidedInventory, IFluidHandler, IRotatable, IVoltageInput
+public class TileChemicalExtractor extends TileProcess<ExternalInventory> implements ISidedInventory, IFluidHandler, IEnergyBufferProvider
 {
     public static final int TICK_TIME = 20 * 14;
     public static final int EXTRACT_SPEED = 100;
-    public static final long ENERGY = 5000;
-    @Synced
+    public static final int ENERGY = 5000;
+    //@Synced
     public final FluidTank inputTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
-    @Synced
+    //@Synced
     public final FluidTank outputTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
     // How many ticks has this item been extracting for?
-    @Synced
+    //@Synced
     public int time = 0;
     public float rotation = 0;
 
+    private EnergyBuffer energy;
+
     public TileChemicalExtractor()
     {
-        energy = new EnergyStorageHandler(ENERGY * 2);
-        maxSlots = 7;
+        super("chemicalExtractor", Material.iron);
         inputSlot = 1;
         outputSlot = 2;
         tankInputFillSlot = 3;
@@ -54,9 +44,24 @@ public class TileChemicalExtractor extends TileProcess implements ISidedInventor
     }
 
     @Override
-    public void updateEntity()
+    protected ExternalInventory createInventory()
     {
-        super.updateEntity();
+        return new ExternalInventory(this, 7);
+    }
+
+    public EnergyBuffer getEnergyBuffer(ForgeDirection side)
+    {
+        if (energy == null)
+        {
+            energy = new EnergyBuffer(ENERGY * 2);
+        }
+        return energy;
+    }
+
+    @Override
+    public void update()
+    {
+        super.update();
 
         if (time > 0)
         {
@@ -67,9 +72,9 @@ public class TileChemicalExtractor extends TileProcess implements ISidedInventor
         {
             if (canUse())
             {
-                discharge(getStackInSlot(0));
+                getEnergyBuffer(ForgeDirection.UNKNOWN).addEmeryFromItem(getStackInSlot(0));
 
-                if (energy.checkExtract(ENERGY))
+                if (getEnergyBuffer(ForgeDirection.UNKNOWN).removeEnergyFromStorage(ENERGY, false) >= ENERGY)
                 {
                     if (time == 0)
                     {
@@ -99,7 +104,7 @@ public class TileChemicalExtractor extends TileProcess implements ISidedInventor
                     }
                 }
 
-                energy.extractEnergy(ENERGY, true);
+                getEnergyBuffer(ForgeDirection.UNKNOWN).removeEnergyFromStorage(ENERGY, true);
             }
             else
             {
@@ -110,16 +115,10 @@ public class TileChemicalExtractor extends TileProcess implements ISidedInventor
             {
                 for (EntityPlayer player : getPlayersUsing())
                 {
-                    PacketDispatcher.sendPacketToPlayer(getDescriptionPacket(), (Player) player);
+                    ///PacketDispatcher.sendPacketToPlayer(getDescriptionPacket(), (Player) player); TODO move to gui update method
                 }
             }
         }
-    }
-
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        return ResonantInduction.PACKET_ANNOTATION.getPacket(this);
     }
 
     public boolean canUse()
@@ -289,7 +288,7 @@ public class TileChemicalExtractor extends TileProcess implements ISidedInventor
     public FluidTankInfo[] getTankInfo(ForgeDirection from)
     {
         return new FluidTankInfo[]
-        { this.inputTank.getInfo(), this.outputTank.getInfo() };
+                {this.inputTank.getInfo(), this.outputTank.getInfo()};
     }
 
     @Override
@@ -298,7 +297,7 @@ public class TileChemicalExtractor extends TileProcess implements ISidedInventor
         // Water input for machine.
         if (slotID == 0)
         {
-            return CompatibilityModule.isHandler(itemStack.getItem());
+            return UniversalEnergySystem.isHandler(itemStack, ForgeDirection.UNKNOWN);
         }
 
         if (slotID == 1)
@@ -325,7 +324,7 @@ public class TileChemicalExtractor extends TileProcess implements ISidedInventor
     public int[] getAccessibleSlotsFromSide(int side)
     {
         return new int[]
-        { 1, 2, 3 };
+                {1, 2, 3};
     }
 
     @Override
@@ -338,37 +337,6 @@ public class TileChemicalExtractor extends TileProcess implements ISidedInventor
     public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
     {
         return slotID == 2;
-    }
-
-    @Override
-    public long onExtractEnergy(ForgeDirection from, long extract, boolean doExtract)
-    {
-        return 0;
-    }
-
-    @Override
-    public long onReceiveEnergy(ForgeDirection from, long receive, boolean doReceive)
-    {
-        if (this.canUse())
-        {
-            return super.onReceiveEnergy(from, receive, doReceive);
-        }
-        else
-        {
-            return 0;
-        }
-    }
-
-    @Override
-    public long getVoltageInput(ForgeDirection from)
-    {
-        return 1000;
-    }
-
-    @Override
-    public void onWrongVoltage(ForgeDirection direction, long voltage)
-    {
-
     }
 
     @Override

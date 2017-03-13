@@ -1,5 +1,8 @@
 package com.builtbroken.atomic.content;
 
+import com.builtbroken.mc.prefab.tile.TileModuleMachine;
+import net.minecraft.block.material.Material;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -11,7 +14,7 @@ import resonant.lib.prefab.tile.TileElectricalInventory;
 /** General class for all machines that do traditional recipe processing
  *
  * @author Calclavia */
-public abstract class TileProcess extends TileElectricalInventory
+public abstract class TileProcess<I extends IInventory> extends TileModuleMachine<I>
 {
     protected int inputSlot;
     protected int outputSlot;
@@ -23,10 +26,21 @@ public abstract class TileProcess extends TileElectricalInventory
 
     protected String machineName;
 
-    @Override
-    public void updateEntity()
+    /**
+     * Default constructor
+     *
+     * @param name     - name of the tile, used for localizations mainly
+     * @param material - material of the tile's block
+     */
+    public TileProcess(String name, Material material)
     {
-        super.updateEntity();
+        super(name, material);
+    }
+
+    @Override
+    public void update()
+    {
+        super.update();
 
         if (getInputTank() != null)
         {
