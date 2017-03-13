@@ -1,8 +1,10 @@
 package com.builtbroken.atomic.content.extractor;
 
 import com.builtbroken.atomic.Atomic;
+import com.builtbroken.atomic.Settings;
 import com.builtbroken.atomic.content.TileProcess;
 import com.builtbroken.mc.api.energy.IEnergyBufferProvider;
+import com.builtbroken.mc.api.tile.IGuiTile;
 import com.builtbroken.mc.lib.energy.UniversalEnergySystem;
 import com.builtbroken.mc.prefab.energy.EnergyBuffer;
 import com.builtbroken.mc.prefab.inventory.ExternalInventory;
@@ -16,7 +18,7 @@ import net.minecraftforge.fluids.*;
 
 /** Chemical extractor TileEntity */
 
-public class TileChemicalExtractor extends TileProcess<ExternalInventory> implements ISidedInventory, IFluidHandler, IEnergyBufferProvider
+public class TileChemicalExtractor extends TileProcess<ExternalInventory> implements ISidedInventory, IFluidHandler, IEnergyBufferProvider, IGuiTile
 {
     public static final int TICK_TIME = 20 * 14;
     public static final int EXTRACT_SPEED = 100;
@@ -28,7 +30,6 @@ public class TileChemicalExtractor extends TileProcess<ExternalInventory> implem
     // How many ticks has this item been extracting for?
     //@Synced
     public int time = 0;
-    public float rotation = 0;
 
     private EnergyBuffer energy;
 
@@ -41,6 +42,12 @@ public class TileChemicalExtractor extends TileProcess<ExternalInventory> implem
         tankInputDrainSlot = 4;
         tankOutputFillSlot = 5;
         tankOutputDrainSlot = 6;
+    }
+
+    @Override
+    public TileChemicalExtractor newTile()
+    {
+        return new TileChemicalExtractor();
     }
 
     @Override
@@ -62,11 +69,6 @@ public class TileChemicalExtractor extends TileProcess<ExternalInventory> implem
     public void update()
     {
         super.update();
-
-        if (time > 0)
-        {
-            rotation += 0.2f;
-        }
 
         if (!worldObj.isRemote)
         {
@@ -161,6 +163,7 @@ public class TileChemicalExtractor extends TileProcess<ExternalInventory> implem
     {
         if (canUse())
         {
+            //TODO convert to recipe
             if (Atomic.isItemStackUraniumOre(getStackInSlot(inputSlot)))
             {
                 inputTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
@@ -177,6 +180,7 @@ public class TileChemicalExtractor extends TileProcess<ExternalInventory> implem
     {
         if (canUse())
         {
+            //TODO convert to recipe
             FluidStack drain = inputTank.drain(Settings.waterPerDeutermium * EXTRACT_SPEED, false);
 
             if (drain != null && drain.amount >= 1 && drain.getFluid().getID() == FluidRegistry.WATER.getID())
@@ -196,6 +200,7 @@ public class TileChemicalExtractor extends TileProcess<ExternalInventory> implem
     {
         if (canUse())
         {
+            //TODO convert to recipe
             int waterUsage = Settings.deutermiumPerTritium;
 
             FluidStack drain = inputTank.drain(Settings.deutermiumPerTritium * EXTRACT_SPEED, false);
@@ -351,4 +356,15 @@ public class TileChemicalExtractor extends TileProcess<ExternalInventory> implem
         return outputTank;
     }
 
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player)
+    {
+        return new ContainerChemicalExtractor(player, this);
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player)
+    {
+        return null;
+    }
 }

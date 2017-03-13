@@ -1,17 +1,18 @@
 package com.builtbroken.atomic.content.extractor;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import com.builtbroken.jlib.data.science.units.UnitDisplay;
+import com.builtbroken.mc.prefab.gui.GuiContainerBase;
+import com.builtbroken.mc.prefab.gui.GuiSlotType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.StatCollector;
-import resonant.lib.gui.GuiContainerBase;
-import universalelectricity.api.energy.UnitDisplay.Unit;
 
 public class GuiChemicalExtractor extends GuiContainerBase
 {
     private TileChemicalExtractor tileEntity;
 
-    public GuiChemicalExtractor(InventoryPlayer par1InventoryPlayer, TileChemicalExtractor tileEntity)
+    public GuiChemicalExtractor(EntityPlayer player, TileChemicalExtractor tileEntity)
     {
-        super(new ContainerChemicalExtractor(par1InventoryPlayer, tileEntity));
+        super(new ContainerChemicalExtractor(player, tileEntity));
         this.tileEntity = tileEntity;
     }
 
@@ -19,17 +20,18 @@ public class GuiChemicalExtractor extends GuiContainerBase
     @Override
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        this.fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 4210752);
+        fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 4210752);
 
-        this.renderUniversalDisplay(8, 112, TileChemicalExtractor.ENERGY * 20, mouseX, mouseY, Unit.WATT);
-        this.renderUniversalDisplay(100, 112, this.tileEntity.getVoltageInput(null), mouseX, mouseY, Unit.VOLTAGE);
+        this.renderUniversalDisplay(8, 112, TileChemicalExtractor.ENERGY * 20, mouseX, mouseY, UnitDisplay.Unit.WATT);
+        //this.renderUniversalDisplay(100, 112, this.tileEntity.getVoltageInput(null), mouseX, mouseY, Unit.VOLTAGE);
 
-        this.fontRenderer.drawString("The extractor can extract", 8, 75, 4210752);
-        this.fontRenderer.drawString("uranium, deuterium and tritium.", 8, 85, 4210752);
-        this.fontRenderer.drawString("Place them in the input slot.", 8, 95, 4210752);
+        fontRendererObj.drawString("The extractor can extract", 8, 75, 4210752);
+        fontRendererObj.drawString("uranium, deuterium and tritium.", 8, 85, 4210752);
+        fontRendererObj.drawString("Place them in the input slot.", 8, 95, 4210752);
 
-        this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
+        fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 
+        /* TODO re-add tooltips
         if (this.isPointInRegion(8, 18, this.meterWidth, this.meterHeight, mouseX, mouseY) && this.tileEntity.inputTank.getFluid() != null)
         {
             if (this.tileEntity.inputTank.getFluid() != null)
@@ -58,6 +60,7 @@ public class GuiChemicalExtractor extends GuiContainerBase
                 this.drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop + 10, "Input slot");
             }
         }
+         */
     }
 
     /** Draw the background layer for the GuiContainer (everything behind the items) */
@@ -66,15 +69,15 @@ public class GuiChemicalExtractor extends GuiContainerBase
     {
         super.drawGuiContainerBackgroundLayer(par1, x, y);
 
-        drawSlot(79, 49, SlotType.BATTERY);
+        drawSlot(79, 49, GuiSlotType.BATTERY);
         drawSlot(52, 24);
         drawSlot(106, 24);
-        drawBar(75, 24, (float) tileEntity.time / (float) TileChemicalExtractor.TICK_TIME);
+        // drawBar(75, 24, (float) tileEntity.time / (float) TileChemicalExtractor.TICK_TIME);
         drawMeter(8, 18, (float) tileEntity.inputTank.getFluidAmount() / (float) tileEntity.inputTank.getCapacity(), tileEntity.inputTank.getFluid());
-        drawSlot(24, 18, SlotType.LIQUID);
-        drawSlot(24, 49, SlotType.LIQUID);
+        drawSlot(24, 18, GuiSlotType.LIQUID);
+        drawSlot(24, 49, GuiSlotType.LIQUID);
         drawMeter(154, 18, (float) tileEntity.outputTank.getFluidAmount() / (float) tileEntity.outputTank.getCapacity(), tileEntity.outputTank.getFluid());
-        drawSlot(134, 18, SlotType.LIQUID);
-        drawSlot(134, 49, SlotType.LIQUID);
+        drawSlot(134, 18, GuiSlotType.LIQUID);
+        drawSlot(134, 49, GuiSlotType.LIQUID);
     }
 }

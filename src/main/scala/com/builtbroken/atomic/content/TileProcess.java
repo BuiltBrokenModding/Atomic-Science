@@ -7,9 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import resonant.api.recipe.MachineRecipes;
-import resonant.api.recipe.RecipeResource;
-import resonant.lib.prefab.tile.TileElectricalInventory;
 
 /** General class for all machines that do traditional recipe processing
  *
@@ -61,7 +58,7 @@ public abstract class TileProcess<I extends IInventory> extends TileModuleMachin
         if (FluidContainerRegistry.isFilledContainer(inputStack))
         {
             FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(inputStack);
-            ItemStack result = inputStack.getItem().getContainerItemStack(inputStack);
+            ItemStack result = inputStack.getItem().getContainerItem(inputStack);
 
             if (result != null && tank.fill(fluidStack, false) >= fluidStack.amount && (outputStack == null || result.isItemEqual(outputStack)))
             {
@@ -87,27 +84,6 @@ public abstract class TileProcess<I extends IInventory> extends TileModuleMachin
                 }
             }
         }
-    }
-
-    /** Gets the current result of the input set up.
-     *
-     * @return */
-    public RecipeResource[] getResults()
-    {
-        ItemStack inputStack = getStackInSlot(inputSlot);
-        RecipeResource[] mixedResult = MachineRecipes.INSTANCE.getOutput(machineName, inputStack, getInputTank().getFluid());
-
-        if (mixedResult.length > 0)
-        {
-            return mixedResult;
-        }
-
-        return MachineRecipes.INSTANCE.getOutput(machineName, inputStack);
-    }
-
-    public boolean hasResult()
-    {
-        return getResults().length > 0;
     }
 
     public abstract FluidTank getInputTank();

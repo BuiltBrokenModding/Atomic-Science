@@ -1,10 +1,10 @@
 package com.builtbroken.atomic.content.extractor;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import com.builtbroken.mc.prefab.gui.ContainerBase;
+import com.builtbroken.mc.prefab.gui.slot.SlotEnergyItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
-import resonant.lib.gui.ContainerBase;
-import resonant.lib.prefab.slot.SlotEnergyItem;
 
 /** Chemical extractor container */
 public class ContainerChemicalExtractor extends ContainerBase
@@ -12,7 +12,7 @@ public class ContainerChemicalExtractor extends ContainerBase
     private static final int slotCount = 5;
     private TileChemicalExtractor tileEntity;
 
-    public ContainerChemicalExtractor(InventoryPlayer par1InventoryPlayer, TileChemicalExtractor tileEntity)
+    public ContainerChemicalExtractor(EntityPlayer player, TileChemicalExtractor tileEntity)
     {
         super(tileEntity);
         this.tileEntity = tileEntity;
@@ -21,7 +21,7 @@ public class ContainerChemicalExtractor extends ContainerBase
         // Process Input (Cell or Uranium)
         addSlotToContainer(new Slot(tileEntity, 1, 53, 25));
         // Process Output
-        addSlotToContainer(new SlotFurnace(par1InventoryPlayer.player, tileEntity, 2, 107, 25));
+        addSlotToContainer(new SlotFurnace(player, tileEntity, 2, 107, 25));
 
         // Fluid input fill
         addSlotToContainer(new Slot(tileEntity, 3, 25, 19));
@@ -33,6 +33,6 @@ public class ContainerChemicalExtractor extends ContainerBase
         // Fluid output drain
         addSlotToContainer(new Slot(tileEntity, 6, 135, 50));
 
-        addPlayerInventory(par1InventoryPlayer.player);
+        addPlayerInventory(player);
     }
 }
