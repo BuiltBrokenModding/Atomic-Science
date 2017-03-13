@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.reactor.fusion;
+package com.builtbroken.atomic.content.reactor;
 
 import java.util.List;
 

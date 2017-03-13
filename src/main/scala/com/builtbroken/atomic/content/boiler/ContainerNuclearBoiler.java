@@ -1,15 +1,13 @@
-package com.builtbroken.atomic.content.reactor.fusion;
+package com.builtbroken.atomic.content.boiler;
 
+import com.builtbroken.atomic.Atomic;
+import com.builtbroken.mc.prefab.gui.ContainerBase;
+import com.builtbroken.mc.prefab.gui.slot.SlotEnergyItem;
+import com.builtbroken.mc.prefab.gui.slot.SlotSpecific;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import resonant.lib.gui.ContainerBase;
-import resonant.lib.prefab.slot.SlotEnergyItem;
-import resonant.lib.prefab.slot.SlotSpecific;
-import com.builtbroken.atomic.Atomic;
-import com.builtbroken.atomic.content.boiler.TileNuclearBoiler;
 
 /** Nuclear boiler container */
 public class ContainerNuclearBoiler extends ContainerBase
@@ -17,7 +15,7 @@ public class ContainerNuclearBoiler extends ContainerBase
     private static final int slotCount = 4;
     private TileNuclearBoiler tileEntity;
 
-    public ContainerNuclearBoiler(InventoryPlayer par1InventoryPlayer, TileNuclearBoiler tileEntity)
+    public ContainerNuclearBoiler(EntityPlayer player, TileNuclearBoiler tileEntity)
     {
         super(tileEntity);
         this.tileEntity = tileEntity;
@@ -29,8 +27,7 @@ public class ContainerNuclearBoiler extends ContainerBase
         this.addSlotToContainer(new Slot(tileEntity, 2, 136, 50));
         // Yellowcake Input
         this.addSlotToContainer(new SlotSpecific(tileEntity, 3, 81, 26, new ItemStack(Atomic.itemYellowCake), new ItemStack(Atomic.blockUraniumOre)));
-        this.addPlayerInventory(par1InventoryPlayer.player);
-        tileEntity.openChest();
+        this.addPlayerInventory(player);
     }
 
     @Override

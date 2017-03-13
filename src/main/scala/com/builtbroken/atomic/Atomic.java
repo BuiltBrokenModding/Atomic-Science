@@ -5,7 +5,7 @@ import com.builtbroken.atomic.content.reactor.fission.BlockToxicWaste;
 import com.builtbroken.atomic.content.reactor.fission.TileControlRod;
 import com.builtbroken.atomic.content.reactor.fission.TileReactorCell;
 import com.builtbroken.atomic.content.reactor.fusion.BlockPlasmaHeater;
-import com.builtbroken.atomic.content.reactor.fusion.TileElectromagnet;
+import com.builtbroken.atomic.content.reactor.TileElectromagnet;
 import com.builtbroken.atomic.content.reactor.fusion.TilePlasma;
 import com.builtbroken.atomic.content.reactor.fusion.TilePlasmaHeater;
 import com.builtbroken.atomic.content.accelerator.BlockAccelerator;

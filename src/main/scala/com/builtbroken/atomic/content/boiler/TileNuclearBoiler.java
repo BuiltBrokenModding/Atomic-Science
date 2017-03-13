@@ -1,68 +1,55 @@
 package com.builtbroken.atomic.content.boiler;
 
+import com.builtbroken.atomic.Atomic;
+import com.builtbroken.atomic.Settings;
+import com.builtbroken.mc.api.tile.IGuiTile;
+import com.builtbroken.mc.core.network.IPacketIDReceiver;
+import com.builtbroken.mc.prefab.inventory.ExternalInventory;
+import com.builtbroken.mc.prefab.tile.TileModuleMachine;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
-import resonant.api.IRotatable;
-import resonant.lib.network.IPacketReceiver;
-import resonant.lib.network.Synced;
-import resonant.lib.prefab.tile.TileElectricalInventory;
-import com.builtbroken.atomic.Atomic;
-import com.core.ResonantInduction;
-import com.core.Settings;
-import universalelectricity.api.electricity.IVoltageInput;
-import universalelectricity.api.energy.EnergyStorageHandler;
-
-import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.*;
 
 /** Nuclear boiler TileEntity */
 
-public class TileNuclearBoiler extends TileElectricalInventory implements ISidedInventory, IPacketReceiver, IFluidHandler, IRotatable, IVoltageInput
+public class TileNuclearBoiler extends TileModuleMachine<ExternalInventory> implements ISidedInventory, IPacketIDReceiver, IFluidHandler, IGuiTile
 {
-    public final static long DIAN = 50000;
+    public final static int DIAN = 50000;
     public final int SHI_JIAN = 20 * 15;
-    @Synced
+    //@Synced
     public final FluidTank waterTank = new FluidTank(Atomic.FLUIDSTACK_WATER.copy(), FluidContainerRegistry.BUCKET_VOLUME * 5);
-    @Synced
+    //@Synced
     public final FluidTank gasTank = new FluidTank(Atomic.FLUIDSTACK_URANIUM_HEXAFLOURIDE.copy(), FluidContainerRegistry.BUCKET_VOLUME * 5);
     // How many ticks has this item been extracting for?
-    @Synced
+    //@Synced
     public int timer = 0;
     public float rotation = 0;
 
     public TileNuclearBoiler()
     {
-        energy = new EnergyStorageHandler(DIAN * 2);
-        maxSlots = 4;
+        super("nuclearBoiler", Material.iron);
     }
 
     @Override
-    public long onReceiveEnergy(ForgeDirection from, long receive, boolean doReceive)
+    protected ExternalInventory createInventory()
     {
-        if (this.nengYong())
-        {
-            return super.onReceiveEnergy(from, receive, doReceive);
-        }
-
-        return 0;
+        return new ExternalInventory(this, 4);
     }
 
     @Override
-    public void updateEntity()
+    public int getEnergyBufferSize()
     {
-        super.updateEntity();
+        return DIAN * 2;
+    }
+
+    @Override
+    public void update()
+    {
+        super.update();
 
         if (timer > 0)
         {
@@ -82,7 +69,7 @@ public class TileNuclearBoiler extends TileElectricalInventory implements ISided
                     {
                         if (this.fill(ForgeDirection.UNKNOWN, liquid, false) > 0)
                         {
-                            ItemStack resultingContainer = getStackInSlot(1).getItem().getContainerItemStack(getStackInSlot(1));
+                            ItemStack resultingContainer = getStackInSlot(1).getItem().getContainerItem(getStackInSlot(1));
 
                             if (resultingContainer == null && getStackInSlot(1).stackSize > 1)
                             {
@@ -101,9 +88,9 @@ public class TileNuclearBoiler extends TileElectricalInventory implements ISided
 
             if (this.nengYong())
             {
-                this.discharge(getStackInSlot(0));
+                this.getEnergyBuffer(ForgeDirection.UNKNOWN).addEmeryFromItem(getStackInSlot(0));
 
-                if (this.energy.extractEnergy(DIAN, false) >= TileNuclearBoiler.DIAN)
+                if (this.getEnergyBuffer(ForgeDirection.UNKNOWN).removeEnergyFromStorage(DIAN, false) >= TileNuclearBoiler.DIAN)
                 {
                     if (this.timer == 0)
                     {
@@ -125,7 +112,7 @@ public class TileNuclearBoiler extends TileElectricalInventory implements ISided
                         this.timer = 0;
                     }
 
-                    this.energy.extractEnergy(DIAN, true);
+                    this.getEnergyBuffer(ForgeDirection.UNKNOWN).removeEnergyFromStorage(DIAN, true);
                 }
             }
             else
@@ -135,39 +122,7 @@ public class TileNuclearBoiler extends TileElectricalInventory implements ISided
 
             if (this.ticks % 10 == 0)
             {
-                this.sendDescPack();
-            }
-        }
-    }
-
-    @Override
-    public void onReceivePacket(ByteArrayDataInput data, EntityPlayer player, Object... extra)
-    {
-        try
-        {
-            this.timer = data.readInt();
-            this.waterTank.setFluid(new FluidStack(Atomic.FLUIDSTACK_WATER.fluidID, data.readInt()));
-            this.gasTank.setFluid(new FluidStack(Atomic.FLUIDSTACK_URANIUM_HEXAFLOURIDE.fluidID, data.readInt()));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        return ResonantInduction.PACKET_TILE.getPacket(this, this.timer, Atomic.getFluidAmount(this.waterTank.getFluid()), Atomic.getFluidAmount(this.gasTank.getFluid()));
-    }
-
-    public void sendDescPack()
-    {
-        if (!this.worldObj.isRemote)
-        {
-            for (EntityPlayer player : this.getPlayersUsing())
-            {
-                PacketDispatcher.sendPacketToPlayer(getDescriptionPacket(), (Player) player);
+                //this.sendDescPack();
             }
         }
     }
@@ -181,7 +136,7 @@ public class TileNuclearBoiler extends TileElectricalInventory implements ISided
             {
                 if (getStackInSlot(3) != null)
                 {
-                    if (Atomic.itemYellowCake.itemID == getStackInSlot(3).itemID || Atomic.isItemStackUraniumOre(getStackInSlot(3)))
+                    if (Atomic.itemYellowCake == getStackInSlot(3).getItem() || Atomic.isItemStackUraniumOre(getStackInSlot(3)))
                     {
                         if (Atomic.getFluidAmount(this.gasTank.getFluid()) < this.gasTank.getCapacity())
                         {
@@ -276,20 +231,20 @@ public class TileNuclearBoiler extends TileElectricalInventory implements ISided
     @Override
     public boolean canFill(ForgeDirection from, Fluid fluid)
     {
-        return Atomic.FLUIDSTACK_WATER.fluidID == fluid.getID();
+        return Atomic.FLUIDSTACK_WATER.getFluidID() == fluid.getID();
     }
 
     @Override
     public boolean canDrain(ForgeDirection from, Fluid fluid)
     {
-        return Atomic.FLUIDSTACK_URANIUM_HEXAFLOURIDE.fluidID == fluid.getID();
+        return Atomic.FLUIDSTACK_URANIUM_HEXAFLOURIDE.getFluidID() == fluid.getID();
     }
 
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from)
     {
         return new FluidTankInfo[]
-        { this.waterTank.getInfo(), this.gasTank.getInfo() };
+                {this.waterTank.getInfo(), this.gasTank.getInfo()};
     }
 
     /** Inventory */
@@ -302,7 +257,7 @@ public class TileNuclearBoiler extends TileElectricalInventory implements ISided
         }
         else if (slotID == 3)
         {
-            return itemStack.itemID == Atomic.itemYellowCake.itemID;
+            return itemStack.getItem() == Atomic.itemYellowCake;
         }
 
         return false;
@@ -312,8 +267,8 @@ public class TileNuclearBoiler extends TileElectricalInventory implements ISided
     public int[] getAccessibleSlotsFromSide(int side)
     {
         return side == 0 ? new int[]
-        { 2 } : new int[]
-        { 1, 3 };
+                {2} : new int[]
+                {1, 3};
     }
 
     @Override
@@ -329,20 +284,14 @@ public class TileNuclearBoiler extends TileElectricalInventory implements ISided
     }
 
     @Override
-    public long onExtractEnergy(ForgeDirection from, long extract, boolean doExtract)
+    public Object getServerGuiElement(int ID, EntityPlayer player)
     {
-        return 0;
+        return new ContainerNuclearBoiler(player, this);
     }
 
     @Override
-    public long getVoltageInput(ForgeDirection from)
+    public Object getClientGuiElement(int ID, EntityPlayer player)
     {
-        return 1000;
-    }
-
-    @Override
-    public void onWrongVoltage(ForgeDirection direction, long voltage)
-    {
-
+        return null;
     }
 }
