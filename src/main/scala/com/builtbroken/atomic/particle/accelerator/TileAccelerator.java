@@ -1,31 +1,23 @@
 package com.builtbroken.atomic.particle.accelerator;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet;
-import net.minecraftforge.common.ForgeDirection;
-import resonant.api.IElectromagnet;
-import resonant.api.IRotatable;
-import resonant.lib.network.Synced;
-import resonant.lib.prefab.tile.TileElectricalInventory;
 import com.builtbroken.atomic.Atomic;
 import com.builtbroken.atomic.particle.fulmination.ItemAntimatter;
-import com.core.Reference;
-import com.core.ResonantInduction;
-import com.core.Settings;
-import universalelectricity.api.electricity.IVoltageInput;
-import universalelectricity.api.energy.EnergyStorageHandler;
-import universalelectricity.api.energy.IEnergyInterface;
-import universalelectricity.api.vector.Vector3;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
+import com.builtbroken.mc.api.energy.IEnergyBuffer;
+import com.builtbroken.mc.api.energy.IEnergyBufferProvider;
+import com.builtbroken.mc.lib.transform.vector.Pos;
+import com.builtbroken.mc.prefab.energy.EnergyBuffer;
+import com.builtbroken.mc.prefab.inventory.ExternalInventory;
+import com.builtbroken.mc.prefab.tile.TileModuleMachine;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /** Accelerator TileEntity */
-public class TileAccelerator extends TileElectricalInventory implements IElectromagnet, IRotatable, IInventory, ISidedInventory, IVoltageInput
+public class TileAccelerator extends TileModuleMachine<ExternalInventory> implements IEnergyBufferProvider //implements IElectromagnet
 {
     /** Joules required per ticks. */
     public static final int energyPerTick = 4800000;
@@ -33,20 +25,19 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
     /** User client side to determine the velocity of the particle. */
     public static final float clientParticleVelocity = 0.9f;
 
+    protected EnergyBuffer energyBuffer;
+
     /** The total amount of energy consumed by this particle. In Joules. */
-    @Synced
+    //@Synced
     public float totalEnergyConsumed = 0;
 
     /** The amount of anti-matter stored within the accelerator. Measured in milligrams. */
-    @Synced
+    //@Synced
     public int antimatter;
     public EntityParticle entityParticle;
 
-    @Synced
+    //@Synced
     public float velocity;
-
-    @Synced
-    private long clientEnergy = 0;
 
     private int lastSpawnTick = 0;
 
@@ -56,41 +47,24 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
 
     public TileAccelerator()
     {
-        energy = new EnergyStorageHandler(energyPerTick * 2, energyPerTick / 20);
-        maxSlots = 4;
+        super("accelerator", Material.iron);
+        //energy = new EnergyStorageHandler(energyPerTick * 2, energyPerTick / 20);
         antiMatterDensityMultiplyer = DENSITY_MULTIPLYER_DEFAULT;
     }
 
     @Override
-    public boolean canConnect(ForgeDirection direction, Object obj)
+    protected ExternalInventory createInventory()
     {
-        return obj instanceof IEnergyInterface;
+        return new ExternalInventory(this, 4);
     }
 
     @Override
-    public long onReceiveEnergy(ForgeDirection from, long receive, boolean doReceive)
+    public void update()
     {
-        if (doReceive)
-        {
-            totalEnergyConsumed += receive;
-        }
-
-        if (getStackInSlot(0) != null && (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord) || worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) > 0))
-        {
-            return super.onReceiveEnergy(from, receive, doReceive);
-        }
-
-        return 0;
-    }
-
-    @Override
-    public void updateEntity()
-    {
-        super.updateEntity();
+        super.update();
 
         if (!worldObj.isRemote)
         {
-            clientEnergy = energy.getEnergy();
             velocity = 0;
 
             // Calculate accelerated particle velocity if it is spawned.
@@ -111,7 +85,7 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
                         if (getStackInSlot(2) != null)
                         {
                             // Increase the existing amount of anti-matter if stack already exists.
-                            if (getStackInSlot(2).itemID == Atomic.itemAntimatter.itemID)
+                            if (getStackInSlot(2).getItem() == Atomic.itemAntimatter)
                             {
                                 ItemStack newStack = getStackInSlot(2).copy();
                                 if (newStack.stackSize < newStack.getMaxStackSize())
@@ -140,23 +114,23 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
             // Check if redstone signal is currently being applied.
             if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
             {
-                if (energy.checkExtract())
+                if (getEnergyBuffer(ForgeDirection.UNKNOWN).removeEnergyFromStorage(energyPerTick, false) >= energyPerTick)
                 {
                     if (entityParticle == null)
                     {
                         // Creates a accelerated particle if one needs to exist (on world load for example or player login).
                         if (getStackInSlot(0) != null && lastSpawnTick >= 40)
                         {
-                            Vector3 spawnAcceleratedParticle = new Vector3(this);
-                            spawnAcceleratedParticle.translate(getDirection().getOpposite());
-                            spawnAcceleratedParticle.translate(0.5f);
+                            Pos spawnAcceleratedParticle = new Pos((TileEntity)this);
+                            spawnAcceleratedParticle = spawnAcceleratedParticle.add(getDirection().getOpposite());
+                            spawnAcceleratedParticle = spawnAcceleratedParticle.add(0.5f);
 
                             // Only render the particle if container within the proper environment for it.
                             if (EntityParticle.canRenderAcceleratedParticle(worldObj, spawnAcceleratedParticle))
                             {
                                 // Spawn the particle.
                                 totalEnergyConsumed = 0;
-                                entityParticle = new EntityParticle(worldObj, spawnAcceleratedParticle, new Vector3(this), getDirection().getOpposite());
+                                entityParticle = new EntityParticle(worldObj, spawnAcceleratedParticle, new Pos(this), getDirection().getOpposite());
                                 worldObj.spawnEntityInWorld(entityParticle);
 
                                 // Grabs input block hardness if available, otherwise defaults are used.
@@ -186,7 +160,7 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
                         else if (velocity > clientParticleVelocity)
                         {
                             // Play sound of anti-matter being created.
-                            worldObj.playSoundEffect(xCoord, yCoord, zCoord, Reference.PREFIX + "antimatter", 2f, 1f - worldObj.rand.nextFloat() * 0.3f);
+                            worldObj.playSoundEffect(xCoord, yCoord, zCoord, Atomic.PREFIX + "antimatter", 2f, 1f - worldObj.rand.nextFloat() * 0.3f);
 
                             // Create anti-matter in the internal reserve.
                             int generatedAntimatter = 5 + worldObj.rand.nextInt(antiMatterDensityMultiplyer);
@@ -202,11 +176,11 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
                         // Plays sound of particle accelerating past the speed based on total velocity at the time of anti-matter creation.
                         if (entityParticle != null)
                         {
-                            worldObj.playSoundEffect(xCoord, yCoord, zCoord, Reference.PREFIX + "accelerator", 1.5f, (float) (0.6f + (0.4 * (entityParticle.getParticleVelocity()) / TileAccelerator.clientParticleVelocity)));
+                            worldObj.playSoundEffect(xCoord, yCoord, zCoord, Atomic.PREFIX  + "accelerator", 1.5f, (float) (0.6f + (0.4 * (entityParticle.getParticleVelocity()) / TileAccelerator.clientParticleVelocity)));
                         }
                     }
 
-                    energy.extractEnergy();
+                    getEnergyBuffer(ForgeDirection.UNKNOWN).removeEnergyFromStorage(energyPerTick, true);
                 }
                 else
                 {
@@ -232,7 +206,8 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
             {
                 for (EntityPlayer player : getPlayersUsing())
                 {
-                    PacketDispatcher.sendPacketToPlayer(getDescriptionPacket(), (Player) player);
+                    //TODO move to gui update method call
+                    //PacketDispatcher.sendPacketToPlayer(getDescriptionPacket(), (Player) player);
                 }
             }
 
@@ -249,7 +224,7 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
             antiMatterDensityMultiplyer = DENSITY_MULTIPLYER_DEFAULT;
             try
             {
-                Block potentialBlock = Block.blocksList[itemToAccelerate.getItem().itemID];
+                Block potentialBlock = Block.getBlockFromItem(itemToAccelerate.getItem());
                 if (potentialBlock != null)
                 {
                     // Prevent negative numbers and disallow zero for density multiplier.
@@ -270,11 +245,6 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
         }
     }
 
-    @Override
-    public Packet getDescriptionPacket()
-    {
-        return ResonantInduction.PACKET_ANNOTATION.getPacket(this);
-    }
 
     /** Reads a tile entity from NBT. */
     @Override
@@ -292,12 +262,6 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
         super.writeToNBT(par1NBTTagCompound);
         par1NBTTagCompound.setFloat("totalEnergyConsumed", totalEnergyConsumed);
         par1NBTTagCompound.setInteger("antimatter", antimatter);
-    }
-
-    @Override
-    public long getVoltageInput(ForgeDirection dir)
-    {
-        return 1000;
     }
 
     @Override
@@ -338,21 +302,12 @@ public class TileAccelerator extends TileElectricalInventory implements IElectro
     }
 
     @Override
-    public long onExtractEnergy(ForgeDirection from, long extract, boolean doExtract)
+    public IEnergyBuffer getEnergyBuffer(ForgeDirection side)
     {
-        return 0;
+        if(energyBuffer == null)
+        {
+            energyBuffer = new EnergyBuffer(energyPerTick * 2);
+        }
+        return null;
     }
-
-    @Override
-    public void onWrongVoltage(ForgeDirection direction, long voltage)
-    {
-
-    }
-
-    @Override
-    public boolean isRunning()
-    {
-        return true;
-    }
-
 }

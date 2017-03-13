@@ -54,24 +54,25 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import java.util.Map;
 
-@Mod(modid = Atomic.ID, name = "Atomic Science: Classic", version = Reference.VERSION, dependencies = "required-after:VoltzEngine")
+@Mod(modid = Atomic.DOMAIN, name = "Atomic Science: Classic", version = Reference.VERSION, dependencies = "required-after:VoltzEngine")
 public class Atomic extends AbstractMod
 {
-    public static final String ID = "atomicscienceclassic";
-
+    public static final String DOMAIN = "atomicscienceclassic";
+    public static final String PREFIX = DOMAIN + ":";
 
     public static final int ENTITY_ID_PREFIX = 49;
     public static final int SECOND_IN_TICKS = 20;
 
     public static final EnumArmorMaterial hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", 0, new int[] { 0, 0, 0, 0 }, 0);
 
-    @Mod.Instance(ID)
+
+    @Mod.Instance(DOMAIN)
     public static Atomic INSTANCE;
 
     @SidedProxy(clientSide = "com.builtbroken.atomic.ClientProxy", serverSide = "com.builtbroken.atomic.CommonProxy")
     public static CommonProxy proxy;
 
-    @Mod.Metadata(ID)
+    @Mod.Metadata(DOMAIN)
     public static ModMetadata metadata;
 
     /** Block and Items */
@@ -311,7 +312,7 @@ public class Atomic extends AbstractMod
     @Mod.EventHandler
     public void init(FMLInitializationEvent evt)
     {
-        Settings.setModMetadata(metadata, ID, NAME, ResonantInduction.ID);
+        Settings.setModMetadata(metadata, DOMAIN, NAME, ResonantInduction.ID);
         proxy.init();
         modproxies.init();
     }

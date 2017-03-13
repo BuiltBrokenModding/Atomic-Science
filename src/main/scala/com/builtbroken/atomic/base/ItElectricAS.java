@@ -7,7 +7,7 @@ import universalelectricity.api.UniversalClass;
 import universalelectricity.api.item.IEnergyItem;
 import universalelectricity.api.item.ItemElectric;
 
-@UniversalClass
+//@UniversalClass
 public abstract class ItElectricAS extends ItemElectric implements IEnergyItem
 {
     public ItElectricAS(int itemID, String name)

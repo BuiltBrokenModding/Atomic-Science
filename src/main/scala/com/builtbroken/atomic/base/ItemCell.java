@@ -1,22 +1,19 @@
 package com.builtbroken.atomic.base;
 
-import java.util.List;
-
+import com.builtbroken.atomic.Atomic;
+import com.builtbroken.jlib.data.Colors;
+import com.builtbroken.mc.lib.helper.LanguageUtility;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
 import org.lwjgl.input.Keyboard;
 
-import resonant.lib.render.EnumColor;
-import resonant.lib.utility.LanguageUtility;
-import com.builtbroken.atomic.Atomic;
+import java.util.List;
 
 public class ItemCell extends Item
 {
-    public ItemCell(int itemID)
+    public ItemCell()
     {
-        super(itemID);
         setContainerItem(Atomic.itemCell);
     }
 
@@ -29,7 +26,7 @@ public class ItemCell extends Item
         {
             if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
             {
-                list.add(LanguageUtility.getLocal("tooltip.noShift").replace("%0", EnumColor.AQUA.toString()).replace("%1", EnumColor.GREY.toString()));
+                list.add(LanguageUtility.getLocal("tooltip.noShift").replace("%0", Colors.AQUA.toString()).replace("%1", Colors.GREY.toString()));
             }
             else
             {
