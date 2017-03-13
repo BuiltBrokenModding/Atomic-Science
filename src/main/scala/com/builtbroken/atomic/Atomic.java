@@ -1,65 +1,7 @@
 package com.builtbroken.atomic;
 
-import ic2.api.item.Items;
-import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.RecipeOutput;
-import ic2.api.recipe.Recipes;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.EnumArmorMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBucket;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumMovingObjectType;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.EnumHelper;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.ForgeChunkManager.Type;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event.Result;
-import net.minecraftforge.event.ForgeSubscribe;
-import net.minecraftforge.event.entity.player.FillBucketEvent;
-import net.minecraftforge.event.world.WorldEvent.Save;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
-import resonant.api.IElectromagnet;
-import resonant.api.event.PlasmaEvent.SpawnPlasmaEvent;
-import resonant.api.recipe.QuantumAssemblerRecipes;
-import resonant.core.content.debug.BlockCreativeBuilder;
-import resonant.lib.content.ContentRegistry;
-import resonant.lib.flag.FlagRegistry;
-import resonant.lib.modproxy.ProxyHandler;
-import resonant.lib.network.PacketAnnotation;
-import resonant.lib.network.PacketHandler;
-import resonant.lib.prefab.block.BlockRadioactive;
-import resonant.lib.prefab.ore.OreGenBase;
-import resonant.lib.prefab.ore.OreGenReplaceStone;
-import resonant.lib.prefab.ore.OreGenerator;
-import resonant.lib.recipe.UniversalRecipe;
-import resonant.lib.render.RenderUtility;
-import resonant.lib.thermal.EventThermal.EventThermalUpdate;
-import resonant.lib.utility.nbt.NBTUtility;
 import com.builtbroken.atomic.base.ItemCell;
-import com.builtbroken.atomic.fission.BlockUraniumOre;
-import com.builtbroken.atomic.fission.ItemBreederFuel;
-import com.builtbroken.atomic.fission.ItemFissileFuel;
-import com.builtbroken.atomic.fission.ItemRadioactive;
-import com.builtbroken.atomic.fission.ItemUranium;
+import com.builtbroken.atomic.fission.*;
 import com.builtbroken.atomic.fission.reactor.BlockToxicWaste;
 import com.builtbroken.atomic.fission.reactor.TileControlRod;
 import com.builtbroken.atomic.fission.reactor.TileReactorCell;
@@ -87,57 +29,47 @@ import com.builtbroken.atomic.process.sensor.TileThermometer;
 import com.builtbroken.atomic.process.turbine.BlockElectricTurbine;
 import com.builtbroken.atomic.process.turbine.TileElectricTurbine;
 import com.builtbroken.atomic.process.turbine.TileFunnel;
-import com.builtbroken.atomic.schematic.SchematicAccelerator;
-import com.builtbroken.atomic.schematic.SchematicBreedingReactor;
-import com.builtbroken.atomic.schematic.SchematicFissionReactor;
-import com.builtbroken.atomic.schematic.SchematicFusionReactor;
-import com.core.Reference;
-import com.core.ResonantInduction;
-import com.core.Settings;
-import com.core.TabRI;
-import universalelectricity.api.vector.Vector3;
-import universalelectricity.api.vector.VectorWorld;
-import cpw.mods.fml.common.Loader;
+import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
+import com.builtbroken.mc.lib.mod.AbstractMod;
+import com.builtbroken.mc.lib.render.RenderUtility;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-@Mod(modid = Atomic.ID, name = Atomic.NAME, version = Reference.VERSION, dependencies = "required-after:ResonantEngine;after:IC2;after:ResonantInduction|Electrical;required-after:" + ResonantInduction.ID)
-@NetworkMod(channels =
-{ Reference.CHANNEL }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
-public class Atomic
+import java.util.Map;
+
+@Mod(modid = Atomic.ID, name = "Atomic Science: Classic", version = Reference.VERSION, dependencies = "required-after:VoltzEngine")
+public class Atomic extends AbstractMod
 {
-    public static final String ID = "ResonantInduction|Atomic";
-    public static final String TEXTURE_DIRECTORY = "textures/";
-    public static final String GUI_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "gui/";
+    public static final String ID = "atomicscienceclassic";
+
+
     public static final int ENTITY_ID_PREFIX = 49;
     public static final int SECOND_IN_TICKS = 20;
-    public static final EnumArmorMaterial hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", 0, new int[]
-    { 0, 0, 0, 0 }, 0);
-    public static final String BAN_ANTIMATTER_POWER = FlagRegistry.registerFlag("ban_antimatter_power");
-    public static final String NAME = Reference.NAME + " Atomic";
-    public static final ContentRegistry contentRegistry = new ContentRegistry(Settings.CONFIGURATION, Settings.idManager, ID).setPrefix(Reference.PREFIX).setTab(TabRI.DEFAULT);
-    private static final String[] SUPPORTED_LANGUAGES = new String[]
-    { "en_US", "pl_PL", "de_DE" };
 
-    @Instance(ID)
+    public static final EnumArmorMaterial hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", 0, new int[] { 0, 0, 0, 0 }, 0);
+
+    @Mod.Instance(ID)
     public static Atomic INSTANCE;
 
-    @SidedProxy(clientSide = "resonantinduction.atomic.ClientProxy", serverSide = "resonantinduction.atomic.CommonProxy")
+    @SidedProxy(clientSide = "com.builtbroken.atomic.ClientProxy", serverSide = "com.builtbroken.atomic.CommonProxy")
     public static CommonProxy proxy;
-
-    public ProxyHandler modproxies;
 
     @Mod.Metadata(ID)
     public static ModMetadata metadata;
@@ -179,7 +111,6 @@ public class Atomic
     /** Water, Uranium Hexafluoride, Steam, Deuterium, Toxic waste */
     public static FluidStack FLUIDSTACK_WATER, FLUIDSTACK_URANIUM_HEXAFLOURIDE, FLUIDSTACK_STEAM, FLUIDSTACK_DEUTERIUM, FLUIDSTACK_TRITIUM, FLUIDSTACK_TOXIC_WASTE;
     public static Fluid FLUID_URANIUM_HEXAFLOURIDE, FLUID_PLASMA, FLUID_STEAM, FLUID_DEUTERIUM, FLUID_TRITIUM, FLUID_TOXIC_WASTE;
-    public static OreGenBase uraniumOreGeneration;
 
     /** Is this ItemStack a cell?
      *
@@ -241,30 +172,27 @@ public class Atomic
         return 0;
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        modproxies = new ProxyHandler();
-        INSTANCE = this;
-        MinecraftForge.EVENT_BUS.register(this);
-        NetworkRegistry.instance().registerGuiHandler(this, proxy);
+        super.preInit(event);
 
-        PacketAnnotation.register(TileElectricTurbine.class);
-        PacketAnnotation.register(TileReactorCell.class);
-        PacketAnnotation.register(TileThermometer.class);
+        //PacketAnnotation.register(TileElectricTurbine.class);
+        //PacketAnnotation.register(TileReactorCell.class);
+        //PacketAnnotation.register(TileThermometer.class);
 
-        BlockCreativeBuilder.register(new SchematicAccelerator());
-        BlockCreativeBuilder.register(new SchematicBreedingReactor());
-        BlockCreativeBuilder.register(new SchematicFissionReactor());
-        BlockCreativeBuilder.register(new SchematicFusionReactor());
+       // BlockCreativeBuilder.register(new SchematicAccelerator());
+        //BlockCreativeBuilder.register(new SchematicBreedingReactor());
+       // BlockCreativeBuilder.register(new SchematicFissionReactor());
+        //BlockCreativeBuilder.register(new SchematicFusionReactor());
 
         Settings.CONFIGURATION.load();
 
         /** Register Packets */
-        PacketAnnotation.register(TileAccelerator.class);
-        PacketAnnotation.register(TileChemicalExtractor.class);
-        PacketAnnotation.register(TileNuclearBoiler.class);
-        PacketAnnotation.register(TileElectricTurbine.class);
+        //PacketAnnotation.register(TileAccelerator.class);
+        //PacketAnnotation.register(TileChemicalExtractor.class);
+        //PacketAnnotation.register(TileNuclearBoiler.class);
+        //PacketAnnotation.register(TileElectricTurbine.class);
 
         /** Registers Gases & Fluids */
         FLUID_URANIUM_HEXAFLOURIDE = new Fluid("uraniumhexafluoride").setGaseous(true);
@@ -290,25 +218,25 @@ public class Atomic
         FLUIDSTACK_TOXIC_WASTE = new FluidStack(FluidRegistry.getFluidID("toxicwaste"), 0);
 
         /** Block Initiation */
-        blockRadioactive = contentRegistry.createBlock(BlockRadioactive.class).setUnlocalizedName(Reference.PREFIX + "radioactive").setTextureName(Reference.PREFIX + "radioactive").setCreativeTab(TabRI.DEFAULT);
-        blockUraniumOre = contentRegistry.createBlock(BlockUraniumOre.class);
+        blockRadioactive = getManager().newBlock(BlockRadioactive.class).setUnlocalizedName(Reference.PREFIX + "radioactive").setTextureName(Reference.PREFIX + "radioactive").setCreativeTab(TabRI.DEFAULT);
+        blockUraniumOre = getManager().newBlock(BlockUraniumOre.class);
 
-        blockElectricTurbine = contentRegistry.createTile(BlockElectricTurbine.class, TileElectricTurbine.class);
-        blockCentrifuge = contentRegistry.createTile(BlockCentrifuge.class, TileCentrifuge.class);
-        blockReactorCell = contentRegistry.newBlock(TileReactorCell.class);
-        blockNuclearBoiler = contentRegistry.createTile(BlockNuclearBoiler.class, TileNuclearBoiler.class);
-        blockChemicalExtractor = contentRegistry.createTile(BlockChemicalExtractor.class, TileChemicalExtractor.class);
-        blockFusionCore = contentRegistry.createTile(BlockPlasmaHeater.class, TilePlasmaHeater.class);
-        blockControlRod = contentRegistry.newBlock(TileControlRod.class);
-        blockThermometer = contentRegistry.newBlock(TileThermometer.class);
-        blockPlasma = contentRegistry.newBlock(TilePlasma.class);
-        blockElectromagnet = contentRegistry.newBlock(TileElectromagnet.class);
-        blockSiren = contentRegistry.newBlock(TileSiren.class);
-        blockSteamFunnel = contentRegistry.newBlock(TileFunnel.class);
-        blockAccelerator = contentRegistry.createTile(BlockAccelerator.class, TileAccelerator.class);
-        blockFulmination = contentRegistry.newBlock(TileFulmination.class);
-        blockQuantumAssembler = contentRegistry.newBlock(TileQuantumAssembler.class);
-        blockToxicWaste = contentRegistry.createBlock(BlockToxicWaste.class).setCreativeTab(null);
+        blockElectricTurbine = getManager().newBlock(BlockElectricTurbine.class, TileElectricTurbine.class);
+        blockCentrifuge = getManager().newBlock(BlockCentrifuge.class, TileCentrifuge.class);
+        blockReactorCell = getManager().newBlock(TileReactorCell.class);
+        blockNuclearBoiler = getManager().newBlock(BlockNuclearBoiler.class, TileNuclearBoiler.class);
+        blockChemicalExtractor = getManager().newBlock(BlockChemicalExtractor.class, TileChemicalExtractor.class);
+        blockFusionCore = getManager().newBlock(BlockPlasmaHeater.class, TilePlasmaHeater.class);
+        blockControlRod = getManager().newBlock(TileControlRod.class);
+        blockThermometer = getManager().newBlock(TileThermometer.class);
+        blockPlasma = getManager().newBlock(TilePlasma.class);
+        blockElectromagnet = getManager().newBlock(TileElectromagnet.class);
+        blockSiren = getManager().newBlock(TileSiren.class);
+        blockSteamFunnel = getManager().newBlock(TileFunnel.class);
+        blockAccelerator = getManager().newBlock(BlockAccelerator.class, TileAccelerator.class);
+        blockFulmination = getManager().newBlock(TileFulmination.class);
+        blockQuantumAssembler = getManager().newBlock(TileQuantumAssembler.class);
+        blockToxicWaste = getManager().newBlock(BlockToxicWaste.class).setCreativeTab(null);
 
         /** Items */
         itemHazmatTop = new ItemHazmat(Settings.CONFIGURATION.getItem("HazmatTop", Settings.getNextItemID()).getInt(), hazmatArmorMaterial, proxy.getArmorIndex("hazmat"), 0).setUnlocalizedName(Reference.PREFIX + "hazmatMask");
@@ -316,17 +244,17 @@ public class Atomic
         itemHazmatLeggings = new ItemHazmat(Settings.CONFIGURATION.getItem("HazmatBottom", Settings.getNextItemID()).getInt(), hazmatArmorMaterial, proxy.getArmorIndex("hazmat"), 2).setUnlocalizedName(Reference.PREFIX + "hazmatLeggings");
         itemHazmatBoots = new ItemHazmat(Settings.CONFIGURATION.getItem("HazmatBoots", Settings.getNextItemID()).getInt(), hazmatArmorMaterial, proxy.getArmorIndex("hazmat"), 3).setUnlocalizedName(Reference.PREFIX + "hazmatBoots");
 
-        itemCell = contentRegistry.createItem("cellEmpty", Item.class);
-        itemFissileFuel = contentRegistry.createItem("rodFissileFuel", ItemFissileFuel.class);
-        itemDeuteriumCell = contentRegistry.createItem("cellDeuterium", ItemCell.class);
-        itemTritiumCell = contentRegistry.createItem("cellTritium", ItemCell.class);
-        itemWaterCell = contentRegistry.createItem("cellWater", ItemCell.class);
-        itemDarkMatter = contentRegistry.createItem("darkMatter", ItemDarkMatter.class);
-        itemAntimatter = contentRegistry.createItem("antimatter", ItemAntimatter.class);
-        itemBreedingRod = contentRegistry.createItem("rodBreederFuel", ItemBreederFuel.class);
+        itemCell = getManager().newItem("cellEmpty", Item.class);
+        itemFissileFuel = getManager().newItem("rodFissileFuel", ItemFissileFuel.class);
+        itemDeuteriumCell = getManager().newItem("cellDeuterium", ItemCell.class);
+        itemTritiumCell = getManager().newItem("cellTritium", ItemCell.class);
+        itemWaterCell = getManager().newItem("cellWater", ItemCell.class);
+        itemDarkMatter = getManager().newItem("darkMatter", ItemDarkMatter.class);
+        itemAntimatter = getManager().newItem("antimatter", ItemAntimatter.class);
+        itemBreedingRod = getManager().newItem("rodBreederFuel", ItemBreederFuel.class);
 
-        itemYellowCake = contentRegistry.createItem("yellowcake", ItemRadioactive.class);
-        itemUranium = contentRegistry.createItem(ItemUranium.class);
+        itemYellowCake = getManager().newItem("yellowcake", ItemRadioactive.class);
+        itemUranium = getManager().newItem(ItemUranium.class);
 
         /** Fluid Item Initialization */
         FLUID_PLASMA.setBlockID(blockPlasma);
@@ -376,33 +304,11 @@ public class Atomic
         OreDictionary.registerOre("antimatterMilligram", new ItemStack(itemAntimatter, 1, 0));
         OreDictionary.registerOre("antimatterGram", new ItemStack(itemAntimatter, 1, 1));
 
-        ForgeChunkManager.setForcedChunkLoadingCallback(this, new LoadingCallback()
-        {
-            @Override
-            public void ticketsLoaded(List<Ticket> tickets, World world)
-            {
-                for (Ticket ticket : tickets)
-                {
-                    if (ticket.getType() == Type.ENTITY)
-                    {
-                        if (ticket.getEntity() != null)
-                        {
-                            if (ticket.getEntity() instanceof EntityParticle)
-                            {
-                                ((EntityParticle) ticket.getEntity()).updateTicket = ticket;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        proxy.preInit();
         Settings.CONFIGURATION.save();
         TabRI.ITEMSTACK = new ItemStack(blockReactorCell);
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void init(FMLInitializationEvent evt)
     {
         Settings.setModMetadata(metadata, ID, NAME, ResonantInduction.ID);
@@ -410,7 +316,7 @@ public class Atomic
         modproxies.init();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
         /** IC2 Recipes */
@@ -626,7 +532,7 @@ public class Atomic
         Settings.CONFIGURATION.save();
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void thermalEventHandler(EventThermalUpdate evt)
     {
         VectorWorld pos = evt.position;

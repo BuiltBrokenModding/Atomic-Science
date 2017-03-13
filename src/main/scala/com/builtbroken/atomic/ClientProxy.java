@@ -63,45 +63,4 @@ public class ClientProxy extends CommonProxy
 
         RenderingRegistry.registerEntityRenderingHandler(EntityParticle.class, new RenderParticle());
     }
-
-    @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
-    {
-        TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-        Block block = Block.blocksList[world.getBlockId(x, y, z)];
-
-        if (tileEntity instanceof TileCentrifuge)
-        {
-            return new GuiCentrifuge(player.inventory, ((TileCentrifuge) tileEntity));
-        }
-        else if (tileEntity instanceof TileChemicalExtractor)
-        {
-            return new GuiChemicalExtractor(player.inventory, ((TileChemicalExtractor) tileEntity));
-        }
-        else if (tileEntity instanceof TileAccelerator)
-        {
-            return new GuiAccelerator(player.inventory, ((TileAccelerator) tileEntity));
-        }
-        else if (tileEntity instanceof TileQuantumAssembler)
-        {
-            return new GuiQuantumAssembler(player.inventory, ((TileQuantumAssembler) tileEntity));
-        }
-        else if (tileEntity instanceof TileNuclearBoiler)
-        {
-            return new GuiNuclearBoiler(player.inventory, ((TileNuclearBoiler) tileEntity));
-        }
-        else if (tileEntity instanceof TileReactorCell)
-        {
-            return new GuiReactorCell(player.inventory, (TileReactorCell) tileEntity);
-        }
-
-        return null;
-    }
-
-    @Override
-    public boolean isFancyGraphics()
-    {
-        return Minecraft.getMinecraft().gameSettings.fancyGraphics;
-    }
-
 }
