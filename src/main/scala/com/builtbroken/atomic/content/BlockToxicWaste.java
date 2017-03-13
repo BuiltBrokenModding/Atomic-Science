@@ -1,6 +1,4 @@
-package com.builtbroken.atomic.content.reactor.fission;
-
-import java.util.Random;
+package com.builtbroken.atomic.content;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -9,14 +7,15 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.FluidRegistry;
-import resonant.lib.prefab.poison.PoisonRadiation;
-import universalelectricity.api.vector.Vector3;
 
+import java.util.Random;
+
+//TODO move to VE for reuse by ICBM
 public class BlockToxicWaste extends BlockFluidClassic
 {
-    public BlockToxicWaste(int id)
+    public BlockToxicWaste()
     {
-        super(id, FluidRegistry.getFluid("toxicwaste"), Material.water);
+        super(FluidRegistry.getFluid("toxicwaste"), Material.water);
         setTickRate(20);
     }
 
@@ -45,7 +44,7 @@ public class BlockToxicWaste extends BlockFluidClassic
         if (entity instanceof EntityLivingBase)
         {
             entity.attackEntityFrom(DamageSource.wither, 3);
-            PoisonRadiation.INSTANCE.poisonEntity(new Vector3(x, y, z), (EntityLivingBase) entity, 4);
+            //oisonRadiation.INSTANCE.poisonEntity(new Vector3(x, y, z), (EntityLivingBase) entity, 4);
         }
     }
 }

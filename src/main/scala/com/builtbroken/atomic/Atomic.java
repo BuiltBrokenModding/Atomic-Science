@@ -1,7 +1,7 @@
 package com.builtbroken.atomic;
 
 import com.builtbroken.atomic.content.items.*;
-import com.builtbroken.atomic.content.reactor.fission.BlockToxicWaste;
+import com.builtbroken.atomic.content.BlockToxicWaste;
 import com.builtbroken.atomic.content.reactor.fission.TileControlRod;
 import com.builtbroken.atomic.content.reactor.fission.TileReactorCell;
 import com.builtbroken.atomic.content.reactor.fusion.BlockPlasmaHeater;

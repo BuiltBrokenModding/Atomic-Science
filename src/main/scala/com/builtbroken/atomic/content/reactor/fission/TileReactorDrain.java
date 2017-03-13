@@ -1,30 +1,23 @@
 package com.builtbroken.atomic.content.reactor.fission;
 
+import com.builtbroken.mc.lib.helper.path.IPathCallBack;
+import com.builtbroken.mc.lib.helper.path.Pathfinder;
+import com.builtbroken.mc.lib.transform.vector.Pos;
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.*;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockFluid;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fluids.IFluidTank;
-import resonant.lib.path.IPathCallBack;
-import resonant.lib.path.Pathfinder;
-import resonant.lib.prefab.tile.TileAdvanced;
-import universalelectricity.api.vector.Vector3;
-
 /** Reactor Drain
  *
  * @author Calclavia */
-public class TileReactorDrain extends TileAdvanced implements IFluidHandler
+public class TileReactorDrain extends TileEntity implements IFluidHandler
 {
     private final Set<IFluidTank> tanks = new HashSet<IFluidTank>();
     private long lastFindTime = -1;
@@ -33,22 +26,22 @@ public class TileReactorDrain extends TileAdvanced implements IFluidHandler
     {
         this.tanks.clear();
         final World world = this.worldObj;
-        final Vector3 position = new Vector3(this);
+        final Pos position = new Pos(this);
 
         Pathfinder finder = new Pathfinder(new IPathCallBack()
         {
             @Override
-            public Set<Vector3> getConnectedNodes(Pathfinder finder, Vector3 currentNode)
+            public Set<Pos> getConnectedNodes(Pathfinder finder, Pos currentNode)
             {
-                Set<Vector3> neighbors = new HashSet<Vector3>();
+                Set<Pos> neighbors = new HashSet<Pos>();
 
                 for (int i = 0; i < 6; i++)
                 {
                     ForgeDirection direction = ForgeDirection.getOrientation(i);
-                    Vector3 position = currentNode.clone().translate(direction);
-                    int connectedBlockID = position.getBlockID(world);
+                    Pos position = currentNode.clone().add(direction);
+                    Block block = position.getBlock(world);
 
-                    if (connectedBlockID == 0 || Block.blocksList[connectedBlockID] instanceof BlockFluid || Block.blocksList[connectedBlockID] instanceof IFluidBlock || position.getTileEntity(world) instanceof TileReactorCell)
+                    if (position.isAirBlock(world) || block instanceof BlockFluidBase || block instanceof IFluidBlock || position.getTileEntity(world) instanceof TileReactorCell)
                     {
                         neighbors.add(position);
                     }
@@ -58,7 +51,7 @@ public class TileReactorDrain extends TileAdvanced implements IFluidHandler
             }
 
             @Override
-            public boolean onSearch(Pathfinder finder, Vector3 start, Vector3 node)
+            public boolean onSearch(Pathfinder finder, Pos start, Pos node)
             {
                 if (node.getTileEntity(world) instanceof TileReactorCell)
                 {
@@ -72,9 +65,9 @@ public class TileReactorDrain extends TileAdvanced implements IFluidHandler
 
                 return false;
             }
-        }).init(new Vector3(this).translate(ForgeDirection.getOrientation(this.getBlockMetadata()).getOpposite()));
+        }).init(new Pos(this).add(ForgeDirection.getOrientation(this.getBlockMetadata()).getOpposite()));
 
-        for (Vector3 node : finder.results)
+        for (Pos node : finder.results)
         {
             TileEntity tileEntity = node.getTileEntity(this.worldObj);
 

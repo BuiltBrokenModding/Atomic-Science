@@ -1,37 +1,40 @@
 package com.builtbroken.atomic.content.reactor;
 
-import java.util.List;
-
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
-import net.minecraft.world.IBlockAccess;
-import resonant.api.IElectromagnet;
-import resonant.lib.content.module.TileBase;
-import resonant.lib.content.module.TileRender;
-import resonant.lib.utility.ConnectedTextureRenderer;
-import resonant.lib.prefab.item.ItemBlockMetadata;
-import com.core.Reference;
-import universalelectricity.api.UniversalElectricity;
+import com.builtbroken.mc.prefab.tile.Tile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+
+import java.util.List;
 
 /** Electromagnet block */
-public class TileElectromagnet extends TileBase implements IElectromagnet
+public class TileElectromagnet extends Tile
 {
-    private static Icon iconTop, iconGlass;
+    //TODO move to json since this has zero logic
+
+    @SideOnly(Side.CLIENT)
+    private static IIcon iconTop, iconGlass;
 
     public TileElectromagnet()
     {
-        super(UniversalElectricity.machine);
-        blockResistance = 20;
-        isOpaqueCube = false;
-        itemBlock = ItemBlockMetadata.class;
+        super("electromagnet", Material.iron);
+        resistance = 20;
+        isOpaque = false;
     }
 
     @Override
-    public Icon getIcon(int side, int metadata)
+    public Tile newTile()
+    {
+        return null;
+    }
+
+    @Override
+    public IIcon getIcon(int side, int metadata)
     {
         if (metadata == 1)
         {
@@ -48,7 +51,7 @@ public class TileElectromagnet extends TileBase implements IElectromagnet
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void registerIcons(IconRegister iconRegister)
+    public void registerIcons(IIconRegister iconRegister)
     {
         super.registerIcons(iconRegister);
         iconTop = iconRegister.registerIcon(domain + textureName + "_top");
@@ -68,34 +71,15 @@ public class TileElectromagnet extends TileBase implements IElectromagnet
     }
 
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess access, int x, int y, int z, int side)
-    {
-        return true; // access.getBlockId(x, y, z) == blockID() && access.getBlockMetadata(x, y, z) == 1 ? false : super.shouldSideBeRendered(access, x, y, z, side);
-    }
-
-    @Override
     public int getRenderBlockPass()
     {
         return 0;
     }
 
     @Override
-    public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List par3List)
+    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List)
     {
         par3List.add(new ItemStack(par1, 1, 0));
         par3List.add(new ItemStack(par1, 1, 1));
-    }
-
-    @Override
-    public boolean isRunning()
-    {
-        return true;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    protected TileRender newRenderer()
-    {
-        return new ConnectedTextureRenderer(this, Reference.PREFIX + "atomic_edge");
     }
 }

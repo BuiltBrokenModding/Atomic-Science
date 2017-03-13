@@ -1,25 +1,25 @@
 package com.builtbroken.atomic.content.reactor.fission;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import resonant.lib.prefab.block.BlockRotatable;
-import universalelectricity.api.UniversalElectricity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /** Reactor tap block */
-public class BlockReactorDrain extends BlockRotatable
+public class BlockReactorDrain extends Block
 {
-    private Icon frontIcon;
+    private IIcon frontIcon;
 
-    public BlockReactorDrain(int id)
+    public BlockReactorDrain()
     {
-        super(id, UniversalElectricity.machine);
+        super(Material.iron);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class BlockReactorDrain extends BlockRotatable
     }
 
     @Override
-    public Icon getIcon(int side, int metadata)
+    public IIcon getIcon(int side, int metadata)
     {
         if (side == metadata)
         {
@@ -57,9 +57,9 @@ public class BlockReactorDrain extends BlockRotatable
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void registerIcons(IconRegister iconRegister)
+    public void registerBlockIcons(IIconRegister iconRegister)
     {
-        super.registerIcons(iconRegister);
+        super.registerBlockIcons(iconRegister);
         this.frontIcon = iconRegister.registerIcon(this.getUnlocalizedName().replace("tile.", "") + "_front");
     }
 
