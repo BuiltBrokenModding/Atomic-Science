@@ -20,7 +20,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class TileAccelerator extends TileModuleMachine<ExternalInventory> implements IEnergyBufferProvider //implements IElectromagnet
 {
     /** Joules required per ticks. */
-    public static final int energyPerTick = 4800000;
+    public static final int energyPerTick = 4800000; //TODO figure out wtf to change this too
 
     /** User client side to determine the velocity of the particle. */
     public static final float clientParticleVelocity = 0.9f;
@@ -34,7 +34,9 @@ public class TileAccelerator extends TileModuleMachine<ExternalInventory> implem
     /** The amount of anti-matter stored within the accelerator. Measured in milligrams. */
     //@Synced
     public int antimatter;
-    public EntityParticle entityParticle;
+    public EntityParticle entityParticle; //TODO replace entity with particle so to avoid need to chunk load
+
+    //TODO keep track of structure state, only update as needed
 
     //@Synced
     public float velocity;
