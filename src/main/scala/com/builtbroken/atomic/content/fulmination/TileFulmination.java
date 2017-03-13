@@ -1,82 +1,52 @@
 package com.builtbroken.atomic.content.fulmination;
 
-import java.util.EnumSet;
-
+import com.builtbroken.mc.api.energy.IEnergyBuffer;
+import com.builtbroken.mc.api.energy.IEnergyBufferProvider;
+import com.builtbroken.mc.prefab.tile.TileModuleMachine;
 import net.minecraft.block.material.Material;
-import net.minecraftforge.common.ForgeDirection;
-import resonant.lib.utility.ConnectedTextureRenderer;
-import resonant.lib.content.module.TileRender;
-import resonant.lib.prefab.tile.TileElectrical;
-import com.core.Reference;
-import universalelectricity.api.electricity.IVoltageOutput;
-import universalelectricity.api.energy.EnergyStorageHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.inventory.IInventory;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /** Fulmination TileEntity */
-public class TileFulmination extends TileElectrical implements IVoltageOutput
+public class TileFulmination extends TileModuleMachine implements IEnergyBufferProvider
 {
     private static final long DIAN = 10000000000000L;
 
     public TileFulmination()
     {
-        super(Material.iron);
-        energy = new EnergyStorageHandler(DIAN);
-        blockHardness = 10;
-        blockResistance = 25000;
+        super("fulmination", Material.iron);
     }
 
     @Override
-    public void initiate()
+    public void firstTick()
     {
-        super.initiate();
+        super.firstTick();
         FulminationHandler.INSTANCE.register(this);
     }
 
     @Override
-    public void updateEntity()
+    public void update()
     {
-        super.updateEntity();
-        produce();
-        // Slowly lose energy.
-        energy.extractEnergy(1, true);
+        super.update();
+        //TODO export energy
     }
 
     @Override
     public void invalidate()
     {
         FulminationHandler.INSTANCE.unregister(this);
-        super.initiate();
+        super.invalidate();
     }
 
     @Override
-    public long onReceiveEnergy(ForgeDirection from, long receive, boolean doReceive)
+    public IEnergyBuffer getEnergyBuffer(ForgeDirection side)
     {
-        return 0;
+        return null;
     }
 
     @Override
-    public EnumSet<ForgeDirection> getInputDirections()
+    protected IInventory createInventory()
     {
-        return EnumSet.noneOf(ForgeDirection.class);
-    }
-
-    @Override
-    public EnumSet<ForgeDirection> getOutputDirections()
-    {
-        return EnumSet.allOf(ForgeDirection.class);
-    }
-
-    @Override
-    public long getVoltageOutput(ForgeDirection side)
-    {
-        return 10000000000L;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    protected TileRender newRenderer()
-    {
-        return new ConnectedTextureRenderer(this, Reference.PREFIX + "atomic_edge");
+        return null;
     }
 }
