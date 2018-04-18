@@ -1,0 +1,29 @@
+package com.builtbroken.atomic.lib;
+
+import net.minecraft.entity.player.EntityPlayer;
+
+/**
+ * Created by robert on 1/8/2015.
+ */
+public interface IGuiTile
+{
+    /**
+     * Returns a Server side Container to be displayed to the user.
+     *
+     * @param ID     The Gui ID Number
+     * @param player The player viewing the Gui
+     * @return A GuiScreen/Container to be displayed to the user, null if none.
+     */
+    Object getServerGuiElement(int ID, EntityPlayer player);
+
+    /**
+     * Returns a Container to be displayed to the user. On the client side, this
+     * needs to return a instance of GuiScreen On the server side, this needs to
+     * return a instance of Container
+     *
+     * @param ID     The Gui ID Number
+     * @param player The player viewing the Gui
+     * @return A GuiScreen/Container to be displayed to the user, null if none.
+     */
+    Object getClientGuiElement(int ID, EntityPlayer player);
+}

@@ -6,7 +6,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-/** Radioactive Items */
+/**
+ * Radioactive item
+ * <p>
+ * Purpose: Prefab & Generic item for radioactive objects
+ * Features:
+ * * Generate radiation in the environment
+ * * Radiate entities
+ *
+ * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
+ */
 public class ItemRadioactive extends Item
 {
     @Override
@@ -14,8 +24,7 @@ public class ItemRadioactive extends Item
     {
         if (entity instanceof EntityLivingBase)
         {
-            //resonant.lib.prefab.poison.PoisonRadiation;.INSTANCE.poisonEntity(new Pos(entity), (EntityLivingBase) entity, 1);
+            //TODO apply radiation each tick
         }
     }
-
 }

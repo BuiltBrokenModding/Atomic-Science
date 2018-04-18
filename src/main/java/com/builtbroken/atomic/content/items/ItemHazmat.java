@@ -1,49 +1,77 @@
 package com.builtbroken.atomic.content.items;
 
+import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.api.armor.IAntiPoisonArmor;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.EnumArmorMaterial;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import resonant.api.armor.IAntiPoisonArmor;
-import com.core.Reference;
-import com.core.TabRI;
+import net.minecraftforge.common.util.EnumHelper;
 
-/** Hazmat */
+/**
+ * Simple hazmat suit that takes damage as its used
+ *
+ * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ * Created by Dark(DarkGuardsman, Robert) & Calclavia
+ */
 public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
 {
-    public ItemHazmat(int par1, EnumArmorMaterial par2EnumArmorMaterial, int par3, int par4)
+    /** Armor material */
+    public static final ItemArmor.ArmorMaterial hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", 0, new int[]{0, 0, 0, 0}, 0);
+
+    /** Prefix for model textures */
+    public static final String ARMOR_MODEL_FOLDER = AtomicScience.PREFIX + AtomicScience.MODEL_DIRECTORY + "armor/";
+    /** Prefix for item textures */
+    public static final String ARMOR_TEXTURE_FOLDER = AtomicScience.PREFIX + "armor/";
+
+
+    public static int damagePerTick = 1;
+    public static int damagePerAttack = 100; //TODO take damage faster from attacks
+
+    public ItemHazmat(int slot)
     {
-        super(par1, par2EnumArmorMaterial, par3, par4);
-        this.setCreativeTab(TabRI.DEFAULT);
+        super(hazmatArmorMaterial, 0, slot);
         this.setMaxDamage(200000);
     }
 
+    ///------------------------------------------------------------------------------------
+    /// Texture stuff
+    ///------------------------------------------------------------------------------------
     @Override
-    public Item setUnlocalizedName(String par1Str)
+    public void registerIcons(IIconRegister par1IconRegister)
     {
-        super.setUnlocalizedName(par1Str);
-        this.setTextureName(par1Str);
-        return this;
+        this.itemIcon = par1IconRegister.registerIcon(ARMOR_TEXTURE_FOLDER + "hazmat_" +
+                (
+                        this.armorType == 0 ? "helmet" :
+                                this.armorType == 1 ? "chestplate" :
+                                        this.armorType == 2 ? "leggings" :
+                                                this.armorType == 3 ? "boots" : "helmet"
+                )
+        );
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, int layer)
+    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
-        return Reference.PREFIX + Reference.MODEL_DIRECTORY + "hazmat.png";
+        int suffix = this.armorType == 2 ? 2 : 1;
+        return ARMOR_MODEL_FOLDER + "hazmat" + "_" + suffix + ".png";
+    }
+
+    ///------------------------------------------------------------------------------------
+    /// Poison armor API stuff
+    ///------------------------------------------------------------------------------------
+
+    @Override
+    public boolean doesArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entityLiving, String sourceType, float value)
+    {
+        return sourceType.equalsIgnoreCase("radiation") || sourceType.equalsIgnoreCase("chemical") || sourceType.equalsIgnoreCase("contagious");
     }
 
     @Override
-    public boolean isProtectedFromPoison(ItemStack itemStack, EntityLivingBase entityLiving, String type)
+    public void onArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entityLiving, String type, float value)
     {
-        return type.equalsIgnoreCase("radiation") || type.equalsIgnoreCase("chemical") || type.equalsIgnoreCase("contagious");
-    }
-
-    @Override
-    public void onProtectFromPoison(ItemStack itemStack, EntityLivingBase entityLiving, String type)
-    {
-        itemStack.damageItem(1, entityLiving);
+        itemStack.damageItem(damagePerTick, entityLiving); //TODO increase damage based on value
     }
 
     @Override
