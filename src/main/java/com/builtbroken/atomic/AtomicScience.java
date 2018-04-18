@@ -1,5 +1,7 @@
 package com.builtbroken.atomic;
 
+import com.builtbroken.atomic.content.ASBlocks;
+import com.builtbroken.atomic.content.ASItems;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -39,6 +41,8 @@ public class AtomicScience
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        ASItems.register();
+        ASBlocks.register();
         proxy.preInit();
     }
 

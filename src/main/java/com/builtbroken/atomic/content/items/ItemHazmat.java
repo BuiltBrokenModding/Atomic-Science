@@ -2,12 +2,10 @@ package com.builtbroken.atomic.content.items;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.armor.IAntiPoisonArmor;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.EnumHelper;
 
 /**
  * Simple hazmat suit that takes damage as its used
@@ -17,45 +15,33 @@ import net.minecraftforge.common.util.EnumHelper;
  */
 public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
 {
-    /** Armor material */
-    public static final ItemArmor.ArmorMaterial hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", 0, new int[]{0, 0, 0, 0}, 0);
-
     /** Prefix for model textures */
-    public static final String ARMOR_MODEL_FOLDER = AtomicScience.PREFIX + AtomicScience.MODEL_DIRECTORY + "armor/";
+    public static final String ARMOR_MODEL_TEXTURE = AtomicScience.PREFIX + AtomicScience.MODEL_DIRECTORY + "armor/hazmat.png";
     /** Prefix for item textures */
     public static final String ARMOR_TEXTURE_FOLDER = AtomicScience.PREFIX + "armor/";
 
+    /** Armor material */
+    public static ItemArmor.ArmorMaterial hazmatArmorMaterial;
 
     public static int damagePerTick = 1;
     public static int damagePerAttack = 100; //TODO take damage faster from attacks
 
-    public ItemHazmat(int slot)
+    public ItemHazmat(int slot, String type)
     {
         super(hazmatArmorMaterial, 0, slot);
+        this.setUnlocalizedName("hazmat." + type);
+        this.setTextureName(ARMOR_TEXTURE_FOLDER + "hazmat_" + type);
         this.setMaxDamage(200000);
     }
 
     ///------------------------------------------------------------------------------------
     /// Texture stuff
     ///------------------------------------------------------------------------------------
-    @Override
-    public void registerIcons(IIconRegister par1IconRegister)
-    {
-        this.itemIcon = par1IconRegister.registerIcon(ARMOR_TEXTURE_FOLDER + "hazmat_" +
-                (
-                        this.armorType == 0 ? "helmet" :
-                                this.armorType == 1 ? "chestplate" :
-                                        this.armorType == 2 ? "leggings" :
-                                                this.armorType == 3 ? "boots" : "helmet"
-                )
-        );
-    }
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
-        int suffix = this.armorType == 2 ? 2 : 1;
-        return ARMOR_MODEL_FOLDER + "hazmat" + "_" + suffix + ".png";
+        return ARMOR_MODEL_TEXTURE;
     }
 
     ///------------------------------------------------------------------------------------
