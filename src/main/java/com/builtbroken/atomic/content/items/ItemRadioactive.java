@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.items;
 
+import com.builtbroken.atomic.AtomicScience;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -19,6 +20,13 @@ import net.minecraft.world.World;
  */
 public class ItemRadioactive extends Item
 {
+    public ItemRadioactive(String name, String texture)
+    {
+        this.setUnlocalizedName(AtomicScience.PREFIX + name);
+        this.setTextureName(AtomicScience.PREFIX + texture);
+        this.setCreativeTab(AtomicScience.creativeTab);
+    }
+
     @Override
     public void onUpdate(ItemStack par1ItemStack, World par2World, Entity entity, int par4, boolean par5)
     {

@@ -1,6 +1,7 @@
 package com.builtbroken.atomic;
 
 import com.builtbroken.atomic.content.ASBlocks;
+import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -53,6 +54,7 @@ public class AtomicScience
                 return ASItems.itemArmorHazmatHelm;
             }
         };
+        ASFluids.register(); //must run before items and blocks
         ASItems.register();
         ASBlocks.register();
         proxy.preInit();
