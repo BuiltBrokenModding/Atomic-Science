@@ -78,6 +78,19 @@ public class ItemFluidCell extends Item implements IFluidContainerItem
         }
     }
 
+    @Override
+    public int getRenderPasses(int metadata)
+    {
+        return 1; //requiresMultipleRenderPasses() ? 2 : 1; TODO add option for overlays
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean requiresMultipleRenderPasses()
+    {
+        return true; //Fixes getIcon(Stack, pass) not being called
+    }
+
     public void addSupportedFluid(Fluid fluid, String texture, String name)
     {
         supportedFluidToTexturePath.put(fluid, texture);
