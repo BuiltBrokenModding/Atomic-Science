@@ -7,6 +7,8 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 
 /**
  * Main mod class, handles references and registry calls
@@ -35,12 +37,22 @@ public class AtomicScience
     @Mod.Instance(DOMAIN)
     public static AtomicScience INSTANCE;
 
+    public static CreativeTabs creativeTab;
+
     @SidedProxy(clientSide = "com.builtbroken.atomic.ClientProxy", serverSide = "com.builtbroken.atomic.CommonProxy")
     public static CommonProxy proxy;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        creativeTab = new CreativeTabs(DOMAIN)
+        {
+            @Override
+            public Item getTabIconItem()
+            {
+                return ASItems.itemArmorHazmatHelm;
+            }
+        };
         ASItems.register();
         ASBlocks.register();
         proxy.preInit();
