@@ -64,17 +64,9 @@ public class ASItems
                 .setUnlocalizedName(AtomicScience.PREFIX + "cell.empty")
                 .setTextureName(AtomicScience.PREFIX + "cell_empty")
                 .setCreativeTab(AtomicScience.creativeTab), "cell_empty");
-        GameRegistry.registerItem(itemYellowCake = new Item()
-                .setUnlocalizedName(AtomicScience.PREFIX + "cake.yellow")
-                .setTextureName(AtomicScience.PREFIX + "yellow_cake")
-                .setCreativeTab(AtomicScience.creativeTab), "yellow_cake");
-        GameRegistry.registerItem(itemUranium235 = new Item()
-                .setUnlocalizedName(AtomicScience.PREFIX + "uranium.235")
-                .setTextureName(AtomicScience.PREFIX + "uranium")
-                .setCreativeTab(AtomicScience.creativeTab), "uranium_235");
-        GameRegistry.registerItem(itemUranium238 = new Item()
-                .setUnlocalizedName(AtomicScience.PREFIX + "uranium.238")
-                .setTextureName(AtomicScience.PREFIX + "uranium")
-                .setCreativeTab(AtomicScience.creativeTab), "uranium_238");
+
+        GameRegistry.registerItem(itemYellowCake = new ItemRadioactive("cake.yellow", "yellow_cake"), "yellow_cake");
+        GameRegistry.registerItem(itemUranium235 = new ItemRadioactive("uranium.235", "uranium"), "uranium_235");
+        GameRegistry.registerItem(itemUranium238 = new ItemRadioactive("uranium.238", "uranium"), "uranium_238");
     }
 }

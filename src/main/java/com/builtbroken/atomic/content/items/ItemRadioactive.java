@@ -1,6 +1,12 @@
 package com.builtbroken.atomic.content.items;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.api.AtomicScienceAPI;
+import com.builtbroken.atomic.api.armor.IAntiPoisonArmor;
+import com.builtbroken.atomic.api.effect.IIndirectEffectInstance;
+import com.builtbroken.atomic.api.effect.IIndirectEffectType;
+import com.builtbroken.atomic.content.effects.IndirectEffectInstance;
+import com.builtbroken.atomic.content.effects.source.SourceWrapperItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -28,11 +34,65 @@ public class ItemRadioactive extends Item
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity entity, int par4, boolean par5)
+    public void onUpdate(ItemStack itemStack, World world, Entity entity, int slot, boolean par5)
     {
-        if (entity instanceof EntityLivingBase)
+        if (entity instanceof EntityLivingBase && shouldApplyEffect(itemStack, world, entity, slot))
         {
-            //TODO apply radiation each tick
+            SourceWrapperItem sourceWrapper = new SourceWrapperItem(entity, itemStack, slot);
+            IndirectEffectInstance indirectEffectInstance = new IndirectEffectInstance(getEffectType(itemStack), sourceWrapper, getEffectPower(itemStack));
+            if (isProtected((EntityLivingBase) entity, indirectEffectInstance))
+            {
+                onProtected((EntityLivingBase) entity, indirectEffectInstance);
+            }
+            else
+            {
+                indirectEffectInstance.applyIndirectEffect(entity);
+            }
+        }
+    }
+
+    public IIndirectEffectType getEffectType(ItemStack itemStack)
+    {
+        return AtomicScienceAPI.RADIATION;
+    }
+
+    public float getEffectPower(ItemStack itemStack)
+    {
+        return 1;
+    }
+
+    public boolean shouldApplyEffect(ItemStack itemStack, World world, Entity entity, int slot)
+    {
+        return world.rand.nextFloat() > 0.8f;
+    }
+
+    public boolean isProtected(EntityLivingBase entity, IIndirectEffectInstance indirectEffectInstance)
+    {
+        //Loop armor 1-4
+        for (int i = 1; i < 5; i++)
+        {
+            final ItemStack stack = entity.getEquipmentInSlot(i);
+
+            //Armor set is checked by the armor itself. In theory this means the first item should return true for a full set.
+            if (stack.getItem() instanceof IAntiPoisonArmor && ((IAntiPoisonArmor) stack.getItem()).doesArmorProtectFromSource(stack, entity, indirectEffectInstance))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void onProtected(EntityLivingBase entity, IIndirectEffectInstance indirectEffectInstance)
+    {
+        for (int i = 1; i < 5; i++)
+        {
+            final ItemStack stack = entity.getEquipmentInSlot(i);
+
+            //Armor set is checked by the armor itself. In theory this means the first item should return true for a full set.
+            if (stack.getItem() instanceof IAntiPoisonArmor)
+            {
+                ((IAntiPoisonArmor) stack.getItem()).onArmorProtectFromSource(stack, entity, indirectEffectInstance);
+            }
         }
     }
 }

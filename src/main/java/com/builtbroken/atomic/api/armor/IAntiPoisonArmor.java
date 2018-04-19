@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.api.armor;
 
+import com.builtbroken.atomic.api.effect.IIndirectEffectInstance;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
@@ -16,25 +17,28 @@ public interface IAntiPoisonArmor extends IArmorSet
      * Use this to block indirect damage types from going through the armor (radiation, poison, etc)
      * <p>
      * If you want to only block a percentage of the damage. First block the entire damage then use
-     * {@link #onArmorProtectFromSource(ItemStack, EntityLivingBase, String, float)} to apply the reduced value
+     * {@link #onArmorProtectFromSource(ItemStack, EntityLivingBase, IIndirectEffectInstance)} to apply the reduced value
+     * <p>
+     * If the armor requires a set to function this calls should check the set.
      *
-     * @param itemStack    - armor
-     * @param entityLiving - entity wearing the armor
-     * @param sourceType   - type of damage
+     * @param itemStack      - armor
+     * @param entityLiving   - entity wearing the armor
+     * @param effectInstance - type of damage, source, and power
      * @return true to block the source from going through the armor
      */
-    boolean doesArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entityLiving, String sourceType, float value); //TODO add source object to get position, distance, and replace source + damage
+    boolean doesArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entityLiving, IIndirectEffectInstance effectInstance);
 
     /**
-     * Called after indirect damage has been blocked by the armor.
+     * Called after indirect damage has been blocked by any part of an armor set.
      * <p>
-     * Use this to damage the armor or apply secondary effects.
+     * Use this to damage the armor or apply secondary effects. Make sure to check that
+     * the effect instance is supported. So not to take damage for a type that would not normally
+     * be blocked.
      *
-     * @param itemStack    - armor
-     * @param entityLiving - entity wearing the armor
-     * @param sourceType   - type of damage
-     * @param value        - amount of damage (not in health points)
+     * @param itemStack      - armor
+     * @param entityLiving   - entity wearing the armor
+     * @param effectInstance - type of damage, source, and power
      */
-    void onArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entityLiving, String sourceType, float value); //TODO add source object to get position, distance, and replace source + damage
+    void onArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entityLiving, IIndirectEffectInstance effectInstance);
 
 }

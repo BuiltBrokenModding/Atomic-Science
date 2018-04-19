@@ -1,5 +1,7 @@
 package com.builtbroken.atomic.api;
 
+import com.builtbroken.atomic.api.effect.IIndirectEffectType;
+
 /**
  * Reference object for Atomic Science API
  *
@@ -8,5 +10,5 @@ package com.builtbroken.atomic.api;
  */
 public final class AtomicScienceAPI
 {
-
+    public static IIndirectEffectType RADIATION;
 }

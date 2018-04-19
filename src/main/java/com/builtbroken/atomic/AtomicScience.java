@@ -1,8 +1,10 @@
 package com.builtbroken.atomic;
 
+import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.content.effects.IndirectEffectType;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -46,6 +48,8 @@ public class AtomicScience
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        AtomicScienceAPI.RADIATION = new IndirectEffectType("radiation");
+
         creativeTab = new CreativeTabs(DOMAIN)
         {
             @Override
