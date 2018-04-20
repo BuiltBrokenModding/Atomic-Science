@@ -41,4 +41,18 @@ public interface IAntiPoisonArmor extends IArmorSet
      */
     void onArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entityLiving, IIndirectEffectInstance effectInstance);
 
+
+    /**
+     * Checks if all armor components are needed to work at protection.
+     *
+     * @param itemStack      - armor
+     * @param entityLiving   - entity wearing the armor
+     * @param effectInstance - type of damage, source, and power
+     * @return true if all parts are required
+     */
+    default boolean isFullArmorSetNeeded(ItemStack itemStack, EntityLivingBase entityLiving, IIndirectEffectInstance effectInstance)
+    {
+        return true;
+    }
+
 }

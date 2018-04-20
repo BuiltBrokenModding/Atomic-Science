@@ -74,7 +74,8 @@ public class ItemRadioactive extends Item
             final ItemStack stack = entity.getEquipmentInSlot(i);
 
             //Armor set is checked by the armor itself. In theory this means the first item should return true for a full set.
-            if (stack.getItem() instanceof IAntiPoisonArmor && ((IAntiPoisonArmor) stack.getItem()).doesArmorProtectFromSource(stack, entity, indirectEffectInstance))
+            if (stack != null && stack.getItem() instanceof IAntiPoisonArmor
+                    && ((IAntiPoisonArmor) stack.getItem()).doesArmorProtectFromSource(stack, entity, indirectEffectInstance))
             {
                 return true;
             }
@@ -89,7 +90,7 @@ public class ItemRadioactive extends Item
             final ItemStack stack = entity.getEquipmentInSlot(i);
 
             //Armor set is checked by the armor itself. In theory this means the first item should return true for a full set.
-            if (stack.getItem() instanceof IAntiPoisonArmor)
+            if (stack != null && stack.getItem() instanceof IAntiPoisonArmor)
             {
                 ((IAntiPoisonArmor) stack.getItem()).onArmorProtectFromSource(stack, entity, indirectEffectInstance);
             }

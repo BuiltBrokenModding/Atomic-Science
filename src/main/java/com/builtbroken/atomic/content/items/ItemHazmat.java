@@ -1,7 +1,9 @@
 package com.builtbroken.atomic.content.items;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.api.armor.IAntiPoisonArmor;
+import com.builtbroken.atomic.api.effect.IIndirectEffectInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemArmor;
@@ -50,15 +52,57 @@ public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
     ///------------------------------------------------------------------------------------
 
     @Override
-    public boolean doesArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entityLiving, String sourceType, float value)
+    public boolean doesArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entity, IIndirectEffectInstance instance)
     {
-        return sourceType.equalsIgnoreCase("radiation") || sourceType.equalsIgnoreCase("chemical") || sourceType.equalsIgnoreCase("contagious");
+        if (isFullArmorSetNeeded(itemStack, entity, instance) && !hasFullSetOfArmor(entity))
+        {
+            return false;
+        }
+        return instance.getIndirectEffectType() == AtomicScienceAPI.RADIATION;
+    }
+
+    protected boolean hasFullSetOfArmor(EntityLivingBase entity)
+    {
+        ItemStack itemStack = null;
+        for (int i = 1; i < 5; i++)
+        {
+            final ItemStack slotStack = entity.getEquipmentInSlot(i);
+            if (slotStack != null)
+            {
+                //Init compare stack
+                if (itemStack == null)
+                {
+                    itemStack = slotStack;
+                    continue;
+                }
+
+                //Check if item is part of set
+                if (slotStack.getItem() instanceof IAntiPoisonArmor && !isArmorPartOfSet(itemStack, slotStack))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
-    public void onArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entityLiving, String type, float value)
+    public boolean isArmorPartOfSet(ItemStack armorStack, ItemStack compareStack)
     {
-        itemStack.damageItem(damagePerTick, entityLiving); //TODO increase damage based on value
+        return armorStack.getItem() instanceof ItemHazmat && compareStack.getItem() instanceof ItemHazmat;
+    }
+
+    @Override
+    public void onArmorProtectFromSource(ItemStack itemStack, EntityLivingBase entityLiving, IIndirectEffectInstance instance)
+    {
+        if (instance.getIndirectEffectType() == AtomicScienceAPI.RADIATION)
+        {
+            itemStack.damageItem(damagePerTick, entityLiving); //TODO increase damage based on value
+        }
     }
 
     @Override

@@ -1,6 +1,10 @@
 package com.builtbroken.atomic.content.effects;
 
+import com.builtbroken.atomic.api.effect.IIndirectEffectSource;
 import com.builtbroken.atomic.api.effect.IIndirectEffectType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
 
 /**
  * Implementation of {@link IndirectEffectType}
@@ -21,6 +25,15 @@ public class IndirectEffectType implements IIndirectEffectType
     public String getEffectTypeID()
     {
         return id;
+    }
+
+    @Override
+    public void applyIndirectEffect(IIndirectEffectSource source, Entity target, float power)
+    {
+        if (target instanceof EntityPlayer)
+        {
+            ((EntityPlayer) target).addChatComponentMessage(new ChatComponentText("Tag[" + id + "]"));
+        }
     }
 
     @Override
