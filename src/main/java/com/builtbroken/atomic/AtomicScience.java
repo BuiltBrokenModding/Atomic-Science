@@ -1,6 +1,7 @@
 package com.builtbroken.atomic;
 
 import com.builtbroken.atomic.api.AtomicScienceAPI;
+import com.builtbroken.atomic.api.effect.IIndirectEffectSource;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
@@ -11,7 +12,10 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.util.ChatComponentText;
 
 /**
  * Main mod class, handles references and registry calls
@@ -48,8 +52,6 @@ public class AtomicScience
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        AtomicScienceAPI.RADIATION = new IndirectEffectType("radiation");
-
         creativeTab = new CreativeTabs(DOMAIN)
         {
             @Override
@@ -58,6 +60,7 @@ public class AtomicScience
                 return ASItems.itemArmorHazmatHelm;
             }
         };
+        ASIndirectEffects.register();
         ASFluids.register(); //must run before items and blocks
         ASItems.register();
         ASBlocks.register();
