@@ -7,6 +7,8 @@ import com.builtbroken.atomic.content.effects.IndirectEffectType;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -35,6 +37,10 @@ public class ASIndirectEffects
                 rads += power;
                 target.getEntityData().setFloat(NBT_RADS, Math.max(0, Math.min(ConfigRadiation.MAX_RADS, rads)));
                 target.getEntityData().setLong(NBT_RADS_ADD, System.currentTimeMillis());
+                if(target instanceof EntityPlayer)
+                {
+                    ((EntityPlayer) target).addChatComponentMessage(new ChatComponentText("Tag[" + getEffectTypeID() +"]" + power + "---" + rads));
+                }
                 //TODO fire events
                 //TODO sync to client
             }

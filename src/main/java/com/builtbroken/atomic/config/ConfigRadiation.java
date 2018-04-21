@@ -8,5 +8,35 @@ package com.builtbroken.atomic.config;
  */
 public class ConfigRadiation
 {
+    //Value used to convert Mev to 1 RAD (should be equal to Mev / 624151 * 100)
+    //1 erg = 624151 Mev
+    //1 rad = 100 erg
+    public static final double MeV_per_RAD = 6.24E7;
+
     public static float MAX_RADS = 1000;
+
+    //RBE -> relative biological effectiveness (how each type relates to xray & gamma)
+    //https://community.dur.ac.uk/ian.terry/teaching/nplab/dose_test.htm
+    public static float RBE_XRAY_RADIATION = 1; //will go through entity
+    public static float RBE_GAMMA_RADIATION = 1; //will go through entity
+    public static float RBE_NEURTONS_FAST = 10; //will go through entity
+    public static float RBE_NEURTONS_SLOW = 5; //will go through entity
+    public static float RBE_ALPHA_RADIATION = 20; //stopped by anything
+    public static float RBE_BETA_RADIATION = 10; //stopped by entity
+
+    //Mega eV per gram of material
+    public static float MEV_GRAM_U238 = 4.267f; //https://en.wikipedia.org/wiki/Uranium-238
+    public static float MEV_GRAM_U235 = 4.679f; //https://en.wikipedia.org/wiki/Uranium-235
+
+    //mass in grams of sample items % of material
+    public static float MASS_U238_SAMPLE = 100;
+    public static float MASS_U235_SAMPLE = 100;
+
+    //Activity (number of decays per tick)
+    public static float ACTIVITY_U238 = 100; //TODO get actual numbers
+    public static float ACTIVITY_U235 = 100; //TODO get actual numbers
+
+    //Radiation per hour (mass * energy * decay_rate / MeV to rad
+    public static float RAD_U235 = (float) (MASS_U235_SAMPLE * MEV_GRAM_U235 * ACTIVITY_U235 / MeV_per_RAD); //alpha radiation
+    public static float RAD_U238 = (float) (MASS_U238_SAMPLE * MEV_GRAM_U238 * ACTIVITY_U238 / MeV_per_RAD); //alpha radiation
 }

@@ -1,21 +1,15 @@
 package com.builtbroken.atomic;
 
-import com.builtbroken.atomic.api.AtomicScienceAPI;
-import com.builtbroken.atomic.api.effect.IIndirectEffectSource;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
-import com.builtbroken.atomic.content.effects.IndirectEffectType;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.util.ChatComponentText;
 
 /**
  * Main mod class, handles references and registry calls
