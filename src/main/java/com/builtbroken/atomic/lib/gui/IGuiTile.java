@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.lib;
+package com.builtbroken.atomic.lib.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 

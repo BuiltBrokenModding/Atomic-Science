@@ -1,6 +1,6 @@
 package com.builtbroken.atomic;
 
-import com.builtbroken.atomic.lib.IGuiTile;
+import com.builtbroken.atomic.lib.gui.IGuiTile;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

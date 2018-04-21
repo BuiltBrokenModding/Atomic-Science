@@ -34,6 +34,9 @@ public class ConfigRadiation
     //Start of configs
     //-------------------------------------------------------------------------------
 
+    /** Enable the entire system */
+    public static boolean ENABLE = true;
+
     /** Amount of rads required to kill the player */
     public static float RADIATION_DEATH_POINT = 1000;
 
