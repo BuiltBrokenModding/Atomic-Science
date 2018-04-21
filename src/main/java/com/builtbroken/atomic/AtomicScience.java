@@ -11,6 +11,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Main mod class, handles references and registry calls
@@ -38,6 +40,10 @@ public class AtomicScience
 
     @Mod.Instance(DOMAIN)
     public static AtomicScience INSTANCE;
+
+    public static Logger logger = LogManager.getLogger(DOMAIN);
+
+    public static final boolean runningAsDev = System.getProperty("development") != null && System.getProperty("development").equalsIgnoreCase("true");
 
     public static CreativeTabs creativeTab;
 
