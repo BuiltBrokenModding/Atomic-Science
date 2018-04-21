@@ -1,14 +1,12 @@
-package com.builtbroken.atomic;
+package com.builtbroken.atomic.content;
 
+import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.AtomicScienceAPI;
-import com.builtbroken.atomic.api.effect.IIndirectEffectSource;
-import com.builtbroken.atomic.config.ConfigRadiation;
-import com.builtbroken.atomic.content.effects.IndirectEffectType;
+import com.builtbroken.atomic.content.effects.type.IETRadiation;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -19,32 +17,19 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
  */
 public class ASIndirectEffects
 {
-    //Radiation is based on -> https://en.wikipedia.org/wiki/Rad_(unit)
-    public static final String NBT_RADS = AtomicScience.PREFIX + "rads";
-    public static final String NBT_RADS_ADD = AtomicScience.PREFIX + "rads_add_time";
-    public static final String NBT_RADS_REMOVE = AtomicScience.PREFIX + "rads_remove_time";
+    /** NBT tag used to store rads on an entity */
+    public static final String NBT_RADIATION_DATA = AtomicScience.PREFIX + "radiation_data";
+    /** NBT tag used to store rads on an entity */
+    public static final String NBT_RADS = "rads";
+    /** NBT tag used to store last rad add time on an entity */
+    public static final String NBT_RADS_ADD = "add_time";
+    /** NBT tag used to store last rad remove time on an entity */
+    public static final String NBT_RADS_REMOVE = "remove_time";
 
     public static void register()
     {
         MinecraftForge.EVENT_BUS.register(new ASIndirectEffects());
-
-        AtomicScienceAPI.RADIATION = new IndirectEffectType("radiation")
-        {
-            @Override
-            public void applyIndirectEffect(IIndirectEffectSource source, Entity target, float power)
-            {
-                float rads = target.getEntityData().getFloat(NBT_RADS);
-                rads += power;
-                target.getEntityData().setFloat(NBT_RADS, Math.max(0, Math.min(ConfigRadiation.MAX_RADS, rads)));
-                target.getEntityData().setLong(NBT_RADS_ADD, System.currentTimeMillis());
-                if(target instanceof EntityPlayer)
-                {
-                    ((EntityPlayer) target).addChatComponentMessage(new ChatComponentText("Tag[" + getEffectTypeID() +"]" + power + "---" + rads));
-                }
-                //TODO fire events
-                //TODO sync to client
-            }
-        };
+        AtomicScienceAPI.RADIATION = new IETRadiation();
     }
 
     @SubscribeEvent
@@ -68,4 +53,18 @@ public class ASIndirectEffects
     //TODO use tracking data to cause radiation to spawn from entities
     //TODO create function list to allow entities to control logic
     //TODO create ban list to disable running on some entities (mainly for entities that handle logic themselves)
+
+    public static NBTTagCompound getRadiationData(Entity entity, boolean init)
+    {
+        if (!hasRadiationData(entity) && init)
+        {
+            entity.getEntityData().setTag(NBT_RADIATION_DATA, new NBTTagCompound());
+        }
+        return entity.getEntityData().getCompoundTag(NBT_RADIATION_DATA);
+    }
+
+    public static boolean hasRadiationData(Entity entity)
+    {
+        return entity.getEntityData().hasKey(NBT_RADIATION_DATA, 10);
+    }
 }

@@ -3,6 +3,7 @@ package com.builtbroken.atomic;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.content.ASIndirectEffects;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
