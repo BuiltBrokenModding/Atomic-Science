@@ -47,6 +47,21 @@ public class ASIndirectEffects
         return entity.getEntityData().getCompoundTag(NBT_RADIATION_DATA);
     }
 
+    public static void setRadiation(Entity entity, float value)
+    {
+        NBTTagCompound data = getRadiationData(entity, true);
+        data.setFloat(NBT_RADS, value);
+    }
+
+    public static float getRadiation(Entity entity)
+    {
+        if (hasRadiationData(entity))
+        {
+            return getRadiationData(entity, true).getFloat(NBT_RADS);
+        }
+        return 0;
+    }
+
     public static boolean hasRadiationData(Entity entity)
     {
         return entity.getEntityData().hasKey(NBT_RADIATION_DATA, 10);
