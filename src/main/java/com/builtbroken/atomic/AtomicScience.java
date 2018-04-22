@@ -18,6 +18,7 @@ import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,9 +58,13 @@ public class AtomicScience
     @SidedProxy(clientSide = "com.builtbroken.atomic.ClientProxy", serverSide = "com.builtbroken.atomic.CommonProxy")
     public static CommonProxy proxy;
 
+    public static Configuration config;
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        config = new Configuration(event.getSuggestedConfigurationFile(), "/bbm/Atomic_Science.cfg");
+
         //Register handlers
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 
