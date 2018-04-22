@@ -19,6 +19,8 @@ public class ASIndirectEffects
     public static final String NBT_RADS = "rads";
     /** NBT tag used to track prev value to see if a packet is needed */
     public static final String NBT_RADS_PREV = "prev_rads";
+    /** NBT tag used to track prev environment value to see if a packet is needed */
+    public static final String NBT_RADS_ENVIROMENT_PREV = "prev_env_rads";
     /** NBT tag used to store last rad add time on an entity */
     public static final String NBT_RADS_ADD = "add_time";
     /** NBT tag used to store last rad remove time on an entity */
