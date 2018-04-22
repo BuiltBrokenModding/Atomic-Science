@@ -5,12 +5,17 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.lib.network.netty.PacketManager;
+import com.builtbroken.atomic.content.commands.CommandAS;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import net.minecraft.command.ICommandManager;
+import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import org.apache.logging.log4j.LogManager;
@@ -89,5 +94,14 @@ public class AtomicScience
     public void postInit(FMLPostInitializationEvent event)
     {
         proxy.postInit();
+    }
+
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event)
+    {
+        // Setup command
+        ICommandManager commandManager = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
+        ServerCommandManager serverCommandManager = ((ServerCommandManager) commandManager);
+        serverCommandManager.registerCommand(new CommandAS());
     }
 }
