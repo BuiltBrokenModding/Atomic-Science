@@ -27,25 +27,25 @@ public class PacketSystem
     public final String channel;
     protected EnumMap<Side, FMLEmbeddedChannel> channelEnumMap;
 
-    public PacketChannelHandler packetHandler;
-    public PacketMessageHandler packetChannelHandler;
-
-    public Packet toMCPacket(IPacket packet)
-    {
-        return channelEnumMap.get(FMLCommonHandler.instance().getEffectiveSide()).generatePacketFrom(packet);
-    }
-
     public PacketSystem(String channel)
     {
         this.channel = channel;
-        packetHandler = new PacketChannelHandler();
-        packetChannelHandler = new PacketMessageHandler();
-        this.channelEnumMap = NetworkRegistry.INSTANCE.newChannel(channel, packetHandler, packetChannelHandler);
     }
 
     public static void register()
     {
         INSTANCE = new PacketSystem(AtomicScience.DOMAIN);
+        INSTANCE.init();
+    }
+
+    private void init()
+    {
+        channelEnumMap = NetworkRegistry.INSTANCE.newChannel(channel, new PacketEncoderDecoderHandler(), new PacketChannelInboundHandler());
+    }
+
+    public Packet toMCPacket(IPacket packet)
+    {
+        return channelEnumMap.get(FMLCommonHandler.instance().getEffectiveSide()).generatePacketFrom(packet);
     }
 
     /**

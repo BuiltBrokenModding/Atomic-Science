@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
  * @author tgame14
  * @since 26/05/14
  */
-public class PacketPlayerItem extends PacketBase<PacketPlayerItem>
+public class PacketPlayerItem extends PacketBase
 {
     public int slotId;
     public int id = 0;

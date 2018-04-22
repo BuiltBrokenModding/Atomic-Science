@@ -94,7 +94,7 @@ public class IETRadiation extends IndirectEffectType
                     float delta_rad = Math.abs(prev_rad - rad);
 
                     //Only sync if change has happened in data
-                    if (delta_rad > syncError || delta_exposure > syncError)
+                    if (delta_rad > syncError || delta_exposure > syncError || ((EntityPlayerMP) entity).ticksExisted % 20 == 0)
                     {
                         PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(rad, exposure), (EntityPlayerMP) entity);
 

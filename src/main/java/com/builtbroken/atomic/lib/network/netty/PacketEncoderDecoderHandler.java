@@ -13,13 +13,13 @@ import io.netty.channel.ChannelHandlerContext;
  * @author tgame14
  * @since 31/05/14
  */
-public class PacketMessageHandler extends FMLIndexedMessageToMessageCodec<IPacket>
+public class PacketEncoderDecoderHandler extends FMLIndexedMessageToMessageCodec<IPacket>
 {
     public boolean silenceStackTrace = false; //TODO add command and config
 
     private int nextID = 0;
 
-    public PacketMessageHandler()
+    public PacketEncoderDecoderHandler()
     {
         addPacket(PacketTile.class);
         addPacket(PacketPlayerItem.class);

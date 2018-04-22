@@ -15,8 +15,21 @@ import net.minecraft.network.NetHandlerPlayServer;
  * @since 31/05/14
  */
 @ChannelHandler.Sharable
-public class PacketChannelHandler extends SimpleChannelInboundHandler<IPacket>
+public class PacketChannelInboundHandler extends SimpleChannelInboundHandler<IPacket>
 {
+    @Override
+    public boolean acceptInboundMessage(Object msg) throws Exception
+    {
+        return msg instanceof IPacket;
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception
+    {
+        //System.out.println(msg);
+        super.channelRead(ctx, msg);
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, IPacket packet) throws Exception
     {
@@ -41,5 +54,4 @@ public class PacketChannelHandler extends SimpleChannelInboundHandler<IPacket>
             AtomicScience.logger.error("Failed to handle packet " + packet, e);
         }
     }
-
 }

@@ -18,7 +18,7 @@ import net.minecraft.tileentity.TileEntity;
  * @author tgame14
  * @since 26/05/14
  */
-public class PacketTile extends PacketBase<PacketTile>
+public class PacketTile extends PacketBase
 {
     public int x;
     public int y;

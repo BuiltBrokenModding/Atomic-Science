@@ -20,7 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
  * @author tgame14, DarkCow
  * @since 26/05/14
  */
-public interface IPacket<P extends IPacket>
+public interface IPacket
 {
 
     /**
@@ -40,7 +40,7 @@ public interface IPacket<P extends IPacket>
      */
     void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer);
 
-    default P addData(Object... objects)
+    default <P extends IPacket> P addData(Object... objects)
     {
         return (P) this;
     }

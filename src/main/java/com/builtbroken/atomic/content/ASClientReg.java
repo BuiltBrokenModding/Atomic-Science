@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.content.effects.client.RenderRadOverlay;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,6 +21,7 @@ public class ASClientReg
     public static void register()
     {
         MinecraftForge.EVENT_BUS.register(new ASClientReg());
+        MinecraftForge.EVENT_BUS.register(RenderRadOverlay.INSTANCE);
     }
 
     @SubscribeEvent

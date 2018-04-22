@@ -18,7 +18,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 1/27/2018.
  */
-public class PacketBase<P extends PacketBase> implements IPacket<P>
+public class PacketBase implements IPacket
 {
     protected List<Object> dataToWrite = new ArrayList();
     protected ByteBuf dataToRead;
@@ -125,7 +125,7 @@ public class PacketBase<P extends PacketBase> implements IPacket<P>
 
 
     @Override
-    public P addData(Object... objects)
+    public <P extends IPacket> P addData(Object... objects)
     {
         for (Object object : objects)
         {
@@ -134,7 +134,7 @@ public class PacketBase<P extends PacketBase> implements IPacket<P>
         return (P) this;
     }
 
-    public P write(Object object)
+    public <P extends IPacket> P write(Object object)
     {
         return addData(object);
     }

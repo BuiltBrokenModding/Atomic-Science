@@ -62,7 +62,6 @@ public class AtomicScience
     {
         //Register handlers
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-        PacketSystem.register();
 
         //Create tab
         creativeTab = new CreativeTabs(DOMAIN)
@@ -87,6 +86,7 @@ public class AtomicScience
     @Mod.EventHandler
     public void init(FMLInitializationEvent evt)
     {
+        PacketSystem.register();
         proxy.init();
     }
 
