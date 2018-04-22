@@ -2,70 +2,44 @@ package com.builtbroken.atomic.lib.network.netty;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.lib.network.IPacket;
-import com.builtbroken.atomic.lib.network.packet.PacketPlayerItem;
-import com.builtbroken.atomic.lib.network.packet.PacketTile;
-import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
-import io.netty.buffer.ByteBuf;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.NetHandlerPlayServer;
 
 /**
  * @author tgame14
  * @since 31/05/14
  */
-public class PacketChannelHandler extends FMLIndexedMessageToMessageCodec<IPacket>
+@ChannelHandler.Sharable
+public class PacketChannelHandler extends SimpleChannelInboundHandler<IPacket>
 {
-    public boolean silenceStackTrace = false; //TODO add command and config
-
-    private int nextID = 0;
-
-    public PacketChannelHandler()
-    {
-        addPacket(PacketTile.class);
-        addPacket(PacketPlayerItem.class);
-    }
-
-    public void addPacket(Class<? extends IPacket> clazz)
-    {
-        addDiscriminator(nextID++, clazz);
-    }
-
     @Override
-    public void encodeInto(ChannelHandlerContext ctx, IPacket packet, ByteBuf target) throws Exception
+    protected void channelRead0(ChannelHandlerContext ctx, IPacket packet) throws Exception
     {
         try
         {
-            packet.encodeInto(ctx, target);
+            INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
+
+            switch (FMLCommonHandler.instance().getEffectiveSide())
+            {
+                case CLIENT:
+                    packet.handleClientSide();
+                    break;
+                case SERVER:
+                    packet.handleServerSide(((NetHandlerPlayServer) netHandler).playerEntity);
+                    break;
+                default:
+                    break;
+            }
         }
         catch (Exception e)
         {
-            if (!silenceStackTrace)
-            {
-                AtomicScience.logger.error("Failed to encode packet " + packet, e);
-            }
-            else
-            {
-                AtomicScience.logger.error("Failed to encode packet " + packet + " E: " + e.getMessage());
-            }
+            AtomicScience.logger.error("Failed to handle packet " + packet, e);
         }
     }
 
-    @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf source, IPacket packet)
-    {
-        try
-        {
-            packet.decodeInto(ctx, source);
-        }
-        catch (Exception e)
-        {
-            if (!silenceStackTrace)
-            {
-                AtomicScience.logger.error("Failed to decode packet " + packet, e);
-            }
-            else
-            {
-                AtomicScience.logger.error("Failed to decode packet " + packet + " E: " + e.getMessage());
-            }
-        }
-    }
 }

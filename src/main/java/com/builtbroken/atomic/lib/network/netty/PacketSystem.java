@@ -20,32 +20,32 @@ import java.util.EnumMap;
  * @author tgame14
  * @since 26/05/14
  */
-public class PacketManager
+public class PacketSystem
 {
-    public static PacketManager INSTANCE;
+    public static PacketSystem INSTANCE;
 
     public final String channel;
     protected EnumMap<Side, FMLEmbeddedChannel> channelEnumMap;
 
-    public PacketHandler packetHandler;
-    public PacketChannelHandler packetChannelHandler;
+    public PacketChannelHandler packetHandler;
+    public PacketMessageHandler packetChannelHandler;
 
     public Packet toMCPacket(IPacket packet)
     {
         return channelEnumMap.get(FMLCommonHandler.instance().getEffectiveSide()).generatePacketFrom(packet);
     }
 
-    public PacketManager(String channel)
+    public PacketSystem(String channel)
     {
         this.channel = channel;
-        packetHandler = new PacketHandler();
-        packetChannelHandler = new PacketChannelHandler();
+        packetHandler = new PacketChannelHandler();
+        packetChannelHandler = new PacketMessageHandler();
         this.channelEnumMap = NetworkRegistry.INSTANCE.newChannel(channel, packetHandler, packetChannelHandler);
     }
 
     public static void register()
     {
-        INSTANCE = new PacketManager(AtomicScience.DOMAIN);
+        INSTANCE = new PacketSystem(AtomicScience.DOMAIN);
     }
 
     /**

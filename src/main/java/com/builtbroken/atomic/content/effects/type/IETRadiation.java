@@ -5,8 +5,8 @@ import com.builtbroken.atomic.config.ConfigRadiation;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.effects.IndirectEffectType;
 import com.builtbroken.atomic.content.effects.events.IndirectEffectEntityEvent;
-import com.builtbroken.atomic.lib.network.message.MessageRadiation;
-import com.builtbroken.atomic.lib.network.netty.PacketManager;
+import com.builtbroken.atomic.lib.network.packet.sync.PacketPlayerRadiation;
+import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -96,7 +96,7 @@ public class IETRadiation extends IndirectEffectType
                     //Only sync if change has happened in data
                     if (delta_rad > syncError || delta_exposure > syncError)
                     {
-                        PacketManager.INSTANCE.sendToPlayer(new MessageRadiation(rad, exposure), (EntityPlayerMP) entity);
+                        PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(rad, exposure), (EntityPlayerMP) entity);
 
                         //Update previous, always do in sync to prevent slow creep of precision errors
                         data.setFloat(ASIndirectEffects.NBT_RADS_PREV, rad);
@@ -115,7 +115,7 @@ public class IETRadiation extends IndirectEffectType
             //Clear data client side for respawn
             if (event.entity instanceof EntityPlayerMP)
             {
-                PacketManager.INSTANCE.sendToPlayer(new MessageRadiation(0, 0), (EntityPlayerMP) event.entity);
+                PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(0, 0), (EntityPlayerMP) event.entity);
             }
         }
     }

@@ -1,7 +1,9 @@
-package com.builtbroken.atomic.lib.network.message;
+package com.builtbroken.atomic.lib.network.packet.sync;
 
 import com.builtbroken.atomic.ClientProxy;
 import com.builtbroken.atomic.lib.network.IPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,17 +14,17 @@ import net.minecraft.entity.player.EntityPlayer;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/21/2018.
  */
-public class MessageRadiation implements IPacket<MessageRadiation>
+public class PacketPlayerRadiation implements IPacket<PacketPlayerRadiation>
 {
     public float rads;
     public float rads_area;
 
-    public MessageRadiation()
+    public PacketPlayerRadiation()
     {
         //Empty for default packet handling
     }
 
-    public MessageRadiation(float rads, float rads_area)
+    public PacketPlayerRadiation(float rads, float rads_area)
     {
         this.rads = rads;
         this.rads_area = rads_area;
@@ -43,6 +45,7 @@ public class MessageRadiation implements IPacket<MessageRadiation>
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void handleClientSide(EntityPlayer player)
     {
         ClientProxy.RAD_EXPOSURE = rads_area;

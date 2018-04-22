@@ -4,8 +4,8 @@ import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
-import com.builtbroken.atomic.lib.network.netty.PacketManager;
 import com.builtbroken.atomic.content.commands.CommandAS;
+import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -62,7 +62,7 @@ public class AtomicScience
     {
         //Register handlers
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-        PacketManager.register();
+        PacketSystem.register();
 
         //Create tab
         creativeTab = new CreativeTabs(DOMAIN)
