@@ -2,13 +2,15 @@ package com.builtbroken.atomic;
 
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
-import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.ASIndirectEffects;
+import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.lib.network.netty.PacketManager;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import org.apache.logging.log4j.LogManager;
@@ -53,6 +55,11 @@ public class AtomicScience
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        //Register handlers
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+        PacketManager.register();
+
+        //Create tab
         creativeTab = new CreativeTabs(DOMAIN)
         {
             @Override
@@ -61,10 +68,14 @@ public class AtomicScience
                 return ASItems.itemArmorHazmatHelm;
             }
         };
+
+        //Register content
         ASIndirectEffects.register();
         ASFluids.register(); //must run before items and blocks
         ASItems.register();
         ASBlocks.register();
+
+        //Proxy
         proxy.preInit();
     }
 

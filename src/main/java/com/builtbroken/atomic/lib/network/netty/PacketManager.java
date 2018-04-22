@@ -22,27 +22,30 @@ import java.util.EnumMap;
  */
 public class PacketManager
 {
+    public static PacketManager INSTANCE;
+
     public final String channel;
     protected EnumMap<Side, FMLEmbeddedChannel> channelEnumMap;
 
     public PacketHandler packetHandler;
     public PacketChannelHandler packetChannelHandler;
 
-    public PacketManager(String channel)
-    {
-        this.channel = channel;
-    }
-
     public Packet toMCPacket(IPacket packet)
     {
         return channelEnumMap.get(FMLCommonHandler.instance().getEffectiveSide()).generatePacketFrom(packet);
     }
 
-    public void init()
+    public PacketManager(String channel)
     {
+        this.channel = channel;
         packetHandler = new PacketHandler();
         packetChannelHandler = new PacketChannelHandler();
         this.channelEnumMap = NetworkRegistry.INSTANCE.newChannel(channel, packetHandler, packetChannelHandler);
+    }
+
+    public static void register()
+    {
+        INSTANCE = new PacketManager(AtomicScience.DOMAIN);
     }
 
     /**
