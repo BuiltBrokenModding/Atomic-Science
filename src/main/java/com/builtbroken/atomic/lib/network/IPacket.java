@@ -56,7 +56,7 @@ public interface IPacket<P extends IPacket>
 
     default void handleClientSide(EntityPlayer player)
     {
-        throw new UnsupportedOperationException("Unsupported operation for Packet: " + getClass().getSimpleName());
+        throw new UnsupportedOperationException("Unsupported operation for Packet: " + getClass().getSimpleName() + " from player " + player);
     }
 
     /**
@@ -66,6 +66,6 @@ public interface IPacket<P extends IPacket>
      */
     default void handleServerSide(EntityPlayer player)
     {
-        throw new UnsupportedOperationException("Unsupported operation for Packet: " + getClass().getSimpleName());
+        throw new UnsupportedOperationException("Unsupported operation for Packet: " + getClass().getSimpleName() + " from player " + player);
     }
 }
