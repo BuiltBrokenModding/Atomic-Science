@@ -6,6 +6,7 @@ import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
+import com.builtbroken.atomic.map.RadiationSystem;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -18,6 +19,7 @@ import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,6 +69,7 @@ public class AtomicScience
 
         //Register handlers
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+        MinecraftForge.EVENT_BUS.register(RadiationSystem.INSTANCE);
 
         //Create tab
         creativeTab = new CreativeTabs(DOMAIN)
