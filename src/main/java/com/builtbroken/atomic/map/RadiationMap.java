@@ -94,7 +94,7 @@ public class RadiationMap
         //init chunk if missing
         if (radiationChunk == null)
         {
-            radiationChunk = new RadiationChunk(chunk.xPosition, chunk.zPosition);
+            radiationChunk = new RadiationChunk(chunk.worldObj.provider.dimensionId, chunk.zPosition, chunk.xPosition);
             loadedChunks.put(index, radiationChunk);
         }
 

@@ -9,7 +9,7 @@ package com.builtbroken.atomic.map;
 public class RadiationLayer
 {
     /** Index of this layer */
-    public final int layer;
+    public final int y_index;
 
     /** Stored data in this layer */
     public final int[] data;
@@ -17,9 +17,9 @@ public class RadiationLayer
     /** Number of non-zero slots, used to track if layer is empty */
     public int blocksUsed = 0;
 
-    public RadiationLayer(int layer)
+    public RadiationLayer(int y_index)
     {
-        this.layer = layer;
+        this.y_index = y_index;
         this.data = new int[16 * 16];
     }
 
@@ -33,7 +33,7 @@ public class RadiationLayer
     public int getData(int x, int z)
     {
         int index = index(x, z);
-        if (index >= 0 && index < data.length)
+        if (index >= 0)
         {
             return data[index];
         }
@@ -51,7 +51,7 @@ public class RadiationLayer
     public boolean setData(int x, int z, int value)
     {
         int index = index(x, z);
-        if (index >= 0 && index < data.length)
+        if (index >= 0)
         {
             int prev = data[index];
             data[index] = value;
@@ -72,9 +72,9 @@ public class RadiationLayer
     /**
      * Index of the x z location
      *
-     * @param x
-     * @param z
-     * @return
+     * @param x - location 0-15
+     * @param z - location 0-15
+     * @return index between 0-255, -1 returns if input data is invalid
      */
     public final int index(int x, int z)
     {
@@ -91,7 +91,7 @@ public class RadiationLayer
     /**
      * Is the layer empty
      *
-     * @return
+     * @return true if no blocks were ever set
      */
     public boolean isEmpty()
     {

@@ -2,6 +2,7 @@ package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.AtomicScience;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 /**
  * Single chunk of radiation data
@@ -16,14 +17,18 @@ public class RadiationChunk
     /** The z coordinate of the chunk. */
     public final int zPosition;
 
+    /** The dimension of the world of the chunk. */
+    public final int dimension;
+
     /** Array of active layers, modified by yStart */
     protected RadiationLayer[] layers;
 
     /** Starting point of the layer array as a Y level */
     protected int yStart;
 
-    public RadiationChunk(int xPosition, int zPosition)
+    public RadiationChunk(int dimension, int xPosition, int zPosition)
     {
+        this.dimension = dimension;
         this.xPosition = xPosition;
         this.zPosition = zPosition;
     }
@@ -41,7 +46,7 @@ public class RadiationChunk
      * @param cz    - location (0-15)
      * @param value - value to set
      */
-    public void setValue(int cx, int y, int cz, int value)
+    public boolean setValue(int cx, int y, int cz, int value)
     {
         //Keep inside of chunk
         if (y >= 0 && y < getChunkHeight())
@@ -50,19 +55,22 @@ public class RadiationChunk
             if (value > 0 || hasLayer(y))
             {
                 //Set data into layer
-                getLayer(y).setData(cx, cz, value);
+                boolean b = getLayer(y).setData(cx, cz, value);
 
                 //Remove layer if empty to save memory
                 if (getLayer(y).isEmpty())
                 {
                     removeLayer(y);
                 }
+                return b;
             }
+            return true; //value was zero with no layer, return true as in theory prev = 0 and value = 0
         }
         else if (AtomicScience.runningAsDev)
         {
             AtomicScience.logger.error("Something tried to place a block outside map", new RuntimeException("trace"));
         }
+        return false;
     }
 
     /**
@@ -90,7 +98,17 @@ public class RadiationChunk
      */
     protected boolean hasLayer(int y)
     {
-        return !(y < yStart || y >= yStart + layers.length || layers[getIndex(y)] == null);
+        return layers != null && y >= yStart && y <= getLayerEnd() && layers[getIndex(y)] != null;
+    }
+
+    /**
+     * End point of the layers, inclusive
+     *
+     * @return
+     */
+    public int getLayerEnd()
+    {
+        return yStart + layers.length - 1;
     }
 
     /**
@@ -119,16 +137,19 @@ public class RadiationChunk
         if (layers == null)
         {
             layers = new RadiationLayer[11];
-            yStart = Math.max(0, y - 5);
+            yStart = Math.max(0, y - 10);
         }
         //Check if we need to increase layer array to fit a new value
         else if (y < yStart)
         {
-            RadiationLayer[] oldLayers = layers;
+            final RadiationLayer[] oldLayers = layers;
 
-            //Increase array size by 5 or distance to zero
-            int increase = y > 5 ? 5 : y + 1;
-            layers = new RadiationLayer[oldLayers.length + increase];
+            //Increase array size by 5 more than expected y level, if under 10 fully expand to zero
+            int increase = yStart > 10 ? ((yStart - y) + 5) : yStart;
+
+            //New array
+            int newLength = Math.min(getChunkHeight(), oldLayers.length + increase);
+            layers = new RadiationLayer[newLength];
 
             //Copy array
             for (int i = 0; i < oldLayers.length; i++)
@@ -139,7 +160,7 @@ public class RadiationChunk
             //Set new y start
             yStart = yStart - increase;
         }
-        else if (y >= yStart + layers.length)
+        else if (y > getLayerEnd())
         {
             RadiationLayer[] oldLayers = layers;
 
@@ -173,13 +194,83 @@ public class RadiationChunk
         return y - yStart;
     }
 
+    /**
+     * Called to save data
+     *
+     * @param tag
+     */
     public void save(NBTTagCompound tag)
     {
+        if (layers != null)
+        {
+            tag.setInteger("y_start", yStart);
+            tag.setInteger("size", layers.length);
+            NBTTagList list = new NBTTagList();
+            for (int i = 0; i < layers.length; i++)
+            {
+                RadiationLayer layer = layers[i];
+                if(layer != null && !layer.isEmpty())
+                {
+                    NBTTagCompound save = new NBTTagCompound();
+                    save.setInteger("i", i);
+                    save.setInteger("y", layer.y_index);
+                    save.setIntArray("data", layer.data);
+                    list.appendTag(save);
+                }
+            }
 
+            tag.setTag("layers", list);
+        }
     }
 
+    /**
+     * Called to load data from save
+     *
+     * @param tag
+     */
     public void load(NBTTagCompound tag)
     {
+        this.yStart = tag.getInteger("y_start");
 
+        int size = tag.getInteger("size");
+        this.layers = new RadiationLayer[size];
+
+        NBTTagList list = tag.getTagList("layers", 10);
+        for (int list_index = 0; list_index < list.tagCount(); list_index++)
+        {
+            NBTTagCompound save = list.getCompoundTagAt(list_index);
+
+            //Load indexs
+            int index = save.getInteger("i");
+            int y = save.getInteger("y");
+
+            //Create layer
+            RadiationLayer layer = new RadiationLayer(y);
+
+            //Load data
+            int[] data = save.getIntArray("data");
+
+            //Error if invalid size (unlikely to happen unless corruption or user errors)
+            if (data.length != layer.data.length)
+            {
+                AtomicScience.logger.error(String.format("RadiationChunk[%sd, %scx, %scz]#load(NBT) layer[%s] -> data array has " +
+                                "invalid size, will attempt to read in as much as possible. This may result" +
+                                "in radiation values changing per position for the given y level.",
+                        dimension, xPosition, zPosition, y));
+            }
+
+            //Copy over array
+            for (int j = 0; j < data.length && j < layer.data.length; j++)
+            {
+                layer.data[j] = data[j];
+                if (data[j] != 0)
+                {
+                    layer.blocksUsed++;
+                }
+            }
+
+            //Insert layer
+            layers[index] = layer;
+        }
     }
 }

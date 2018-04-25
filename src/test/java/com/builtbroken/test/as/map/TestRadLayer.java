@@ -14,7 +14,7 @@ public class TestRadLayer extends TestCase
     public void testInit()
     {
         RadiationLayer layer = new RadiationLayer(1);
-        assertEquals(1, layer.layer);
+        assertEquals(1, layer.y_index);
         assertNotNull(layer.data);
         assertEquals(16 * 16, layer.data.length);
 
@@ -88,6 +88,10 @@ public class TestRadLayer extends TestCase
         assertFalse(layer.isEmpty());
 
         //Set zero should make it empty again
+        layer.setData(0, 0, 0);
+        assertTrue(layer.isEmpty());
+
+        //Set zero check that is is zero still, also triggers prev = 0 & value = 0
         layer.setData(0, 0, 0);
         assertTrue(layer.isEmpty());
     }
