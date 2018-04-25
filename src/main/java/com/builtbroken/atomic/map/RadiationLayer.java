@@ -46,8 +46,9 @@ public class RadiationLayer
      * @param x     - location
      * @param z     - location
      * @param value - value
+     * @return true if data was set, false if nothing happened (likely means outside of the map)
      */
-    public void setData(int x, int z, int value)
+    public boolean setData(int x, int z, int value)
     {
         int index = index(x, z);
         if (index >= 0 && index < data.length)
@@ -63,7 +64,9 @@ public class RadiationLayer
             {
                 blocksUsed++;
             }
+            return true;
         }
+        return false;
     }
 
     /**
@@ -75,7 +78,14 @@ public class RadiationLayer
      */
     public final int index(int x, int z)
     {
-        return x * 16 + z;
+        //Bound check to prevent index values from generating outside range
+        //      Is needed as a negative z can cause a value to overlap values normally in range
+        //      Ex: 15x -1z -> 239, which is in range but not the right index
+        if (x >= 0 && x < 16 && z >= 0 && z < 16)
+        {
+            return x * 16 + z;
+        }
+        return -1;
     }
 
     /**

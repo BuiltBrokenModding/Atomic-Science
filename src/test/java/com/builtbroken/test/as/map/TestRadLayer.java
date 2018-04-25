@@ -10,7 +10,7 @@ import org.junit.Test;
  */
 public class TestRadLayer extends TestCase
 {
-    @Test
+    @Test //Test constructor
     public void testInit()
     {
         RadiationLayer layer = new RadiationLayer(1);
@@ -24,7 +24,7 @@ public class TestRadLayer extends TestCase
         }
     }
 
-    @Test
+    @Test //Test index method
     public void testIndex()
     {
         RadiationLayer layer = new RadiationLayer(1);
@@ -38,7 +38,7 @@ public class TestRadLayer extends TestCase
         }
     }
 
-    @Test
+    @Test //Test get and set methods
     public void testData()
     {
         RadiationLayer layer = new RadiationLayer(1);
@@ -55,7 +55,27 @@ public class TestRadLayer extends TestCase
         }
     }
 
-    @Test
+    @Test //Test that get and set handle junk well
+    public void testJunk()
+    {
+        RadiationLayer layer = new RadiationLayer(1);
+        for(int i = 0; i < 16; i++)
+        {
+            assertFalse(layer.setData(i, -1, 1));
+            assertEquals(0, layer.getData(i, -1));
+
+            assertFalse(layer.setData(i, 16, 1));
+            assertEquals(0, layer.getData(i, 16));
+
+            assertFalse(layer.setData(-1, i, 1));
+            assertEquals(0, layer.getData(-1, i));
+
+            assertFalse(layer.setData(16, i, 1));
+            assertEquals(0, layer.getData(16, i));
+        }
+    }
+
+    @Test //Test isEmpty() method
     public void testEmpty()
     {
         RadiationLayer layer = new RadiationLayer(1);
