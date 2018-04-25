@@ -73,7 +73,7 @@ public class RadiationLayer
      * @param z
      * @return
      */
-    protected final int index(int x, int z)
+    public final int index(int x, int z)
     {
         return x * 16 + z;
     }
