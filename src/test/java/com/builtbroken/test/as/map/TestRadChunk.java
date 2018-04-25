@@ -146,8 +146,24 @@ public class TestRadChunk extends TestCase
 
         //Test save
         assertEquals("Save data should have 3 keys", 3, saveData.func_150296_c().size());
-        assertTrue(saveData.hasKey("layer"));
-        assertTrue(saveData.hasKey("y_start"));
-        assertTrue(saveData.hasKey("size"));
+        assertTrue("Failed to save any layers", saveData.hasKey(RadiationChunk.NBT_LAYERS));
+        assertEquals("Save data should have 3 layers", 3, saveData.getTagList(RadiationChunk.NBT_LAYERS, 10).tagCount());
+        assertTrue("Failed to save y start", saveData.hasKey(RadiationChunk.NBT_Y_START));
+        assertTrue("Failed to size of layer array", saveData.hasKey(RadiationChunk.NBT_SIZE));
+
+        //Test load
+        RadiationChunk chunk2 = new RadiationChunk(1, 3, 2);
+        chunk2.load(saveData);
+
+        for (int x = 0; x < 16; x++)
+        {
+            for (int z = 0; z < 16; z++)
+            {
+                for (int y = 0; y < 256; y++)
+                {
+                    assertEquals(String.format("%sx %sy %sz values should match", x, y, z), chunk.getValue(x, y, z), chunk2.getValue(x, y, z));
+                }
+            }
+        }
     }
 }

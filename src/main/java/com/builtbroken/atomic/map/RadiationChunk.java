@@ -12,6 +12,14 @@ import net.minecraft.nbt.NBTTagList;
  */
 public class RadiationChunk
 {
+    //Constants for NBT save/load
+    public static final String NBT_Y_START = "y_start";
+    public static final String NBT_SIZE = "size";
+    public static final String NBT_LAYERS = "layers";
+    public static final String NBT_LAYER_INDEX = "i";
+    public static final String NBT_LAYER_Y = "y";
+    public static final String NBT_LAYER_DATA = "data";
+
     /** The x coordinate of the chunk. */
     public final int xPosition;
     /** The z coordinate of the chunk. */
@@ -203,23 +211,23 @@ public class RadiationChunk
     {
         if (layers != null)
         {
-            tag.setInteger("y_start", yStart);
-            tag.setInteger("size", layers.length);
+            tag.setInteger(NBT_Y_START, yStart);
+            tag.setInteger(NBT_SIZE, layers.length);
             NBTTagList list = new NBTTagList();
             for (int i = 0; i < layers.length; i++)
             {
                 RadiationLayer layer = layers[i];
-                if(layer != null && !layer.isEmpty())
+                if (layer != null && !layer.isEmpty())
                 {
                     NBTTagCompound save = new NBTTagCompound();
-                    save.setInteger("i", i);
-                    save.setInteger("y", layer.y_index);
-                    save.setIntArray("data", layer.data);
+                    save.setInteger(NBT_LAYER_INDEX, i);
+                    save.setInteger(NBT_LAYER_Y, layer.y_index);
+                    save.setIntArray(NBT_LAYER_DATA, layer.data);
                     list.appendTag(save);
                 }
             }
 
-            tag.setTag("layers", list);
+            tag.setTag(NBT_LAYERS, list);
         }
     }
 
@@ -230,25 +238,28 @@ public class RadiationChunk
      */
     public void load(NBTTagCompound tag)
     {
-        this.yStart = tag.getInteger("y_start");
+        //Set y start
+        this.yStart = tag.getInteger(NBT_Y_START);
 
-        int size = tag.getInteger("size");
+        //Rebuild array
+        int size = tag.getInteger(NBT_SIZE);
         this.layers = new RadiationLayer[size];
 
-        NBTTagList list = tag.getTagList("layers", 10);
+        //Load layers
+        NBTTagList list = tag.getTagList(NBT_LAYERS, 10);
         for (int list_index = 0; list_index < list.tagCount(); list_index++)
         {
             NBTTagCompound save = list.getCompoundTagAt(list_index);
 
             //Load indexs
-            int index = save.getInteger("i");
-            int y = save.getInteger("y");
+            int index = save.getInteger(NBT_LAYER_INDEX);
+            int y = save.getInteger(NBT_LAYER_Y);
 
             //Create layer
             RadiationLayer layer = new RadiationLayer(y);
 
             //Load data
-            int[] data = save.getIntArray("data");
+            int[] data = save.getIntArray(NBT_LAYER_DATA);
 
             //Error if invalid size (unlikely to happen unless corruption or user errors)
             if (data.length != layer.data.length)
