@@ -26,6 +26,24 @@ public class RadiationMap
         this.dim = dim;
     }
 
+    ///----------------------------------------------------------------
+    ///-------- Input/Output
+    ///----------------------------------------------------------------
+
+    public int getData(int x, int y, int z)
+    {
+        return 0;
+    }
+
+    public boolean setData(int x, int y, int z)
+    {
+        return false;
+    }
+
+    ///----------------------------------------------------------------
+    ///-------- Event handlers
+    ///----------------------------------------------------------------
+
     public void onWorldUnload()
     {
         for (long index : loadedChunks.keySet())
@@ -101,6 +119,10 @@ public class RadiationMap
         //Load
         radiationChunk.load(data.getCompoundTag(RadiationSystem.NBT_CHUNK_DATA));
     }
+
+    ///----------------------------------------------------------------
+    ///-------- Helpers
+    ///----------------------------------------------------------------
 
     /**
      * Index of the chunk

@@ -34,6 +34,12 @@ public class RadiationChunk
     /** Starting point of the layer array as a Y level */
     protected int yStart;
 
+    /** Triggers thread to rescan chunk to calculate exposure values */
+    public boolean hasChanged = true;
+
+    /** Used by thread to let it know last time it scanned this thread */
+    public Long lastScanTime;
+
     public RadiationChunk(int dimension, int xPosition, int zPosition)
     {
         this.dimension = dimension;
@@ -62,6 +68,8 @@ public class RadiationChunk
             //Only set values that are above zero or have an existing layer
             if (value > 0 || hasLayer(y))
             {
+                int prev = getLayer(y).getData(cx, cz);
+
                 //Set data into layer
                 boolean b = getLayer(y).setData(cx, cz, value);
 
@@ -70,6 +78,14 @@ public class RadiationChunk
                 {
                     removeLayer(y);
                 }
+
+                //Check for change
+                if (prev != getLayer(y).getData(cx, cz))
+                {
+                    hasChanged = true;
+                }
+
+                //Return
                 return b;
             }
             return true; //value was zero with no layer, return true as in theory prev = 0 and value = 0

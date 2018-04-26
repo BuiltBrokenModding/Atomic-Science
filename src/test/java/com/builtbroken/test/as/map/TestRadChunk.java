@@ -60,7 +60,6 @@ public class TestRadChunk extends TestCase
     @Test
     public void testSetGetReverse()
     {
-
         //Test set all values reverse, checks resize
         RadiationChunk chunk = new RadiationChunk(1, 3, 2);
         for (int x = 0; x < 16; x++)

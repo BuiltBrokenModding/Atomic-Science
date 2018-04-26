@@ -2,6 +2,7 @@ package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.AtomicScience;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -17,26 +18,89 @@ public class RadiationSystem
 {
     public static final String NBT_CHUNK_DATA = AtomicScience.PREFIX + "radiation_data";
 
+    /** Primary radiation system, handles events and access calls */
     public static final RadiationSystem INSTANCE = new RadiationSystem();
 
-    protected final HashMap<Integer, RadiationMap> dimensionToMap = new HashMap();
+    /** Dimension to radiation material map, saved to world and updated over time */
+    protected final HashMap<Integer, RadiationMap> dimensionToMaterialMap = new HashMap();
+    /** Dimension to '(REM) roentgen equivalent man' map, not saved and calculated only as needed */
+    protected final HashMap<Integer, RadiationMap> dimensionToExposureMap = new HashMap();
 
-    public RadiationMap getMap(int dim, boolean init)
+    ///----------------------------------------------------------------
+    ///-------- Level Data Accessors
+    ///----------------------------------------------------------------
+
+    /**
+     * Gets the 'radiation absorption dose (RAD)' at the given location
+     *
+     * @param world - location
+     * @param x     - location
+     * @param y     - location
+     * @param z     - location
+     * @return rad level
+     */
+    public int getRadLevel(World world, int x, int y, int z)
     {
-        RadiationMap map = dimensionToMap.get(dim);
+        RadiationMap map = getExposureMap(world, false);
+        if (map != null)
+        {
+            return map.getData(x, y, z);
+        }
+        return 0;
+    }
+
+    /**
+     * Gets the 'radiation absorption dose (RAD)' at the given location
+     *
+     * @param entity - used to get location
+     * @return rad level
+     */
+    public int getRadLevel(Entity entity)
+    {
+        //TODO get average level by getting rad exposure at several locations (use height sliced by 0.5) then averaging
+        return getRadLevel(entity.worldObj, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY + (entity.height / 2)), (int) Math.floor(entity.posZ));
+    }
+
+    ///----------------------------------------------------------------
+    ///-------- Map Accessors
+    ///----------------------------------------------------------------
+
+    public RadiationMap getExposureMap(int dim, boolean init)
+    {
+        RadiationMap map = dimensionToExposureMap.get(dim);
         if (map == null && init)
         {
             map = new RadiationMap(dim);
-            dimensionToMap.put(dim, map);
+            dimensionToExposureMap.put(dim, map);
         }
         return map;
     }
 
-    public RadiationMap getMap(World world, boolean init)
+    public RadiationMap getExposureMap(World world, boolean init)
     {
         if (world != null && world.provider != null)
         {
-            return getMap(world.provider.dimensionId, init);
+            return getExposureMap(world.provider.dimensionId, init);
+        }
+        return null;
+    }
+
+    public RadiationMap getMaterialMap(int dim, boolean init)
+    {
+        RadiationMap map = dimensionToMaterialMap.get(dim);
+        if (map == null && init)
+        {
+            map = new RadiationMap(dim);
+            dimensionToMaterialMap.put(dim, map);
+        }
+        return map;
+    }
+
+    public RadiationMap getMaterialMap(World world, boolean init)
+    {
+        if (world != null && world.provider != null)
+        {
+            return getMaterialMap(world.provider.dimensionId, init);
         }
         return null;
     }
@@ -48,7 +112,7 @@ public class RadiationSystem
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event)
     {
-        RadiationMap map = getMap(event.world, false);
+        RadiationMap map = getMaterialMap(event.world, false);
         if (map != null)
         {
             map.onWorldUnload();
@@ -74,7 +138,7 @@ public class RadiationSystem
     @SubscribeEvent
     public void onChunkUnload(ChunkEvent.Unload event) //Only called if chunk unloads separate from world unload
     {
-        RadiationMap map = getMap(event.world, false);
+        RadiationMap map = getMaterialMap(event.world, false);
         if (map != null)
         {
             map.unloadChunk(event.getChunk());
@@ -86,7 +150,7 @@ public class RadiationSystem
     {
         if (event.getData() != null && event.getData().hasKey(NBT_CHUNK_DATA))
         {
-            RadiationMap map = getMap(event.world, true);
+            RadiationMap map = getMaterialMap(event.world, true);
             if (map != null)
             {
                 map.loadChunk(event.getChunk(), event.getData());
@@ -97,7 +161,7 @@ public class RadiationSystem
     @SubscribeEvent
     public void onChunkSaveData(ChunkDataEvent.Save event) //Called on world save
     {
-        RadiationMap map = getMap(event.world, false);
+        RadiationMap map = getMaterialMap(event.world, false);
         if (map != null)
         {
             map.saveChunk(event.getChunk(), event.getData());
