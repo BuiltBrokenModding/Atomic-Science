@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.commands;
 
 import com.builtbroken.atomic.content.ASIndirectEffects;
+import com.builtbroken.atomic.map.RadiationSystem;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommandSender;
@@ -36,9 +37,17 @@ public class CommandAS extends CommandBase
         else
         {
             final String sub = args[0];
-            if (sub.equalsIgnoreCase("rad"))
+            if (sub.equalsIgnoreCase("rad") || sub.equalsIgnoreCase("radiation"))
             {
-                commandRad(sender, args);
+                commandRadiation(sender, args);
+            }
+            else if (sub.equalsIgnoreCase("exposure"))
+            {
+                commandExposure(sender, args);
+            }
+            else if (sub.equalsIgnoreCase("mat") || sub.equalsIgnoreCase("material"))
+            {
+                commandMat(sender, args);
             }
             else
             {
@@ -53,12 +62,23 @@ public class CommandAS extends CommandBase
         {
             sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " rad -> show radiation of self"));
             sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " rad set <value> -> set radiation of self"));
+            sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " exposure -> shows radiation of where your standing"));
         }
         sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " rad <player> -> show radiation of player"));
         sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " rad set <player> <value> -> set radiation of player"));
+        sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " exposure <player> -> shows the radiation exposure of where the player is standing"));
+
+        sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " material get <dim> <x> <y> <z> -> gets the radioactive material level of the block position"));
+        sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " material set <dim> <x> <y> <z> <value> -> sets the radioactive material level of the block position"));
     }
 
-    public void commandRad(ICommandSender sender, String[] args)
+    /**
+     * Command set to get or set the REM of the player
+     *
+     * @param sender
+     * @param args
+     */
+    public void commandRadiation(ICommandSender sender, String[] args)
     {
         if (args.length == 1 && sender instanceof EntityPlayer)
         {
@@ -90,6 +110,65 @@ public class CommandAS extends CommandBase
             {
                 EntityPlayerMP player = getPlayer(sender, args[1]);
                 player.addChatMessage(new ChatComponentText("Radiation level for '" + player.getCommandSenderName() + "' is " + ASIndirectEffects.getRadiation(player)));
+            }
+            else
+            {
+                throw new CommandNotFoundException();
+            }
+        }
+        else
+        {
+            throw new CommandNotFoundException();
+        }
+    }
+
+    /**
+     * Command set to check the RAD value of the environment
+     *
+     * @param sender
+     * @param args
+     */
+    public void commandExposure(ICommandSender sender, String[] args)
+    {
+        if (args.length == 1 && sender instanceof EntityPlayer)
+        {
+            sender.addChatMessage(new ChatComponentText("Your exposure level is " + RadiationSystem.INSTANCE.getRemExposure((EntityPlayer) sender)));
+        }
+        else if (args.length == 2)
+        {
+            EntityPlayerMP player = getPlayer(sender, args[1]);
+            player.addChatMessage(new ChatComponentText("Exposure level for '" + player.getCommandSenderName() + "' is " + RadiationSystem.INSTANCE.getRemExposure(player)));
+        }
+        else
+        {
+            throw new CommandNotFoundException();
+        }
+    }
+
+
+    public void commandMat(ICommandSender sender, String[] args)
+    {
+        if (args.length >= 6)
+        {
+            int dim = Integer.parseInt(args[2]);
+            int x = Integer.parseInt(args[3]);
+            int y = Integer.parseInt(args[4]);
+            int z = Integer.parseInt(args[5]);
+
+            if (args[1].equalsIgnoreCase("get"))
+            {
+                int value = RadiationSystem.INSTANCE.getRadioactiveMaterial(dim, x, y, z);
+                sender.addChatMessage(new ChatComponentText("The block position contains '" + value + "' units of radioactive material."));
+            }
+            else if (args[1].equalsIgnoreCase("set") && args.length == 7)
+            {
+                int value = Integer.parseInt(args[6]);
+
+                int prev_value = RadiationSystem.INSTANCE.getRadioactiveMaterial(dim, x, y, z);
+                RadiationSystem.INSTANCE.setRadioactiveMaterial(dim, x, y, z, value);
+                int new_value = RadiationSystem.INSTANCE.getRadioactiveMaterial(dim, x, y, z);
+
+                sender.addChatMessage(new ChatComponentText("The block position radioactive material count changes from '" + prev_value + "' to '" + new_value + "'"));
             }
             else
             {

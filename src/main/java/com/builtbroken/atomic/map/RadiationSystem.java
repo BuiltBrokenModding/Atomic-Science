@@ -100,6 +100,25 @@ public class RadiationSystem
     }
 
     /**
+     * Gets the amount of radioactive material that is present at the location
+     *
+     * @param dim - location
+     * @param x     - location
+     * @param y     - location
+     * @param z     - location
+     * @return radioactive material amount
+     */
+    public int getRadioactiveMaterial(int dim, int x, int y, int z)
+    {
+        RadiationMap map = getMaterialMap(dim, false);
+        if (map != null)
+        {
+            return map.getData(x, y, z);
+        }
+        return 0;
+    }
+
+    /**
      * Called to set the radioactive material amount of the position
      *
      * @param world  - location
@@ -112,6 +131,26 @@ public class RadiationSystem
     public boolean setRadioactiveMaterial(World world, int x, int y, int z, int amount)
     {
         RadiationMap map = getMaterialMap(world, amount > 0);
+        if (map != null)
+        {
+            return map.setData(x, y, z, amount);
+        }
+        return true;
+    }
+
+    /**
+     * Called to set the radioactive material amount of the position
+     *
+     * @param dim  - location
+     * @param x      - location
+     * @param y      - location
+     * @param z      - location
+     * @param amount - weight of material
+     * @return true if the value was set
+     */
+    public boolean setRadioactiveMaterial(int dim, int x, int y, int z, int amount)
+    {
+        RadiationMap map = getMaterialMap(dim, amount > 0);
         if (map != null)
         {
             return map.setData(x, y, z, amount);
