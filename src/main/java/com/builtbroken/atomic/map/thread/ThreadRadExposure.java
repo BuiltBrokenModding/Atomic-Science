@@ -23,6 +23,12 @@ public class ThreadRadExposure extends Thread
     public ConcurrentLinkedQueue<RadiationChunk> addScanQueue = new ConcurrentLinkedQueue();
     public ConcurrentLinkedQueue<RadiationChunk> removeScanQueue = new ConcurrentLinkedQueue();
 
+    public ThreadRadExposure()
+    {
+        super(null, null, AtomicScience.PREFIX + "ThreadRadExposure", 0);
+        setDaemon(true);
+    }
+
     @Override
     public void start()
     {
@@ -39,19 +45,19 @@ public class ThreadRadExposure extends Thread
             try
             {
                 //Cleanup of chunks, remove data from chunk so when re-added later it doesn't spike values
-                while (!removeScanQueue.isEmpty())
+                while (shouldRun && !removeScanQueue.isEmpty())
                 {
                     queueRemove(removeScanQueue.poll());
                 }
 
                 //New additions, update data for values
-                while (!addScanQueue.isEmpty())
+                while (shouldRun && !addScanQueue.isEmpty())
                 {
                     queueAddition(addScanQueue.poll());
                 }
 
                 //Stop looping if we have chunks to scan, only loop if we have something to do
-                while (!changeQueue.isEmpty() && addScanQueue.isEmpty() && removeScanQueue.isEmpty())
+                while (shouldRun && !changeQueue.isEmpty() && addScanQueue.isEmpty() && removeScanQueue.isEmpty())
                 {
                     RadChange change = changeQueue.poll();
                     if (change != null)
@@ -70,6 +76,8 @@ public class ThreadRadExposure extends Thread
         }
 
         //If stopped, clear all data
+        removeScanQueue.clear();
+        addScanQueue.clear();
         changeQueue.clear();
     }
 
@@ -88,7 +96,7 @@ public class ThreadRadExposure extends Thread
                 {
                     for (int cz = 0; cz < 16; cz++)
                     {
-                        if (layer.getData(cx, cz) > 0)
+                        if (layer != null && layer.getData(cx, cz) > 0)
                         {
                             int x = cx + chunk.xPosition * 16;
                             int z = cz + chunk.xPosition * 16;
@@ -115,7 +123,7 @@ public class ThreadRadExposure extends Thread
                 {
                     for (int cz = 0; cz < 16; cz++)
                     {
-                        if (layer.getData(cx, cz) > 0)
+                        if (layer != null && layer.getData(cx, cz) > 0)
                         {
                             int x = cx + chunk.xPosition * 16;
                             int z = cz + chunk.xPosition * 16;
@@ -293,13 +301,13 @@ public class ThreadRadExposure extends Thread
         AtomicScience.logger.info("ThreadRadExposure: Stopping thread");
     }
 
-    public void removeChunk(RadiationChunk chunk)
+    public void queueChunkForRemoval(RadiationChunk chunk)
     {
-
+        removeScanQueue.add(chunk);
     }
 
-    public void addChunk(RadiationChunk chunk)
+    public void queueChunkForAddition(RadiationChunk chunk)
     {
-
+        addScanQueue.add(chunk);
     }
 }

@@ -3,7 +3,9 @@ package com.builtbroken.atomic.map;
 import com.builtbroken.atomic.map.events.RadiationMapEvent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.HashMap;
@@ -49,17 +51,35 @@ public class RadiationMap
         RadiationChunk chunk = getChunkFromPosition(x, z, amount > 0);
         if (chunk != null)
         {
-            if(isMaterialMap)
+            //Fire change event for modification and to trigger exposure map update
+            if (isMaterialMap)
             {
                 int prev_value = getData(x, y, z);
                 RadiationMapEvent.UpdateRadiationMaterial event = new RadiationMapEvent.UpdateRadiationMaterial(this, x, y, z, prev_value, amount);
-                if(MinecraftForge.EVENT_BUS.post(event))
+                if (MinecraftForge.EVENT_BUS.post(event))
                 {
                     return false;
                 }
                 amount = event.new_value;
             }
-            return chunk.setValue(x >> 4, y, z >> 4, amount);
+
+            //set value
+            boolean hasChanged = chunk.setValue(x >> 4, y, z >> 4, amount);
+
+            //if changed mark chunk so it saves
+            if (hasChanged)
+            {
+                World world = DimensionManager.getWorld(dim);
+                if (world != null)
+                {
+                    Chunk worldChunk = world.getChunkFromBlockCoords(x, z);
+                    if (worldChunk != null)
+                    {
+                        worldChunk.setChunkModified();
+                    }
+                }
+            }
+            return hasChanged;
         }
         return true;
     }
@@ -70,10 +90,7 @@ public class RadiationMap
 
     public void onWorldUnload()
     {
-        for (long index : loadedChunks.keySet())
-        {
-            removeChunk(index);
-        }
+        loadedChunks.clear();
     }
 
     public void unloadChunk(Chunk chunk)
@@ -85,17 +102,16 @@ public class RadiationMap
     {
         if (loadedChunks.containsKey(index))
         {
-            if(isMaterialMap)
+            if (isMaterialMap)
             {
                 RadiationChunk chunk = loadedChunks.get(index);
                 if (chunk != null)
                 {
-                    RadiationSystem.THREAD_RAD_EXPOSURE.removeChunk(chunk);
+                    RadiationSystem.THREAD_RAD_EXPOSURE.queueChunkForRemoval(chunk);
                 }
             }
             //TODO maybe fire events?
             loadedChunks.remove(index);
-
         }
     }
 
@@ -150,6 +166,12 @@ public class RadiationMap
 
         //Load
         radiationChunk.load(data.getCompoundTag(RadiationSystem.NBT_CHUNK_DATA));
+
+        //Queue to be scanned to update exposure map
+        if (isMaterialMap)
+        {
+            RadiationSystem.THREAD_RAD_EXPOSURE.queueChunkForAddition(radiationChunk);
+        }
     }
 
     protected RadiationChunk createNewChunk(int dim, int chunkX, int chunkZ)
@@ -157,12 +179,6 @@ public class RadiationMap
         long index = index(chunkX, chunkZ);
         RadiationChunk radiationChunk = new RadiationChunk(dim, chunkX, chunkZ);
         loadedChunks.put(index, radiationChunk);
-
-        if(isMaterialMap)
-        {
-           RadiationSystem.THREAD_RAD_EXPOSURE.addChunk(radiationChunk);
-        }
-
         return radiationChunk;
     }
 
