@@ -7,6 +7,7 @@ import com.builtbroken.atomic.content.effects.IndirectEffectType;
 import com.builtbroken.atomic.content.effects.events.IndirectEffectEntityEvent;
 import com.builtbroken.atomic.lib.network.packet.sync.PacketPlayerRadiation;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
+import com.builtbroken.atomic.map.RadiationSystem;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -84,7 +85,7 @@ public class IETRadiation extends IndirectEffectType
                     final float syncError = 0.001f;
 
                     //Check exposure change
-                    float exposure = 0f; //TODO calculate exposure this tick were the player is standing
+                    float exposure = RadiationSystem.INSTANCE.getRemExposure(entity);
                     float prev_exposure = data.getFloat(ASIndirectEffects.NBT_RADS_ENVIROMENT_PREV);
                     float delta_exposure = Math.abs(prev_exposure - exposure);
 
