@@ -61,6 +61,45 @@ public class RadiationSystem
         return getRadLevel(entity.worldObj, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY + (entity.height / 2)), (int) Math.floor(entity.posZ));
     }
 
+    /**
+     * Gets the amount of radioactive material that is present at the location
+     *
+     * @param world - location
+     * @param x     - location
+     * @param y     - location
+     * @param z     - location
+     * @return radioactive material amount
+     */
+    public int getRadioactiveMaterial(World world, int x, int y, int z)
+    {
+        RadiationMap map = getMaterialMap(world, false);
+        if (map != null)
+        {
+            return map.getData(x, y, z);
+        }
+        return 0;
+    }
+
+    /**
+     * Called to set the radioactive material amount of the position
+     *
+     * @param world  - location
+     * @param x      - location
+     * @param y      - location
+     * @param z      - location
+     * @param amount - weight of material
+     * @return true if the value was set
+     */
+    public boolean setRadioactiveMaterial(World world, int x, int y, int z, int amount)
+    {
+        RadiationMap map = getMaterialMap(world, amount > 0);
+        if (map != null)
+        {
+            return map.setData(x, y, z, amount);
+        }
+        return true;
+    }
+
     ///----------------------------------------------------------------
     ///-------- Map Accessors
     ///----------------------------------------------------------------

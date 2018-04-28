@@ -32,12 +32,22 @@ public class RadiationMap
 
     public int getData(int x, int y, int z)
     {
+        RadiationChunk chunk = getChunkFromPosition(x, z, false);
+        if (chunk != null)
+        {
+            return chunk.getValue(x >> 4, y, z >> 4);
+        }
         return 0;
     }
 
-    public boolean setData(int x, int y, int z)
+    public boolean setData(int x, int y, int z, int amount)
     {
-        return false;
+        RadiationChunk chunk = getChunkFromPosition(x, z, amount > 0);
+        if (chunk != null)
+        {
+            return chunk.setValue(x >> 4, y, z >> 4, amount);
+        }
+        return true;
     }
 
     ///----------------------------------------------------------------
@@ -123,6 +133,23 @@ public class RadiationMap
     ///----------------------------------------------------------------
     ///-------- Helpers
     ///----------------------------------------------------------------
+
+    public RadiationChunk getChunkFromPosition(int x, int z, boolean init)
+    {
+        return getChunk(x >> 4, z >> 4, init);
+    }
+
+    public RadiationChunk getChunk(int chunk_x, int chunk_z, boolean init)
+    {
+        long index = ChunkCoordIntPair.chunkXZ2Int(chunk_x, chunk_z);
+        RadiationChunk chunk = loadedChunks.get(index);
+        if (chunk == null && init)
+        {
+            chunk = new RadiationChunk(dim, chunk_x, chunk_z);
+            loadedChunks.put(index, chunk);
+        }
+        return chunk;
+    }
 
     /**
      * Index of the chunk

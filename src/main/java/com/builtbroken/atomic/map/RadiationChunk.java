@@ -38,7 +38,7 @@ public class RadiationChunk
     public boolean hasChanged = true;
 
     /** Used by thread to let it know last time it scanned this thread */
-    public Long lastScanTime;
+    public long lastScanTime;
 
     public RadiationChunk(int dimension, int xPosition, int zPosition)
     {
