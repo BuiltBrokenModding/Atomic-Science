@@ -111,5 +111,13 @@ public class AtomicScience
         ICommandManager commandManager = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
         ServerCommandManager serverCommandManager = ((ServerCommandManager) commandManager);
         serverCommandManager.registerCommand(new CommandAS());
+
+        RadiationSystem.THREAD_RAD_EXPOSURE.start();
+    }
+
+    @Mod.EventHandler
+    public void serverStopping(FMLServerStartingEvent event)
+    {
+        RadiationSystem.THREAD_RAD_EXPOSURE.kill();
     }
 }

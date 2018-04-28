@@ -31,7 +31,7 @@ public class ConfigRadiation
 
 
     //-------------------------------------------------------------------------------
-    //Start of configs
+    //Start of configs  TODO CONFIG
     //-------------------------------------------------------------------------------
 
     /** Enable the entire system */
@@ -51,6 +51,9 @@ public class ConfigRadiation
     public static float RBE_BETA_RADIATION = 10; //stopped by entity
 
     //Radiation per hour (mass * energy * decay_rate / MeV to rad
-    public static float RAD_U235 = (float) (MASS_U235_SAMPLE * MEV_GRAM_U235 * ACTIVITY_U235 / MeV_per_RAD); //alpha radiation TODO CONFIG
-    public static float RAD_U238 = (float) (MASS_U238_SAMPLE * MEV_GRAM_U238 * ACTIVITY_U238 / MeV_per_RAD); //alpha radiation TODO CONFIG
+    public static float RAD_U235 = (float) (MASS_U235_SAMPLE * MEV_GRAM_U235 * ACTIVITY_U235 / MeV_per_RAD); //alpha radiation
+    public static float RAD_U238 = (float) (MASS_U238_SAMPLE * MEV_GRAM_U238 * ACTIVITY_U238 / MeV_per_RAD); //alpha radiation
+
+    /** How many points of map radioactive material converts to 1 RAD */
+    public static float MAP_VALUE_TO_MILI_RAD = 0.01f; //100 material to 1/1000th of a RAD (material is a placeholder values since grams will not work)
 }

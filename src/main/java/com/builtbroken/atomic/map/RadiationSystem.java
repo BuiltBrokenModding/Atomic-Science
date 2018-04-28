@@ -1,6 +1,10 @@
 package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.map.events.RadiationMapEvent;
+import com.builtbroken.atomic.map.thread.RadChange;
+import com.builtbroken.atomic.map.thread.ThreadRadExposure;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -20,6 +24,8 @@ public class RadiationSystem
 
     /** Primary radiation system, handles events and access calls */
     public static final RadiationSystem INSTANCE = new RadiationSystem();
+    /** Thread used to calculate exposure values per location */
+    public static final ThreadRadExposure THREAD_RAD_EXPOSURE = new ThreadRadExposure();
 
     /** Dimension to radiation material map, saved to world and updated over time */
     protected final HashMap<Integer, RadiationMap> dimensionToMaterialMap = new HashMap();
@@ -31,13 +37,13 @@ public class RadiationSystem
     ///----------------------------------------------------------------
 
     /**
-     * Gets the 'radiation absorption dose (RAD)' at the given location
+     * Gets the '(REM) roentgen equivalent man' at the given location
      *
      * @param world - location
      * @param x     - location
      * @param y     - location
      * @param z     - location
-     * @return rad level
+     * @return rem level in mili-rads (1/1000ths of a rem)
      */
     public int getRadLevel(World world, int x, int y, int z)
     {
@@ -50,15 +56,28 @@ public class RadiationSystem
     }
 
     /**
-     * Gets the 'radiation absorption dose (RAD)' at the given location
+     * Gets the REM exposure for the entity
      *
-     * @param entity - used to get location
-     * @return rad level
+     * @param entity - entity, will use the entity size to get an average value
+     * @return REM value
      */
-    public int getRadLevel(Entity entity)
+    public float getRemExposure(Entity entity)
     {
-        //TODO get average level by getting rad exposure at several locations (use height sliced by 0.5) then averaging
-        return getRadLevel(entity.worldObj, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY + (entity.height / 2)), (int) Math.floor(entity.posZ));
+        float value = 0;
+
+        //Top point
+        value += getRadLevel(entity.worldObj, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY + entity.height), (int) Math.floor(entity.posZ));
+
+        //Mid point
+        value += getRadLevel(entity.worldObj, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY + (entity.height / 2)), (int) Math.floor(entity.posZ));
+
+        //Bottom point
+        value += getRadLevel(entity.worldObj, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY), (int) Math.floor(entity.posZ));
+
+        //Average TODO build alg to use body size (collision box)
+        value /= 3;
+
+        return value;
     }
 
     /**
@@ -104,6 +123,17 @@ public class RadiationSystem
     ///-------- Map Accessors
     ///----------------------------------------------------------------
 
+    /**
+     * Gets the exposure map
+     * <p>
+     * Make sure all changes to the map are thread safe. As this is
+     * heavily accessed by the thread system. Changing values while
+     * the thread is running can cause the system to break.
+     *
+     * @param dim  - dimension of the map to get
+     * @param init - true to generate the map
+     * @return map, or null if it was never created
+     */
     public RadiationMap getExposureMap(int dim, boolean init)
     {
         RadiationMap map = dimensionToExposureMap.get(dim);
@@ -115,6 +145,17 @@ public class RadiationSystem
         return map;
     }
 
+    /**
+     * Gets the exposure map
+     * <p>
+     * Make sure all changes to the map are thread safe. As this is
+     * heavily accessed by the thread system. Changing values while
+     * the thread is running can cause the system to break.
+     *
+     * @param world - dimension of the map to get
+     * @param init  - true to generate the map
+     * @return map, or null if it was never created
+     */
     public RadiationMap getExposureMap(World world, boolean init)
     {
         if (world != null && world.provider != null)
@@ -124,6 +165,14 @@ public class RadiationSystem
         return null;
     }
 
+    /**
+     * Gets the map of radioactive material per positon. Is used
+     * to calculate exposure and other effects.
+     *
+     * @param dim  - dimension of the map to get
+     * @param init - true to generate the map
+     * @return map, or null if it was never created
+     */
     public RadiationMap getMaterialMap(int dim, boolean init)
     {
         RadiationMap map = dimensionToMaterialMap.get(dim);
@@ -135,6 +184,14 @@ public class RadiationSystem
         return map;
     }
 
+    /**
+     * Gets the map of radioactive material per positon. Is used
+     * to calculate exposure and other effects.
+     *
+     * @param world - dimension of the map to get
+     * @param init  - true to generate the map
+     * @return map, or null if it was never created
+     */
     public RadiationMap getMaterialMap(World world, boolean init)
     {
         if (world != null && world.provider != null)
@@ -142,6 +199,19 @@ public class RadiationSystem
             return getMaterialMap(world.provider.dimensionId, init);
         }
         return null;
+    }
+
+    ///----------------------------------------------------------------
+    ///--------Edit events
+    ///----------------------------------------------------------------
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onRadiationChange(RadiationMapEvent.UpdateRadiationMaterial event)
+    {
+        if (event.prev_value != event.new_value)
+        {
+            THREAD_RAD_EXPOSURE.changeQueue.add(new RadChange(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
+        }
     }
 
     ///----------------------------------------------------------------

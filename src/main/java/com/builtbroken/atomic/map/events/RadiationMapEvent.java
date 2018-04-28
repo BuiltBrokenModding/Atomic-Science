@@ -3,6 +3,8 @@ package com.builtbroken.atomic.map.events;
 import com.builtbroken.atomic.map.RadiationMap;
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 
 /**
  * Event set fired for any change or action take on the Radiation map
@@ -17,6 +19,16 @@ public abstract class RadiationMapEvent extends Event
     public RadiationMapEvent(RadiationMap map)
     {
         this.map = map;
+    }
+
+    public int dim()
+    {
+        return map.dim;
+    }
+
+    public World world()
+    {
+        return DimensionManager.getWorld(map.dim);
     }
 
     /**
