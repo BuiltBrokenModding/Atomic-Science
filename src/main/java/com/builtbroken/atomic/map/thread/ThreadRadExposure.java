@@ -2,6 +2,8 @@ package com.builtbroken.atomic.map.thread;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.ConfigRadiation;
+import com.builtbroken.atomic.map.RadiationChunk;
+import com.builtbroken.atomic.map.RadiationLayer;
 import com.builtbroken.atomic.map.RadiationMap;
 import com.builtbroken.atomic.map.RadiationSystem;
 import com.builtbroken.jlib.lang.StringHelpers;
@@ -18,6 +20,8 @@ public class ThreadRadExposure extends Thread
 {
     public boolean shouldRun = true;
     public ConcurrentLinkedQueue<RadChange> changeQueue = new ConcurrentLinkedQueue();
+    public ConcurrentLinkedQueue<RadiationChunk> addScanQueue = new ConcurrentLinkedQueue();
+    public ConcurrentLinkedQueue<RadiationChunk> removeScanQueue = new ConcurrentLinkedQueue();
 
     @Override
     public void start()
@@ -34,7 +38,20 @@ public class ThreadRadExposure extends Thread
         {
             try
             {
-                while (!changeQueue.isEmpty())
+                //Cleanup of chunks, remove data from chunk so when re-added later it doesn't spike values
+                while (!removeScanQueue.isEmpty())
+                {
+                    queueRemove(removeScanQueue.poll());
+                }
+
+                //New additions, update data for values
+                while (!addScanQueue.isEmpty())
+                {
+                    queueAddition(addScanQueue.poll());
+                }
+
+                //Stop looping if we have chunks to scan, only loop if we have something to do
+                while (!changeQueue.isEmpty() && addScanQueue.isEmpty() && removeScanQueue.isEmpty())
                 {
                     RadChange change = changeQueue.poll();
                     if (change != null)
@@ -42,7 +59,9 @@ public class ThreadRadExposure extends Thread
                         updateLocation(change);
                     }
                 }
-                sleep(1000); //Sleep for 1 second
+
+                //Nothing left to do, then sleep for 1 second before checking on updates
+                sleep(1000);
             }
             catch (Exception e)
             {
@@ -52,6 +71,60 @@ public class ThreadRadExposure extends Thread
 
         //If stopped, clear all data
         changeQueue.clear();
+    }
+
+    /**
+     * Called to scan a chunk to add remove calls
+     *
+     * @param chunk
+     */
+    protected void queueRemove(RadiationChunk chunk)
+    {
+        if (chunk != null)
+        {
+            for (RadiationLayer layer : chunk.getLayers())
+            {
+                for (int cx = 0; cx < 16; cx++)
+                {
+                    for (int cz = 0; cz < 16; cz++)
+                    {
+                        if (layer.getData(cx, cz) > 0)
+                        {
+                            int x = cx + chunk.xPosition * 16;
+                            int z = cz + chunk.xPosition * 16;
+                            changeQueue.add(new RadChange(chunk.dimension, x, layer.y_index, z, layer.getData(cx, cz), 0));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Called to scan a chunk to add addition calls
+     *
+     * @param chunk
+     */
+    protected void queueAddition(RadiationChunk chunk)
+    {
+        if (chunk != null)
+        {
+            for (RadiationLayer layer : chunk.getLayers())
+            {
+                for (int cx = 0; cx < 16; cx++)
+                {
+                    for (int cz = 0; cz < 16; cz++)
+                    {
+                        if (layer.getData(cx, cz) > 0)
+                        {
+                            int x = cx + chunk.xPosition * 16;
+                            int z = cz + chunk.xPosition * 16;
+                            changeQueue.add(new RadChange(chunk.dimension, x, layer.y_index, z, 0, layer.getData(cx, cz)));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -218,5 +291,15 @@ public class ThreadRadExposure extends Thread
     {
         shouldRun = false;
         AtomicScience.logger.info("ThreadRadExposure: Stopping thread");
+    }
+
+    public void removeChunk(RadiationChunk chunk)
+    {
+
+    }
+
+    public void addChunk(RadiationChunk chunk)
+    {
+
     }
 }

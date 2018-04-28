@@ -122,7 +122,7 @@ public class RadiationChunk
      */
     protected boolean hasLayer(int y)
     {
-        return layers != null && y >= yStart && y <= getLayerEnd() && layers[getIndex(y)] != null;
+        return getLayers() != null && y >= getYStart() && y <= getLayerEnd() && getLayers()[getIndex(y)] != null;
     }
 
     /**
@@ -132,7 +132,7 @@ public class RadiationChunk
      */
     public int getLayerEnd()
     {
-        return yStart + layers.length - 1;
+        return getYStart() + getLayers().length - 1;
     }
 
     /**
@@ -143,9 +143,9 @@ public class RadiationChunk
     protected void removeLayer(int y)
     {
         int index = getIndex(y);
-        if (index >= 0 && index < layers.length)
+        if (index >= 0 && index < getLayers().length)
         {
-            layers[index] = null;
+            getLayers()[index] = null;
         }
     }
 
@@ -158,18 +158,18 @@ public class RadiationChunk
     protected RadiationLayer getLayer(int y)
     {
         //Init array if not initialized
-        if (layers == null)
+        if (getLayers() == null)
         {
             layers = new RadiationLayer[11];
             yStart = Math.max(0, y - 10);
         }
         //Check if we need to increase layer array to fit a new value
-        else if (y < yStart)
+        else if (y < getYStart())
         {
-            final RadiationLayer[] oldLayers = layers;
+            final RadiationLayer[] oldLayers = getLayers();
 
             //Increase array size by 5 more than expected y level, if under 10 fully expand to zero
-            int increase = yStart > 10 ? ((yStart - y) + 5) : yStart;
+            int increase = getYStart() > 10 ? ((getYStart() - y) + 5) : getYStart();
 
             //New array
             int newLength = Math.min(getChunkHeight(), oldLayers.length + increase);
@@ -178,33 +178,33 @@ public class RadiationChunk
             //Copy array
             for (int i = 0; i < oldLayers.length; i++)
             {
-                layers[i + increase] = oldLayers[i];
+                getLayers()[i + increase] = oldLayers[i];
             }
 
             //Set new y start
-            yStart = yStart - increase;
+            yStart = getYStart() - increase;
         }
         else if (y > getLayerEnd())
         {
-            RadiationLayer[] oldLayers = layers;
+            RadiationLayer[] oldLayers = getLayers();
 
             //Increase array size by 5 above y
-            int increase = y - (yStart + layers.length) + 5;
+            int increase = y - (getYStart() + getLayers().length) + 5;
             layers = new RadiationLayer[Math.min(getChunkHeight(), oldLayers.length + increase)];
 
             //Copy array
             for (int i = 0; i < oldLayers.length; i++)
             {
-                layers[i] = oldLayers[i];
+                getLayers()[i] = oldLayers[i];
             }
         }
 
         //If layer is null, create layer
-        if (layers[getIndex(y)] == null)
+        if (getLayers()[getIndex(y)] == null)
         {
-            layers[getIndex(y)] = new RadiationLayer(y);
+            getLayers()[getIndex(y)] = new RadiationLayer(y);
         }
-        return layers[getIndex(y)];
+        return getLayers()[getIndex(y)];
     }
 
     /**
@@ -215,7 +215,7 @@ public class RadiationChunk
      */
     protected int getIndex(int y)
     {
-        return y - yStart;
+        return y - getYStart();
     }
 
     /**
@@ -225,14 +225,14 @@ public class RadiationChunk
      */
     public void save(NBTTagCompound tag)
     {
-        if (layers != null)
+        if (getLayers() != null)
         {
-            tag.setInteger(NBT_Y_START, yStart);
-            tag.setInteger(NBT_SIZE, layers.length);
+            tag.setInteger(NBT_Y_START, getYStart());
+            tag.setInteger(NBT_SIZE, getLayers().length);
             NBTTagList list = new NBTTagList();
-            for (int i = 0; i < layers.length; i++)
+            for (int i = 0; i < getLayers().length; i++)
             {
-                RadiationLayer layer = layers[i];
+                RadiationLayer layer = getLayers()[i];
                 if (layer != null && !layer.isEmpty())
                 {
                     NBTTagCompound save = new NBTTagCompound();
@@ -297,7 +297,17 @@ public class RadiationChunk
             }
 
             //Insert layer
-            layers[index] = layer;
+            getLayers()[index] = layer;
         }
+    }
+
+    public RadiationLayer[] getLayers()
+    {
+        return layers;
+    }
+
+    public int getYStart()
+    {
+        return yStart;
     }
 }

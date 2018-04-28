@@ -85,8 +85,17 @@ public class RadiationMap
     {
         if (loadedChunks.containsKey(index))
         {
+            if(isMaterialMap)
+            {
+                RadiationChunk chunk = loadedChunks.get(index);
+                if (chunk != null)
+                {
+                    RadiationSystem.THREAD_RAD_EXPOSURE.removeChunk(chunk);
+                }
+            }
             //TODO maybe fire events?
             loadedChunks.remove(index);
+
         }
     }
 
@@ -136,12 +145,25 @@ public class RadiationMap
         //init chunk if missing
         if (radiationChunk == null)
         {
-            radiationChunk = new RadiationChunk(chunk.worldObj.provider.dimensionId, chunk.zPosition, chunk.xPosition);
-            loadedChunks.put(index, radiationChunk);
+            radiationChunk = createNewChunk(chunk.worldObj.provider.dimensionId, chunk.zPosition, chunk.xPosition);
         }
 
         //Load
         radiationChunk.load(data.getCompoundTag(RadiationSystem.NBT_CHUNK_DATA));
+    }
+
+    protected RadiationChunk createNewChunk(int dim, int chunkX, int chunkZ)
+    {
+        long index = index(chunkX, chunkZ);
+        RadiationChunk radiationChunk = new RadiationChunk(dim, chunkX, chunkZ);
+        loadedChunks.put(index, radiationChunk);
+
+        if(isMaterialMap)
+        {
+           RadiationSystem.THREAD_RAD_EXPOSURE.addChunk(radiationChunk);
+        }
+
+        return radiationChunk;
     }
 
     ///----------------------------------------------------------------
@@ -173,6 +195,11 @@ public class RadiationMap
      */
     protected long index(Chunk chunk)
     {
-        return ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition);
+        return index(chunk.xPosition, chunk.zPosition);
+    }
+
+    protected long index(int chunkX, int chunkZ)
+    {
+        return ChunkCoordIntPair.chunkXZ2Int(chunkX, chunkZ);
     }
 }
