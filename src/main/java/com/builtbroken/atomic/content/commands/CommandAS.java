@@ -60,16 +60,16 @@ public class CommandAS extends CommandBase
     {
         if (sender instanceof EntityPlayer)
         {
-            sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " rad -> show radiation of self"));
-            sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " rad set <value> -> set radiation of self"));
-            sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " exposure -> shows radiation of where your standing"));
+            sender.addChatMessage(new ChatComponentText(getCommandName() + " rad -> show radiation of self"));
+            sender.addChatMessage(new ChatComponentText(getCommandName() + " rad set <value> -> set radiation of self"));
+            sender.addChatMessage(new ChatComponentText(getCommandName() + " exposure -> shows radiation of where your standing"));
         }
-        sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " rad <player> -> show radiation of player"));
-        sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " rad set <player> <value> -> set radiation of player"));
-        sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " exposure <player> -> shows the radiation exposure of where the player is standing"));
+        sender.addChatMessage(new ChatComponentText(getCommandName() + " rad <player> -> show radiation of player"));
+        sender.addChatMessage(new ChatComponentText(getCommandName() + " rad set <player> <value> -> set radiation of player"));
+        sender.addChatMessage(new ChatComponentText(getCommandName() + " exposure <player> -> shows the radiation exposure of where the player is standing"));
 
-        sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " material get <dim> <x> <y> <z> -> gets the radioactive material level of the block position"));
-        sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " material set <dim> <x> <y> <z> <value> -> sets the radioactive material level of the block position"));
+        sender.addChatMessage(new ChatComponentText(getCommandName() + " material get <dim> <x> <y> <z> -> gets the radioactive material level of the block position"));
+        sender.addChatMessage(new ChatComponentText(getCommandName() + " material set <dim> <x> <y> <z> <value> -> sets the radioactive material level of the block position"));
     }
 
     /**
