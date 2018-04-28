@@ -178,7 +178,7 @@ public class RadiationSystem
         RadiationMap map = dimensionToExposureMap.get(dim);
         if (map == null && init)
         {
-            map = new RadiationMap(dim);
+            map = new RadiationMap(dim, false);
             dimensionToExposureMap.put(dim, map);
         }
         return map;
@@ -217,7 +217,7 @@ public class RadiationSystem
         RadiationMap map = dimensionToMaterialMap.get(dim);
         if (map == null && init)
         {
-            map = new RadiationMap(dim);
+            map = new RadiationMap(dim, true);
             dimensionToMaterialMap.put(dim, map);
         }
         return map;

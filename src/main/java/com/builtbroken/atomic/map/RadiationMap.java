@@ -1,8 +1,10 @@
 package com.builtbroken.atomic.map;
 
+import com.builtbroken.atomic.map.events.RadiationMapEvent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.HashMap;
 
@@ -18,12 +20,14 @@ import java.util.HashMap;
 public class RadiationMap
 {
     public final int dim;
+    public boolean isMaterialMap;
 
     protected final HashMap<Long, RadiationChunk> loadedChunks = new HashMap();
 
-    public RadiationMap(int dim)
+    public RadiationMap(int dim, boolean isMaterialMap)
     {
         this.dim = dim;
+        this.isMaterialMap = isMaterialMap;
     }
 
     ///----------------------------------------------------------------
@@ -45,6 +49,16 @@ public class RadiationMap
         RadiationChunk chunk = getChunkFromPosition(x, z, amount > 0);
         if (chunk != null)
         {
+            if(isMaterialMap)
+            {
+                int prev_value = getData(x, y, z);
+                RadiationMapEvent.UpdateRadiationMaterial event = new RadiationMapEvent.UpdateRadiationMaterial(this, x, y, z, prev_value, amount);
+                if(MinecraftForge.EVENT_BUS.post(event))
+                {
+                    return false;
+                }
+                amount = event.new_value;
+            }
             return chunk.setValue(x >> 4, y, z >> 4, amount);
         }
         return true;
