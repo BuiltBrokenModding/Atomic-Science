@@ -25,7 +25,7 @@ public class RadiationSystem
     /** Primary radiation system, handles events and access calls */
     public static final RadiationSystem INSTANCE = new RadiationSystem();
     /** Thread used to calculate exposure values per location */
-    public static final ThreadRadExposure THREAD_RAD_EXPOSURE = new ThreadRadExposure();
+    public static ThreadRadExposure THREAD_RAD_EXPOSURE;
 
     /** Dimension to radiation material map, saved to world and updated over time */
     protected final HashMap<Integer, RadiationMap> dimensionToMaterialMap = new HashMap();

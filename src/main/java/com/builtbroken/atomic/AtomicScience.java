@@ -7,13 +7,11 @@ import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.map.RadiationSystem;
+import com.builtbroken.atomic.map.thread.ThreadRadExposure;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
@@ -105,19 +103,26 @@ public class AtomicScience
     }
 
     @Mod.EventHandler
+    public void serverAboutToStart(FMLServerAboutToStartEvent event)
+    {
+        //Start thread
+        RadiationSystem.THREAD_RAD_EXPOSURE = new ThreadRadExposure();
+        RadiationSystem.THREAD_RAD_EXPOSURE.start();
+    }
+
+    @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event)
     {
         // Setup command
         ICommandManager commandManager = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
         ServerCommandManager serverCommandManager = ((ServerCommandManager) commandManager);
         serverCommandManager.registerCommand(new CommandAS());
-
-        RadiationSystem.THREAD_RAD_EXPOSURE.start();
     }
 
     @Mod.EventHandler
-    public void serverStopping(FMLServerStartingEvent event)
+    public void serverStopping(FMLServerStoppingEvent event)
     {
+        //Kill old thread
         RadiationSystem.THREAD_RAD_EXPOSURE.kill();
     }
 }
