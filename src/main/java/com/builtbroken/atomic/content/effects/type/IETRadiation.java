@@ -5,7 +5,6 @@ import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.effects.IndirectEffectType;
 import com.builtbroken.atomic.content.effects.events.IndirectEffectEntityEvent;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Indirect effect type for radiation
@@ -35,16 +34,7 @@ public class IETRadiation extends IndirectEffectType
         IndirectEffectEntityEvent.Pre effectEntityEvent = new IndirectEffectEntityEvent.Pre(source, this, target, power, power);
         if (!effectEntityEvent.isCanceled())
         {
-            //Get data
-            final NBTTagCompound radiation_data = ASIndirectEffects.getRadiationData(target, true);
-
-            //Get last RAD value
-            float rads = radiation_data.getFloat(ASIndirectEffects.NBT_RADS);
-
-            //Add
-            rads += effectEntityEvent.appliedPower;
-
-            ASIndirectEffects.setRadiation(target, rads);
+            ASIndirectEffects.addRadiation(target, effectEntityEvent.appliedPower);
         }
     }
 }

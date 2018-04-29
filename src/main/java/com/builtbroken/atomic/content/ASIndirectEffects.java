@@ -4,6 +4,8 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.api.armor.IAntiPoisonArmor;
 import com.builtbroken.atomic.api.effect.IIndirectEffectInstance;
+import com.builtbroken.atomic.api.effect.IIndirectEffectSource;
+import com.builtbroken.atomic.content.effects.IndirectEffectInstance;
 import com.builtbroken.atomic.content.effects.RadiationEntityEventHandler;
 import com.builtbroken.atomic.content.effects.type.IETRadiation;
 import net.minecraft.entity.Entity;
@@ -26,10 +28,9 @@ public class ASIndirectEffects
     public static final String NBT_RADS_PREV = "prev_rads";
     /** NBT tag used to track prev environment value to see if a packet is needed */
     public static final String NBT_RADS_ENVIROMENT_PREV = "prev_env_rads";
-    /** NBT tag used to store last rad add time on an entity */
-    public static final String NBT_RADS_ADD = "add_time";
+
     /** NBT tag used to store last rad remove time on an entity */
-    public static final String NBT_RADS_REMOVE = "remove_time";
+    public static final String NBT_RADS_REMOVE_TIMER = "remove_timer";
 
     public static void register()
     {
@@ -52,17 +53,24 @@ public class ASIndirectEffects
         return entity.getEntityData().getCompoundTag(NBT_RADIATION_DATA);
     }
 
+    /**
+     * Called to set an entities radiation value
+     *
+     * @param entity
+     * @param value
+     */
     public static void setRadiation(Entity entity, float value)
     {
         NBTTagCompound data = getRadiationData(entity, true);
-
-        //Set value
         data.setFloat(NBT_RADS, value);
-
-        //Track last time value was set
-        data.setLong(ASIndirectEffects.NBT_RADS_ADD, System.currentTimeMillis());
     }
 
+    /**
+     * Called to get an entities radiation value
+     *
+     * @param entity
+     * @return
+     */
     public static float getRadiation(Entity entity)
     {
         if (hasRadiationData(entity))
@@ -72,31 +80,67 @@ public class ASIndirectEffects
         return 0;
     }
 
+    /**
+     * Called to add radiation to the entity
+     *
+     * @param entity
+     * @param value
+     */
     public static void addRadiation(Entity entity, float value)
     {
         float current = getRadiation(entity);
         current += value;
         setRadiation(entity, current);
+
+        //Rest remove timer, as it can only run if radiation is not being added
+        NBTTagCompound data = getRadiationData(entity, true);
+        data.setInteger(NBT_RADS_REMOVE_TIMER, 0);
+
         //TODO fire event
     }
 
+    /**
+     * Called to remove radiation from the entity
+     *
+     * @param entity
+     * @param value
+     */
     public static void removeRadiation(Entity entity, float value)
     {
         float current = getRadiation(entity);
         current -= value;
-        setRadiation(entity, current);
+        setRadiation(entity, Math.max(0, current));
         //TODO fire event
     }
 
+    /**
+     * Check if the entity has radiation data
+     *
+     * @param entity
+     * @return
+     */
     public static boolean hasRadiationData(Entity entity)
     {
         return entity.getEntityData().hasKey(NBT_RADIATION_DATA, 10);
     }
 
     /**
+     * Applies a generic radiation type to an entity with the amount
+     *
+     * @param entity - entity to hit
+     * @param source - source of the radiation
+     * @param amount - amount of radiation
+     */
+    public static void applyIndirectEffect(EntityLivingBase entity, IIndirectEffectSource source, float amount)
+    {
+        IndirectEffectInstance indirectEffectInstance = new IndirectEffectInstance(AtomicScienceAPI.RADIATION, source, amount);
+        applyIndirectEffect(entity, indirectEffectInstance);
+    }
+
+    /**
      * Called to apply an indirect effect to the entity. Handles protection checks, events, and armor callbacks.
      *
-     *  @param entity                 - entity to hit
+     * @param entity                 - entity to hit
      * @param indirectEffectInstance - instance containing source, power, and type
      */
     public static void applyIndirectEffect(EntityLivingBase entity, IIndirectEffectInstance indirectEffectInstance)

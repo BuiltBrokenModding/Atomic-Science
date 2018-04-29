@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.effects;
 
 import com.builtbroken.atomic.config.ConfigRadiation;
 import com.builtbroken.atomic.content.ASIndirectEffects;
+import com.builtbroken.atomic.content.effects.source.SourceWrapperPosition;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.network.packet.sync.PacketPlayerRadiation;
 import com.builtbroken.atomic.map.RadiationSystem;
@@ -21,7 +22,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 public class RadiationEntityEventHandler
 {
     //TODO use Java 8 functions or interface object to trigger effects (makes the code easier to work with)
-    //TODO slowly decrease (1 rad per 5 min with an exponential curve, do not remove negative effects)
     //TODO reduce max HP base on rad level (1Hp per 10 rad, max of 10hp [50%])
     //TODO if over 200 start removing hp slowly (simulation radiation poisoning)
     //TODO if over 100 have character suffer potion effects
@@ -56,29 +56,34 @@ public class RadiationEntityEventHandler
         float remExposure = RadiationSystem.INSTANCE.getRemExposure(entity);
         if (remExposure > 0)
         {
-            ASIndirectEffects.addRadiation(entity, remExposure);
+            SourceWrapperPosition sourceWrapperPosition = new SourceWrapperPosition(
+                    entity.worldObj,
+                    entity.posX,
+                    entity.posY,
+                    entity.posZ
+            );
+            ASIndirectEffects.applyIndirectEffect(entity, sourceWrapperPosition, remExposure);
         }
         else if (ASIndirectEffects.hasRadiationData(entity))
         {
             //Get data
             final NBTTagCompound data = ASIndirectEffects.getRadiationData(entity, false);
-            final long time = System.currentTimeMillis();
 
             //Only remove after add timer
-            final long addTime = data.getLong(ASIndirectEffects.NBT_RADS_ADD);
-            if (time - addTime > ConfigRadiation.RAD_REMOVE_DELAY)
+            int removeTimer = data.getInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER);
+            if (removeTimer > ConfigRadiation.RAD_REMOVE_DELAY)
             {
-                //Only remove after remove timer
-                final long removeTime = data.getLong(ASIndirectEffects.NBT_RADS_REMOVE);
-                if (time - removeTime > ConfigRadiation.RAD_REMOVE_TIMER)
-                {
-                    //Remove a percentage of radiation
-                    float amountToRemove = ASIndirectEffects.getRadiation(entity) * ConfigRadiation.RAD_REMOVE_PERCENTAGE;
-                    ASIndirectEffects.removeRadiation(entity, amountToRemove);
+                //Remove a percentage of radiation
+                float amountToRemove = ASIndirectEffects.getRadiation(entity) * ConfigRadiation.RAD_REMOVE_PERCENTAGE;
+                ASIndirectEffects.removeRadiation(entity, amountToRemove);
 
-                    //Update remove timer
-                    data.setLong(ASIndirectEffects.NBT_RADS_REMOVE, time);
-                }
+                //Update remove timer
+                data.setInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER, 0);
+            }
+            else
+            {
+                //Update remove timer
+                data.setInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER, removeTimer + 1);
             }
         }
     }

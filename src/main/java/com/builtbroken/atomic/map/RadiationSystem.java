@@ -77,6 +77,9 @@ public class RadiationSystem
         //Average TODO build alg to use body size (collision box)
         value /= 3;
 
+        //Convert from mili rem to rem
+        value /= 1000;
+
         return value;
     }
 
