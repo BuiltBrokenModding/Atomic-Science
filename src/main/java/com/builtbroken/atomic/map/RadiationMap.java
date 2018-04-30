@@ -41,7 +41,7 @@ public class RadiationMap
         RadiationChunk chunk = getChunkFromPosition(x, z, false);
         if (chunk != null)
         {
-            return chunk.getValue(x >> 4, y, z >> 4);
+            return chunk.getValue(x & 15, y, z & 15);
         }
         return 0;
     }
@@ -64,7 +64,7 @@ public class RadiationMap
             }
 
             //set value
-            boolean hasChanged = chunk.setValue(x >> 4, y, z >> 4, amount);
+            boolean hasChanged = chunk.setValue(x & 15, y, z & 15, amount);
 
             //if changed mark chunk so it saves
             if (hasChanged)
