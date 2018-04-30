@@ -101,6 +101,11 @@ public class ThreadRadExposure extends Thread
                             int x = cx + chunk.xPosition * 16;
                             int z = cz + chunk.xPosition * 16;
                             changeQueue.add(new RadChange(chunk.dimension, x, layer.y_index, z, layer.getData(cx, cz), 0));
+                            if (AtomicScience.runningAsDev)
+                            {
+                                AtomicScience.logger.info(String.format("ThreadReadExposure: Removing position[%s %s %s] " +
+                                        "to queue with %s mats", x, layer.y_index, z, layer.getData(cx, cz)));
+                            }
                         }
                     }
                 }
@@ -128,6 +133,11 @@ public class ThreadRadExposure extends Thread
                             int x = cx + chunk.xPosition * 16;
                             int z = cz + chunk.xPosition * 16;
                             changeQueue.add(new RadChange(chunk.dimension, x, layer.y_index, z, 0, layer.getData(cx, cz)));
+                            if (AtomicScience.runningAsDev)
+                            {
+                                AtomicScience.logger.info(String.format("ThreadReadExposure: Added position[%s %s %s] " +
+                                        "to queue with %s mats", x, layer.y_index, z, layer.getData(cx, cz)));
+                            }
                         }
                     }
                 }
@@ -171,15 +181,15 @@ public class ThreadRadExposure extends Thread
     /**
      * Removes the old value from the map
      *
-     * @param map       - map to edit
-     * @param old_value - old material value
-     * @param cx        - change location
-     * @param cy        - change location
-     * @param cz        - change location
+     * @param map   - map to edit
+     * @param value - value to remove
+     * @param cx    - change location
+     * @param cy    - change location
+     * @param cz    - change location
      */
-    protected void removeValue(RadiationMap map, int old_value, int cx, int cy, int cz)
+    protected void removeValue(RadiationMap map, int value, int cx, int cy, int cz)
     {
-        final int rad = getRadFromMaterial(old_value);
+        final int rad = getRadFromMaterial(value);
         final int edit_range = (int) Math.floor(getDecayRange(rad));
         for (int mx = -edit_range; mx <= edit_range; mx++)
         {
@@ -212,15 +222,20 @@ public class ThreadRadExposure extends Thread
     /**
      * Removes the old value from the map
      *
-     * @param map       - map to edit
-     * @param old_value - old material value
-     * @param cx        - change location
-     * @param cy        - change location
-     * @param cz        - change location
+     * @param map   - map to edit
+     * @param value - value to set
+     * @param cx    - change location
+     * @param cy    - change location
+     * @param cz    - change location
      */
-    protected void setValue(RadiationMap map, int old_value, int cx, int cy, int cz)
+    protected void setValue(RadiationMap map, int value, int cx, int cy, int cz)
     {
-        final int rad = getRadFromMaterial(old_value);
+        if (AtomicScience.runningAsDev)
+        {
+            AtomicScience.logger.info(String.format("ThreadReadExposure: Settiing position[%s %s %s] " +
+                    "to %s mats", cx, cy, cz, value));
+        }
+        final int rad = getRadFromMaterial(value);
         final int edit_range = (int) Math.floor(getDecayRange(rad));
         for (int mx = -edit_range; mx <= edit_range; mx++)
         {
@@ -244,6 +259,12 @@ public class ThreadRadExposure extends Thread
 
                         //Save
                         map.setData(x, y, z, Math.max(0, current_value));
+
+                        if (AtomicScience.runningAsDev)
+                        {
+                            AtomicScience.logger.info(String.format("\t\tRad at position[%s %s %s] " +
+                                    "is %s", x, y, z, current_value));
+                        }
                     }
                 }
             }
