@@ -16,16 +16,18 @@ public class PacketPlayerRadiation implements IPacket
 {
     public float rads;
     public float rads_area;
+    public int rad_remove_timer;
 
     public PacketPlayerRadiation()
     {
         //Empty for default packet handling
     }
 
-    public PacketPlayerRadiation(float rads, float rads_area)
+    public PacketPlayerRadiation(float rads, float rads_area, int rad_remove_timer)
     {
         this.rads = rads;
         this.rads_area = rads_area;
+        this.rad_remove_timer = rad_remove_timer;
     }
 
     @Override
@@ -33,6 +35,7 @@ public class PacketPlayerRadiation implements IPacket
     {
         buffer.writeFloat(rads);
         buffer.writeFloat(rads_area);
+        buffer.writeInt(rad_remove_timer);
     }
 
     @Override
@@ -40,6 +43,7 @@ public class PacketPlayerRadiation implements IPacket
     {
         rads = buffer.readFloat();
         rads_area = buffer.readFloat();
+        rad_remove_timer = buffer.readInt();
     }
 
     @Override
@@ -47,5 +51,6 @@ public class PacketPlayerRadiation implements IPacket
     {
         ClientProxy.RAD_EXPOSURE = rads_area;
         ClientProxy.RAD_PLAYER = rads;
+        ClientProxy.RAD_REMOVE_TIMER = rad_remove_timer;
     }
 }

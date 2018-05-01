@@ -1,7 +1,5 @@
 package com.builtbroken.atomic.config;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Main config for the mod
  *
@@ -39,10 +37,8 @@ public class ConfigRadiation
     /** Enable the entire system */
     public static boolean ENABLE = true;
 
-    /** Time to wait after radiation was added to remove */
-    public static int RAD_REMOVE_DELAY = (int) TimeUnit.MINUTES.toMillis(3);
     /** Time to wait from last radiation remove to remove again */
-    public static int RAD_REMOVE_TIMER = (int) TimeUnit.MINUTES.toMillis(5);
+    public static int RAD_REMOVE_TIMER = 5 * 60 * 20; //5mins
     /** Amount of radiation to remove (as a percentage) */
     public static float RAD_REMOVE_PERCENTAGE = 0.01f;
 

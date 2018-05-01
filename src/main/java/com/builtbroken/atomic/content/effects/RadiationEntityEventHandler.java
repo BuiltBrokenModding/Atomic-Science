@@ -71,7 +71,7 @@ public class RadiationEntityEventHandler
 
             //Only remove after add timer
             int removeTimer = data.getInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER);
-            if (removeTimer > ConfigRadiation.RAD_REMOVE_DELAY)
+            if (removeTimer > ConfigRadiation.RAD_REMOVE_TIMER)
             {
                 //Remove a percentage of radiation
                 float amountToRemove = ASIndirectEffects.getRadiation(entity) * ConfigRadiation.RAD_REMOVE_PERCENTAGE;
@@ -117,7 +117,7 @@ public class RadiationEntityEventHandler
             //Only sync if change has happened in data
             if (delta_rad > syncError || delta_exposure > syncError || player.ticksExisted % 20 == 0)
             {
-                PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(rad, exposure), player);
+                PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(rad, exposure, data.getInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER)), player);
 
                 //Update previous, always do in sync to prevent slow creep of precision errors
                 data.setFloat(ASIndirectEffects.NBT_RADS_PREV, rad);
@@ -134,7 +134,7 @@ public class RadiationEntityEventHandler
             //Clear data client side for respawn
             if (event.entity instanceof EntityPlayerMP)
             {
-                PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(0, 0), (EntityPlayerMP) event.entity);
+                PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(0, 0, 0), (EntityPlayerMP) event.entity);
             }
         }
     }
