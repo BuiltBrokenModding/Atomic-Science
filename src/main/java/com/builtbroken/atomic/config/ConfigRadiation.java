@@ -40,7 +40,7 @@ public class ConfigRadiation
     /** Time to wait from last radiation remove to remove again */
     public static int RAD_REMOVE_TIMER = 5 * 60 * 20; //5mins
     /** Amount of radiation to remove (as a percentage) */
-    public static float RAD_REMOVE_PERCENTAGE = 0.01f;
+    public static float RAD_REMOVE_PERCENTAGE = 0.05f;
 
     /** Amount of rads required to kill the player */
     public static float RADIATION_DEATH_POINT = 1000;

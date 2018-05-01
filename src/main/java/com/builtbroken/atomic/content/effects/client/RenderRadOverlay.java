@@ -42,12 +42,12 @@ public class RenderRadOverlay
 
             //Get data
             final float rad_player = interpolate(ClientProxy.PREV_RAD_PLAYER, ClientProxy.RAD_PLAYER, event.partialTicks);
-            final float rad_area = interpolate(ClientProxy.PREV_RAD_EXPOSURE, ClientProxy.RAD_EXPOSURE, event.partialTicks) * 20;
-            final float rad_dead_min = ClientProxy.RAD_PLAYER / (20 * 60); //Radiation needed to die in 1 min
+            final float rad_area = interpolate(ClientProxy.PREV_RAD_EXPOSURE, ClientProxy.RAD_EXPOSURE, event.partialTicks);
+            final float rad_dead_min = ClientProxy.RAD_PLAYER / 60; //Radiation needed to die in 1 min
 
             //Format
             String remDisplay = formatDisplay("REM:", rad_player);
-            String radDisplay = formatDisplay("RAD: ", rad_area);
+            String radDisplay = formatDisplay("RAD: ", rad_area* 20 );
 
             //Render
             Render2DHelper.renderTextWithShadow(remDisplay, left, top, interpolate(startColor, endColor, rad_player / ConfigRadiation.RADIATION_DEATH_POINT).getRGB());
@@ -85,6 +85,14 @@ public class RenderRadOverlay
 
     private float interpolate(float a, float b, float proportion)
     {
+        if(Float.isNaN(a))
+        {
+            return Float.isNaN(b) ? 0 : b;
+        }
+        else if(Float.isNaN(b))
+        {
+            return Float.isNaN(a) ? 0 : a;
+        }
         return (a + ((b - a) * proportion));
     }
 
