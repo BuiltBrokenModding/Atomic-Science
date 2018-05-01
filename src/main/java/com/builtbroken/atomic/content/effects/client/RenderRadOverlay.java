@@ -43,7 +43,7 @@ public class RenderRadOverlay
             //Get data
             final float rad_player = interpolate(ClientProxy.PREV_RAD_PLAYER, ClientProxy.RAD_PLAYER, event.partialTicks);
             final float rad_area = interpolate(ClientProxy.PREV_RAD_EXPOSURE, ClientProxy.RAD_EXPOSURE, event.partialTicks);
-            final float rad_dead_min = ClientProxy.RAD_PLAYER / 60; //Radiation needed to die in 1 min
+            final float rad_dead_min = ConfigRadiation.RADIATION_DEATH_POINT / (60 * 20); //Radiation needed to die in 1 min
 
             //Format
             String remDisplay = formatDisplay("REM:", rad_player);

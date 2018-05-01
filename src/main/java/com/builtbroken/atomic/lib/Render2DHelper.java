@@ -249,6 +249,7 @@ public class Render2DHelper
 
     /**
      * Used by the overlay to render text with shadow behind the text
+     *
      * @param text
      * @param x
      * @param y
@@ -256,11 +257,14 @@ public class Render2DHelper
      */
     public static void renderTextWithShadow(String text, int x, int y, int colorRGB)
     {
+        GL11.glPushMatrix();
         FontRenderer fontrenderer = Minecraft.getMinecraft().fontRenderer;
         fontrenderer.drawString(text, x + 1, y, 0);
         fontrenderer.drawString(text, x - 1, y, 0);
         fontrenderer.drawString(text, x, y + 1, 0);
         fontrenderer.drawString(text, x, y - 1, 0);
         fontrenderer.drawString(text, x, y, colorRGB);
+        GL11.glColor4f(1, 1, 1, 1);
+        GL11.glPopMatrix();
     }
 }
