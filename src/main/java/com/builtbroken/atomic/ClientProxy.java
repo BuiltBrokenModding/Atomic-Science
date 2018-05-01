@@ -8,6 +8,13 @@ public class ClientProxy extends CommonProxy
     public static float RAD_EXPOSURE = 0;
     /** Client Cache: Amount of rads the player has taken */
     public static float RAD_PLAYER = 0;
+    /** Client Cache: Time until radiation is removed from the player again */
+    public static int RAD_REMOVE_TIMER = 0;
+
+    /** Client Cache: Amount of rads in the environment were the player is standing */
+    public static float PREV_RAD_EXPOSURE = 0;
+    /** Client Cache: Amount of rads the player has taken */
+    public static float PREV_RAD_PLAYER = 0;
 
     @Override
     public void preInit()
