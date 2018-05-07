@@ -152,11 +152,11 @@ public class ThreadRadExposure extends Thread
      */
     protected void updateLocation(RadChange change)
     {
-        //Get map
+        //Get radiation exposure map
         DataMap map;
-        synchronized (MapHandler.MATERIAL_MAP)
+        synchronized (MapHandler.RADIATION_MAP)
         {
-            map = MapHandler.MATERIAL_MAP.getMap(change.dim, true);
+            map = MapHandler.RADIATION_MAP.getMap(change.dim, true);
         }
 
         long time = System.nanoTime();

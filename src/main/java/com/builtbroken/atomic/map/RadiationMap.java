@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.map.data.DataMap;
-import com.builtbroken.atomic.map.events.RadiationMapEvent;
+import com.builtbroken.atomic.map.events.MapSystemEvent;
 import com.builtbroken.atomic.map.thread.RadChange;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -18,7 +18,7 @@ public class RadiationMap extends MapSystem
 {
     public RadiationMap()
     {
-        super(null); //Doesn't save
+        super(MapHandler.RAD_EXPOSURE_MAP_ID, null); //Doesn't save
     }
 
     ///----------------------------------------------------------------
@@ -76,10 +76,28 @@ public class RadiationMap extends MapSystem
     ///--------Edit events
     ///----------------------------------------------------------------
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onRadiationChange(RadiationMapEvent.UpdateRadiationMaterial event)
+    @SubscribeEvent()
+    public void onChunkAdded(MapSystemEvent.AddChunk event)
     {
-        if (event.prev_value != event.new_value)
+        if (event.map.mapSystem == MapHandler.MATERIAL_MAP)
+        {
+            MapHandler.THREAD_RAD_EXPOSURE.queueChunkForAddition(event.chunk);
+        }
+    }
+
+    @SubscribeEvent()
+    public void onChunkRemove(MapSystemEvent.RemoveChunk event)
+    {
+        if (event.map.mapSystem == MapHandler.MATERIAL_MAP)
+        {
+            MapHandler.THREAD_RAD_EXPOSURE.queueChunkForRemoval(event.chunk);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onRadiationChange(MapSystemEvent.UpdateValue event)
+    {
+        if (event.map.mapSystem == MapHandler.MATERIAL_MAP && event.prev_value != event.new_value)
         {
             MapHandler.THREAD_RAD_EXPOSURE.changeQueue.add(new RadChange(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
         }

@@ -18,11 +18,19 @@ public class MapSystem
     /** Key used to save to the chunk */
     protected final String saveKey;
 
+    /** Unique ID for tracking the map in events */
+    protected final String id;
+
     /** Dimension to data map, saved to world and updated over time */
     protected final HashMap<Integer, DataMap> dimensionToMap = new HashMap();
 
-    public MapSystem(String saveKey)
+    /**
+     * @param id      - unique ID for tracking the map in events
+     * @param saveKey - key used to save data to NBT of the game's map
+     */
+    public MapSystem(String id, String saveKey)
     {
+        this.id = id;
         this.saveKey = saveKey;
     }
 
@@ -51,7 +59,7 @@ public class MapSystem
 
     protected DataMap newMap(int dim)
     {
-        return new DataMap(dim, false);
+        return new DataMap(this, dim);
     }
 
     /**

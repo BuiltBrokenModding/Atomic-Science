@@ -13,6 +13,6 @@ public class RadMaterialMap extends MapSystem
 
     public RadMaterialMap()
     {
-        super(MapHandler.NBT_RAD_CHUNK);
+        super(MapHandler.RAD_MATERIAL_MAP_ID, MapHandler.NBT_RAD_CHUNK);
     }
 }

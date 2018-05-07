@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.map.data;
 
-import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.events.RadiationMapEvent;
+import com.builtbroken.atomic.map.MapSystem;
+import com.builtbroken.atomic.map.events.MapSystemEvent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
@@ -22,16 +22,15 @@ import java.util.HashMap;
  */
 public class DataMap
 {
+    public final MapSystem mapSystem;
     public final int dim;
-    @Deprecated
-    public boolean isMaterialMap;
 
     protected final HashMap<Long, DataChunk> loadedChunks = new HashMap();
 
-    public DataMap(int dim, boolean isMaterialMap)
+    public DataMap(MapSystem mapSystem, int dim)
     {
+        this.mapSystem = mapSystem;
         this.dim = dim;
-        this.isMaterialMap = isMaterialMap;
     }
 
     ///----------------------------------------------------------------
@@ -53,17 +52,15 @@ public class DataMap
         DataChunk chunk = getChunkFromPosition(x, z, amount > 0);
         if (chunk != null)
         {
+            final int prev_value = getData(x, y, z);
+
             //Fire change event for modification and to trigger exposure map update
-            if (isMaterialMap)  //TODO move to event
+            MapSystemEvent.UpdateValue event = new MapSystemEvent.UpdateValue(this, x, y, z, prev_value, amount);
+            if (MinecraftForge.EVENT_BUS.post(event))
             {
-                int prev_value = getData(x, y, z);
-                RadiationMapEvent.UpdateRadiationMaterial event = new RadiationMapEvent.UpdateRadiationMaterial(this, x, y, z, prev_value, amount);
-                if (MinecraftForge.EVENT_BUS.post(event))
-                {
-                    return false;
-                }
-                amount = event.new_value;
+                return false;
             }
+            amount = event.new_value;
 
             //set value
             boolean hasChanged = chunk.setValue(x & 15, y, z & 15, amount);
@@ -104,15 +101,14 @@ public class DataMap
     {
         if (loadedChunks.containsKey(index))
         {
-            if (isMaterialMap)  //TODO move to event
+            //Trigger event
+            DataChunk chunk = loadedChunks.get(index);
+            if (chunk != null)
             {
-                DataChunk chunk = loadedChunks.get(index);
-                if (chunk != null)
-                {
-                    MapHandler.THREAD_RAD_EXPOSURE.queueChunkForRemoval(chunk);
-                }
+                MinecraftForge.EVENT_BUS.post(new MapSystemEvent.RemoveChunk(this, chunk));
             }
-            //TODO maybe fire events?
+
+            //Remove chunk
             loadedChunks.remove(index);
         }
     }
@@ -170,10 +166,10 @@ public class DataMap
         //Load
         radiationChunk.load(data);
 
-        //Queue to be scanned to update exposure map
-        if (isMaterialMap)  //TODO move to event
+        //Trigger event
+        if (radiationChunk != null)
         {
-            MapHandler.THREAD_RAD_EXPOSURE.queueChunkForAddition(radiationChunk);
+            MinecraftForge.EVENT_BUS.post(new MapSystemEvent.AddChunk(this, radiationChunk));
         }
     }
 

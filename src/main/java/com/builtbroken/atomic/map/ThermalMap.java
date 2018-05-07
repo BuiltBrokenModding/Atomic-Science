@@ -10,6 +10,6 @@ public class ThermalMap extends MapSystem
 {
     public ThermalMap()
     {
-        super(MapHandler.NBT_THERMAL_CHUNK);
+        super(MapHandler.THERMAL_MAP_ID, MapHandler.NBT_THERMAL_CHUNK);
     }
 }
