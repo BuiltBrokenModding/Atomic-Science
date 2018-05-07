@@ -46,8 +46,8 @@ public class RenderRadOverlay
             final float rad_dead_min = ConfigRadiation.RADIATION_DEATH_POINT / (60 * 20); //Radiation needed to die in 1 min
 
             //Format
-            String remDisplay = formatDisplay("REM:", rad_player);
-            String radDisplay = formatDisplay("RAD: ", rad_area* 20 );
+            String remDisplay = formatDisplay("PER:", rad_player, "rem");
+            String radDisplay = formatDisplay("ENV: ", rad_area * 20, "rem/s");
 
             //Render
             Render2DHelper.renderTextWithShadow(remDisplay, left, top, interpolate(startColor, endColor, rad_player / ConfigRadiation.RADIATION_DEATH_POINT).getRGB());
@@ -85,20 +85,20 @@ public class RenderRadOverlay
 
     private float interpolate(float a, float b, float proportion)
     {
-        if(Float.isNaN(a))
+        if (Float.isNaN(a))
         {
             return Float.isNaN(b) ? 0 : b;
         }
-        else if(Float.isNaN(b))
+        else if (Float.isNaN(b))
         {
             return Float.isNaN(a) ? 0 : a;
         }
         return (a + ((b - a) * proportion));
     }
 
-    protected String formatDisplay(String prefix, float number)
+    protected String formatDisplay(String prefix, float number, String sufix)
     {
-        return String.format("%s %6s", prefix, String.format("%.2f", number)); //likely a better way but it works
+        return String.format("%s %6s%s", prefix, String.format("%.2f", number), sufix); //likely a better way but it works
     }
 
 }
