@@ -1,12 +1,12 @@
-package com.builtbroken.atomic.map;
+package com.builtbroken.atomic.map.data;
 
 /**
- * Single Y level of radiation stores in the world
+ * Single Y level of data stores in the world
  *
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/24/2018.
  */
-public class RadiationLayer
+public class DataLayer
 {
     /** Index of this layer */
     public final int y_index;
@@ -17,7 +17,7 @@ public class RadiationLayer
     /** Number of non-zero slots, used to track if layer is empty */
     public int blocksUsed = 0;
 
-    public RadiationLayer(int y_index)
+    public DataLayer(int y_index)
     {
         this.y_index = y_index;
         this.data = new int[16 * 16];

@@ -1,12 +1,12 @@
 package com.builtbroken.test.as.map;
 
-import com.builtbroken.atomic.map.RadiationChunk;
+import com.builtbroken.atomic.map.data.DataChunk;
 import junit.framework.TestCase;
 import net.minecraft.nbt.NBTTagCompound;
 import org.junit.Test;
 
 /**
- * Test cases {@link com.builtbroken.atomic.map.RadiationChunk}
+ * Test cases {@link DataChunk}
  *
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/25/2018.
@@ -16,7 +16,7 @@ public class TestRadChunk extends TestCase
     @Test
     public void testInit()
     {
-        RadiationChunk chunk = new RadiationChunk(1, 3, 2);
+        DataChunk chunk = new DataChunk(1, 3, 2);
         assertEquals("Dim didn't set to 1", 1, chunk.dimension);
         assertEquals("X position didn't set to 3", 3, chunk.xPosition);
         assertEquals("Z position didn't set to 2", 2, chunk.zPosition);
@@ -26,7 +26,7 @@ public class TestRadChunk extends TestCase
     public void testSetGet()
     {
         //Test set all values, checks basic get & set in addition to resize
-        RadiationChunk chunk = new RadiationChunk(1, 3, 2);
+        DataChunk chunk = new DataChunk(1, 3, 2);
         for (int x = 0; x < 16; x++)
         {
             for (int z = 0; z < 16; z++)
@@ -61,7 +61,7 @@ public class TestRadChunk extends TestCase
     public void testSetGetReverse()
     {
         //Test set all values reverse, checks resize
-        RadiationChunk chunk = new RadiationChunk(1, 3, 2);
+        DataChunk chunk = new DataChunk(1, 3, 2);
         for (int x = 0; x < 16; x++)
         {
             for (int z = 0; z < 16; z++)
@@ -95,7 +95,7 @@ public class TestRadChunk extends TestCase
     public void testSetGetEvery8()
     {
         //Test every 8, checks if resize works while skipping values
-        RadiationChunk chunk = new RadiationChunk(1, 3, 2);
+        DataChunk chunk = new DataChunk(1, 3, 2);
         for (int x = 0; x < 16; x++)
         {
             for (int z = 0; z < 16; z++)
@@ -132,7 +132,7 @@ public class TestRadChunk extends TestCase
     @Test
     public void testSaveLoad()
     {
-        RadiationChunk chunk = new RadiationChunk(1, 3, 2);
+        DataChunk chunk = new DataChunk(1, 3, 2);
 
         //Set test data
         chunk.setValue(0, 232, 2, 10);
@@ -145,13 +145,13 @@ public class TestRadChunk extends TestCase
 
         //Test save
         assertEquals("Save data should have 3 keys", 3, saveData.func_150296_c().size());
-        assertTrue("Failed to save any layers", saveData.hasKey(RadiationChunk.NBT_LAYERS));
-        assertEquals("Save data should have 3 layers", 3, saveData.getTagList(RadiationChunk.NBT_LAYERS, 10).tagCount());
-        assertTrue("Failed to save y start", saveData.hasKey(RadiationChunk.NBT_Y_START));
-        assertTrue("Failed to size of layer array", saveData.hasKey(RadiationChunk.NBT_SIZE));
+        assertTrue("Failed to save any layers", saveData.hasKey(DataChunk.NBT_LAYERS));
+        assertEquals("Save data should have 3 layers", 3, saveData.getTagList(DataChunk.NBT_LAYERS, 10).tagCount());
+        assertTrue("Failed to save y start", saveData.hasKey(DataChunk.NBT_Y_START));
+        assertTrue("Failed to size of layer array", saveData.hasKey(DataChunk.NBT_SIZE));
 
         //Test load
-        RadiationChunk chunk2 = new RadiationChunk(1, 3, 2);
+        DataChunk chunk2 = new DataChunk(1, 3, 2);
         chunk2.load(saveData);
 
         for (int x = 0; x < 16; x++)

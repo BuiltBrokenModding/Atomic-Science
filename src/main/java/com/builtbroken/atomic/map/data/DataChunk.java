@@ -1,16 +1,16 @@
-package com.builtbroken.atomic.map;
+package com.builtbroken.atomic.map.data;
 
 import com.builtbroken.atomic.AtomicScience;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 /**
- * Single chunk of radiation data
+ * Single chunk of data
  *
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/24/2018.
  */
-public class RadiationChunk
+public class DataChunk
 {
     //Constants for NBT save/load
     public static final String NBT_Y_START = "y_start";
@@ -29,7 +29,7 @@ public class RadiationChunk
     public final int dimension;
 
     /** Array of active layers, modified by yStart */
-    protected RadiationLayer[] layers;
+    protected DataLayer[] layers;
 
     /** Starting point of the layer array as a Y level */
     protected int yStart;
@@ -40,7 +40,7 @@ public class RadiationChunk
     /** Used by thread to let it know last time it scanned this thread */
     public long lastScanTime;
 
-    public RadiationChunk(int dimension, int xPosition, int zPosition)
+    public DataChunk(int dimension, int xPosition, int zPosition)
     {
         this.dimension = dimension;
         this.xPosition = xPosition;
@@ -155,25 +155,25 @@ public class RadiationChunk
      * @param y
      * @return
      */
-    protected RadiationLayer getLayer(int y)
+    protected DataLayer getLayer(int y)
     {
         //Init array if not initialized
         if (getLayers() == null)
         {
-            layers = new RadiationLayer[11];
+            layers = new DataLayer[11];
             yStart = Math.max(0, y - 10);
         }
         //Check if we need to increase layer array to fit a new value
         else if (y < getYStart())
         {
-            final RadiationLayer[] oldLayers = getLayers();
+            final DataLayer[] oldLayers = getLayers();
 
             //Increase array size by 5 more than expected y level, if under 10 fully expand to zero
             int increase = getYStart() > 10 ? ((getYStart() - y) + 5) : getYStart();
 
             //New array
             int newLength = Math.min(getChunkHeight(), oldLayers.length + increase);
-            layers = new RadiationLayer[newLength];
+            layers = new DataLayer[newLength];
 
             //Copy array
             for (int i = 0; i < oldLayers.length; i++)
@@ -186,11 +186,11 @@ public class RadiationChunk
         }
         else if (y > getLayerEnd())
         {
-            RadiationLayer[] oldLayers = getLayers();
+            DataLayer[] oldLayers = getLayers();
 
             //Increase array size by 5 above y
             int increase = y - (getYStart() + getLayers().length) + 5;
-            layers = new RadiationLayer[Math.min(getChunkHeight(), oldLayers.length + increase)];
+            layers = new DataLayer[Math.min(getChunkHeight(), oldLayers.length + increase)];
 
             //Copy array
             for (int i = 0; i < oldLayers.length; i++)
@@ -202,7 +202,7 @@ public class RadiationChunk
         //If layer is null, create layer
         if (getLayers()[getIndex(y)] == null)
         {
-            getLayers()[getIndex(y)] = new RadiationLayer(y);
+            getLayers()[getIndex(y)] = new DataLayer(y);
         }
         return getLayers()[getIndex(y)];
     }
@@ -232,7 +232,7 @@ public class RadiationChunk
             NBTTagList list = new NBTTagList();
             for (int i = 0; i < getLayers().length; i++)
             {
-                RadiationLayer layer = getLayers()[i];
+                DataLayer layer = getLayers()[i];
                 if (layer != null && !layer.isEmpty())
                 {
                     NBTTagCompound save = new NBTTagCompound();
@@ -259,7 +259,7 @@ public class RadiationChunk
 
         //Rebuild array
         int size = tag.getInteger(NBT_SIZE);
-        this.layers = new RadiationLayer[size];
+        this.layers = new DataLayer[size];
 
         //Load layers
         NBTTagList list = tag.getTagList(NBT_LAYERS, 10);
@@ -272,7 +272,7 @@ public class RadiationChunk
             int y = save.getInteger(NBT_LAYER_Y);
 
             //Create layer
-            RadiationLayer layer = new RadiationLayer(y);
+            DataLayer layer = new DataLayer(y);
 
             //Load data
             int[] data = save.getIntArray(NBT_LAYER_DATA);
@@ -301,7 +301,7 @@ public class RadiationChunk
         }
     }
 
-    public RadiationLayer[] getLayers()
+    public DataLayer[] getLayers()
     {
         return layers;
     }

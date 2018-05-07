@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.map.data.DataMap;
 import com.builtbroken.atomic.map.events.RadiationMapEvent;
 import com.builtbroken.atomic.map.thread.RadChange;
 import com.builtbroken.atomic.map.thread.ThreadRadExposure;
@@ -28,9 +29,9 @@ public class RadiationSystem
     public static ThreadRadExposure THREAD_RAD_EXPOSURE;
 
     /** Dimension to radiation material map, saved to world and updated over time */
-    protected final HashMap<Integer, RadiationMap> dimensionToMaterialMap = new HashMap();
+    protected final HashMap<Integer, DataMap> dimensionToMaterialMap = new HashMap();
     /** Dimension to '(REM) roentgen equivalent man' map, not saved and calculated only as needed */
-    protected final HashMap<Integer, RadiationMap> dimensionToExposureMap = new HashMap();
+    protected final HashMap<Integer, DataMap> dimensionToExposureMap = new HashMap();
 
     ///----------------------------------------------------------------
     ///-------- Level Data Accessors
@@ -47,7 +48,7 @@ public class RadiationSystem
      */
     public int getRadLevel(World world, int x, int y, int z)
     {
-        RadiationMap map = getExposureMap(world, false);
+        DataMap map = getExposureMap(world, false);
         if (map != null)
         {
             return map.getData(x, y, z);
@@ -94,7 +95,7 @@ public class RadiationSystem
      */
     public int getRadioactiveMaterial(World world, int x, int y, int z)
     {
-        RadiationMap map = getMaterialMap(world, false);
+        DataMap map = getMaterialMap(world, false);
         if (map != null)
         {
             return map.getData(x, y, z);
@@ -113,7 +114,7 @@ public class RadiationSystem
      */
     public int getRadioactiveMaterial(int dim, int x, int y, int z)
     {
-        RadiationMap map = getMaterialMap(dim, false);
+        DataMap map = getMaterialMap(dim, false);
         if (map != null)
         {
             return map.getData(x, y, z);
@@ -133,7 +134,7 @@ public class RadiationSystem
      */
     public boolean setRadioactiveMaterial(World world, int x, int y, int z, int amount)
     {
-        RadiationMap map = getMaterialMap(world, amount > 0);
+        DataMap map = getMaterialMap(world, amount > 0);
         if (map != null)
         {
             return map.setData(x, y, z, amount);
@@ -153,7 +154,7 @@ public class RadiationSystem
      */
     public boolean setRadioactiveMaterial(int dim, int x, int y, int z, int amount)
     {
-        RadiationMap map = getMaterialMap(dim, amount > 0);
+        DataMap map = getMaterialMap(dim, amount > 0);
         if (map != null)
         {
             return map.setData(x, y, z, amount);
@@ -176,12 +177,12 @@ public class RadiationSystem
      * @param init - true to generate the map
      * @return map, or null if it was never created
      */
-    public RadiationMap getExposureMap(int dim, boolean init)
+    public DataMap getExposureMap(int dim, boolean init)
     {
-        RadiationMap map = dimensionToExposureMap.get(dim);
+        DataMap map = dimensionToExposureMap.get(dim);
         if (map == null && init)
         {
-            map = new RadiationMap(dim, false);
+            map = new DataMap(dim, false);
             dimensionToExposureMap.put(dim, map);
         }
         return map;
@@ -198,7 +199,7 @@ public class RadiationSystem
      * @param init  - true to generate the map
      * @return map, or null if it was never created
      */
-    public RadiationMap getExposureMap(World world, boolean init)
+    public DataMap getExposureMap(World world, boolean init)
     {
         if (world != null && world.provider != null)
         {
@@ -215,12 +216,12 @@ public class RadiationSystem
      * @param init - true to generate the map
      * @return map, or null if it was never created
      */
-    public RadiationMap getMaterialMap(int dim, boolean init)
+    public DataMap getMaterialMap(int dim, boolean init)
     {
-        RadiationMap map = dimensionToMaterialMap.get(dim);
+        DataMap map = dimensionToMaterialMap.get(dim);
         if (map == null && init)
         {
-            map = new RadiationMap(dim, true);
+            map = new DataMap(dim, true);
             dimensionToMaterialMap.put(dim, map);
         }
         return map;
@@ -234,7 +235,7 @@ public class RadiationSystem
      * @param init  - true to generate the map
      * @return map, or null if it was never created
      */
-    public RadiationMap getMaterialMap(World world, boolean init)
+    public DataMap getMaterialMap(World world, boolean init)
     {
         if (world != null && world.provider != null)
         {
@@ -263,7 +264,7 @@ public class RadiationSystem
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event)
     {
-        RadiationMap map = getMaterialMap(event.world, false);
+        DataMap map = getMaterialMap(event.world, false);
         if (map != null)
         {
             map.onWorldUnload();
@@ -289,7 +290,7 @@ public class RadiationSystem
     @SubscribeEvent
     public void onChunkUnload(ChunkEvent.Unload event) //Only called if chunk unloads separate from world unload
     {
-        RadiationMap map = getMaterialMap(event.world, false);
+        DataMap map = getMaterialMap(event.world, false);
         if (map != null)
         {
             map.unloadChunk(event.getChunk());
@@ -301,7 +302,7 @@ public class RadiationSystem
     {
         if (event.getData() != null && event.getData().hasKey(NBT_CHUNK_DATA))
         {
-            RadiationMap map = getMaterialMap(event.world, true);
+            DataMap map = getMaterialMap(event.world, true);
             if (map != null)
             {
                 map.loadChunk(event.getChunk(), event.getData());
@@ -312,7 +313,7 @@ public class RadiationSystem
     @SubscribeEvent
     public void onChunkSaveData(ChunkDataEvent.Save event) //Called on world save
     {
-        RadiationMap map = getMaterialMap(event.world, false);
+        DataMap map = getMaterialMap(event.world, false);
         if (map != null)
         {
             map.saveChunk(event.getChunk(), event.getData());

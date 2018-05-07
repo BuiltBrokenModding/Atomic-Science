@@ -2,9 +2,9 @@ package com.builtbroken.atomic.map.thread;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.ConfigRadiation;
-import com.builtbroken.atomic.map.RadiationChunk;
-import com.builtbroken.atomic.map.RadiationLayer;
-import com.builtbroken.atomic.map.RadiationMap;
+import com.builtbroken.atomic.map.data.DataChunk;
+import com.builtbroken.atomic.map.data.DataLayer;
+import com.builtbroken.atomic.map.data.DataMap;
 import com.builtbroken.atomic.map.RadiationSystem;
 import com.builtbroken.jlib.lang.StringHelpers;
 
@@ -20,8 +20,8 @@ public class ThreadRadExposure extends Thread
 {
     public boolean shouldRun = true;
     public ConcurrentLinkedQueue<RadChange> changeQueue = new ConcurrentLinkedQueue();
-    public ConcurrentLinkedQueue<RadiationChunk> addScanQueue = new ConcurrentLinkedQueue();
-    public ConcurrentLinkedQueue<RadiationChunk> removeScanQueue = new ConcurrentLinkedQueue();
+    public ConcurrentLinkedQueue<DataChunk> addScanQueue = new ConcurrentLinkedQueue();
+    public ConcurrentLinkedQueue<DataChunk> removeScanQueue = new ConcurrentLinkedQueue();
 
     public ThreadRadExposure()
     {
@@ -86,11 +86,11 @@ public class ThreadRadExposure extends Thread
      *
      * @param chunk
      */
-    protected void queueRemove(RadiationChunk chunk)
+    protected void queueRemove(DataChunk chunk)
     {
         if (chunk != null)
         {
-            for (RadiationLayer layer : chunk.getLayers())
+            for (DataLayer layer : chunk.getLayers())
             {
                 for (int cx = 0; cx < 16; cx++)
                 {
@@ -118,11 +118,11 @@ public class ThreadRadExposure extends Thread
      *
      * @param chunk
      */
-    protected void queueAddition(RadiationChunk chunk)
+    protected void queueAddition(DataChunk chunk)
     {
         if (chunk != null)
         {
-            for (RadiationLayer layer : chunk.getLayers())
+            for (DataLayer layer : chunk.getLayers())
             {
                 for (int cx = 0; cx < 16; cx++)
                 {
@@ -153,7 +153,7 @@ public class ThreadRadExposure extends Thread
     protected void updateLocation(RadChange change)
     {
         //Get map
-        RadiationMap map;
+        DataMap map;
         synchronized (RadiationSystem.INSTANCE)
         {
             map = RadiationSystem.INSTANCE.getExposureMap(change.dim, true);
@@ -187,7 +187,7 @@ public class ThreadRadExposure extends Thread
      * @param cy    - change location
      * @param cz    - change location
      */
-    protected void removeValue(RadiationMap map, int value, int cx, int cy, int cz)
+    protected void removeValue(DataMap map, int value, int cx, int cy, int cz)
     {
         final int rad = getRadFromMaterial(value);
         final int edit_range = (int) Math.floor(getDecayRange(rad));
@@ -228,7 +228,7 @@ public class ThreadRadExposure extends Thread
      * @param cy    - change location
      * @param cz    - change location
      */
-    protected void setValue(RadiationMap map, int value, int cx, int cy, int cz)
+    protected void setValue(DataMap map, int value, int cx, int cy, int cz)
     {
         if (AtomicScience.runningAsDev)
         {
@@ -322,12 +322,12 @@ public class ThreadRadExposure extends Thread
         AtomicScience.logger.info("ThreadRadExposure: Stopping thread");
     }
 
-    public void queueChunkForRemoval(RadiationChunk chunk)
+    public void queueChunkForRemoval(DataChunk chunk)
     {
         removeScanQueue.add(chunk);
     }
 
-    public void queueChunkForAddition(RadiationChunk chunk)
+    public void queueChunkForAddition(DataChunk chunk)
     {
         addScanQueue.add(chunk);
     }

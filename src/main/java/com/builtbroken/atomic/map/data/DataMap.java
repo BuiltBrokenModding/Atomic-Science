@@ -1,5 +1,6 @@
-package com.builtbroken.atomic.map;
+package com.builtbroken.atomic.map.data;
 
+import com.builtbroken.atomic.map.RadiationSystem;
 import com.builtbroken.atomic.map.events.RadiationMapEvent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -11,7 +12,7 @@ import net.minecraftforge.common.MinecraftForge;
 import java.util.HashMap;
 
 /**
- * Stores a collection of chunks holding radiation data
+ * Stores a collection of chunks holding data
  * <p>
  * Radiation is not "rad or rem" value, it is how much radioactive material is present at the location. This
  * is used to calculate the rad value that an entity will be exposed to or can be released into the air.
@@ -19,14 +20,14 @@ import java.util.HashMap;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/24/2018.
  */
-public class RadiationMap
+public class DataMap
 {
     public final int dim;
     public boolean isMaterialMap;
 
-    protected final HashMap<Long, RadiationChunk> loadedChunks = new HashMap();
+    protected final HashMap<Long, DataChunk> loadedChunks = new HashMap();
 
-    public RadiationMap(int dim, boolean isMaterialMap)
+    public DataMap(int dim, boolean isMaterialMap)
     {
         this.dim = dim;
         this.isMaterialMap = isMaterialMap;
@@ -38,7 +39,7 @@ public class RadiationMap
 
     public int getData(int x, int y, int z)
     {
-        RadiationChunk chunk = getChunkFromPosition(x, z, false);
+        DataChunk chunk = getChunkFromPosition(x, z, false);
         if (chunk != null)
         {
             return chunk.getValue(x & 15, y, z & 15);
@@ -48,7 +49,7 @@ public class RadiationMap
 
     public boolean setData(int x, int y, int z, int amount)
     {
-        RadiationChunk chunk = getChunkFromPosition(x, z, amount > 0);
+        DataChunk chunk = getChunkFromPosition(x, z, amount > 0);
         if (chunk != null)
         {
             //Fire change event for modification and to trigger exposure map update
@@ -104,7 +105,7 @@ public class RadiationMap
         {
             if (isMaterialMap)
             {
-                RadiationChunk chunk = loadedChunks.get(index);
+                DataChunk chunk = loadedChunks.get(index);
                 if (chunk != null)
                 {
                     RadiationSystem.THREAD_RAD_EXPOSURE.queueChunkForRemoval(chunk);
@@ -126,7 +127,7 @@ public class RadiationMap
         long index = index(chunk);
         if (loadedChunks.containsKey(index))
         {
-            RadiationChunk radiationChunk = loadedChunks.get(index);
+            DataChunk radiationChunk = loadedChunks.get(index);
             if (radiationChunk != null)
             {
                 NBTTagCompound tag = new NBTTagCompound();
@@ -152,7 +153,7 @@ public class RadiationMap
         final long index = index(chunk);
 
         //Get chunk
-        RadiationChunk radiationChunk = null;
+        DataChunk radiationChunk = null;
         if (loadedChunks.containsKey(index))
         {
             radiationChunk = loadedChunks.get(index);
@@ -174,10 +175,10 @@ public class RadiationMap
         }
     }
 
-    protected RadiationChunk createNewChunk(int dim, int chunkX, int chunkZ)
+    protected DataChunk createNewChunk(int dim, int chunkX, int chunkZ)
     {
         long index = index(chunkX, chunkZ);
-        RadiationChunk radiationChunk = new RadiationChunk(dim, chunkX, chunkZ);
+        DataChunk radiationChunk = new DataChunk(dim, chunkX, chunkZ);
         loadedChunks.put(index, radiationChunk);
         return radiationChunk;
     }
@@ -186,18 +187,18 @@ public class RadiationMap
     ///-------- Helpers
     ///----------------------------------------------------------------
 
-    public RadiationChunk getChunkFromPosition(int x, int z, boolean init)
+    public DataChunk getChunkFromPosition(int x, int z, boolean init)
     {
         return getChunk(x >> 4, z >> 4, init);
     }
 
-    public RadiationChunk getChunk(int chunk_x, int chunk_z, boolean init)
+    public DataChunk getChunk(int chunk_x, int chunk_z, boolean init)
     {
         long index = ChunkCoordIntPair.chunkXZ2Int(chunk_x, chunk_z);
-        RadiationChunk chunk = loadedChunks.get(index);
+        DataChunk chunk = loadedChunks.get(index);
         if (chunk == null && init)
         {
-            chunk = new RadiationChunk(dim, chunk_x, chunk_z);
+            chunk = new DataChunk(dim, chunk_x, chunk_z);
             loadedChunks.put(index, chunk);
         }
         return chunk;

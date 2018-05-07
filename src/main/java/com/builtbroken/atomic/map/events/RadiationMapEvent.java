@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.map.events;
 
-import com.builtbroken.atomic.map.RadiationMap;
+import com.builtbroken.atomic.map.data.DataMap;
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.world.World;
@@ -14,9 +14,9 @@ import net.minecraftforge.common.DimensionManager;
  */
 public abstract class RadiationMapEvent extends Event
 {
-    public final RadiationMap map;
+    public final DataMap map;
 
-    public RadiationMapEvent(RadiationMap map)
+    public RadiationMapEvent(DataMap map)
     {
         this.map = map;
     }
@@ -49,7 +49,7 @@ public abstract class RadiationMapEvent extends Event
         public final int prev_value;
         public int new_value;
 
-        public UpdateRadiationMaterial(RadiationMap map, int x, int y, int z, int prev_value, int new_value)
+        public UpdateRadiationMaterial(DataMap map, int x, int y, int z, int prev_value, int new_value)
         {
             super(map);
             this.x = x;

@@ -1,6 +1,6 @@
 package com.builtbroken.test.as.map;
 
-import com.builtbroken.atomic.map.RadiationLayer;
+import com.builtbroken.atomic.map.data.DataLayer;
 import junit.framework.TestCase;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ public class TestRadLayer extends TestCase
     @Test //Test constructor
     public void testInit()
     {
-        RadiationLayer layer = new RadiationLayer(1);
+        DataLayer layer = new DataLayer(1);
         assertEquals(1, layer.y_index);
         assertNotNull(layer.data);
         assertEquals(16 * 16, layer.data.length);
@@ -27,7 +27,7 @@ public class TestRadLayer extends TestCase
     @Test //Test index method
     public void testIndex()
     {
-        RadiationLayer layer = new RadiationLayer(1);
+        DataLayer layer = new DataLayer(1);
         for (int x = 0; x < 16; x++)
         {
             for (int z = 0; z < 16; z++)
@@ -41,7 +41,7 @@ public class TestRadLayer extends TestCase
     @Test //Test get and set methods
     public void testData()
     {
-        RadiationLayer layer = new RadiationLayer(1);
+        DataLayer layer = new DataLayer(1);
         for (int x = 0; x < 16; x++)
         {
             for (int z = 0; z < 16; z++)
@@ -58,7 +58,7 @@ public class TestRadLayer extends TestCase
     @Test //Test that get and set handle junk well
     public void testJunk()
     {
-        RadiationLayer layer = new RadiationLayer(1);
+        DataLayer layer = new DataLayer(1);
         for(int i = 0; i < 16; i++)
         {
             assertFalse(layer.setData(i, -1, 1));
@@ -78,7 +78,7 @@ public class TestRadLayer extends TestCase
     @Test //Test isEmpty() method
     public void testEmpty()
     {
-        RadiationLayer layer = new RadiationLayer(1);
+        DataLayer layer = new DataLayer(1);
 
         //Init should be empty
         assertTrue(layer.isEmpty());
