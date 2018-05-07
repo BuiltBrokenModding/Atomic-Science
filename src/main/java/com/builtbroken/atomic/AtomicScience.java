@@ -6,7 +6,7 @@ import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
-import com.builtbroken.atomic.map.RadiationSystem;
+import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.thread.ThreadRadExposure;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -17,7 +17,6 @@ import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,7 +66,7 @@ public class AtomicScience
 
         //Register handlers
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-        MinecraftForge.EVENT_BUS.register(RadiationSystem.INSTANCE);
+        MapHandler.register();
 
         //Create tab
         creativeTab = new CreativeTabs(DOMAIN)
@@ -106,8 +105,8 @@ public class AtomicScience
     public void serverAboutToStart(FMLServerAboutToStartEvent event)
     {
         //Start thread
-        RadiationSystem.THREAD_RAD_EXPOSURE = new ThreadRadExposure();
-        RadiationSystem.THREAD_RAD_EXPOSURE.start();
+        MapHandler.THREAD_RAD_EXPOSURE = new ThreadRadExposure();
+        MapHandler.THREAD_RAD_EXPOSURE.start();
     }
 
     @Mod.EventHandler
@@ -123,6 +122,6 @@ public class AtomicScience
     public void serverStopping(FMLServerStoppingEvent event)
     {
         //Kill old thread
-        RadiationSystem.THREAD_RAD_EXPOSURE.kill();
+        MapHandler.THREAD_RAD_EXPOSURE.kill();
     }
 }

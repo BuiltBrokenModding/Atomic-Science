@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.content.commands;
 
 import com.builtbroken.atomic.content.ASIndirectEffects;
-import com.builtbroken.atomic.map.RadiationSystem;
+import com.builtbroken.atomic.map.MapHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommandSender;
@@ -132,12 +132,12 @@ public class CommandAS extends CommandBase
     {
         if (args.length == 1 && sender instanceof EntityPlayer)
         {
-            sender.addChatMessage(new ChatComponentText("Your exposure level is " + RadiationSystem.INSTANCE.getRemExposure((EntityPlayer) sender)));
+            sender.addChatMessage(new ChatComponentText("Your exposure level is " + MapHandler.RADIATION_MAP.getRemExposure((EntityPlayer) sender)));
         }
         else if (args.length == 2)
         {
             EntityPlayerMP player = getPlayer(sender, args[1]);
-            player.addChatMessage(new ChatComponentText("Exposure level for '" + player.getCommandSenderName() + "' is " + RadiationSystem.INSTANCE.getRemExposure(player)));
+            player.addChatMessage(new ChatComponentText("Exposure level for '" + player.getCommandSenderName() + "' is " + MapHandler.RADIATION_MAP.getRemExposure(player)));
         }
         else
         {
@@ -157,16 +157,16 @@ public class CommandAS extends CommandBase
 
             if (args[1].equalsIgnoreCase("get"))
             {
-                int value = RadiationSystem.INSTANCE.getRadioactiveMaterial(dim, x, y, z);
+                int value = MapHandler.MATERIAL_MAP.getData(dim, x, y, z);
                 sender.addChatMessage(new ChatComponentText("The block position contains '" + value + "' units of radioactive material."));
             }
             else if (args[1].equalsIgnoreCase("set") && args.length == 7)
             {
                 int value = Integer.parseInt(args[6]);
 
-                int prev_value = RadiationSystem.INSTANCE.getRadioactiveMaterial(dim, x, y, z);
-                RadiationSystem.INSTANCE.setRadioactiveMaterial(dim, x, y, z, value);
-                int new_value = RadiationSystem.INSTANCE.getRadioactiveMaterial(dim, x, y, z);
+                int prev_value = MapHandler.MATERIAL_MAP.getData(dim, x, y, z);
+                MapHandler.MATERIAL_MAP.setData(dim, x, y, z, value);
+                int new_value = MapHandler.MATERIAL_MAP.getData(dim, x, y, z);
 
                 sender.addChatMessage(new ChatComponentText("The block position radioactive material count changes from '" + prev_value + "' to '" + new_value + "'"));
             }

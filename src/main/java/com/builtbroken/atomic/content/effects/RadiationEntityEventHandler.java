@@ -5,7 +5,7 @@ import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.effects.source.SourceWrapperPosition;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.network.packet.sync.PacketPlayerRadiation;
-import com.builtbroken.atomic.map.RadiationSystem;
+import com.builtbroken.atomic.map.MapHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -53,7 +53,7 @@ public class RadiationEntityEventHandler
     protected void applyExposure(EntityLivingBase entity)
     {
         //Apply exposure if greater than zero
-        float remExposure = RadiationSystem.INSTANCE.getRemExposure(entity);
+        float remExposure = MapHandler.RADIATION_MAP.getRemExposure(entity);
         if (remExposure > 0)
         {
             SourceWrapperPosition sourceWrapperPosition = new SourceWrapperPosition(
@@ -105,7 +105,7 @@ public class RadiationEntityEventHandler
             final float syncError = 0.001f;
 
             //Check exposure change
-            float exposure = RadiationSystem.INSTANCE.getRemExposure(player);
+            float exposure = MapHandler.RADIATION_MAP.getRemExposure(player);
             float prev_exposure = data.getFloat(ASIndirectEffects.NBT_RADS_ENVIROMENT_PREV);
             float delta_exposure = Math.abs(prev_exposure - exposure);
 

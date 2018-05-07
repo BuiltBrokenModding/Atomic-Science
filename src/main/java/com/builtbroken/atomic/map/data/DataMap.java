@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.map.data;
 
-import com.builtbroken.atomic.map.RadiationSystem;
+import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.events.RadiationMapEvent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -23,6 +23,7 @@ import java.util.HashMap;
 public class DataMap
 {
     public final int dim;
+    @Deprecated
     public boolean isMaterialMap;
 
     protected final HashMap<Long, DataChunk> loadedChunks = new HashMap();
@@ -53,7 +54,7 @@ public class DataMap
         if (chunk != null)
         {
             //Fire change event for modification and to trigger exposure map update
-            if (isMaterialMap)
+            if (isMaterialMap)  //TODO move to event
             {
                 int prev_value = getData(x, y, z);
                 RadiationMapEvent.UpdateRadiationMaterial event = new RadiationMapEvent.UpdateRadiationMaterial(this, x, y, z, prev_value, amount);
@@ -103,12 +104,12 @@ public class DataMap
     {
         if (loadedChunks.containsKey(index))
         {
-            if (isMaterialMap)
+            if (isMaterialMap)  //TODO move to event
             {
                 DataChunk chunk = loadedChunks.get(index);
                 if (chunk != null)
                 {
-                    RadiationSystem.THREAD_RAD_EXPOSURE.queueChunkForRemoval(chunk);
+                    MapHandler.THREAD_RAD_EXPOSURE.queueChunkForRemoval(chunk);
                 }
             }
             //TODO maybe fire events?
@@ -117,10 +118,13 @@ public class DataMap
     }
 
     /**
-     * Called to save the chunk data
+     * Called to save the chunk data.
+     * <p>
+     * Data provides should be an empty tag. Does not include
+     * all data for the chunk.
      *
      * @param chunk
-     * @param data
+     * @param data  - tag to save directly two
      */
     public void saveChunk(Chunk chunk, NBTTagCompound data)
     {
@@ -130,12 +134,7 @@ public class DataMap
             DataChunk radiationChunk = loadedChunks.get(index);
             if (radiationChunk != null)
             {
-                NBTTagCompound tag = new NBTTagCompound();
-                radiationChunk.save(tag);
-                if (!tag.hasNoTags())
-                {
-                    data.setTag(RadiationSystem.NBT_CHUNK_DATA, tag);
-                }
+                radiationChunk.save(data);
             }
         }
     }
@@ -144,9 +143,12 @@ public class DataMap
      * Called to load the chunk data
      * <p>
      * Will create a new chunk instance if missing
+     * <p>
+     * Data provides is unique to this chunk and is not
+     * the entire save data for the game's map.
      *
      * @param chunk
-     * @param data
+     * @param data  - data to load
      */
     public void loadChunk(Chunk chunk, NBTTagCompound data)
     {
@@ -166,12 +168,12 @@ public class DataMap
         }
 
         //Load
-        radiationChunk.load(data.getCompoundTag(RadiationSystem.NBT_CHUNK_DATA));
+        radiationChunk.load(data);
 
         //Queue to be scanned to update exposure map
-        if (isMaterialMap)
+        if (isMaterialMap)  //TODO move to event
         {
-            RadiationSystem.THREAD_RAD_EXPOSURE.queueChunkForAddition(radiationChunk);
+            MapHandler.THREAD_RAD_EXPOSURE.queueChunkForAddition(radiationChunk);
         }
     }
 

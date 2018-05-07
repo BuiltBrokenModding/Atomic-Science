@@ -37,9 +37,6 @@ public class DataChunk
     /** Triggers thread to rescan chunk to calculate exposure values */
     public boolean hasChanged = true;
 
-    /** Used by thread to let it know last time it scanned this thread */
-    public long lastScanTime;
-
     public DataChunk(int dimension, int xPosition, int zPosition)
     {
         this.dimension = dimension;

@@ -2,10 +2,10 @@ package com.builtbroken.atomic.map.thread;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.ConfigRadiation;
+import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChunk;
 import com.builtbroken.atomic.map.data.DataLayer;
 import com.builtbroken.atomic.map.data.DataMap;
-import com.builtbroken.atomic.map.RadiationSystem;
 import com.builtbroken.jlib.lang.StringHelpers;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -154,9 +154,9 @@ public class ThreadRadExposure extends Thread
     {
         //Get map
         DataMap map;
-        synchronized (RadiationSystem.INSTANCE)
+        synchronized (MapHandler.MATERIAL_MAP)
         {
-            map = RadiationSystem.INSTANCE.getExposureMap(change.dim, true);
+            map = MapHandler.MATERIAL_MAP.getMap(change.dim, true);
         }
 
         long time = System.nanoTime();
