@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.tiles.reactor.fission;
 
 import com.builtbroken.atomic.api.item.IFuelRodItem;
+import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.reactor.IFissionReactor;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.tiles.TileEntityInventoryMachine;
@@ -16,7 +17,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public class TileEntityReactorCell extends TileEntityInventoryMachine implements IFissionReactor
+public class TileEntityReactorCell extends TileEntityInventoryMachine implements IFissionReactor, IRadiationSource
 {
     /** Client side */
     private boolean _running = false;
@@ -45,7 +46,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
             if (canOperate())
             {
                 consumeFuel(ticks);
-                generate();
+                doOperationTick();
             }
         }
         else if (_running)
@@ -54,13 +55,14 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         }
     }
 
-    protected void generate()
+    protected void doOperationTick()
     {
         IFuelRodItem fuelRodItem = getFuelRod();
         if (fuelRodItem != null)
         {
-            //TODO figure out bonus and negative to heat generation (control rods decrease, reactors nearby increase)
-            MapHandler.THERMAL_MAP.outputHeat(this, fuelRodItem.getHeatOutput(getFuelRodStack()));
+            int heat = fuelRodItem.getHeatOutput(getFuelRodStack());
+            heat = getActualHeat(heat);
+            MapHandler.THERMAL_MAP.outputHeat(this, heat);
         }
 
         //TODO calculate radioactive effects
@@ -68,6 +70,12 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
 
         //TODO calculate radioactive material leaking
         //TODO dump radioactive material to area or drains
+    }
+
+    protected int getActualHeat(int heat)
+    {
+        //TODO figure out bonus and negative to heat generation (control rods decrease, reactors nearby increase)
+        return heat;
     }
 
     protected void consumeFuel(int ticks)
@@ -134,6 +142,24 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     {
         return getStackInSlot(0);
     }
+
+    @Override
+    public int getRadioactiveMaterial()
+    {
+        IFuelRodItem fuelRod = getFuelRod();
+        if (fuelRod != null)
+        {
+            return fuelRod.getFuelRodRuntime(getFuelRodStack());
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean isRadioactive()
+    {
+        return true;
+    }
+
 
     @Override
     public int getSizeInventory()

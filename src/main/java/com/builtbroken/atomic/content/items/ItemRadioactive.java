@@ -1,60 +1,31 @@
 package com.builtbroken.atomic.content.items;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.api.AtomicScienceAPI;
-import com.builtbroken.atomic.api.effect.IIndirectEffectType;
-import com.builtbroken.atomic.content.ASIndirectEffects;
-import com.builtbroken.atomic.content.effects.IndirectEffectInstance;
-import com.builtbroken.atomic.content.effects.source.SourceWrapperItem;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import com.builtbroken.atomic.api.radiation.IRadioactiveItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 /**
  * Radioactive item
- * <p>
- * Purpose: Prefab & Generic item for radioactive objects
- * Features:
- * * Generate radiation in the environment
- * * Radiate entities
  *
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
-public class ItemRadioactive extends Item
+public class ItemRadioactive extends Item implements IRadioactiveItem
 {
-    public ItemRadioactive(String name, String texture)
+    public final int radioactiveMaterialValue;
+
+    public ItemRadioactive(String name, String texture, int radioactiveMaterialValue)
     {
+        this.radioactiveMaterialValue = radioactiveMaterialValue;
         this.setUnlocalizedName(AtomicScience.PREFIX + name);
         this.setTextureName(AtomicScience.PREFIX + texture);
         this.setCreativeTab(AtomicScience.creativeTab);
     }
 
     @Override
-    public void onUpdate(ItemStack itemStack, World world, Entity entity, int slot, boolean par5)
+    public int getRadioactiveMaterial(ItemStack stack)
     {
-        if (entity instanceof EntityLivingBase && shouldApplyEffect(itemStack, world, entity, slot))
-        {
-            SourceWrapperItem sourceWrapper = new SourceWrapperItem(entity, itemStack, slot);
-            IndirectEffectInstance indirectEffectInstance = new IndirectEffectInstance(getEffectType(itemStack), sourceWrapper, getEffectPower(itemStack));
-            ASIndirectEffects.applyIndirectEffect((EntityLivingBase) entity, indirectEffectInstance);
-        }
-    }
-
-    public IIndirectEffectType getEffectType(ItemStack itemStack)
-    {
-        return AtomicScienceAPI.RADIATION;
-    }
-
-    public float getEffectPower(ItemStack itemStack)
-    {
-        return 1; //TODO replace with actual value
-    }
-
-    public boolean shouldApplyEffect(ItemStack itemStack, World world, Entity entity, int slot)
-    {
-        return world.rand.nextFloat() > 0.8f;
+        return radioactiveMaterialValue;
     }
 }

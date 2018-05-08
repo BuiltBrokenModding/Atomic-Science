@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.config.ConfigRadiation;
 import com.builtbroken.atomic.content.items.ItemFuelRod;
 import com.builtbroken.atomic.content.items.ItemHazmat;
 import com.builtbroken.atomic.content.items.ItemRadioactive;
@@ -38,6 +39,10 @@ public class ASItems
     public static Item itemUranium235;
     public static Item itemUranium238;
 
+    public static final int TICKS_SECOND = 20;
+    public static final int TICKS_MIN = TICKS_SECOND * 60;
+    public static final int TICKS_HOUR = TICKS_MIN * 60;
+
     public static void register()
     {
         //Armor
@@ -57,8 +62,12 @@ public class ASItems
         itemPoweredCell.addSupportedFluid(ASFluids.STRANGE_MATTER.fluid, AtomicScience.PREFIX + "cell_strange_matter", itemFluidCell.getUnlocalizedName() + ".strange_matter");
 
         //Machine inputs
-        GameRegistry.registerItem(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile", "cell_fissile_fuel", 5 * 60 * 60 * 20), "fissile_fuel_cell");
-        GameRegistry.registerItem(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder", "cell_breeder_fuel", 2 * 60 * 60 * 20), "breeder_fuel_cell");
+        GameRegistry.registerItem(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile", "cell_fissile_fuel",
+                5 * TICKS_HOUR, ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD),
+                "fissile_fuel_cell");
+        GameRegistry.registerItem(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder", "cell_breeder_fuel",
+                2 * TICKS_HOUR, ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD),
+                "breeder_fuel_cell");
 
         //Crafting items
         GameRegistry.registerItem(itemEmptyCell = new Item()
@@ -66,8 +75,8 @@ public class ASItems
                 .setTextureName(AtomicScience.PREFIX + "cell_empty")
                 .setCreativeTab(AtomicScience.creativeTab), "cell_empty");
 
-        GameRegistry.registerItem(itemYellowCake = new ItemRadioactive("cake.yellow", "yellow_cake"), "yellow_cake");
-        GameRegistry.registerItem(itemUranium235 = new ItemRadioactive("uranium.235", "uranium"), "uranium_235");
-        GameRegistry.registerItem(itemUranium238 = new ItemRadioactive("uranium.238", "uranium"), "uranium_238");
+        GameRegistry.registerItem(itemYellowCake = new ItemRadioactive("cake.yellow", "yellow_cake", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "yellow_cake");
+        GameRegistry.registerItem(itemUranium235 = new ItemRadioactive("uranium.235", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235), "uranium_235");
+        GameRegistry.registerItem(itemUranium238 = new ItemRadioactive("uranium.238", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238), "uranium_238");
     }
 }

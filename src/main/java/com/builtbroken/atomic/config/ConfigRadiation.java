@@ -61,4 +61,10 @@ public class ConfigRadiation
 
     /** How many points of map radioactive material converts to 1 RAD */
     public static float MAP_VALUE_TO_MILI_RAD = 0.01f; //100 material to 1/1000th of a RAD (material is a placeholder values since grams will not work)
+
+    public static int RADIOACTIVE_MAT_VALUE_U235 = (int) Math.ceil(RAD_U235 / MAP_VALUE_TO_MILI_RAD);
+    public static int RADIOACTIVE_MAT_VALUE_U238 = (int) Math.ceil(RAD_U238 / MAP_VALUE_TO_MILI_RAD);
+    public static int RADIOACTIVE_MAT_VALUE_YELLOW_CAKE = RADIOACTIVE_MAT_VALUE_U235 / 10;
+    public static int RADIOACTIVE_MAT_VALUE_FUEL_ROD = RADIOACTIVE_MAT_VALUE_U235 * 20;
+    public static int RADIOACTIVE_MAT_VALUE_BREEDER_ROD = RADIOACTIVE_MAT_VALUE_U235 * 10;
 }

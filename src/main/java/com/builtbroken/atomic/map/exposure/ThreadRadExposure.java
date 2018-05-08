@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.map.thread;
+package com.builtbroken.atomic.map.exposure;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.ConfigRadiation;

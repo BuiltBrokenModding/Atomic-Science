@@ -16,9 +16,9 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
     /** Time in ticks the fuel can run, when full */
     public final int maxFuelRuntime;
 
-    public ItemFuelRod(String name, String texture, int maxFuelRuntime)
+    public ItemFuelRod(String name, String texture, int maxFuelRuntime, int radioactiveMaterialValue)
     {
-        super(name, texture);
+        super(name, texture, radioactiveMaterialValue);
         this.maxFuelRuntime = maxFuelRuntime;
     }
 

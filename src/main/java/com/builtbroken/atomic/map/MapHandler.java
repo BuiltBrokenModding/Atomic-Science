@@ -1,8 +1,9 @@
 package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.map.thread.ThreadRadExposure;
 import com.builtbroken.atomic.api.AtomicScienceAPI;
+import com.builtbroken.atomic.map.exposure.RadiationMap;
+import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.MinecraftForge;

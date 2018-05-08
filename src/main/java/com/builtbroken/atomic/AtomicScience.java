@@ -7,7 +7,7 @@ import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.thread.ThreadRadExposure;
+import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
