@@ -24,6 +24,7 @@ public class BlockReactorCell extends BlockContainer
         setHardness(1);
         setResistance(5);
         setCreativeTab(AtomicScience.creativeTab);
+        setBlockName(AtomicScience.PREFIX + "reactor.cell");
     }
 
     @Override
