@@ -118,7 +118,7 @@ public class PacketBase implements IPacket
         }
     }
 
-    public ByteBuf data()
+    public ByteBuf dataToRead()
     {
         return dataToRead;
     }
@@ -132,10 +132,5 @@ public class PacketBase implements IPacket
             dataToWrite.add(object);
         }
         return (P) this;
-    }
-
-    public <P extends IPacket> P write(Object object)
-    {
-        return addData(object);
     }
 }

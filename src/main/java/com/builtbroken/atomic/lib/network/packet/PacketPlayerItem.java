@@ -63,7 +63,7 @@ public class PacketPlayerItem extends PacketBase
             {
                 if (item instanceof IPacketIDReceiver)
                 {
-                    ((IPacketIDReceiver) item).read(data(), id, player, this);
+                    ((IPacketIDReceiver) item).read(dataToRead(), id, player, this);
                 }
             }
         }
@@ -72,7 +72,7 @@ public class PacketPlayerItem extends PacketBase
             final ItemStack stack = player.inventory.getStackInSlot(this.slotId);
             if (stack.getItem() instanceof IPacketIDReceiver)
             {
-                ((IPacketIDReceiver) stack.getItem()).read(data(), id, player, this);
+                ((IPacketIDReceiver) stack.getItem()).read(dataToRead(), id, player, this);
             }
         }
     }
