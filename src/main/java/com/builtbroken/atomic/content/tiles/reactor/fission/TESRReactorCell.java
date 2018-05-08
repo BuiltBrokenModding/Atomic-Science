@@ -46,15 +46,21 @@ public class TESRReactorCell extends TileEntitySpecialRenderer
             else if (reactorCell.isTop())
             {
                 bindTexture(top_texture);
-                top_model.renderAll();
+                GL11.glTranslatef(0, -0.154f, 0);
+                GL11.glScalef(1f, 1.32f, 1f);
+                top_model.renderAllExcept("BottomPad", "BaseDepth", "BaseWidth", "Base");
             }
             else if (reactorCell.isMiddle())
             {
                 bindTexture(middle_texture);
+                //GL11.glTranslatef(0, 0.075f, 0);
+                //GL11.glScalef(1f, 1.15f, 1f);
                 middle_model.renderAll();
             }
             else
             {
+                GL11.glTranslatef(0, -0.1f, 0);
+                GL11.glScalef(1f, 1.2f, 1f);
                 bindTexture(top_texture);
                 top_model.renderAll();
             }
