@@ -7,7 +7,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -45,6 +47,50 @@ public class BlockReactorCell extends BlockContainer
     //----------------------------------------------
 
     @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xHit, float yHit, float zHit)
+    {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TileEntityReactorCell)
+        {
+            TileEntityReactorCell reactorCell = ((TileEntityReactorCell) tileEntity);
+            ItemStack heldItem = player.getHeldItem();
+            if (heldItem != null)
+            {
+                if (reactorCell.isItemValidForSlot(0, heldItem))
+                {
+                    if (!world.isRemote && reactorCell.getStackInSlot(0) == null)
+                    {
+                        ItemStack copy = heldItem.splitStack(1);
+                        reactorCell.setInventorySlotContents(0, copy);
+
+                        if (heldItem.stackSize <= 0)
+                        {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                        }
+                        else
+                        {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem);
+                        }
+                        player.inventoryContainer.detectAndSendChanges();
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                if (!world.isRemote && reactorCell.getStackInSlot(0) != null)
+                {
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, reactorCell.getStackInSlot(0));
+                    reactorCell.setInventorySlotContents(0, null);
+                    player.inventoryContainer.detectAndSendChanges();
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
 
@@ -63,13 +109,56 @@ public class BlockReactorCell extends BlockContainer
         }
     }
 
+    @Override
+    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+    {
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TileEntityReactorCell)
+        {
+            TileEntityReactorCell reactorCell = (TileEntityReactorCell) tileEntity;
+            if (reactorCell.hasFuel())
+            {
+                if (!reactorCell.isMiddle() && !reactorCell.isBottom())
+                {
+                    setBlockBounds(0.3f, 0f, 0.3f, 0.7f, 0.75f, 0.7f);
+                }
+                else
+                {
+                    setBlockBounds(0.3f, 0f, 0.3f, 0.7f, 1f, 0.7f);
+                }
+            }
+        }
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+    {
+        if (super.shouldSideBeRendered(world, x, y, z, side))
+        {
+            TileEntity tileEntity = world.getTileEntity(x, y, z);
+            if (tileEntity instanceof TileEntityReactorCell)
+            {
+                return ((TileEntityReactorCell) tileEntity).hasFuel();
+            }
+        }
+        return false;
+    }
+
     //-----------------------------------------------
     //-------- Properties ---------------------------
     //----------------------------------------------
+
+    @Override
+    public boolean renderAsNormalBlock()
+    {
+        return false;
+    }
+
     @Override
     public int getRenderType()
     {
-        return -1;
+        return 0;
     }
 
     @Override
