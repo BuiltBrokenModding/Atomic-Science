@@ -4,9 +4,11 @@ import com.builtbroken.atomic.lib.network.IPacket;
 import com.builtbroken.atomic.lib.network.IPacketIDReceiver;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.network.packet.PacketTile;
+import com.builtbroken.atomic.lib.transform.IPosWorld;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public abstract class TileEntityMachine extends TileEntity implements IPacketIDReceiver
+public abstract class TileEntityMachine extends TileEntity implements IPacketIDReceiver, IPosWorld
 {
     public static final int DESC_PACKET_ID = -1;
 
@@ -39,7 +41,7 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
             _ticks = 1;
         }
 
-        if(_syncClientNextTick)
+        if (_syncClientNextTick)
         {
             _syncClientNextTick = false;
             sendDescPacket();
@@ -142,5 +144,51 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
     protected boolean isClient()
     {
         return worldObj != null && worldObj.isRemote;
+    }
+
+    //-----------------------------------------------
+    //--------- Position ----------------------------
+    //-----------------------------------------------
+
+    @Override
+    public World world()
+    {
+        return getWorldObj();
+    }
+
+    @Override
+    public double z()
+    {
+        return zCoord + 0.5;
+    }
+
+    @Override
+    public double x()
+    {
+        return xCoord + 0.5;
+    }
+
+    @Override
+    public double y()
+    {
+        return yCoord + 0.5;
+    }
+
+    @Override
+    public int zi()
+    {
+        return zCoord;
+    }
+
+    @Override
+    public int xi()
+    {
+        return xCoord;
+    }
+
+    @Override
+    public int yi()
+    {
+        return yCoord;
     }
 }

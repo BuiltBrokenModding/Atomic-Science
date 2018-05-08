@@ -1,8 +1,10 @@
 package com.builtbroken.atomic.content.tiles.reactor.fission;
 
 import com.builtbroken.atomic.api.item.IFuelRodItem;
+import com.builtbroken.atomic.api.reactor.IFissionReactor;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.tiles.TileEntityInventoryMachine;
+import com.builtbroken.atomic.map.MapHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +16,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public class TileEntityReactorCell extends TileEntityInventoryMachine
+public class TileEntityReactorCell extends TileEntityInventoryMachine implements IFissionReactor
 {
     /** Client side */
     private boolean _running = false;
@@ -42,7 +44,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine
         {
             if (canOperate())
             {
-                consumeFuel();
+                consumeFuel(ticks);
                 generate();
             }
         }
@@ -54,8 +56,12 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine
 
     protected void generate()
     {
-        //TODO calculate heat generated
-        //TODO generate heat to thermal map
+        IFuelRodItem fuelRodItem = getFuelRod();
+        if (fuelRodItem != null)
+        {
+            //TODO figure out bonus and negative to heat generation (control rods decrease, reactors nearby increase)
+            MapHandler.THERMAL_MAP.outputHeat(this, fuelRodItem.getHeatOutput(getFuelRodStack()));
+        }
 
         //TODO calculate radioactive effects
         //TODO dump radiation to map
@@ -64,9 +70,13 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine
         //TODO dump radioactive material to area or drains
     }
 
-    protected void consumeFuel()
+    protected void consumeFuel(int ticks)
     {
-        //TODO damage fuel rods
+        IFuelRodItem fuelRodItem = getFuelRod();
+        if (fuelRodItem != null)
+        {
+            setInventorySlotContents(0, fuelRodItem.onReactorTick(this, getFuelRodStack(), ticks, getFuelRuntime()));
+        }
     }
 
     protected boolean canOperate()
@@ -75,6 +85,13 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine
         //TODO check if can generate neutrons (controls rods can force off)
         //TODO check for redstone disable
         return hasFuel();
+    }
+
+    @Override
+    protected void onSlotStackChanged(ItemStack prev, ItemStack stack, int slot)
+    {
+        super.onSlotStackChanged(prev, stack, slot);
+        syncClientNextTick();
     }
 
     //-----------------------------------------------
@@ -91,7 +108,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine
         IFuelRodItem fuelRod = getFuelRod();
         if (fuelRod != null)
         {
-            return fuelRod.getFuelRodRuntime(getStackInSlot(0));
+            return fuelRod.getFuelRodRuntime(getFuelRodStack());
         }
         return 0;
     }
@@ -101,15 +118,21 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine
         IFuelRodItem fuelRod = getFuelRod();
         if (fuelRod != null)
         {
-            return fuelRod.getMaxFuelRodRuntime(getStackInSlot(0));
+            return fuelRod.getMaxFuelRodRuntime(getFuelRodStack());
         }
         return 0;
     }
 
     public IFuelRodItem getFuelRod()
     {
-        ItemStack stack = getStackInSlot(0);
+        ItemStack stack = getFuelRodStack();
         return stack != null && stack.getItem() instanceof IFuelRodItem ? (IFuelRodItem) stack.getItem() : null;
+    }
+
+    @Override
+    public ItemStack getFuelRodStack()
+    {
+        return getStackInSlot(0);
     }
 
     @Override

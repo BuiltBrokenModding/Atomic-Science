@@ -64,6 +64,15 @@ public class TESRReactorCell extends TileEntitySpecialRenderer
                 bindTexture(top_texture);
                 top_model.renderAll();
             }
+
+            if(reactorCell.shouldRenderFuel())
+            {
+                //TODO render fuel rods
+                //TODO decrease in size as fuel is used
+                //TODO decrease in color (green -> grey) as its used
+                //TODO glow when running (blue or green? hmm)
+                //TODO glow molten like if overheating
+            }
         }
 
         GL11.glPopMatrix();

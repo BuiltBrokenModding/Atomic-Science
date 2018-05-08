@@ -1,6 +1,8 @@
 package com.builtbroken.atomic.api.reactor;
 
 import com.builtbroken.atomic.api.item.IFuelRodItem;
+import com.builtbroken.atomic.api.thermal.IHeatSource;
+import com.builtbroken.atomic.lib.transform.IPosWorld;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -9,7 +11,7 @@ import net.minecraft.item.ItemStack;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/8/2018.
  */
-public interface IReactor
+public interface IReactor extends IHeatSource, IPosWorld
 {
     /**
      * Gets the current fuel rod item instance
