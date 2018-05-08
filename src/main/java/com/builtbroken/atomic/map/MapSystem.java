@@ -190,7 +190,7 @@ public class MapSystem
 
     public void onChunkLoadData(World world, Chunk chunk, NBTTagCompound save) //Called before chunk load event
     {
-        if (save != null && save.hasKey(saveKey))
+        if (save != null && saveKey != null && save.hasKey(saveKey))
         {
             DataMap map = getMap(world, true);
             if (map != null)
@@ -207,7 +207,7 @@ public class MapSystem
     public void onChunkSaveData(World world, Chunk chunk, NBTTagCompound save) //Called on world save
     {
         DataMap map = getMap(world, false);
-        if (map != null)
+        if (map != null && saveKey != null)
         {
             NBTTagCompound tag = new NBTTagCompound();
             map.saveChunk(chunk, tag);
