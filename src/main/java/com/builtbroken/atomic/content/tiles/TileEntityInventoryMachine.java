@@ -80,6 +80,8 @@ public abstract class TileEntityInventoryMachine extends TileEntityMachine imple
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack)
     {
+        ItemStack prev = getStackInSlot(slot);
+
         getInventoryArray()[slot] = stack;
 
         if (stack != null && stack.stackSize > this.getInventoryStackLimit())
@@ -87,6 +89,14 @@ public abstract class TileEntityInventoryMachine extends TileEntityMachine imple
             stack.stackSize = this.getInventoryStackLimit();
         }
 
+        if (!ItemStack.areItemStacksEqual(prev, stack) || !ItemStack.areItemStackTagsEqual(prev, stack))
+        {
+            onSlotStackChanged(prev, stack, slot);
+        }
+    }
+
+    protected void onSlotStackChanged(ItemStack prev, ItemStack stack, int slot)
+    {
         this.markDirty();
     }
 
