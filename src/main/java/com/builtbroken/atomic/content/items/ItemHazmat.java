@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
 {
     /** Prefix for model textures */
-    public static final String ARMOR_MODEL_TEXTURE = AtomicScience.PREFIX + AtomicScience.MODEL_DIRECTORY + "armor/hazmat.png";
+    public static final String ARMOR_MODEL_TEXTURE = AtomicScience.PREFIX + AtomicScience.MODEL_TEXTURE_DIRECTORY + "armor/hazmat.png";
     /** Prefix for item textures */
     public static final String ARMOR_TEXTURE_FOLDER = AtomicScience.PREFIX + "armor/";
 

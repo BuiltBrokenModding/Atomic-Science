@@ -42,8 +42,10 @@ public class AtomicScience
     public static final String DEPENDENCIES = "";
 
     public static final String TEXTURE_DIRECTORY = "textures/";
-    public static final String GUI_DIRECTORY = TEXTURE_DIRECTORY + "gui/";
-    public static final String MODEL_DIRECTORY = TEXTURE_DIRECTORY + "models/";
+    public static final String GUI_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "gui/";
+    public static final String MODEL_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "models/";
+
+    public static final String MODEL_DIRECTORY = "models/";
 
     @Mod.Instance(DOMAIN)
     public static AtomicScience INSTANCE;
