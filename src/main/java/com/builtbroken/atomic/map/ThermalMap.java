@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.api.thermal.IHeatSource;
+import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import net.minecraft.world.World;
 
 /**
@@ -9,7 +10,7 @@ import net.minecraft.world.World;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/6/2018.
  */
-public class ThermalMap extends MapSystem
+public class ThermalMap extends MapSystem implements IThermalSystem
 {
     public ThermalMap()
     {

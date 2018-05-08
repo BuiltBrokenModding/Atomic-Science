@@ -2,6 +2,8 @@ package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.map.thread.ThreadRadExposure;
+import com.builtbroken.atomic.api.AtomicScienceAPI;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkDataEvent;
@@ -36,8 +38,13 @@ public final class MapHandler
 
     public static void register()
     {
+        AtomicScienceAPI.radiationExposureSystem = RADIATION_MAP;
+        AtomicScienceAPI.radioactiveMaterialSystem = MATERIAL_MAP;
+        AtomicScienceAPI.thermalSystem = THERMAL_MAP;
+
         MinecraftForge.EVENT_BUS.register(new MapHandler());
         MinecraftForge.EVENT_BUS.register(RADIATION_MAP);
+        FMLCommonHandler.instance().bus().register(RADIATION_MAP);
     }
 
     ///----------------------------------------------------------------
