@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.content.items.ItemFuelRod;
 import com.builtbroken.atomic.content.items.ItemHazmat;
 import com.builtbroken.atomic.content.items.ItemRadioactive;
 import com.builtbroken.atomic.content.items.cell.ItemFluidCell;
@@ -56,8 +57,8 @@ public class ASItems
         itemPoweredCell.addSupportedFluid(ASFluids.STRANGE_MATTER.fluid, AtomicScience.PREFIX + "cell_strange_matter", itemFluidCell.getUnlocalizedName() + ".strange_matter");
 
         //Machine inputs
-        GameRegistry.registerItem(itemFissileFuelCell = new ItemRadioactive("cell.fuel.fissile", "cell_fissile_fuel"), "fissile_fuel_cell");
-        GameRegistry.registerItem(itemBreederFuelCell = new ItemRadioactive("cell.fuel.breeder", "cell_breeder_fuel"), "breeder_fuel_cell");
+        GameRegistry.registerItem(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile", "cell_fissile_fuel", 5 * 60 * 60 * 20), "fissile_fuel_cell");
+        GameRegistry.registerItem(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder", "cell_breeder_fuel", 2 * 60 * 60 * 20), "breeder_fuel_cell");
 
         //Crafting items
         GameRegistry.registerItem(itemEmptyCell = new Item()
