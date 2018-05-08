@@ -29,6 +29,15 @@ public interface IFuelRodItem
     int getMaxFuelRodRuntime(ItemStack stack);
 
     /**
+     * Amount of heat this rod would produce
+     * in a reactor with no limits.
+     *
+     * @param stack - fuel rod
+     * @return heat value
+     */
+    int getHeatOutput(ItemStack stack);
+
+    /**
      * Called each tick the fuel runs
      * <p>
      * Use this to decrease the fuel runtime

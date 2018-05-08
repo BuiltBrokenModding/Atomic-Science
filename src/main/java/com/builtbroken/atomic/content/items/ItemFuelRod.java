@@ -40,6 +40,12 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
     }
 
     @Override
+    public int getHeatOutput(ItemStack stack)
+    {
+        return 100000;
+    }
+
+    @Override
     public ItemStack onReactorTick(IReactor reactor, ItemStack stack, int tick, int fuelTick)
     {
         if (stack.getTagCompound() == null)
