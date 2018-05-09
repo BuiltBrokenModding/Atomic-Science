@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /**
@@ -96,55 +95,6 @@ public class BlockReactorCell extends BlockContainer
 
     }
 
-    @Override
-    public void onNeighborChange(IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ)
-    {
-        if (tileY != y)
-        {
-            TileEntity tileEntity = world.getTileEntity(x, y, z);
-            if (tileEntity instanceof TileEntityReactorCell)
-            {
-                ((TileEntityReactorCell) tileEntity).updateStructureType();
-            }
-        }
-    }
-
-    @Override
-    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
-    {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityReactorCell)
-        {
-            TileEntityReactorCell reactorCell = (TileEntityReactorCell) tileEntity;
-            if (reactorCell.hasFuel())
-            {
-                if (!reactorCell.isMiddle() && !reactorCell.isBottom())
-                {
-                    setBlockBounds(0.3f, 0f, 0.3f, 0.7f, 0.75f, 0.7f);
-                }
-                else
-                {
-                    setBlockBounds(0.3f, 0f, 0.3f, 0.7f, 1f, 0.7f);
-                }
-            }
-        }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
-    {
-        if (super.shouldSideBeRendered(world, x, y, z, side))
-        {
-            TileEntity tileEntity = world.getTileEntity(x, y, z);
-            if (tileEntity instanceof TileEntityReactorCell)
-            {
-                return ((TileEntityReactorCell) tileEntity).hasFuel();
-            }
-        }
-        return false;
-    }
-
     //-----------------------------------------------
     //-------- Properties ---------------------------
     //----------------------------------------------
@@ -158,7 +108,7 @@ public class BlockReactorCell extends BlockContainer
     @Override
     public int getRenderType()
     {
-        return 0;
+        return -1;
     }
 
     @Override
