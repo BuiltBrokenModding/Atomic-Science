@@ -92,8 +92,8 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     {
         if (radiationSourceMap.containsKey(source))
         {
-            radiationSourceMap.remove(source);
             onSourceRemoved(source);
+            radiationSourceMap.remove(source);
         }
     }
 
@@ -156,14 +156,21 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     protected void fireSourceChange(IRadiationSource source, int newValue)
     {
         RadSourceWrapper wrapper = getRadSourceWrapper(source);
-        if (wrapper != null)
+        if (wrapper != null && wrapper.radioactiveMaterialValue != newValue)
         {
             //Remove old, called separate in case position changed
-            MapHandler.THREAD_RAD_EXPOSURE.changeQueue.add(new RadChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, wrapper.radioactiveMaterialValue, 0));
+            if (wrapper.radioactiveMaterialValue != 0)
+            {
+                MapHandler.THREAD_RAD_EXPOSURE.changeQueue.add(new RadChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, wrapper.radioactiveMaterialValue, 0));
+            }
             //Log changes
             wrapper.logCurrentData();
+
             //Add new, called separate in case position changed
-            MapHandler.THREAD_RAD_EXPOSURE.changeQueue.add(new RadChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, 0, newValue));
+            if (newValue != 0 && source.isRadioactive())
+            {
+                MapHandler.THREAD_RAD_EXPOSURE.changeQueue.add(new RadChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, 0, newValue));
+            }
         }
     }
 
@@ -284,8 +291,10 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     {
         if (event.phase == TickEvent.Phase.END)
         {
+            //Cleanup
             clearDeadSources();
 
+            //Loop sources looking for changes
             for (RadSourceWrapper wrapper : radiationSourceMap.values())
             {
                 if (wrapper.hasSourceChanged())
@@ -294,7 +303,6 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
                 }
             }
         }
-
     }
 
     @SubscribeEvent()

@@ -162,10 +162,10 @@ public class ThreadRadExposure extends Thread
         long time = System.nanoTime();
 
         //Clear old values
-        removeValue(map, change.old_value, change.x, change.y, change.z);
+        removeValue(map, change.old_value, change.xi(), change.yi(), change.zi());
 
         //Add new value, completed as a separate step due to range differences
-        setValue(map, change.new_value, change.x, change.y, change.z);
+        setValue(map, change.new_value, change.xi(), change.yi(), change.zi());
 
         if (AtomicScience.runningAsDev)
         {
