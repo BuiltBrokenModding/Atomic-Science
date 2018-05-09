@@ -26,6 +26,6 @@ public class ItemRadioactive extends Item implements IRadioactiveItem
     @Override
     public int getRadioactiveMaterial(ItemStack stack)
     {
-        return radioactiveMaterialValue;
+        return radioactiveMaterialValue * stack.stackSize;
     }
 }
