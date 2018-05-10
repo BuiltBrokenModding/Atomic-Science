@@ -31,6 +31,12 @@ public class RadSourceEntityItem implements IRadiationSource
     }
 
     @Override
+    public boolean isRadioactive()
+    {
+        return getRadioactiveMaterial() > 0;
+    }
+
+    @Override
     public World world()
     {
         return entityItem.worldObj;

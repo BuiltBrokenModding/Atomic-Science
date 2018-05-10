@@ -40,7 +40,15 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     public RadiationMap()
     {
         super(MapHandler.RAD_EXPOSURE_MAP_ID, null); //Doesn't save
-        wrapperFactories.put(EntityItem.class, e -> new RadSourceEntityItem((EntityItem) e));
+        wrapperFactories.put(EntityItem.class, e ->
+        {
+            EntityItem entityItem = (EntityItem) e;
+            if (entityItem.getEntityItem() != null && entityItem.getEntityItem().getItem() instanceof IRadioactiveItem)
+            {
+                return new RadSourceEntityItem(entityItem);
+            }
+            return null;
+        });
     }
 
     ///----------------------------------------------------------------
@@ -308,13 +316,16 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent()
     public void itemPickUpEvent(PlayerEvent.ItemPickupEvent event)
     {
-        EntityItem entityItem = event.pickedUp;
-        if (entityItem != null)
+        if (!event.player.worldObj.isRemote)
         {
-            ItemStack stack = entityItem.getEntityItem();
-            if (stack != null && stack.getItem() instanceof IRadioactiveItem)
+            EntityItem entityItem = event.pickedUp;
+            if (entityItem != null)
             {
-                removeSource(entityItem);
+                ItemStack stack = entityItem.getEntityItem();
+                if (stack != null && stack.getItem() instanceof IRadioactiveItem)
+                {
+                    removeSource(entityItem);
+                }
             }
         }
     }
