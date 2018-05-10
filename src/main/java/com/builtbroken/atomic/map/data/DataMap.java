@@ -83,6 +83,37 @@ public class DataMap
         return true;
     }
 
+    /**
+     * Checks that we are inside the map and that
+     * the location is loaded into memory.
+     *
+     * @param x - location
+     * @param y - location
+     * @param z - location
+     * @return true if block position exists
+     */
+    public boolean blockExists(int x, int y, int z)
+    {
+        World world = getWorld();
+        if (world != null && world.blockExists(x, y, z))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Gets the world from the dim manager.
+     * <p>
+     * Is not cached
+     *
+     * @return world
+     */
+    public World getWorld()
+    {
+        return DimensionManager.getWorld(dim);
+    }
+
     ///----------------------------------------------------------------
     ///-------- Event handlers
     ///----------------------------------------------------------------
