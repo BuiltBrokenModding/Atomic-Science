@@ -21,12 +21,12 @@ public class ConfigRadiation
     public static float MEV_GRAM_U235 = 4.679f; //https://en.wikipedia.org/wiki/Uranium-235
 
     //mass in grams of sample items % of material
-    public static float MASS_U238_SAMPLE = 100;
-    public static float MASS_U235_SAMPLE = 100;
+    public static float MASS_U238_SAMPLE = 500;
+    public static float MASS_U235_SAMPLE = 500;
 
     //Activity (number of decays per tick)
-    public static float ACTIVITY_U238 = 100; //TODO get actual numbers, then scale
-    public static float ACTIVITY_U235 = 100; //TODO get actual numbers, then scale
+    public static float ACTIVITY_U238 = 12445; //TODO get actual numbers, then scale
+    public static float ACTIVITY_U235 = 80011; //TODO get actual numbers, then scale
     //-------------------------------------------------------------------------------
 
 
@@ -65,6 +65,9 @@ public class ConfigRadiation
     public static int RADIOACTIVE_MAT_VALUE_U235 = (int) Math.ceil(RAD_U235 / MAP_VALUE_TO_MILI_RAD);
     public static int RADIOACTIVE_MAT_VALUE_U238 = (int) Math.ceil(RAD_U238 / MAP_VALUE_TO_MILI_RAD);
     public static int RADIOACTIVE_MAT_VALUE_YELLOW_CAKE = RADIOACTIVE_MAT_VALUE_U235 / 10;
-    public static int RADIOACTIVE_MAT_VALUE_FUEL_ROD = RADIOACTIVE_MAT_VALUE_U235 * 20;
-    public static int RADIOACTIVE_MAT_VALUE_BREEDER_ROD = RADIOACTIVE_MAT_VALUE_U235 * 10;
+    public static int RADIOACTIVE_MAT_VALUE_FUEL_ROD = RADIOACTIVE_MAT_VALUE_U235 * 100;
+    public static int RADIOACTIVE_MAT_VALUE_BREEDER_ROD = RADIOACTIVE_MAT_VALUE_FUEL_ROD / 10;
+
+    /** Max distance in meters to update radiation on the map. */
+    public static int MAX_UPDATE_RANGE = 50;
 }
