@@ -29,7 +29,7 @@ public class DataChunk
     public final int dimension;
 
     /** Array of active layers, modified by yStart */
-    protected DataLayer[] layers;
+    protected DataLayer[] layers = new DataLayer[256];
 
     /** Starting point of the layer array as a Y level */
     protected int yStart;
@@ -152,50 +152,8 @@ public class DataChunk
      * @param y
      * @return
      */
-    protected DataLayer getLayer(int y)
+    public DataLayer getLayer(int y)
     {
-        //Init array if not initialized
-        if (getLayers() == null)
-        {
-            layers = new DataLayer[11];
-            yStart = Math.max(0, y - 10);
-        }
-        //Check if we need to increase layer array to fit a new value
-        else if (y < getYStart())
-        {
-            final DataLayer[] oldLayers = getLayers();
-
-            //Increase array size by 5 more than expected y level, if under 10 fully expand to zero
-            int increase = getYStart() > 10 ? ((getYStart() - y) + 5) : getYStart();
-
-            //New array
-            int newLength = Math.min(getChunkHeight(), oldLayers.length + increase);
-            layers = new DataLayer[newLength];
-
-            //Copy array
-            for (int i = 0; i < oldLayers.length; i++)
-            {
-                getLayers()[i + increase] = oldLayers[i];
-            }
-
-            //Set new y start
-            yStart = getYStart() - increase;
-        }
-        else if (y > getLayerEnd())
-        {
-            DataLayer[] oldLayers = getLayers();
-
-            //Increase array size by 5 above y
-            int increase = y - (getYStart() + getLayers().length) + 5;
-            layers = new DataLayer[Math.min(getChunkHeight(), oldLayers.length + increase)];
-
-            //Copy array
-            for (int i = 0; i < oldLayers.length; i++)
-            {
-                getLayers()[i] = oldLayers[i];
-            }
-        }
-
         //If layer is null, create layer
         if (getLayers()[getIndex(y)] == null)
         {

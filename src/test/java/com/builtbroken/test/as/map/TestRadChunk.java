@@ -1,9 +1,14 @@
 package com.builtbroken.test.as.map;
 
+import com.builtbroken.atomic.lib.transform.vector.Pos;
 import com.builtbroken.atomic.map.data.DataChunk;
 import junit.framework.TestCase;
 import net.minecraft.nbt.NBTTagCompound;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Test cases {@link DataChunk}
@@ -45,6 +50,9 @@ public class TestRadChunk extends TestCase
                         assertTrue(String.format("Failed to set, %sx %sy %sz with %s", x, y, z, 0), chunk.setValue(x, y, z, 0));
                         set = chunk.getValue(x, y, z);
                         assertEquals(String.format("Value was not set, %sx %sy %sz with %s", x, y, z, 0), 0, set);
+
+                        //Check if layer y matches
+                        assertEquals(y, chunk.getLayer(y).y_index);
                     }
                     catch (Exception e)
                     {
@@ -80,6 +88,9 @@ public class TestRadChunk extends TestCase
                         assertTrue(String.format("Failed to set, %sx %sy %sz with %s", x, y, z, 0), chunk.setValue(x, y, z, 0));
                         set = chunk.getValue(x, y, z);
                         assertEquals(String.format("Value was not set, %sx %sy %sz with %s", x, y, z, 0), 0, set);
+
+                        //Check if layer y matches
+                        assertEquals(y, chunk.getLayer(y).y_index);
                     }
                     catch (Exception e)
                     {
@@ -118,12 +129,104 @@ public class TestRadChunk extends TestCase
                         //Reset check
                         set = chunk.getValue(x, y, z);
                         assertEquals(String.format("Value was not set, %sx %sy %sz with %s", x, y, z, 0), 0, set);
+
+                        //Check if layer y matches
+                        assertEquals(y, chunk.getLayer(y).y_index);
                     }
                     catch (Exception e)
                     {
                         e.printStackTrace();
                         fail(String.format("Unexpected error, %sx %sy %sz", x, y, z));
                     }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testSetLargeJump()
+    {
+        //Test every 8, checks if resize works while skipping values
+        DataChunk chunk = new DataChunk(1, 3, 2);
+        assertTrue(chunk.setValue(5, 100, 5, 98));
+        assertEquals(98, chunk.getValue(5, 100, 5));
+
+        assertTrue(chunk.setValue(5, 72, 5, 94));
+        assertEquals(94, chunk.getValue(5, 72, 5));
+
+        assertTrue(chunk.setValue(5, 32, 5, 91));
+        assertEquals(91, chunk.getValue(5, 32, 5));
+
+        assertTrue(chunk.setValue(5, 0, 5, 31));
+        assertEquals(31, chunk.getValue(5, 0, 5));
+    }
+
+    @Test
+    public void testSetLargeJump2()
+    {
+        //Test every 8, checks if resize works while skipping values
+        DataChunk chunk = new DataChunk(1, 3, 2);
+        chunk.setValue(5, 238, 5, 98);
+        chunk.setValue(5, 103, 5, 98);
+        chunk.setValue(5, 93, 5, 98);
+        chunk.setValue(5, 83, 5, 98);
+        chunk.setValue(5, 73, 5, 98);
+
+        assertTrue(chunk.setValue(5, 0, 5, 31));
+        assertEquals(31, chunk.getValue(5, 0, 5));
+    }
+
+    @Test
+    public void testSetRandom()
+    {
+        //Test every 8, checks if resize works while skipping values
+        DataChunk chunk = new DataChunk(1, 3, 2);
+
+        for (int i = 0; i < 10; i++)
+        {
+            List<Pos> positions = new ArrayList();
+            for (int x = 0; x < 16; x++)
+            {
+                for (int z = 0; z < 16; z++)
+                {
+                    for (int y = 0; y < 256; y++)
+                    {
+                        positions.add(new Pos(x, y, z));
+                    }
+                }
+            }
+            Collections.shuffle(positions);
+            Collections.shuffle(positions);
+
+            for (Pos pos : positions)
+            {
+                int x = pos.xi();
+                int y = pos.yi();
+                int z = pos.zi();
+                try
+                {
+                    //Set
+                    int value = y * 256 + 16 * x + z;
+                    assertTrue(String.format("Failed to set, %sx %sy %sz with %s", x, y, z, value), chunk.setValue(x, y, z, value));
+
+                    //Get
+                    int set = chunk.getValue(x, y, z);
+                    assertEquals(String.format("Value was not set, %sx %sy %sz with %s", x, y, z, value), value, set);
+
+                    //Reset
+                    assertTrue(String.format("Failed to set, %sx %sy %sz with %s", x, y, z, 0), chunk.setValue(x, y, z, 0));
+
+                    //Reset check
+                    set = chunk.getValue(x, y, z);
+                    assertEquals(String.format("Value was not set, %sx %sy %sz with %s", x, y, z, 0), 0, set);
+
+                    //Check if layer y matches
+                    assertEquals(y, chunk.getLayer(y).y_index);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    fail(String.format("Unexpected error, %sx %sy %sz", x, y, z));
                 }
             }
         }
