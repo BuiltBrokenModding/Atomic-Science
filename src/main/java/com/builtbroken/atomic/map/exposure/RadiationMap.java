@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.map.exposure;
 
+import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.radiation.IRadiationExposureSystem;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.radiation.IRadioactiveItem;
@@ -65,9 +66,10 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
      */
     public void addSource(IRadiationSource source)
     {
-        if (source != null && !radiationSourceMap.containsKey(source))
+        if (source != null && source.isRadioactive() && !radiationSourceMap.containsKey(source))
         {
             radiationSourceMap.put(source, new RadSourceWrapper(source));
+            onSourceAdded(source);
         }
     }
 
@@ -121,6 +123,10 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
      */
     protected void onSourceAdded(IRadiationSource source)
     {
+        if (AtomicScience.runningAsDev)
+        {
+            AtomicScience.logger.info("RadiationMap: adding source " + source);
+        }
         fireSourceChange(source, source.getRadioactiveMaterial());
     }
 
@@ -131,7 +137,10 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
      */
     protected void onSourceRemoved(IRadiationSource source)
     {
-        //TODO fire event
+        if (AtomicScience.runningAsDev)
+        {
+            AtomicScience.logger.info("RadiationMap: remove source " + source);
+        }
         fireSourceChange(source, 0);
     }
 
@@ -146,11 +155,11 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
             Map.Entry<IRadiationSource, RadSourceWrapper> next = it.next();
             if (next == null || next.getKey() == null || next.getValue() == null || !next.getKey().isRadioactive())
             {
-                it.remove();
                 if (next.getKey() != null)
                 {
                     onSourceRemoved(next.getKey());
                 }
+                it.remove();
             }
         }
     }
@@ -163,13 +172,17 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
      */
     protected void fireSourceChange(IRadiationSource source, int newValue)
     {
+        if (AtomicScience.runningAsDev)
+        {
+            AtomicScience.logger.info("RadiationMap: on changed " + source);
+        }
         RadSourceWrapper wrapper = getRadSourceWrapper(source);
         if (wrapper != null && wrapper.radioactiveMaterialValue != newValue)
         {
             //Remove old, called separate in case position changed
             if (wrapper.radioactiveMaterialValue != 0)
             {
-                MapHandler.THREAD_RAD_EXPOSURE.changeQueue.add(new RadChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, wrapper.radioactiveMaterialValue, 0));
+                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(new RadChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, wrapper.radioactiveMaterialValue, 0));
             }
             //Log changes
             wrapper.logCurrentData();
@@ -177,7 +190,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
             //Add new, called separate in case position changed
             if (newValue != 0 && source.isRadioactive())
             {
-                MapHandler.THREAD_RAD_EXPOSURE.changeQueue.add(new RadChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, 0, newValue));
+                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(new RadChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, 0, newValue));
             }
         }
     }
@@ -270,7 +283,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent()
     public void onChunkAdded(MapSystemEvent.AddChunk event)
     {
-        if (event.map.mapSystem == MapHandler.MATERIAL_MAP)
+        if (!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP)
         {
             MapHandler.THREAD_RAD_EXPOSURE.queueChunkForAddition(event.chunk);
         }
@@ -279,7 +292,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent()
     public void onChunkRemove(MapSystemEvent.RemoveChunk event)
     {
-        if (event.map.mapSystem == MapHandler.MATERIAL_MAP)
+        if (!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP)
         {
             MapHandler.THREAD_RAD_EXPOSURE.queueChunkForRemoval(event.chunk);
         }
@@ -288,9 +301,9 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRadiationChange(MapSystemEvent.UpdateValue event)
     {
-        if (event.map.mapSystem == MapHandler.MATERIAL_MAP && event.prev_value != event.new_value)
+        if (!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP && event.prev_value != event.new_value)
         {
-            MapHandler.THREAD_RAD_EXPOSURE.changeQueue.add(new RadChange(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
+            MapHandler.THREAD_RAD_EXPOSURE.queuePosition(new RadChange(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
         }
     }
 
@@ -333,7 +346,10 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent()
     public void entityJoinWorld(EntityJoinWorldEvent event)
     {
-        //Add source handles checking if its an actual source
-        addSource(event.entity);
+        if (!event.world.isRemote)
+        {
+            //Add source handles checking if its an actual source
+            addSource(event.entity);
+        }
     }
 }

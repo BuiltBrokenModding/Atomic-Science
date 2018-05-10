@@ -19,9 +19,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ThreadRadExposure extends Thread
 {
     public boolean shouldRun = true;
-    public ConcurrentLinkedQueue<RadChange> changeQueue = new ConcurrentLinkedQueue();
-    public ConcurrentLinkedQueue<DataChunk> addScanQueue = new ConcurrentLinkedQueue();
-    public ConcurrentLinkedQueue<DataChunk> removeScanQueue = new ConcurrentLinkedQueue();
+    private ConcurrentLinkedQueue<RadChange> changeQueue = new ConcurrentLinkedQueue();
+    private ConcurrentLinkedQueue<DataChunk> addScanQueue = new ConcurrentLinkedQueue();
+    private ConcurrentLinkedQueue<DataChunk> removeScanQueue = new ConcurrentLinkedQueue();
 
     public ThreadRadExposure()
     {
@@ -162,10 +162,10 @@ public class ThreadRadExposure extends Thread
         long time = System.nanoTime();
 
         //Clear old values
-        removeValue(map, change.old_value, change.xi(), change.yi(), change.zi());
+        updateValue(map, change.old_value, change.xi(), change.yi(), change.zi(), true);
 
         //Add new value, completed as a separate step due to range differences
-        setValue(map, change.new_value, change.xi(), change.yi(), change.zi());
+        updateValue(map, change.new_value, change.xi(), change.yi(), change.zi(), false);
 
         if (AtomicScience.runningAsDev)
         {
@@ -186,89 +186,76 @@ public class ThreadRadExposure extends Thread
      * @param cx    - change location
      * @param cy    - change location
      * @param cz    - change location
+     * @return true if finished
      */
-    protected void removeValue(DataMap map, int value, int cx, int cy, int cz)
+    protected boolean updateValue(DataMap map, int value, int cx, int cy, int cz, boolean remove)
     {
-        final int rad = getRadFromMaterial(value);
-        final int edit_range = (int) Math.floor(getDecayRange(rad));
-        for (int mx = -edit_range; mx <= edit_range; mx++)
+        if (value > 0)
         {
-            for (int mz = -edit_range; mz <= edit_range; mz++)
+            final int rad = getRadFromMaterial(value);
+            final int edit_range = Math.min(ConfigRadiation.MAX_UPDATE_RANGE, (int) Math.floor(getDecayRange(rad)));
+
+            if (AtomicScience.runningAsDev)
             {
-                for (int my = -edit_range; my <= edit_range; my++)
-                {
-                    int x = cx + mx;
-                    int y = cy + my;
-                    int z = cz + mz;
-
-                    //Stay inside map
-                    if (y >= 0 && y < 256)
-                    {
-                        //Get data
-                        double distance = Math.sqrt(mx * mx + my * my + mz * mz);
-                        int current_value = map.getData(x, y, z);
-
-                        //Remove old value
-                        current_value -= getRadForDistance(rad, distance);
-
-                        //Save
-                        map.setData(x, y, z, Math.max(0, current_value));
-                    }
-                }
+                AtomicScience.logger.info(String.format("ThreadRadExposure: updateValue(map, %smat, %sx %sy %sz, %s) | %srad | %sm",
+                        value,
+                        cx, cy, cz,
+                        remove,
+                        rad,
+                        edit_range
+                ));
             }
-        }
-    }
 
-    /**
-     * Removes the old value from the map
-     *
-     * @param map   - map to edit
-     * @param value - value to set
-     * @param cx    - change location
-     * @param cy    - change location
-     * @param cz    - change location
-     */
-    protected void setValue(DataMap map, int value, int cx, int cy, int cz)
-    {
-        if (AtomicScience.runningAsDev)
-        {
-            AtomicScience.logger.info(String.format("ThreadReadExposure: Settiing position[%s %s %s] " +
-                    "to %s mats", cx, cy, cz, value));
-        }
-        final int rad = getRadFromMaterial(value);
-        final int edit_range = (int) Math.floor(getDecayRange(rad));
-        for (int mx = -edit_range; mx <= edit_range; mx++)
-        {
-            for (int mz = -edit_range; mz <= edit_range; mz++)
+            final int startX = cx - edit_range;
+            final int startY = Math.max(0, cy - edit_range);
+            final int startZ = cz - edit_range;
+
+            final int endX = cx + edit_range + 1;
+            final int endY = Math.min(255, cy + edit_range + 1);
+            final int endZ = cz + edit_range + 1;
+
+            for (int x = startX; x < endX; x++)
             {
-                for (int my = -edit_range; my <= edit_range; my++)
+                for (int y = startY; y < endY; y++)
                 {
-                    int x = cx + mx;
-                    int y = cy + my;
-                    int z = cz + mz;
-
-                    //Stay inside map
-                    if (y >= 0 && y < 256)
+                    for (int z = startZ; z < endZ; z++)
                     {
-                        //Get data
-                        double distance = Math.sqrt(mx * mx + my * my + mz * mz);
-                        int current_value = map.getData(x, y, z);
-
-                        //Update value
-                        current_value += getRadForDistance(rad, distance);
-
-                        //Save
-                        map.setData(x, y, z, Math.max(0, current_value));
-
-                        if (AtomicScience.runningAsDev)
+                        if (!shouldRun)
                         {
-                            AtomicScience.logger.info(String.format("\t\tRad at position[%s %s %s] " +
-                                    "is %s", x, y, z, current_value));
+                            return false;
+                        }
+
+                        //Get delta
+                        int dx = x - cx;
+                        int dy = y - cy;
+                        int dz = z - cz;
+
+                        //Get data
+                        double distanceSQ = dx * dx + dz * dz + dy * dy;
+                        int current_value = map.getData(x, y, z);
+                        int change = getRadForDistance(rad, distanceSQ);
+
+                        if (remove)
+                        {
+                            current_value -= change;
+                        }
+                        else
+                        {
+                            current_value += change;
+                        }
+
+                        //Prevents crashes loading map areas from thread
+                        if (map.blockExists(x, y, z))
+                        {
+                            //Save
+                            map.setData(x, y, z, Math.max(0, current_value));
                         }
                     }
                 }
             }
+            return true;
         }
+        return false;
     }
 
     /**
@@ -285,17 +272,17 @@ public class ThreadRadExposure extends Thread
     /**
      * Gets radiation value for the given distance
      *
-     * @param power    - ordinal power at 1 meter
-     * @param distance - distance to get current
+     * @param power      - ordinal power at 1 meter
+     * @param distanceSQ - distance to get current
      * @return distance reduced value, if less than 1 will return full
      */
-    protected int getRadForDistance(int power, double distance)
+    protected int getRadForDistance(int power, double distanceSQ)
     {
-        if (distance < 1)
+        if (distanceSQ < 1)
         {
             return power;
         }
-        return (int) Math.ceil(power * (1 / (distance * distance))); //its assumed power is measured at 1 meter from source
+        return (int) Math.floor(power / distanceSQ); //its assumed power is measured at 1 meter from source
     }
 
     /**
@@ -330,5 +317,10 @@ public class ThreadRadExposure extends Thread
     public void queueChunkForAddition(DataChunk chunk)
     {
         addScanQueue.add(chunk);
+    }
+
+    public void queuePosition(RadChange radChange)
+    {
+        changeQueue.add(radChange);
     }
 }
