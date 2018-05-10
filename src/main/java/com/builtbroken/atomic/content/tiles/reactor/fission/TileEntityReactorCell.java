@@ -31,6 +31,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     {
         super.firstTick();
         updateStructureType();
+        MapHandler.RADIATION_MAP.addSource(this);
     }
 
     //-----------------------------------------------
@@ -99,7 +100,11 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     protected void onSlotStackChanged(ItemStack prev, ItemStack stack, int slot)
     {
         super.onSlotStackChanged(prev, stack, slot);
-        syncClientNextTick();
+        if(isServer())
+        {
+            syncClientNextTick();
+            MapHandler.RADIATION_MAP.addSource(this);
+        }
     }
 
     //-----------------------------------------------
@@ -157,7 +162,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     @Override
     public boolean isRadioactive()
     {
-        return true;
+        return getRadioactiveMaterial() > 0;
     }
 
 
