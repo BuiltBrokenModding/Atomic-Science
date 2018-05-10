@@ -92,7 +92,11 @@ public class BlockReactorCell extends BlockContainer
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
     {
-
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof TileEntityReactorCell)
+        {
+            ((TileEntityReactorCell) tileEntity).updateStructureType();
+        }
     }
 
     //-----------------------------------------------
