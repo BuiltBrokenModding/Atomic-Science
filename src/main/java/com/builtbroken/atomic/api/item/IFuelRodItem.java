@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.api.item;
 
+import com.builtbroken.atomic.api.radiation.IRadioactiveItem;
 import com.builtbroken.atomic.api.reactor.IReactor;
 import net.minecraft.item.ItemStack;
 
@@ -9,7 +10,7 @@ import net.minecraft.item.ItemStack;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/8/2018.
  */
-public interface IFuelRodItem
+public interface IFuelRodItem extends IRadioactiveItem
 {
     /**
      * Amount of time in ticks the fuel will run
