@@ -8,6 +8,7 @@ import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
+import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -109,6 +110,8 @@ public class AtomicScience
         //Start thread
         MapHandler.THREAD_RAD_EXPOSURE = new ThreadRadExposure();
         MapHandler.THREAD_RAD_EXPOSURE.start();
+        MapHandler.THREAD_THERMAL_ACTION = new ThreadThermalAction();
+        MapHandler.THREAD_THERMAL_ACTION.start();
     }
 
     @Mod.EventHandler
@@ -125,5 +128,6 @@ public class AtomicScience
     {
         //Kill old thread
         MapHandler.THREAD_RAD_EXPOSURE.kill();
+        MapHandler.THREAD_THERMAL_ACTION.kill();
     }
 }

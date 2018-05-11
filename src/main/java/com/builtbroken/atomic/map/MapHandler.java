@@ -5,6 +5,7 @@ import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.map.exposure.RadiationMap;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThermalMap;
+import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,6 +37,8 @@ public final class MapHandler
 
     /** Thread used to calculate exposure values per location */
     public static ThreadRadExposure THREAD_RAD_EXPOSURE;
+    /** Thread used to move heat around the map */
+    public static ThreadThermalAction THREAD_THERMAL_ACTION;
 
 
     public static void register()
