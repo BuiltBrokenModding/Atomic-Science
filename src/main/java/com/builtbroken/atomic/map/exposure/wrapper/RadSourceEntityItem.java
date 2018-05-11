@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.map.exposure.wrapper;
 
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
-import com.builtbroken.atomic.api.radiation.IRadioactiveItem;
+import com.builtbroken.atomic.lib.RadItemHandler;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.world.World;
 
@@ -23,11 +23,7 @@ public class RadSourceEntityItem implements IRadiationSource
     @Override
     public int getRadioactiveMaterial()
     {
-        if (entityItem.getEntityItem() != null && entityItem.getEntityItem().getItem() instanceof IRadioactiveItem)
-        {
-            return ((IRadioactiveItem) entityItem.getEntityItem().getItem()).getRadioactiveMaterial(entityItem.getEntityItem());
-        }
-        return 0;
+        return RadItemHandler.getRadiationForItem(entityItem.getEntityItem());
     }
 
     @Override
