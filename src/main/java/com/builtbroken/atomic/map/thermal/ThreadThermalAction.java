@@ -29,26 +29,34 @@ public class ThreadThermalAction extends ThreadDataChange
             map = MapHandler.THERMAL_MAP.getMap(change.dim, true);
         }
 
-        //Get heat to move, only move heat if we are above natural decay limit
-        int totalHeat = change.new_value - change.old_value;
+
+        int totalHeat = change.new_value;
+
+        totalHeat = MapHandler.THERMAL_MAP.doHeatAction(map, change.xi(), change.yi(), change.zi(), totalHeat);
+
+        spreadHeat(map, change.xi(), change.yi(), change.zi(), totalHeat);
+    }
+
+    protected void spreadHeat(DataMap map, int x, int y, int z, int totalHeat)
+    {
         if (totalHeat > 6)
         {
             for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) //TODO recode to sort by lowest heat
             {
-                int i = change.xi() + direction.offsetX;
-                int j = change.yi() + direction.offsetY;
-                int k = change.zi() + direction.offsetZ;
+                int i = x + direction.offsetX;
+                int j = y + direction.offsetY;
+                int k = z + direction.offsetZ;
 
                 //Only move heat if we can move
                 int heat = map.getData(i, j, k);
-                int delta = change.new_value - heat;
+                int delta = totalHeat - heat;
                 if (delta > 0) //TODO check if we want to set a lower limit on this to reduce CPU time
                 {
                     //Get heat to move, goal is to even out heat between tiles
                     int movement = Math.min(delta, totalHeat / 7); //7 -> 6 sides + self, can't transfer 100% heat away from self
 
                     //Get heat actual movement, heat will not transfer equally from 1 tile to the next
-                    int actualMove = MapHandler.THERMAL_MAP.getHeatSpread(change.xi(), change.yi(), change.zi(), i, j, k, movement);
+                    int actualMove = MapHandler.THERMAL_MAP.getHeatSpread(x, y, z, i, j, k, movement);
 
                     //Update values
                     heat += actualMove;
@@ -61,7 +69,7 @@ public class ThreadThermalAction extends ThreadDataChange
         }
         else
         {
-            map.setData(change.xi(), change.yi(), change.zi(), 0);
+            map.setData(x, y, z, 0);
         }
     }
 }

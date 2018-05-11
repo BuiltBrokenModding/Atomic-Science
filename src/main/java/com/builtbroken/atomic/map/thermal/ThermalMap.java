@@ -4,6 +4,11 @@ import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.MapSystem;
+import com.builtbroken.atomic.map.data.DataChange;
+import com.builtbroken.atomic.map.data.DataMap;
+import com.builtbroken.atomic.map.events.MapSystemEvent;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.world.World;
 
 /**
@@ -25,10 +30,10 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * This works by setting the heat into the world. Which
      * will then trigger the thread to spread the heat.
      *
-     * @param source - source of the heat
-     * @param heat   - amount of heat energy
+     * @param source    - source of the heat
+     * @param heatToAdd - amount of heat energy
      */
-    public void outputHeat(IHeatSource source, int heat)
+    public void outputHeat(IHeatSource source, int heatToAdd)
     {
         //data
         World world = source.world();
@@ -37,11 +42,11 @@ public class ThermalMap extends MapSystem implements IThermalSystem
         int z = source.zi();
 
         //Get and add heat
-        int prevHeat = getData(world, x, y, z);
-        prevHeat += heat;
+        int heat = getData(world, x, y, z);
+        heat += heatToAdd;
 
         //set, which should trigger thread
-        setData(world, x, y, z, prevHeat);
+        setData(world, x, y, z, heat);
     }
 
     /**
@@ -66,5 +71,50 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     {
         //TODO implement
         return heat;
+    }
+
+    /**
+     * Called from the thread to update data that depends on the heat in the map.
+     * <p>
+     * Example: How much heat to consume each tick to boil water to steam
+     *
+     * @param map  - map to change
+     * @param x    - location
+     * @param y    - location
+     * @param z    - location
+     * @param heat - current heat in the block
+     * @return new heat value
+     */
+    public int doHeatAction(DataMap map, int x, int y, int z, int heat)
+    {
+        return heat;
+    }
+
+
+    @SubscribeEvent()
+    public void onChunkAdded(MapSystemEvent.AddChunk event)
+    {
+        if (!event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP)
+        {
+            MapHandler.THREAD_THERMAL_ACTION.queueChunkForAddition(event.chunk);
+        }
+    }
+
+    @SubscribeEvent()
+    public void onChunkRemove(MapSystemEvent.RemoveChunk event)
+    {
+        if (!event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP)
+        {
+            MapHandler.THREAD_THERMAL_ACTION.queueChunkForRemoval(event.chunk);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onRadiationChange(MapSystemEvent.UpdateValue event)
+    {
+        if (!event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP && event.new_value > 0)
+        {
+            MapHandler.THREAD_THERMAL_ACTION.queuePosition(new DataChange(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
+        }
     }
 }
