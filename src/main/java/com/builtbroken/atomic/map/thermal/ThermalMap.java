@@ -1,7 +1,9 @@
-package com.builtbroken.atomic.map;
+package com.builtbroken.atomic.map.thermal;
 
 import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
+import com.builtbroken.atomic.map.MapHandler;
+import com.builtbroken.atomic.map.MapSystem;
 import net.minecraft.world.World;
 
 /**
@@ -40,5 +42,29 @@ public class ThermalMap extends MapSystem implements IThermalSystem
 
         //set, which should trigger thread
         setData(world, x, y, z, prevHeat);
+    }
+
+    /**
+     * Checks how much heat should spread from one block to the next.
+     * <p>
+     * In theory each block should have a different spread value. As
+     * heat does not transfer evenly between sources.
+     * <p>
+     * As well heat travels differently between different types of blocks.
+     * Air blocks will use convection while solid blocks direct heat transfer.
+     *
+     * @param x    - block 1
+     * @param y    - block 1
+     * @param z    - block 1
+     * @param i    - block 2
+     * @param j    - block 2
+     * @param k    - block 2
+     * @param heat - heat to transfer (some % of total heat)
+     * @return heat to actually transfer
+     */
+    public int getHeatSpread(int x, int y, int z, int i, int j, int k, int heat)
+    {
+        //TODO implement
+        return heat;
     }
 }
