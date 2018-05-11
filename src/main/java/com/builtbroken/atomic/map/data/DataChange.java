@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.map.exposure;
+package com.builtbroken.atomic.map.data;
 
 import com.builtbroken.jlib.data.vector.IPos3D;
 
@@ -8,7 +8,7 @@ import com.builtbroken.jlib.data.vector.IPos3D;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/28/2018.
  */
-public class RadChange implements IPos3D
+public class DataChange implements IPos3D //TODO make mutable and use object pool to save ram
 {
     public final int dim;
     public final double x;
@@ -18,7 +18,7 @@ public class RadChange implements IPos3D
     public final int old_value;
     public final int new_value;
 
-    public RadChange(int dim, double x, double y, double z, int old_value, int new_value)
+    public DataChange(int dim, double x, double y, double z, int old_value, int new_value)
     {
         this.dim = dim;
         this.x = x;

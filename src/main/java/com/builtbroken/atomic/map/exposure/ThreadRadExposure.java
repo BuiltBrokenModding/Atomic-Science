@@ -3,12 +3,10 @@ package com.builtbroken.atomic.map.exposure;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.ConfigRadiation;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.data.DataChunk;
-import com.builtbroken.atomic.map.data.DataLayer;
+import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataMap;
+import com.builtbroken.atomic.map.data.ThreadDataChange;
 import com.builtbroken.jlib.lang.StringHelpers;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Handles updating the radiation map
@@ -16,141 +14,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/28/2018.
  */
-public class ThreadRadExposure extends Thread
+public class ThreadRadExposure extends ThreadDataChange
 {
-    public boolean shouldRun = true;
-    private ConcurrentLinkedQueue<RadChange> changeQueue = new ConcurrentLinkedQueue();
-    private ConcurrentLinkedQueue<DataChunk> addScanQueue = new ConcurrentLinkedQueue();
-    private ConcurrentLinkedQueue<DataChunk> removeScanQueue = new ConcurrentLinkedQueue();
-
     public ThreadRadExposure()
     {
-        super(null, null, AtomicScience.PREFIX + "ThreadRadExposure", 0);
-        setDaemon(true);
+        super("ThreadRadExposure");
     }
 
     @Override
-    public void start()
-    {
-        shouldRun = true;
-        AtomicScience.logger.info("ThreadRadExposure: Starting thread");
-        super.start();
-    }
-
-    @Override
-    public void run()
-    {
-        while (shouldRun)
-        {
-            try
-            {
-                //Cleanup of chunks, remove data from chunk so when re-added later it doesn't spike values
-                while (shouldRun && !removeScanQueue.isEmpty())
-                {
-                    queueRemove(removeScanQueue.poll());
-                }
-
-                //New additions, update data for values
-                while (shouldRun && !addScanQueue.isEmpty())
-                {
-                    queueAddition(addScanQueue.poll());
-                }
-
-                //Stop looping if we have chunks to scan, only loop if we have something to do
-                while (shouldRun && !changeQueue.isEmpty() && addScanQueue.isEmpty() && removeScanQueue.isEmpty())
-                {
-                    RadChange change = changeQueue.poll();
-                    if (change != null)
-                    {
-                        updateLocation(change);
-                    }
-                }
-
-                //Nothing left to do, then sleep for 1 second before checking on updates
-                sleep(1000);
-            }
-            catch (Exception e)
-            {
-                AtomicScience.logger.error("ThreadReadExposure: Unexpected error during operation", e);
-            }
-        }
-
-        //If stopped, clear all data
-        removeScanQueue.clear();
-        addScanQueue.clear();
-        changeQueue.clear();
-    }
-
-    /**
-     * Called to scan a chunk to add remove calls
-     *
-     * @param chunk
-     */
-    protected void queueRemove(DataChunk chunk)
-    {
-        if (chunk != null)
-        {
-            for (DataLayer layer : chunk.getLayers())
-            {
-                for (int cx = 0; cx < 16; cx++)
-                {
-                    for (int cz = 0; cz < 16; cz++)
-                    {
-                        if (layer != null && layer.getData(cx, cz) > 0)
-                        {
-                            int x = cx + chunk.xPosition * 16;
-                            int z = cz + chunk.xPosition * 16;
-                            changeQueue.add(new RadChange(chunk.dimension, x, layer.y_index, z, layer.getData(cx, cz), 0));
-                            if (AtomicScience.runningAsDev)
-                            {
-                                AtomicScience.logger.info(String.format("ThreadReadExposure: Removing position[%s %s %s] " +
-                                        "to queue with %s mats", x, layer.y_index, z, layer.getData(cx, cz)));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Called to scan a chunk to add addition calls
-     *
-     * @param chunk
-     */
-    protected void queueAddition(DataChunk chunk)
-    {
-        if (chunk != null)
-        {
-            for (DataLayer layer : chunk.getLayers())
-            {
-                for (int cx = 0; cx < 16; cx++)
-                {
-                    for (int cz = 0; cz < 16; cz++)
-                    {
-                        if (layer != null && layer.getData(cx, cz) > 0)
-                        {
-                            int x = cx + chunk.xPosition * 16;
-                            int z = cz + chunk.xPosition * 16;
-                            changeQueue.add(new RadChange(chunk.dimension, x, layer.y_index, z, 0, layer.getData(cx, cz)));
-                            if (AtomicScience.runningAsDev)
-                            {
-                                AtomicScience.logger.info(String.format("ThreadReadExposure: Added position[%s %s %s] " +
-                                        "to queue with %s mats", x, layer.y_index, z, layer.getData(cx, cz)));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Called to update the exposure value at the location
-     *
-     * @param change
-     */
-    protected void updateLocation(RadChange change)
+    protected void updateLocation(DataChange change)
     {
         //Get radiation exposure map
         DataMap map;
@@ -301,26 +173,5 @@ public class ThreadRadExposure extends Thread
             power = getRadForDistance(value, distance);
         }
         return distance;
-    }
-
-    public void kill()
-    {
-        shouldRun = false;
-        AtomicScience.logger.info("ThreadRadExposure: Stopping thread");
-    }
-
-    public void queueChunkForRemoval(DataChunk chunk)
-    {
-        removeScanQueue.add(chunk);
-    }
-
-    public void queueChunkForAddition(DataChunk chunk)
-    {
-        addScanQueue.add(chunk);
-    }
-
-    public void queuePosition(RadChange radChange)
-    {
-        changeQueue.add(radChange);
     }
 }

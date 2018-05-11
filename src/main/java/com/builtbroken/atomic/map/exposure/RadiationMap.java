@@ -6,6 +6,7 @@ import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.radiation.IRadioactiveItem;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.MapSystem;
+import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataMap;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import com.builtbroken.atomic.map.exposure.wrapper.RadSourceEntityItem;
@@ -182,7 +183,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
             //Remove old, called separate in case position changed
             if (wrapper.radioactiveMaterialValue != 0)
             {
-                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(new RadChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, wrapper.radioactiveMaterialValue, 0));
+                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(new DataChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, wrapper.radioactiveMaterialValue, 0));
             }
             //Log changes
             wrapper.logCurrentData();
@@ -190,7 +191,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
             //Add new, called separate in case position changed
             if (newValue != 0 && source.isRadioactive())
             {
-                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(new RadChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, 0, newValue));
+                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(new DataChange(wrapper.dim, wrapper.x, wrapper.y, wrapper.z, 0, newValue));
             }
         }
     }
@@ -303,7 +304,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     {
         if (!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP && event.prev_value != event.new_value)
         {
-            MapHandler.THREAD_RAD_EXPOSURE.queuePosition(new RadChange(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
+            MapHandler.THREAD_RAD_EXPOSURE.queuePosition(new DataChange(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
         }
     }
 
