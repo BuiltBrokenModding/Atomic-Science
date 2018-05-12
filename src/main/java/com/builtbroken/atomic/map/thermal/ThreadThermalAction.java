@@ -43,7 +43,7 @@ public class ThreadThermalAction extends ThreadDataChange
                 int j = y + direction.offsetY;
                 int k = z + direction.offsetZ;
 
-                if(map.blockExists(i, j, k))
+                if (map.blockExists(i, j, k))
                 {
                     //Only move heat if we can move
                     int heat = map.getData(i, j, k);
@@ -66,12 +66,12 @@ public class ThreadThermalAction extends ThreadDataChange
                 }
             }
 
-            if(map.blockExists(x, y, z) && ThermalHandler.canChangeStates(map.getWorld(), x, y, z))
+            if (map.blockExists(x, y, z) && ThermalHandler.canChangeStates(map.getWorld(), x, y, z))
             {
                 long joules = totalHeat * 1000;
-                if (joules > ThermalHandler.energyToChangeStates(map.getWorld(), x, y, z))
+                if (joules > ThermalHandler.energyCostToChangeStates(map.getWorld(), x, y, z))
                 {
-                  ThermalHandler.changeStates(map.getWorld(), x, y, z);
+                    ThermalHandler.changeStates(map.getWorld(), x, y, z);
                 }
             }
 

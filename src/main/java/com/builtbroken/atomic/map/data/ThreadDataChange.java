@@ -152,16 +152,25 @@ public abstract class ThreadDataChange extends Thread
 
     public void queueChunkForRemoval(DataChunk chunk)
     {
-        removeScanQueue.add(chunk);
+        if (chunk != null)
+        {
+            removeScanQueue.add(chunk);
+        }
     }
 
     public void queueChunkForAddition(DataChunk chunk)
     {
-        addScanQueue.add(chunk);
+        if (chunk != null)
+        {
+            addScanQueue.add(chunk);
+        }
     }
 
     public void queuePosition(DataChange radChange)
     {
-        changeQueue.add(radChange);
+        if (radChange != null)
+        {
+            changeQueue.add(radChange);
+        }
     }
 }

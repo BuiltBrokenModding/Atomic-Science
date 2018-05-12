@@ -23,26 +23,27 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
     }
 
     @Override
-    public int getFuelRodRuntime(ItemStack stack)
+    public int getFuelRodRuntime(ItemStack stack, IReactor reactor)
     {
         if (stack.getTagCompound() == null)
         {
             stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setInteger("fuelTimer", getMaxFuelRodRuntime(stack));
+            stack.getTagCompound().setInteger("fuelTimer", getMaxFuelRodRuntime(stack, reactor));
         }
         return stack.getTagCompound().getInteger("fuelTimer");
     }
 
     @Override
-    public int getMaxFuelRodRuntime(ItemStack stack)
+    public int getMaxFuelRodRuntime(ItemStack stack, IReactor reactor)
     {
         return maxFuelRuntime;
     }
 
     @Override
-    public int getHeatOutput(ItemStack stack)
+    public int getHeatOutput(ItemStack stack, IReactor reactor)
     {
-        return 100000;
+        //To boil 1 block of water takes 1,562,379.05 KJ
+        return 1562379;
     }
 
     @Override

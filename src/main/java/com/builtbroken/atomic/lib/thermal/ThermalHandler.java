@@ -70,17 +70,15 @@ public class ThermalHandler
      * @param x     - location
      * @param y     - location
      * @param z     - location
-     * @return true if it is possible to change states
+     * @return energy cost to change states (e.g. ice -> water)
      */
-    public static long energyToChangeStates(World world, int x, int y, int z)
+    public static long energyCostToChangeStates(World world, int x, int y, int z)
     {
         ThermalData data = getThermalData(world, x, y, z);
         if (data != null)
         {
             int mass = MassHandler.getMass(world, x, y, z);
-            double energy = mass * data.specificHeat * data.changeStateTemperature;
-            energy += mass * data.changeStateHeat;
-            return (long) energy;
+            return (long) (data.energyToChangeStates(mass) + data.energyToGetToStateChange(mass));
         }
         return 0;
     }
@@ -110,7 +108,10 @@ public class ThermalHandler
         ThermalData data = getThermalData(world, x, y, z);
         if (data != null && data.changeBlock != null)
         {
-            PlacementQueue.queue(world, x, y, z, data.changeBlock, data.changeMeta);
+            int mass = MassHandler.getMass(world, x, y, z);
+            double stateChangeEnergy = data.energyToChangeStates(mass);
+            double energyToGetToChange = data.energyToGetToStateChange(mass);
+            PlacementQueue.queue(new ThermalPlacement(world, x, y, z, data, (long) (stateChangeEnergy + energyToGetToChange), (long) stateChangeEnergy));
         }
     }
 }

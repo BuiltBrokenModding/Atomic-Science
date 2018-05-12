@@ -48,8 +48,12 @@ public final class MapHandler
         AtomicScienceAPI.thermalSystem = THERMAL_MAP;
 
         MinecraftForge.EVENT_BUS.register(new MapHandler());
+
         MinecraftForge.EVENT_BUS.register(RADIATION_MAP);
         FMLCommonHandler.instance().bus().register(RADIATION_MAP);
+
+        MinecraftForge.EVENT_BUS.register(THERMAL_MAP);
+        FMLCommonHandler.instance().bus().register(THERMAL_MAP);
     }
 
     ///----------------------------------------------------------------

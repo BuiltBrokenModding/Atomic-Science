@@ -30,4 +30,19 @@ public class ThermalData
         this.changeBlock = changeBlock;
         this.changeMeta = meta;
     }
+
+    public double energyToChangeStates(int mass)
+    {
+        return mass * changeStateHeat;
+    }
+
+    public double energyForTempChange(int mass, float tempDelta)
+    {
+        return mass * specificHeat * tempDelta;
+    }
+
+    public double energyToGetToStateChange(int mass)
+    {
+        return energyForTempChange(mass, changeStateTemperature);
+    }
 }

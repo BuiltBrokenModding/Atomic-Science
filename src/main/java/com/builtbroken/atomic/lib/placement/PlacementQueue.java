@@ -1,11 +1,9 @@
 package com.builtbroken.atomic.lib.placement;
 
-import com.builtbroken.atomic.AtomicScience;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -19,7 +17,15 @@ public class PlacementQueue
 
     public static void queue(World world, int x, int y, int z, Block block, int meta)
     {
-        queue.add(new BlockPlacement(world, x, y, z, block, meta));
+        queue(new BlockPlacement(world, x, y, z, block, meta));
+    }
+
+    public static void queue(BlockPlacement placement)
+    {
+        if (placement != null && placement.block != null)
+        {
+            queue.add(placement);
+        }
     }
 
     @SubscribeEvent
@@ -28,18 +34,12 @@ public class PlacementQueue
         if (event.phase == TickEvent.Phase.END)
         {
             long time = System.currentTimeMillis();
-            while (queue.isEmpty() && System.currentTimeMillis() - time < 10)
+            while (!queue.isEmpty() && System.currentTimeMillis() - time < 10)
             {
                 BlockPlacement placement = queue.poll();
-                World world = DimensionManager.getWorld(placement.dim);
-
-                if (world != null)
+                if (placement != null)
                 {
-                    world.setBlock(placement.x, placement.y, placement.z, placement.block, placement.meta, 3);
-                }
-                else
-                {
-                    AtomicScience.logger.error("PlacementQueue: Failed to get world for placement. " + placement);
+                    placement.doPlacement();
                 }
             }
         }

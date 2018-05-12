@@ -61,7 +61,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         IFuelRodItem fuelRodItem = getFuelRod();
         if (fuelRodItem != null)
         {
-            int heat = fuelRodItem.getHeatOutput(getFuelRodStack());
+            int heat = fuelRodItem.getHeatOutput(getFuelRodStack(), this);
             heat = getActualHeat(heat);
             MapHandler.THERMAL_MAP.outputHeat(this, heat);
         }
@@ -118,7 +118,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         IFuelRodItem fuelRod = getFuelRod();
         if (fuelRod != null)
         {
-            return fuelRod.getFuelRodRuntime(getFuelRodStack());
+            return fuelRod.getFuelRodRuntime(getFuelRodStack(), this);
         }
         return 0;
     }
@@ -128,7 +128,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         IFuelRodItem fuelRod = getFuelRod();
         if (fuelRod != null)
         {
-            return fuelRod.getMaxFuelRodRuntime(getFuelRodStack());
+            return fuelRod.getMaxFuelRodRuntime(getFuelRodStack(), this);
         }
         return 0;
     }

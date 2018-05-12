@@ -59,6 +59,38 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     }
 
     /**
+     * Called to consume heat from the map
+     *
+     * @param world    - location
+     * @param x        - location
+     * @param y        - location
+     * @param z        - location
+     * @param heat     - heat to consume
+     * @param doAction - true to do the action
+     * @return heat actually consumed
+     */
+    public int consumeHeat(World world, int x, int y, int z, int heat, boolean doAction)
+    {
+        int actualHeat = getData(world, x, y, z);
+        if (heat <= actualHeat)
+        {
+            if (doAction)
+            {
+                setData(world, x, y, z, actualHeat - heat);
+            }
+            return heat;
+        }
+        else
+        {
+            if (doAction)
+            {
+                setData(world, x, y, z, 0);
+            }
+            return actualHeat;
+        }
+    }
+
+    /**
      * Checks how much heat should spread from one block to the next.
      * <p>
      * In theory each block should have a different spread value. As

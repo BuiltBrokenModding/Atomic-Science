@@ -15,28 +15,31 @@ public interface IFuelRodItem extends IRadioactiveItem
     /**
      * Amount of time in ticks the fuel will run
      *
-     * @param stack - fuel rod
+     * @param reactor - reactor consuming the fuel, may be null
+     * @param stack   - fuel rod
      * @return ticks (20 ticks a second)
      */
-    int getFuelRodRuntime(ItemStack stack);
+    int getFuelRodRuntime(ItemStack stack, IReactor reactor);
 
     /**
      * Amount of time in ticks the fuel will run
      * when fully charged.
      *
-     * @param stack - fuel rod
+     * @param reactor - reactor consuming the fuel, may be null
+     * @param stack   - fuel rod
      * @return ticks (20 ticks a second)
      */
-    int getMaxFuelRodRuntime(ItemStack stack);
+    int getMaxFuelRodRuntime(ItemStack stack, IReactor reactor);
 
     /**
      * Amount of heat this rod would produce
      * in a reactor with no limits.
      *
-     * @param stack - fuel rod
+     * @param reactor - reactor consuming the fuel, may be null
+     * @param stack   - fuel rod
      * @return heat value
      */
-    int getHeatOutput(ItemStack stack);
+    int getHeatOutput(ItemStack stack, IReactor reactor);
 
     /**
      * Called each tick the fuel runs
