@@ -2,6 +2,8 @@ package com.builtbroken.atomic.map.data;
 
 import com.builtbroken.jlib.data.vector.IPos3D;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 /**
  * Used to store data for thread
  *
@@ -10,15 +12,19 @@ import com.builtbroken.jlib.data.vector.IPos3D;
  */
 public class DataChange implements IPos3D //TODO make mutable and use object pool to save ram
 {
-    public final int dim;
-    public final double x;
-    public final double y;
-    public final double z;
+    public static int maxObjectPoleCount = 100000;
+    private static ConcurrentLinkedQueue<DataChange> objectPole = new ConcurrentLinkedQueue();
+    private static int objectPoleCount = 0;
 
-    public final int old_value;
-    public final int new_value;
+    public int dim;
+    public int x;
+    public int y;
+    public int z;
 
-    public DataChange(int dim, double x, double y, double z, int old_value, int new_value)
+    public int old_value;
+    public int new_value;
+
+    protected DataChange(int dim, int x, int y, int z, int old_value, int new_value)
     {
         this.dim = dim;
         this.x = x;
@@ -26,6 +32,30 @@ public class DataChange implements IPos3D //TODO make mutable and use object poo
         this.z = z;
         this.old_value = old_value;
         this.new_value = new_value;
+    }
+
+    public static DataChange get(int dim, int x, int y, int z, int old_value, int new_value)
+    {
+        if (!objectPole.isEmpty())
+        {
+            DataChange dataChange = objectPole.poll();
+            if(dataChange != null)
+            {
+                dataChange.dim = dim;
+                dataChange.x = x;
+                dataChange.y = y;
+                dataChange.z = z;
+                dataChange.old_value = old_value;
+                dataChange.new_value = new_value;
+
+                objectPoleCount--;
+
+                return dataChange;
+            }
+            objectPoleCount = objectPole.size();
+        }
+        objectPoleCount = 0;
+        return new DataChange(dim, x, y, z, old_value, new_value);
     }
 
     @Override
@@ -44,5 +74,14 @@ public class DataChange implements IPos3D //TODO make mutable and use object poo
     public double y()
     {
         return y;
+    }
+
+    public void dispose()
+    {
+        if(objectPoleCount < maxObjectPoleCount)
+        {
+            objectPole.add(this);
+            objectPoleCount++;
+        }
     }
 }

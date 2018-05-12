@@ -66,6 +66,7 @@ public abstract class ThreadDataChange extends Thread
                     {
                         updateLocation(change);
                     }
+                    change.dispose();
                 }
 
                 //Nothing left to do, then sleep for 100ms before checking on updates

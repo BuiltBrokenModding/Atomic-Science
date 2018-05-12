@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.map.thermal;
 
+import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import com.builtbroken.atomic.lib.MassHandler;
@@ -243,7 +244,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     {
         if (event.world() != null && !event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP && event.new_value > 0)
         {
-            tickQueueHopper.add(new DataChange(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
+            tickQueueHopper.add(DataChange.get(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
         }
     }
 
@@ -264,6 +265,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
                         {
                             setData(dataChange.dim, dataChange.xi(), dataChange.yi(), dataChange.zi(), dataChange.new_value);
                         }
+                        dataChange.dispose();
                     }
                 }
             }
@@ -273,11 +275,18 @@ public class ThermalMap extends MapSystem implements IThermalSystem
                 final ArrayList<DataChange> queue = tickQueueHopper;
                 tickQueueHopper = new ArrayList();
 
+                if(AtomicScience.runningAsDev)
+                {
+                    AtomicScience.logger.info("ThermalMap: dumping " + queue.size() + " changes into thread.");
+                }
+
                 //Dump queue into thread
                 for (DataChange data : queue)
                 {
                     MapHandler.THREAD_THERMAL_ACTION.queuePosition(data);
                 }
+
+                queue.clear();
             }
         }
     }

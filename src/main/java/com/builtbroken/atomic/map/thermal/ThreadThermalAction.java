@@ -107,7 +107,7 @@ public class ThreadThermalAction extends ThreadDataChange
     {
         synchronized (MapHandler.THERMAL_MAP.setDataQueue)
         {
-            MapHandler.THERMAL_MAP.setDataQueue.add(new DataChange(dim, x, y, z, 0, newValue));
+            MapHandler.THERMAL_MAP.setDataQueue.add(DataChange.get(dim, x, y, z, 0, newValue));
         }
     }
 }
