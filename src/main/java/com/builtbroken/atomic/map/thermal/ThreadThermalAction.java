@@ -29,7 +29,6 @@ public class ThreadThermalAction extends ThreadDataChange
             map = MapHandler.THERMAL_MAP.getMap(change.dim, true);
         }
 
-
         int totalHeat = change.new_value;
 
         totalHeat = MapHandler.THERMAL_MAP.doHeatAction(map, change.xi(), change.yi(), change.zi(), totalHeat);
@@ -56,7 +55,7 @@ public class ThreadThermalAction extends ThreadDataChange
                     int movement = Math.min(delta, totalHeat / 7); //7 -> 6 sides + self, can't transfer 100% heat away from self
 
                     //Get heat actual movement, heat will not transfer equally from 1 tile to the next
-                    int actualMove = MapHandler.THERMAL_MAP.getHeatSpread(x, y, z, i, j, k, movement);
+                    int actualMove = MapHandler.THERMAL_MAP.getHeatSpread(map.getWorld(), x, y, z, i, j, k, movement);
 
                     //Update values
                     heat += actualMove;
