@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.map.thermal;
 
+import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataMap;
@@ -29,11 +30,7 @@ public class ThreadThermalAction extends ThreadDataChange
             map = MapHandler.THERMAL_MAP.getMap(change.dim, true);
         }
 
-        int totalHeat = change.new_value;
-
-        totalHeat = MapHandler.THERMAL_MAP.doHeatAction(map, change.xi(), change.yi(), change.zi(), totalHeat);
-
-        spreadHeat(map, change.xi(), change.yi(), change.zi(), totalHeat);
+        spreadHeat(map, change.xi(), change.yi(), change.zi(), change.new_value);
     }
 
     protected void spreadHeat(DataMap map, int x, int y, int z, int totalHeat)
@@ -46,25 +43,40 @@ public class ThreadThermalAction extends ThreadDataChange
                 int j = y + direction.offsetY;
                 int k = z + direction.offsetZ;
 
-                //Only move heat if we can move
-                int heat = map.getData(i, j, k);
-                int delta = totalHeat - heat;
-                if (delta > 0) //TODO check if we want to set a lower limit on this to reduce CPU time
+                if(map.blockExists(i, j, k))
                 {
-                    //Get heat to move, goal is to even out heat between tiles
-                    int movement = Math.min(delta, totalHeat / 7); //7 -> 6 sides + self, can't transfer 100% heat away from self
+                    //Only move heat if we can move
+                    int heat = map.getData(i, j, k);
+                    int delta = totalHeat - heat;
+                    if (delta > 0) //TODO check if we want to set a lower limit on this to reduce CPU time
+                    {
+                        //Get heat to move, goal is to even out heat between tiles
+                        int movement = Math.min(delta, totalHeat / 7); //7 -> 6 sides + self, can't transfer 100% heat away from self
 
-                    //Get heat actual movement, heat will not transfer equally from 1 tile to the next
-                    int actualMove = MapHandler.THERMAL_MAP.getHeatSpread(map.getWorld(), x, y, z, i, j, k, movement);
+                        //Get heat actual movement, heat will not transfer equally from 1 tile to the next
+                        int actualMove = MapHandler.THERMAL_MAP.getHeatSpread(map.getWorld(), x, y, z, i, j, k, movement);
 
-                    //Update values
-                    heat += actualMove;
-                    totalHeat -= heat;
+                        //Update values
+                        heat += actualMove;
+                        totalHeat -= heat;
 
-                    //Update map
-                    map.setData(i, j, k, heat);
+                        //Update map
+                        map.setData(i, j, k, heat);
+                    }
                 }
             }
+
+            if(map.blockExists(x, y, z) && ThermalHandler.canChangeStates(map.getWorld(), x, y, z))
+            {
+                long joules = totalHeat * 1000;
+                if (joules > ThermalHandler.energyToChangeStates(map.getWorld(), x, y, z))
+                {
+                  ThermalHandler.changeStates(map.getWorld(), x, y, z);
+                }
+            }
+
+            //Update heat value
+            map.setData(x, y, z, totalHeat);
         }
         else
         {

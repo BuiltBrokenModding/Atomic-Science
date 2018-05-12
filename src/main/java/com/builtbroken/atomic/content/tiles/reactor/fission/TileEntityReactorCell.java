@@ -66,9 +66,6 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
             MapHandler.THERMAL_MAP.outputHeat(this, heat);
         }
 
-        //TODO calculate radioactive effects
-        //TODO dump radiation to map
-
         //TODO calculate radioactive material leaking
         //TODO dump radioactive material to area or drains
     }
