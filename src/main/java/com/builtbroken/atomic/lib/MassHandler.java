@@ -8,6 +8,11 @@ import net.minecraft.world.World;
  */
 public class MassHandler
 {
+    public static void init()
+    {
+
+    }
+
     /**
      * Gets the mass of the object in the world
      *

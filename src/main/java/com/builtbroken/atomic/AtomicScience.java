@@ -5,7 +5,10 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.commands.CommandAS;
+import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
+import com.builtbroken.atomic.lib.placement.PlacementQueue;
+import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
@@ -69,7 +72,10 @@ public class AtomicScience
 
         //Register handlers
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+        FMLCommonHandler.instance().bus().register(new PlacementQueue());
         MapHandler.register();
+        ThermalHandler.init();
+        MassHandler.init();
 
         //Create tab
         creativeTab = new CreativeTabs(DOMAIN)
