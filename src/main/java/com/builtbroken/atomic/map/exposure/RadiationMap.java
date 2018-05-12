@@ -284,7 +284,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent()
     public void onChunkAdded(MapSystemEvent.AddChunk event)
     {
-        if (!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP)
+        if (event.world() != null && !!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP)
         {
             MapHandler.THREAD_RAD_EXPOSURE.queueChunkForAddition(event.chunk);
         }
@@ -293,7 +293,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent()
     public void onChunkRemove(MapSystemEvent.RemoveChunk event)
     {
-        if (!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP)
+        if (event.world() != null && !!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP)
         {
             MapHandler.THREAD_RAD_EXPOSURE.queueChunkForRemoval(event.chunk);
         }
@@ -302,7 +302,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRadiationChange(MapSystemEvent.UpdateValue event)
     {
-        if (!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP && event.prev_value != event.new_value)
+        if (event.world() != null && !event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP && event.prev_value != event.new_value)
         {
             MapHandler.THREAD_RAD_EXPOSURE.queuePosition(new DataChange(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
         }

@@ -47,7 +47,10 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
             if (canOperate())
             {
                 consumeFuel(ticks);
-                doOperationTick();
+                if (ticks % 20 == 0)
+                {
+                    doOperationTick();
+                }
             }
         }
         else if (_running)
@@ -63,7 +66,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         {
             int heat = fuelRodItem.getHeatOutput(getFuelRodStack(), this);
             heat = getActualHeat(heat);
-            MapHandler.THERMAL_MAP.outputHeat(this, heat);
+            MapHandler.THERMAL_MAP.outputHeat(this, heat); //TODO replace with tick handler from thermal map
         }
 
         //TODO calculate radioactive material leaking
@@ -97,7 +100,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     protected void onSlotStackChanged(ItemStack prev, ItemStack stack, int slot)
     {
         super.onSlotStackChanged(prev, stack, slot);
-        if(isServer())
+        if (isServer())
         {
             syncClientNextTick();
             MapHandler.RADIATION_MAP.addSource(this);

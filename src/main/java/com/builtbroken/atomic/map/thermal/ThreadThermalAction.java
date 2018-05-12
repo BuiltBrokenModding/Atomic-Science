@@ -35,8 +35,12 @@ public class ThreadThermalAction extends ThreadDataChange
 
     protected void spreadHeat(DataMap map, int x, int y, int z, int totalHeat)
     {
+        //long time = System.nanoTime();
         if (totalHeat > 6)
         {
+            int heatToMove = (int) (totalHeat * 0.25f); //Only move 25% of heat at a time
+            totalHeat -= heatToMove;
+
             for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) //TODO recode to sort by lowest heat
             {
                 int i = x + direction.offsetX;
@@ -47,28 +51,32 @@ public class ThreadThermalAction extends ThreadDataChange
                 {
                     //Only move heat if we can move
                     int heat = map.getData(i, j, k);
-                    int delta = totalHeat - heat;
-                    if (delta > 0) //TODO check if we want to set a lower limit on this to reduce CPU time
+                    if (heatToMove > heat) //TODO check if we want to set a lower limit on this to reduce CPU time
                     {
                         //Get heat to move, goal is to even out heat between tiles
-                        int movement = Math.min(delta, totalHeat / 7); //7 -> 6 sides + self, can't transfer 100% heat away from self
+                        int movement = heatToMove / 7; //7 -> 6 sides + self, can't transfer 100% heat away from self
 
                         //Get heat actual movement, heat will not transfer equally from 1 tile to the next
                         int actualMove = MapHandler.THERMAL_MAP.getHeatSpread(map.getWorld(), x, y, z, i, j, k, movement);
 
                         //Update values
                         heat += actualMove;
-                        totalHeat -= heat;
+                        heatToMove -= heat;
 
                         //Update map
-                        map.setData(i, j, k, heat);
+                        setData(map.dim, i, j, k, heat);
                     }
+                }
+                else
+                {
+                    //Decay to help prevent issues
+                    heatToMove -= heatToMove / 7;
                 }
             }
 
             if (map.blockExists(x, y, z) && ThermalHandler.canChangeStates(map.getWorld(), x, y, z))
             {
-                long joules = totalHeat * 1000;
+                long joules = heatToMove * 1000;
                 if (joules > ThermalHandler.energyCostToChangeStates(map.getWorld(), x, y, z))
                 {
                     ThermalHandler.changeStates(map.getWorld(), x, y, z);
@@ -76,11 +84,30 @@ public class ThreadThermalAction extends ThreadDataChange
             }
 
             //Update heat value
-            map.setData(x, y, z, totalHeat);
+            setData(map.dim, x, y, z, Math.max(0, totalHeat + heatToMove));
         }
         else
         {
-            map.setData(x, y, z, 0);
+            setData(map.dim, x, y, z, 0);
+        }
+        /*
+        if (AtomicScience.runningAsDev)
+        {
+            time = System.nanoTime() - time;
+            AtomicScience.logger.info(String.format("%s: Spread heat %s -> %s | %s %s %s | in %s",
+                    name,
+                    heatToSpread, totalHeat,
+                    x, y, z,
+                    StringHelpers.formatNanoTime(time)));
+        }
+        */
+    }
+
+    protected void setData(int dim, int x, int y, int z, int newValue)
+    {
+        synchronized (MapHandler.THERMAL_MAP.setDataQueue)
+        {
+            MapHandler.THERMAL_MAP.setDataQueue.add(new DataChange(dim, x, y, z, 0, newValue));
         }
     }
 }

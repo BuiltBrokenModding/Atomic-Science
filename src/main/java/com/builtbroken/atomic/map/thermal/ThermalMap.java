@@ -14,8 +14,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.world.World;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Handles heat in the map
@@ -25,8 +25,14 @@ import java.util.Queue;
  */
 public class ThermalMap extends MapSystem implements IThermalSystem
 {
+    //Queue for when the hopper and set calls should be processed
+    private int _queueTick = 0;
+
     //Temp storage of data to dump into the thread at the end of the tick. Used to slow down updates to prevent heat moving too far and fast.
-    private Queue<DataChange> tickQueueHopper = new LinkedList();
+    private ArrayList<DataChange> tickQueueHopper = new ArrayList();
+
+    /** Queue of data to set from the thread */
+    public ConcurrentLinkedQueue<DataChange> setDataQueue = new ConcurrentLinkedQueue();
 
     public ThermalMap()
     {
@@ -217,7 +223,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     @SubscribeEvent
     public void onChunkAdded(MapSystemEvent.AddChunk event)
     {
-        if (!event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP)
+        if (event.world() != null && !!event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP)
         {
             MapHandler.THREAD_THERMAL_ACTION.queueChunkForAddition(event.chunk);
         }
@@ -226,7 +232,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     @SubscribeEvent
     public void onChunkRemove(MapSystemEvent.RemoveChunk event)
     {
-        if (!event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP)
+        if (event.world() != null && !!event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP)
         {
             MapHandler.THREAD_THERMAL_ACTION.queueChunkForRemoval(event.chunk);
         }
@@ -235,7 +241,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onHeatChanged(MapSystemEvent.UpdateValue event)
     {
-        if (!event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP && event.new_value > 0)
+        if (event.world() != null && !event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP && event.new_value > 0)
         {
             tickQueueHopper.add(new DataChange(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
         }
@@ -244,12 +250,34 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event)
     {
-        if (event.phase == TickEvent.Phase.END)
+        if (_queueTick++ >= 20)
         {
-            //Dump queue into thread
-            while (!tickQueueHopper.isEmpty())
+            _queueTick = 20;
+            if (event.phase == TickEvent.Phase.START)
             {
-                MapHandler.THREAD_THERMAL_ACTION.queuePosition(tickQueueHopper.poll());
+                synchronized (setDataQueue)
+                {
+                    while (!setDataQueue.isEmpty())
+                    {
+                        DataChange dataChange = setDataQueue.poll();
+                        if (dataChange != null)
+                        {
+                            setData(dataChange.dim, dataChange.xi(), dataChange.yi(), dataChange.zi(), dataChange.new_value);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //Change over queue to prevent infinite loop (thread can add entries to end while we try to remove from front)
+                final ArrayList<DataChange> queue = tickQueueHopper;
+                tickQueueHopper = new ArrayList();
+
+                //Dump queue into thread
+                for (DataChange data : queue)
+                {
+                    MapHandler.THREAD_THERMAL_ACTION.queuePosition(data);
+                }
             }
         }
     }
