@@ -139,6 +139,37 @@ public abstract class ThreadDataChange extends Thread
     }
 
     /**
+     * Single box shaped range check
+     *
+     * @param x-    center point
+     * @param y-    center point
+     * @param z-    center point
+     * @param i     - point
+     * @param j     - point
+     * @param k     - point
+     * @param range - distance
+     * @return true if in range of center point
+     */
+    protected boolean inRange(int x, int y, int z, int i, int j, int k, int range)
+    {
+        return inRange(x, i, range) && inRange(y, j, range) && inRange(z, k, range);
+    }
+
+    /**
+     * Simple range check ( i < range && i > - range)
+     *
+     * @param x     - center point
+     * @param i     - point
+     * @param range - distance
+     * @return true if in range of x
+     */
+    protected boolean inRange(int x, int i, int range)
+    {
+        int delta = x - i;
+        return delta < range && delta > -range;
+    }
+
+    /**
      * Called to update the exposure value at the location
      *
      * @param change

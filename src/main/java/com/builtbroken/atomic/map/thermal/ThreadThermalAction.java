@@ -36,31 +36,54 @@ public class ThreadThermalAction extends ThreadDataChange
             map = MapHandler.THERMAL_MAP.getMap(change.dim, true);
         }
 
-        spreadHeat(map, change);
-    }
-
-    protected void spreadHeat(DataMap map, DataChange change)
-    {
         final int cx = change.xi();
         final int cy = change.yi();
         final int cz = change.zi();
 
+        HashMap<DataPos, Integer> old_data = calculateHeatSpread(map, cx, cy, cz, change.old_value);
+        HashMap<DataPos, Integer> new_data = calculateHeatSpread(map, cx, cy, cz, change.new_value);
+        //TODO merge two maps together to create updates for map
+    }
+
+    /**
+     * Calculates spread of heat from source.
+     * <p>
+     * Works by pathing all tiles and calculating heat movement towards current tile.
+     * In other words: Pulls heat towards tile instead of pushing heat.
+     * <p>
+     * Heat is not consumed for movement as would be expected with real world movement. Instead
+     * its assumed heat will constantly be generated. Thus migrating heat is not needed beyond
+     * estimating how much heat would be moved.
+     *
+     * @param map  - map to pull data from
+     * @param cx   - center of heat
+     * @param cy   - center of heat
+     * @param cz   - center of heat
+     * @param heat - amount of heat to move
+     * @return positions and changes
+     */
+    protected HashMap<DataPos, Integer> calculateHeatSpread(final DataMap map, final int cx, final int cy, final int cz, final int heat)
+    {
+        final int range = 100;
+
+        //Track data, also used to prevent looping same tiles
+        final HashMap<DataPos, Integer> heatSpreadData = new HashMap();
+
         long time = System.nanoTime();
-        if (change.new_value > 6)
+        if (heat > 6)
         {
-            int heatToMove = (int) (change.new_value * 0.25f); //Only move 25% of heat at a time
-            change.new_value -= heatToMove;
+            //Track tiles to path
+            final Queue<DataPos> pathNext = new LinkedList();
 
-            HashMap<DataPos, Integer> pathedTiles = new HashMap();
-            Queue<DataPos> pathNext = new LinkedList();
-
-            //Add first
+            //Add center point
             pathNext.add(DataPos.get(cx, cy, cz));
 
+            //Breadth first pathfinder
             while (!pathNext.isEmpty())
             {
                 final DataPos currentPos = pathNext.poll();
 
+                //Calculate heat pushed from all sides & look for new tiles to path
                 int heatAsPosition = 0;
                 for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
                 {
@@ -68,32 +91,40 @@ public class ThreadThermalAction extends ThreadDataChange
                     int j = currentPos.y + direction.offsetY;
                     int k = currentPos.z + direction.offsetZ;
 
-                    DataPos pos = DataPos.get(i, j, k);
-                    if (!pathedTiles.containsKey(pos))
+                    //Only path tiles in map and in range of source
+                    if (inRange(cx, cy, cz, i, j, k, range) && j >= 0 && k < 256)
                     {
-                        pathNext.add(pos);
-                    }
-                    else
-                    {
-                        int heatAtNext = pathedTiles.get(pos);
-                        heatAsPosition += getHeatToSpread(map, i, j, k, currentPos.x, currentPos.y, currentPos.z, heatAtNext);
+                        DataPos pos = DataPos.get(i, j, k);
+                        if (!heatSpreadData.containsKey(pos))
+                        {
+                            pathNext.add(pos);
+                        }
+                        else
+                        {
+                            int heatAtNext = heatSpreadData.get(pos);
+                            heatAsPosition += getHeatToSpread(map, i, j, k, currentPos.x, currentPos.y, currentPos.z, heatAtNext);
+                        }
                     }
                 }
-                pathedTiles.put(currentPos, heatAsPosition);
+
+                //Keep track of value
+                heatSpreadData.put(currentPos, heatAsPosition);
             }
         }
 
         if (AtomicScience.runningAsDev)
         {
             time = System.nanoTime() - time;
-            AtomicScience.logger.info(String.format("%s: Spread heat %s | %s %s %s | in %s",
+            AtomicScience.logger.info(String.format("%s: Spread heat %s | %s tiles | %s %s %s | in %s",
                     name,
-                    change.new_value,
+                    heat,
+                    heatSpreadData.size(),
                     cx, cy, cz,
                     StringHelpers.formatNanoTime(time)));
         }
-
+        return heatSpreadData;
     }
+
 
     protected int getHeatToSpread(DataMap map, int x, int y, int z, int i, int j, int k, final int heatToMove)
     {
