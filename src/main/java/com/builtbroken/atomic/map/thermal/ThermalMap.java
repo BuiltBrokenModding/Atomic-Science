@@ -1,6 +1,5 @@
 package com.builtbroken.atomic.map.thermal;
 
-import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import com.builtbroken.atomic.lib.MassHandler;
@@ -15,7 +14,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -26,12 +24,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class ThermalMap extends MapSystem implements IThermalSystem
 {
-    //Queue for when the hopper and set calls should be processed
-    private int _queueTick = 0;
-
-    //Temp storage of data to dump into the thread at the end of the tick. Used to slow down updates to prevent heat moving too far and fast.
-    private ArrayList<DataChange> tickQueueHopper = new ArrayList();
-
     /** Queue of data to set from the thread */
     public ConcurrentLinkedQueue<DataChange> setDataQueue = new ConcurrentLinkedQueue();
 
@@ -63,38 +55,6 @@ public class ThermalMap extends MapSystem implements IThermalSystem
 
         //set, which should trigger thread
         setData(world, x, y, z, heat);
-    }
-
-    /**
-     * Called to consume heat from the map
-     *
-     * @param world    - location
-     * @param x        - location
-     * @param y        - location
-     * @param z        - location
-     * @param heat     - heat to consume
-     * @param doAction - true to do the action
-     * @return heat actually consumed
-     */
-    public int consumeHeat(World world, int x, int y, int z, int heat, boolean doAction)
-    {
-        int actualHeat = getData(world, x, y, z);
-        if (heat <= actualHeat)
-        {
-            if (doAction)
-            {
-                setData(world, x, y, z, actualHeat - heat);
-            }
-            return heat;
-        }
-        else
-        {
-            if (doAction)
-            {
-                setData(world, x, y, z, 0);
-            }
-            return actualHeat;
-        }
     }
 
     /**
@@ -203,90 +163,38 @@ public class ThermalMap extends MapSystem implements IThermalSystem
         return 290; //Slightly under room temp
     }
 
-    /**
-     * Called from the thread to update data that depends on the heat in the map.
-     * <p>
-     * Example: How much heat to consume each tick to boil water to steam
-     *
-     * @param map  - map to change
-     * @param x    - location
-     * @param y    - location
-     * @param z    - location
-     * @param heat - current heat in the block
-     * @return new heat value
-     */
-    public int doHeatAction(DataMap map, int x, int y, int z, int heat)
-    {
-        return heat;
-    }
-
-
-    @SubscribeEvent
-    public void onChunkAdded(MapSystemEvent.AddChunk event)
-    {
-        if (event.world() != null && !!event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP)
-        {
-            MapHandler.THREAD_THERMAL_ACTION.queueChunkForAddition(event.chunk);
-        }
-    }
-
-    @SubscribeEvent
-    public void onChunkRemove(MapSystemEvent.RemoveChunk event)
-    {
-        if (event.world() != null && !!event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP)
-        {
-            MapHandler.THREAD_THERMAL_ACTION.queueChunkForRemoval(event.chunk);
-        }
-    }
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onHeatChanged(MapSystemEvent.UpdateValue event)
     {
-        if (event.world() != null && !event.world().isRemote && event.map.mapSystem == MapHandler.THERMAL_MAP && event.new_value > 0)
+        World world = event.world();
+        DataMap map = getMap(world, false);
+        if (world != null && map != null)
         {
-            tickQueueHopper.add(DataChange.get(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
+            if (map.blockExists(event.x, event.y, event.z) && ThermalHandler.canChangeStates(world, event.x, event.y, event.z))
+            {
+                long joules = event.new_value * 1000;
+                if (joules > ThermalHandler.energyCostToChangeStates(world, event.x, event.y, event.z))
+                {
+                    ThermalHandler.changeStates(world, event.x, event.y, event.z);
+                }
+            }
         }
     }
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event)
     {
-        if (_queueTick++ >= 20)
+        if (event.phase == TickEvent.Phase.END)
         {
-            _queueTick = 20;
-            if (event.phase == TickEvent.Phase.START)
+            long time = System.currentTimeMillis();
+            while (!setDataQueue.isEmpty() && System.currentTimeMillis() - time < 10)
             {
-                synchronized (setDataQueue)
+                DataChange dataChange = setDataQueue.poll();
+                if (dataChange != null)
                 {
-                    while (!setDataQueue.isEmpty())
-                    {
-                        DataChange dataChange = setDataQueue.poll();
-                        if (dataChange != null)
-                        {
-                            setData(dataChange.dim, dataChange.xi(), dataChange.yi(), dataChange.zi(), dataChange.new_value);
-                        }
-                        dataChange.dispose();
-                    }
+                    setData(dataChange.dim, dataChange.xi(), dataChange.yi(), dataChange.zi(), dataChange.new_value);
                 }
-            }
-            else
-            {
-                //Change over queue to prevent infinite loop (thread can add entries to end while we try to remove from front)
-                final ArrayList<DataChange> queue = tickQueueHopper;
-                tickQueueHopper = new ArrayList();
-
-                if(AtomicScience.runningAsDev)
-                {
-                    AtomicScience.logger.info("ThermalMap: dumping " + queue.size() + " changes into thread.");
-                }
-
-                //Dump queue into thread
-                for (DataChange data : queue)
-                {
-                    MapHandler.THREAD_THERMAL_ACTION.queuePosition(data);
-                }
-
-                queue.clear();
+                dataChange.dispose();
             }
         }
     }

@@ -111,7 +111,7 @@ public class ThermalHandler
             int mass = MassHandler.getMass(world, x, y, z);
             double stateChangeEnergy = data.energyToChangeStates(mass);
             double energyToGetToChange = data.energyToGetToStateChange(mass);
-            PlacementQueue.queue(new ThermalPlacement(world, x, y, z, data, (long) (stateChangeEnergy + energyToGetToChange), (long) stateChangeEnergy));
+            PlacementQueue.queue(new ThermalPlacement(world, x, y, z, data, (long) (stateChangeEnergy + energyToGetToChange)));
         }
     }
 }

@@ -1,11 +1,17 @@
 package com.builtbroken.atomic.map.thermal;
 
-import com.builtbroken.atomic.lib.thermal.ThermalHandler;
+import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataMap;
+import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
+import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Handles updating the radiation map
@@ -30,77 +36,79 @@ public class ThreadThermalAction extends ThreadDataChange
             map = MapHandler.THERMAL_MAP.getMap(change.dim, true);
         }
 
-        spreadHeat(map, change.xi(), change.yi(), change.zi(), change.new_value);
+        spreadHeat(map, change);
     }
 
-    protected void spreadHeat(DataMap map, int x, int y, int z, int totalHeat)
+    protected void spreadHeat(DataMap map, DataChange change)
     {
-        //long time = System.nanoTime();
-        if (totalHeat > 6)
+        final int cx = change.xi();
+        final int cy = change.yi();
+        final int cz = change.zi();
+
+        long time = System.nanoTime();
+        if (change.new_value > 6)
         {
-            int heatToMove = (int) (totalHeat * 0.25f); //Only move 25% of heat at a time
-            totalHeat -= heatToMove;
+            int heatToMove = (int) (change.new_value * 0.25f); //Only move 25% of heat at a time
+            change.new_value -= heatToMove;
 
-            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) //TODO recode to sort by lowest heat
+            HashMap<DataPos, Integer> pathedTiles = new HashMap();
+            Queue<DataPos> pathNext = new LinkedList();
+
+            //Add first
+            pathNext.add(DataPos.get(cx, cy, cz));
+
+            while (!pathNext.isEmpty())
             {
-                int i = x + direction.offsetX;
-                int j = y + direction.offsetY;
-                int k = z + direction.offsetZ;
+                final DataPos currentPos = pathNext.poll();
 
-                if (map.blockExists(i, j, k))
+                int heatAsPosition = 0;
+                for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
                 {
-                    //Only move heat if we can move
-                    int heat = map.getData(i, j, k);
-                    if (heatToMove > heat) //TODO check if we want to set a lower limit on this to reduce CPU time
+                    int i = currentPos.x + direction.offsetX;
+                    int j = currentPos.y + direction.offsetY;
+                    int k = currentPos.z + direction.offsetZ;
+
+                    DataPos pos = DataPos.get(i, j, k);
+                    if (!pathedTiles.containsKey(pos))
                     {
-                        //Get heat to move, goal is to even out heat between tiles
-                        int movement = heatToMove / 7; //7 -> 6 sides + self, can't transfer 100% heat away from self
-
-                        //Get heat actual movement, heat will not transfer equally from 1 tile to the next
-                        int actualMove = MapHandler.THERMAL_MAP.getHeatSpread(map.getWorld(), x, y, z, i, j, k, movement);
-
-                        //Update values
-                        heat += actualMove;
-                        heatToMove -= heat;
-
-                        //Update map
-                        setData(map.dim, i, j, k, heat);
+                        pathNext.add(pos);
+                    }
+                    else
+                    {
+                        int heatAtNext = pathedTiles.get(pos);
+                        heatAsPosition += getHeatToSpread(map, i, j, k, currentPos.x, currentPos.y, currentPos.z, heatAtNext);
                     }
                 }
-                else
-                {
-                    //Decay to help prevent issues
-                    heatToMove -= heatToMove / 7;
-                }
+                pathedTiles.put(currentPos, heatAsPosition);
             }
-
-            if (map.blockExists(x, y, z) && ThermalHandler.canChangeStates(map.getWorld(), x, y, z))
-            {
-                long joules = heatToMove * 1000;
-                if (joules > ThermalHandler.energyCostToChangeStates(map.getWorld(), x, y, z))
-                {
-                    ThermalHandler.changeStates(map.getWorld(), x, y, z);
-                }
-            }
-
-            //Update heat value
-            setData(map.dim, x, y, z, Math.max(0, totalHeat + heatToMove));
         }
-        else
-        {
-            setData(map.dim, x, y, z, 0);
-        }
-        /*
+
         if (AtomicScience.runningAsDev)
         {
             time = System.nanoTime() - time;
-            AtomicScience.logger.info(String.format("%s: Spread heat %s -> %s | %s %s %s | in %s",
+            AtomicScience.logger.info(String.format("%s: Spread heat %s | %s %s %s | in %s",
                     name,
-                    heatToSpread, totalHeat,
-                    x, y, z,
+                    change.new_value,
+                    cx, cy, cz,
                     StringHelpers.formatNanoTime(time)));
         }
-        */
+
+    }
+
+    protected int getHeatToSpread(DataMap map, int x, int y, int z, int i, int j, int k, final int heatToMove)
+    {
+        if (map.blockExists(i, j, k))
+        {
+            //Only move heat if we can move
+            int heat = map.getData(i, j, k);
+            if (heatToMove > heat)
+            {
+                //Get heat actual movement, heat will not transfer equally from 1 tile to the next
+                return MapHandler.THERMAL_MAP.getHeatSpread(map.getWorld(), x, y, z, i, j, k, heatToMove);
+            }
+            return 0;
+        }
+        return heatToMove;
     }
 
     protected void setData(int dim, int x, int y, int z, int newValue)

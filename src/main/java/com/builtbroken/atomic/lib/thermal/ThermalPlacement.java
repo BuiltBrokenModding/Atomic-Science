@@ -12,25 +12,17 @@ public class ThermalPlacement extends BlockPlacement
 {
     ThermalData data;
     long energyCheck;
-    long energyToConsume;
 
-    public ThermalPlacement(World world, int x, int y, int z, ThermalData data, long energyCheck, long energyToConsume)
+    public ThermalPlacement(World world, int x, int y, int z, ThermalData data, long energyCheck)
     {
         super(world, x, y, z, data.changeBlock, data.changeMeta);
         this.data = data;
         this.energyCheck = energyCheck;
-        this.energyToConsume = energyToConsume;
     }
 
     @Override
     protected boolean canDoAction()
     {
         return MapHandler.THERMAL_MAP.getJoules(world(), x, y, z) >= energyCheck;
-    }
-
-    @Override
-    protected void onPlacedBlock()
-    {
-        MapHandler.THERMAL_MAP.consumeHeat(world(), x, y, z, (int) (energyToConsume / 1000), true);
     }
 }
