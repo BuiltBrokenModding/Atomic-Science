@@ -22,6 +22,7 @@ public class ThermalHandler
         setValue(Blocks.water, 4.187f, 2257, 373.15f);
         setValue(Blocks.ice, 2.108f, 334, 273.15f, Blocks.water, 0);
         setValue(Blocks.air, 0.718f, -1, -1);
+        //Melting point of stone is 1473.15 Kelvin
     }
 
     public static void setValue(Block block, float specificHeat, float changeHeat, float changeTemp)

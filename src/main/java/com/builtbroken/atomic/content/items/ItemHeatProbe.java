@@ -36,7 +36,7 @@ public class ItemHeatProbe extends Item
             double heat = MapHandler.THERMAL_MAP.getJoules(world, x, y, z);
             double env = MapHandler.THERMAL_MAP.getEnvironmentalJoules(world, x, y, z);
             double temp = MapHandler.THERMAL_MAP.getTemperature(world, x, y, z);
-            double heatDelta = temp - 300; //Difference from room temp
+            //double heatDelta = temp - 300; //Difference from room temp
 
             int tempDisplay = (int) Math.floor(temp);
 
