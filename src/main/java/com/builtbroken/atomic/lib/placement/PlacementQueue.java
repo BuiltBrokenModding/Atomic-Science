@@ -5,6 +5,7 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -34,14 +35,17 @@ public class PlacementQueue
         if (event.phase == TickEvent.Phase.END)
         {
             long time = System.currentTimeMillis();
+            LinkedList<BlockPlacement> delayList = new LinkedList();
             while (!queue.isEmpty() && System.currentTimeMillis() - time < 10)
             {
                 BlockPlacement placement = queue.poll();
-                if (placement != null)
+                if (placement != null && !placement.doPlacement())
                 {
-                    placement.doPlacement();
+                    //If not placed, add to delay list to be re-added to queue
+                    delayList.add(placement);
                 }
             }
+            queue.addAll(delayList);
         }
     }
 }

@@ -18,6 +18,8 @@ public class BlockPlacement
     public Block block;
     public int meta;
 
+    public int placementDelay = 0;
+
     public BlockPlacement(World world, int x, int y, int z, Block block, int meta)
     {
         this.dim = world.provider.dimensionId;
@@ -28,8 +30,27 @@ public class BlockPlacement
         this.meta = meta;
     }
 
-    public void doPlacement()
+    public BlockPlacement delay(int ticks)
     {
+        placementDelay = ticks;
+        return this;
+    }
+
+    /**
+     * Called to place the block
+     * <p>
+     * Placement is not required when called. Instead
+     * it can be used as an update method. Allowing
+     * for delaying placement for a few ticks.
+     *
+     * @return true to remove from queue
+     */
+    public boolean doPlacement()
+    {
+        if (placementDelay-- > 0)
+        {
+            return false;
+        }
         try
         {
             if (canDoAction())
@@ -40,6 +61,7 @@ public class BlockPlacement
                 {
                     if (world.setBlock(x, y, z, block, meta, 3))
                     {
+                        world.markBlockForUpdate(x, y, z);
                         onPlacedBlock();
                     }
                     else
@@ -57,6 +79,7 @@ public class BlockPlacement
         {
             AtomicScience.logger.error("PlacementQueue: Unexpected error placing block. " + this, e);
         }
+        return true;
     }
 
     protected void onPlacedBlock()
