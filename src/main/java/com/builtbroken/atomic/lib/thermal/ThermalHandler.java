@@ -70,7 +70,7 @@ public class ThermalHandler
      * @param x     - location
      * @param y     - location
      * @param z     - location
-     * @return energy cost to change states (e.g. ice -> water)
+     * @return energy cost in joules to change states (e.g. ice -> water)
      */
     public static long energyCostToChangeStates(World world, int x, int y, int z)
     {

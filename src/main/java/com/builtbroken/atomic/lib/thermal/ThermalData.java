@@ -33,12 +33,12 @@ public class ThermalData
 
     public double energyToChangeStates(int mass)
     {
-        return mass * changeStateHeat;
+        return mass * changeStateHeat * 1000; //x1000 for kj -> j
     }
 
     public double energyForTempChange(int mass, float tempDelta)
     {
-        return mass * specificHeat * tempDelta;
+        return mass * specificHeat * tempDelta * 1000; //x1000 for kj -> j
     }
 
     public double energyToGetToStateChange(int mass)

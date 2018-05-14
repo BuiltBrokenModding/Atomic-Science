@@ -23,6 +23,6 @@ public class ThermalPlacement extends BlockPlacement
     @Override
     protected boolean canDoAction()
     {
-        return MapHandler.THERMAL_MAP.getJoules(world(), x, y, z) >= energyCheck;
+        return MapHandler.THERMAL_MAP.getActualJoules(world(), x, y, z) >= energyCheck;
     }
 }

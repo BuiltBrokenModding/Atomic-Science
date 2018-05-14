@@ -199,7 +199,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      */
     public double getTemperature(World world, int x, int y, int z)
     {
-        return getTemperature(world, x, y, z, getJoules(world, x, y, z));
+        return getTemperature(world, x, y, z, getActualJoules(world, x, y, z));
     }
 
     /**
@@ -217,7 +217,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      */
     public double getTemperature(World world, int x, int y, int z, double joules)
     {
-        return joules / (MassHandler.getMass(world, x, y, z) * ThermalHandler.getSpecificHeat(world, x, y, z));
+        return joules / (MassHandler.getMass(world, x, y, z) * ThermalHandler.getSpecificHeat(world, x, y, z) * 1000);
     }
 
     /**
@@ -248,7 +248,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      */
     public double getEnvironmentalJoules(World world, int x, int y, int z)
     {
-        return getEnvironmentalTemperature(world, x, y, z) * MassHandler.getMass(world, x, y, z) * ThermalHandler.getSpecificHeat(world, x, y, z);
+        return getEnvironmentalTemperature(world, x, y, z) * MassHandler.getMass(world, x, y, z) * ThermalHandler.getSpecificHeat(world, x, y, z) * 1000;
     }
 
     /**
