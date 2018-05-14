@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.ConfigRadiation;
 import com.builtbroken.atomic.content.items.ItemFuelRod;
 import com.builtbroken.atomic.content.items.ItemHazmat;
+import com.builtbroken.atomic.content.items.ItemHeatProbe;
 import com.builtbroken.atomic.content.items.ItemRadioactive;
 import com.builtbroken.atomic.content.items.cell.ItemFluidCell;
 import com.builtbroken.atomic.content.items.cell.ItemPoweredCell;
@@ -39,6 +40,9 @@ public class ASItems
     public static Item itemUranium235;
     public static Item itemUranium238;
 
+    //Tools
+    public static Item itemHeatProbe;
+
     public static final int TICKS_SECOND = 20;
     public static final int TICKS_MIN = TICKS_SECOND * 60;
     public static final int TICKS_HOUR = TICKS_MIN * 60;
@@ -63,10 +67,10 @@ public class ASItems
 
         //Machine inputs
         GameRegistry.registerItem(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile", "cell_fissile_fuel",
-                5 * TICKS_HOUR, ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD),
+                        5 * TICKS_HOUR, ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD),
                 "fissile_fuel_cell");
         GameRegistry.registerItem(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder", "cell_breeder_fuel",
-                2 * TICKS_HOUR, ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD),
+                        2 * TICKS_HOUR, ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD),
                 "breeder_fuel_cell");
 
         //Crafting items
@@ -78,5 +82,8 @@ public class ASItems
         GameRegistry.registerItem(itemYellowCake = new ItemRadioactive("cake.yellow", "yellow_cake", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "yellow_cake");
         GameRegistry.registerItem(itemUranium235 = new ItemRadioactive("uranium.235", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235), "uranium_235");
         GameRegistry.registerItem(itemUranium238 = new ItemRadioactive("uranium.238", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238), "uranium_238");
+
+        //Tools
+        GameRegistry.registerItem(itemHeatProbe = new ItemHeatProbe(), "heat_probe");
     }
 }
