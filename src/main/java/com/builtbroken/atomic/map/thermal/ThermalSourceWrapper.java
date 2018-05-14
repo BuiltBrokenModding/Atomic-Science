@@ -1,6 +1,6 @@
-package com.builtbroken.atomic.map.exposure;
+package com.builtbroken.atomic.map.thermal;
 
-import com.builtbroken.atomic.api.radiation.IRadiationSource;
+import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.map.data.DataSourceWrapper;
 
 /**
@@ -9,11 +9,11 @@ import com.builtbroken.atomic.map.data.DataSourceWrapper;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/8/2018.
  */
-public class RadSourceWrapper extends DataSourceWrapper<IRadiationSource>
+public class ThermalSourceWrapper extends DataSourceWrapper<IHeatSource>
 {
-    public int radioactiveMaterialValue;
+    public int heatValue;
 
-    public RadSourceWrapper(IRadiationSource source)
+    public ThermalSourceWrapper(IHeatSource source)
     {
         super(source);
     }
@@ -21,13 +21,13 @@ public class RadSourceWrapper extends DataSourceWrapper<IRadiationSource>
     @Override
     public boolean hasSourceChanged()
     {
-        return super.hasSourceChanged() || radioactiveMaterialValue != source.getRadioactiveMaterial();
+        return super.hasSourceChanged() || heatValue != source.getHeatGenerated();
     }
 
     @Override
     public void logCurrentData()
     {
         super.logCurrentData();
-        radioactiveMaterialValue = source.getRadioactiveMaterial();
+        heatValue = source.getHeatGenerated();
     }
 }

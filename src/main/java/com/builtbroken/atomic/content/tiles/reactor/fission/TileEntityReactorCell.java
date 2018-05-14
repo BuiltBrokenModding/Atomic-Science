@@ -32,6 +32,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         super.firstTick();
         updateStructureType();
         MapHandler.RADIATION_MAP.addSource(this);
+        MapHandler.THERMAL_MAP.addSource(this);
     }
 
     //-----------------------------------------------
@@ -61,14 +62,6 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
 
     protected void doOperationTick()
     {
-        IFuelRodItem fuelRodItem = getFuelRod();
-        if (fuelRodItem != null)
-        {
-            int heat = fuelRodItem.getHeatOutput(getFuelRodStack(), this);
-            heat = getActualHeat(heat);
-            MapHandler.THERMAL_MAP.outputHeat(this, heat); //TODO replace with tick handler from thermal map
-        }
-
         //TODO calculate radioactive material leaking
         //TODO dump radioactive material to area or drains
     }
@@ -104,6 +97,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         {
             syncClientNextTick();
             MapHandler.RADIATION_MAP.addSource(this);
+            MapHandler.THERMAL_MAP.addSource(this);
         }
     }
 
@@ -162,9 +156,26 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     @Override
     public boolean isRadioactive()
     {
-        return getRadioactiveMaterial() > 0;
+        return !isInvalid() && getRadioactiveMaterial() > 0;
     }
 
+    @Override
+    public boolean canGeneratingHeat()
+    {
+        return !isInvalid() && getHeatGenerated() > 0;
+    }
+
+    @Override
+    public int getHeatGenerated()
+    {
+        IFuelRodItem fuelRodItem = getFuelRod();
+        if (fuelRodItem != null)
+        {
+            int heat = fuelRodItem.getHeatOutput(getFuelRodStack(), this);
+            return getActualHeat(heat);
+        }
+        return 0;
+    }
 
     @Override
     public int getSizeInventory()

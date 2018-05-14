@@ -104,7 +104,7 @@ public class ItemFluidCell extends Item implements IFluidContainerItem
     @Override
     public int getItemStackLimit(ItemStack stack)
     {
-        return isEmpty(stack) ? Items.bucket.getItemStackLimit() : 1;
+        return isEmpty(stack) ? Items.bucket.getItemStackLimit(stack) : 1;
     }
 
     @SideOnly(Side.CLIENT)

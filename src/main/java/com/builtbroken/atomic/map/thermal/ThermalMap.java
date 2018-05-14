@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.map.thermal;
 
+import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import com.builtbroken.atomic.lib.MassHandler;
@@ -14,7 +15,9 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.world.World;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Handles heat in the map
@@ -24,38 +27,145 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class ThermalMap extends MapSystem implements IThermalSystem
 {
-    /** Queue of data to set from the thread */
-    public ConcurrentLinkedQueue<DataChange> setDataQueue = new ConcurrentLinkedQueue();
+    /** List of thermal sources in the world */
+    private HashMap<IHeatSource, ThermalSourceWrapper> thermalSourceMap = new HashMap();
 
     public ThermalMap()
     {
-        super(MapHandler.THERMAL_MAP_ID, MapHandler.NBT_THERMAL_CHUNK);
+        super(MapHandler.THERMAL_MAP_ID, null);
     }
 
     /**
-     * Called to output energy to the world
+     * Called to add source to the map
      * <p>
-     * This works by setting the heat into the world. Which
-     * will then trigger the thread to spread the heat.
+     * Only call this from the main thread. As the list of sources
+     * is iterated at the end of each tick to check for changes.
      *
-     * @param source    - source of the heat
-     * @param heatToAdd - amount of heat energy
+     * @param source - valid source currently in the world
      */
-    public void outputHeat(IHeatSource source, int heatToAdd)
+    public void addSource(IHeatSource source)
     {
-        //data
-        World world = source.world();
-        int x = source.xi();
-        int y = source.yi();
-        int z = source.zi();
-
-        //Get and add heat
-        int heat = getData(world, x, y, z);
-        heat += heatToAdd;
-
-        //set, which should trigger thread
-        setData(world, x, y, z, heat);
+        if (source != null && source.canGeneratingHeat() && !thermalSourceMap.containsKey(source))
+        {
+            thermalSourceMap.put(source, new ThermalSourceWrapper(source));
+            onSourceAdded(source);
+        }
     }
+
+    /**
+     * Called to remove a source from the map
+     * <p>
+     * Only call this from the main thread. As the list of sources
+     * is iterated at the end of each tick to check for changes.
+     * <p>
+     * Only remove if external logic requires it. As the source
+     * should return false for {@link IHeatSource#canGeneratingHeat()}
+     * to be automatically removed.
+     *
+     * @param source - valid source currently in the world
+     */
+    public void removeSource(IHeatSource source)
+    {
+        if (thermalSourceMap.containsKey(source))
+        {
+            onSourceRemoved(source);
+            thermalSourceMap.remove(source);
+        }
+    }
+
+    /**
+     * Called when a source is added
+     *
+     * @param source
+     */
+    protected void onSourceAdded(IHeatSource source)
+    {
+        if (AtomicScience.runningAsDev)
+        {
+            AtomicScience.logger.info("ThermalMap: adding source " + source);
+        }
+        fireSourceChange(source, source.getHeatGenerated());
+    }
+
+    /**
+     * Called when a source is removed
+     *
+     * @param source
+     */
+    protected void onSourceRemoved(IHeatSource source)
+    {
+        if (AtomicScience.runningAsDev)
+        {
+            AtomicScience.logger.info("ThermalMap: remove source " + source);
+        }
+        fireSourceChange(source, 0);
+    }
+
+    /**
+     * Called to cleanup invalid sources from the map
+     */
+    public void clearDeadSources()
+    {
+        Iterator<Map.Entry<IHeatSource, ThermalSourceWrapper>> it = thermalSourceMap.entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry<IHeatSource, ThermalSourceWrapper> next = it.next();
+            if (next == null || next.getKey() == null || next.getValue() == null || !next.getKey().canGeneratingHeat())
+            {
+                if (next.getKey() != null)
+                {
+                    onSourceRemoved(next.getKey());
+                }
+                it.remove();
+            }
+        }
+    }
+
+    /**
+     * Called to fire a source change event
+     *
+     * @param source
+     * @param newValue
+     */
+    protected void fireSourceChange(IHeatSource source, int newValue)
+    {
+        if (AtomicScience.runningAsDev)
+        {
+            AtomicScience.logger.info("ThermalMap: on changed " + source);
+        }
+        ThermalSourceWrapper wrapper = getRadSourceWrapper(source);
+        if (wrapper != null && wrapper.heatValue != newValue)
+        {
+            //Remove old, called separate in case position changed
+            if (wrapper.heatValue != 0)
+            {
+                MapHandler.THREAD_THERMAL_ACTION.queuePosition(DataChange.get(wrapper.dim, wrapper.xi(), wrapper.yi(), wrapper.zi(), wrapper.heatValue, 0));
+            }
+            //Log changes
+            wrapper.logCurrentData();
+
+            //Add new, called separate in case position changed
+            if (newValue != 0 && source.canGeneratingHeat())
+            {
+                MapHandler.THREAD_THERMAL_ACTION.queuePosition(DataChange.get(wrapper.dim, wrapper.xi(), wrapper.yi(), wrapper.zi(), 0, newValue));
+            }
+        }
+    }
+
+    protected ThermalSourceWrapper getRadSourceWrapper(IHeatSource source)
+    {
+        if (thermalSourceMap.containsKey(source))
+        {
+            ThermalSourceWrapper wrapper = thermalSourceMap.get(source);
+            if (wrapper == null)
+            {
+                thermalSourceMap.put(source, wrapper = new ThermalSourceWrapper(source));
+            }
+            return wrapper;
+        }
+        return null;
+    }
+
 
     /**
      * Checks how much heat should spread from one block to the next.
@@ -186,15 +296,16 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     {
         if (event.phase == TickEvent.Phase.END)
         {
-            long time = System.currentTimeMillis();
-            while (!setDataQueue.isEmpty() && System.currentTimeMillis() - time < 10)
+            //Cleanup
+            clearDeadSources();
+
+            //Loop sources looking for changes
+            for (ThermalSourceWrapper wrapper : thermalSourceMap.values())
             {
-                DataChange dataChange = setDataQueue.poll();
-                if (dataChange != null)
+                if (wrapper.hasSourceChanged())
                 {
-                    setData(dataChange.dim, dataChange.xi(), dataChange.yi(), dataChange.zi(), dataChange.new_value);
+                    fireSourceChange(wrapper.source, wrapper.source.getHeatGenerated());
                 }
-                dataChange.dispose();
             }
         }
     }

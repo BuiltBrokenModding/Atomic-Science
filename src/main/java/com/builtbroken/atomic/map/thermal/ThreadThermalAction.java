@@ -11,6 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 /**
@@ -42,7 +43,39 @@ public class ThreadThermalAction extends ThreadDataChange
 
         HashMap<DataPos, Integer> old_data = calculateHeatSpread(map, cx, cy, cz, change.old_value);
         HashMap<DataPos, Integer> new_data = calculateHeatSpread(map, cx, cy, cz, change.new_value);
-        //TODO merge two maps together to create updates for map
+
+        //Clear old data
+        for (Map.Entry<DataPos, Integer> entry : old_data.entrySet())
+        {
+            final DataPos dataPos = entry.getKey();
+            int heat = map.getData(dataPos.xi(), dataPos.yi(), dataPos.zi());
+
+            //Remove heat
+            heat -= entry.getValue();
+
+            //Add heat, saves a bit of time pulling from other map
+            if (new_data.containsKey(dataPos))
+            {
+                heat += new_data.get(dataPos);
+                new_data.remove(dataPos);
+            }
+
+            //Update map
+            map.setData(dataPos.xi(), dataPos.yi(), dataPos.zi(), Math.max(0, heat));
+        }
+
+        //Add new data
+        for (Map.Entry<DataPos, Integer> entry : new_data.entrySet())
+        {
+            final DataPos dataPos = entry.getKey();
+            int heat = map.getData(dataPos.xi(), dataPos.yi(), dataPos.zi());
+
+            //add heat
+            heat += entry.getValue();
+
+            //Update map
+            map.setData(dataPos.xi(), dataPos.yi(), dataPos.zi(), heat);
+        }
     }
 
     /**
@@ -140,13 +173,5 @@ public class ThreadThermalAction extends ThreadDataChange
             return 0;
         }
         return heatToMove;
-    }
-
-    protected void setData(int dim, int x, int y, int z, int newValue)
-    {
-        synchronized (MapHandler.THERMAL_MAP.setDataQueue)
-        {
-            MapHandler.THERMAL_MAP.setDataQueue.add(DataChange.get(dim, x, y, z, 0, newValue));
-        }
     }
 }
