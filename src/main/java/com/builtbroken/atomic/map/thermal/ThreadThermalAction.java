@@ -222,10 +222,7 @@ public class ThreadThermalAction extends ThreadDataChange
         {
             double specificHeat = ThermalHandler.getSpecificHeat(world, heatTarget.x, heatTarget.y, heatTarget.z);
             double mass = MassHandler.getMass(world, heatTarget.x, heatTarget.y, heatTarget.z);
-
             int maxHeat = (int) (deltaTemp * specificHeat * mass / 1000.0); //Map stores heat in KJ but equation is in joules
-
-            //TODO implement
             return Math.min(maxHeat, heat);
         }
         return 0;

@@ -180,6 +180,11 @@ public class ThermalMap extends MapSystem implements IThermalSystem
         return getData(world, x, y, z) * 1000; //Map stores heat in kilo-joules
     }
 
+    public double getActualJoules(World world, int x, int y, int z)
+    {
+        return getJoules(world, x, y, z) + getEnvironmentalJoules(world, x, y, z);
+    }
+
     /**
      * Gets the temperature of the block at the location
      * <p>
@@ -269,7 +274,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
         {
             if (map.blockExists(event.x, event.y, event.z) && ThermalHandler.canChangeStates(world, event.x, event.y, event.z))
             {
-                long joules = event.new_value * 1000;
+                double joules = event.new_value * 1000 + getEnvironmentalJoules(world, event.x, event.y, event.z);
                 if (joules > ThermalHandler.energyCostToChangeStates(world, event.x, event.y, event.z))
                 {
                     ThermalHandler.changeStates(world, event.x, event.y, event.z);
