@@ -43,7 +43,7 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
     public int getHeatOutput(ItemStack stack, IReactor reactor)
     {
         //To boil 1 block of water takes 1,562,379.05 KJ
-        return 1562379 * 10;
+        return 1562379 * 20;
     }
 
     @Override
