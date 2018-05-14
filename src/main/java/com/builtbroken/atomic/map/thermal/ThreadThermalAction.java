@@ -58,6 +58,7 @@ public class ThreadThermalAction extends ThreadDataChange
 
             //Recycle for next path
             dataPos.dispose();
+            entry.getValue().dispose();
         }
         old_data.clear();
 
@@ -75,6 +76,7 @@ public class ThreadThermalAction extends ThreadDataChange
 
             //Recycle for next path
             dataPos.dispose();
+            entry.getValue().dispose();
         }
         new_data.clear();
     }
@@ -106,13 +108,12 @@ public class ThreadThermalAction extends ThreadDataChange
         long time = System.nanoTime();
         if (heat > 6)
         {
-
             //Track tiles to path
             final Queue<DataPos> pathNext = new LinkedList();
 
             //Add center point
             final DataPos centerPos = DataPos.get(cx, cy, cz);
-            heatSpreadData.put(centerPos, DataPos.get(0, 0, 0));
+            heatSpreadData.put(centerPos, DataPos.get(heat, 0, 0));
 
             //Add connected tiles
             for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
