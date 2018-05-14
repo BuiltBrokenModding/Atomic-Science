@@ -1,18 +1,18 @@
 package com.builtbroken.atomic.map.thermal;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.lib.MassHandler;
+import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataMap;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
 import com.builtbroken.jlib.lang.StringHelpers;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Handles updating the radiation map
@@ -53,16 +53,13 @@ public class ThreadThermalAction extends ThreadDataChange
             //Remove heat
             heat -= entry.getValue();
 
-            //Add heat, saves a bit of time pulling from other map
-            if (new_data.containsKey(dataPos))
-            {
-                heat += new_data.get(dataPos);
-                new_data.remove(dataPos);
-            }
-
             //Update map
             map.setData(dataPos.xi(), dataPos.yi(), dataPos.zi(), Math.max(0, heat));
+
+            //Recycle for next path
+            dataPos.dispose();
         }
+        old_data.clear();
 
         //Add new data
         for (Map.Entry<DataPos, Integer> entry : new_data.entrySet())
@@ -75,7 +72,11 @@ public class ThreadThermalAction extends ThreadDataChange
 
             //Update map
             map.setData(dataPos.xi(), dataPos.yi(), dataPos.zi(), heat);
+
+            //Recycle for next path
+            dataPos.dispose();
         }
+        new_data.clear();
     }
 
     /**
@@ -97,7 +98,7 @@ public class ThreadThermalAction extends ThreadDataChange
      */
     protected HashMap<DataPos, Integer> calculateHeatSpread(final DataMap map, final int cx, final int cy, final int cz, final int heat)
     {
-        final int range = 100;
+        final int range = 50;
 
         //Track data, also used to prevent looping same tiles
         final HashMap<DataPos, Integer> heatSpreadData = new HashMap();
@@ -105,11 +106,22 @@ public class ThreadThermalAction extends ThreadDataChange
         long time = System.nanoTime();
         if (heat > 6)
         {
+
             //Track tiles to path
             final Queue<DataPos> pathNext = new LinkedList();
 
             //Add center point
-            pathNext.add(DataPos.get(cx, cy, cz));
+            final DataPos centerPos = DataPos.get(cx, cy, cz);
+            heatSpreadData.put(centerPos, heat);
+
+            //Add connected tiles
+            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+            {
+                pathNext.add(DataPos.get(cx, cy, cz, direction));
+            }
+
+            //Temp list of  node to path next for current position
+            ArrayList<DataPos> tempHold = new ArrayList(6);
 
             //Breadth first pathfinder
             while (!pathNext.isEmpty())
@@ -120,25 +132,35 @@ public class ThreadThermalAction extends ThreadDataChange
                 int heatAsPosition = 0;
                 for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
                 {
-                    int i = currentPos.x + direction.offsetX;
-                    int j = currentPos.y + direction.offsetY;
-                    int k = currentPos.z + direction.offsetZ;
+                    final DataPos pos = DataPos.get(currentPos, direction);
 
                     //Only path tiles in map and in range of source
-                    if (inRange(cx, cy, cz, i, j, k, range) && j >= 0 && k < 256)
+                    if (inRange(cx, cy, cz, pos.x, pos.y, pos.z, range) && pos.y >= 0 && pos.y < 256)
                     {
-                        DataPos pos = DataPos.get(i, j, k);
                         if (!heatSpreadData.containsKey(pos))
                         {
-                            pathNext.add(pos);
+                            tempHold.add(pos);
                         }
                         else
                         {
                             int heatAtNext = heatSpreadData.get(pos);
-                            heatAsPosition += getHeatToSpread(map, i, j, k, currentPos.x, currentPos.y, currentPos.z, heatAtNext);
+                            heatAsPosition += getHeatToSpread(map, pos, currentPos, heatAtNext, heatSpreadData);
+                            pos.dispose();
                         }
                     }
                 }
+
+                //Only add positions from temp if there is heat to move from current
+                if (heatAsPosition > 0)
+                {
+                    pathNext.addAll(tempHold);
+                    tempHold.forEach(e -> heatSpreadData.put(e, 0)); //Prevents loop over tiles already in queue
+                }
+                else
+                {
+                    tempHold.forEach(e -> e.dispose());
+                }
+                tempHold.clear();
 
                 //Keep track of value
                 heatSpreadData.put(currentPos, heatAsPosition);
@@ -159,19 +181,62 @@ public class ThreadThermalAction extends ThreadDataChange
     }
 
 
-    protected int getHeatToSpread(DataMap map, int x, int y, int z, int i, int j, int k, final int heatToMove)
+    /**
+     * Called to get the heat to spread to the target tile
+     *
+     * @param map            - map (do not add or remove data from, tbh don't even use)
+     * @param heatSource     - source of heat
+     * @param heatTarget     - target of heat
+     * @param heatToMove     - total heat to move
+     * @param heatSpreadData - data of current heat movement
+     * @return heat moved
+     */
+    protected int getHeatToSpread(DataMap map, DataPos heatSource, DataPos heatTarget, final int heatToMove, HashMap<DataPos, Integer> heatSpreadData)
     {
-        if (map.blockExists(i, j, k))
+        if (map.blockExists(heatTarget.x, heatTarget.y, heatTarget.z))
         {
-            //Only move heat if we can move
-            int heat = map.getData(i, j, k);
-            if (heatToMove > heat)
-            {
-                //Get heat actual movement, heat will not transfer equally from 1 tile to the next
-                return MapHandler.THERMAL_MAP.getHeatSpread(map.getWorld(), x, y, z, i, j, k, heatToMove);
-            }
-            return 0;
+            //Get heat actual movement (only move 25% of heat)
+            return getHeatSpread(map.getWorld(), heatSource, heatTarget, (int) (0.25 * heatToMove), heatSpreadData);
         }
         return heatToMove;
+    }
+
+    /**
+     * Checks how much heat should spread from one block to the next.
+     * <p>
+     * In theory each block should have a different spread value. As
+     * heat does not transfer evenly between sources.
+     * <p>
+     * As well heat travels differently between different types of blocks.
+     * Air blocks will use convection while solid blocks direct heat transfer.
+     *
+     * @param heatSource - source of heat
+     * @param heatTarget - where to move heat
+     * @param heat       - heat to transfer (some % of total heat), in kilo-joules
+     * @return heat to actually transfer, in kilo-joules
+     */
+    public int getHeatSpread(World world, DataPos heatSource, DataPos heatTarget, int heat, HashMap<DataPos, Integer> heatSpreadData)
+    {
+        double deltaTemp = getTemperature(world, heatSource, heatSpreadData); //We assume target is zero relative to source
+        if (deltaTemp > 0)
+        {
+            double specificHeat = ThermalHandler.getSpecificHeat(world, heatTarget.x, heatTarget.y, heatTarget.z);
+            double mass = MassHandler.getMass(world, heatTarget.x, heatTarget.y, heatTarget.z);
+
+            int maxHeat = (int) (deltaTemp * specificHeat * mass / 1000.0); //Map stores heat in KJ but equation is in joules
+
+            //TODO implement
+            return Math.min(maxHeat, heat);
+        }
+        return 0;
+    }
+
+    public double getTemperature(World world, DataPos pos, HashMap<DataPos, Integer> heatSpreadData)
+    {
+        if (heatSpreadData.containsKey(pos))
+        {
+            return MapHandler.THERMAL_MAP.getTemperature(world, pos.x, pos.y, pos.z, heatSpreadData.get(pos) * 1000.0); //kj -> j
+        }
+        return 0;
     }
 }

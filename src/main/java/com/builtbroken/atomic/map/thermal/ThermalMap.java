@@ -166,37 +166,6 @@ public class ThermalMap extends MapSystem implements IThermalSystem
         return null;
     }
 
-
-    /**
-     * Checks how much heat should spread from one block to the next.
-     * <p>
-     * In theory each block should have a different spread value. As
-     * heat does not transfer evenly between sources.
-     * <p>
-     * As well heat travels differently between different types of blocks.
-     * Air blocks will use convection while solid blocks direct heat transfer.
-     *
-     * @param x    - block 1, source of heat
-     * @param y    - block 1, source of heat
-     * @param z    - block 1, source of heat
-     * @param i    - block 2, receiver of heat
-     * @param j    - block 2, receiver of heat
-     * @param k    - block 2, receiver of heat
-     * @param heat - heat to transfer (some % of total heat), in kilo-joules
-     * @return heat to actually transfer, in kilo-joules
-     */
-    public int getHeatSpread(World world, int x, int y, int z, int i, int j, int k, int heat)
-    {
-        double deltaTemp = getTemperatureDelta(world, x, y, z, i, j, k);
-        double specificHeat = ThermalHandler.getSpecificHeat(world, i, j, k);
-        double mass = MassHandler.getMass(world, i, j, k);
-
-        int maxHeat = (int) (deltaTemp * specificHeat * mass / 1000.0); //Map stores heat in KJ but equation is in joules
-
-        //TODO implement
-        return Math.min(maxHeat, heat);
-    }
-
     /**
      * Energy in joules
      *
@@ -225,7 +194,25 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      */
     public double getTemperature(World world, int x, int y, int z)
     {
-        return getJoules(world, x, y, z) / (MassHandler.getMass(world, x, y, z) * ThermalHandler.getSpecificHeat(world, x, y, z));
+        return getTemperature(world, x, y, z, getJoules(world, x, y, z));
+    }
+
+    /**
+     * Gets the temperature of the block at the location
+     * <p>
+     * Uses the properties of the block to calculate the value from
+     * the heat + environmental values.
+     *
+     * @param world  - map to pull data from
+     * @param x      - location
+     * @param y      - location
+     * @param z      - location
+     * @param joules - heat energy
+     * @return temperature in Kelvin
+     */
+    public double getTemperature(World world, int x, int y, int z, double joules)
+    {
+        return joules / (MassHandler.getMass(world, x, y, z) * ThermalHandler.getSpecificHeat(world, x, y, z));
     }
 
     /**
