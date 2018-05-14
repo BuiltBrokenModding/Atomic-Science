@@ -225,7 +225,7 @@ public class ThreadThermalAction extends ThreadDataChange
         double deltaTemp = getTemperature(world, heatSource, heatSpreadData); //We assume target is zero relative to source
         if (deltaTemp > 0)
         {
-            double specificHeat = ThermalHandler.getSpecificHeat(world, heatTarget.x, heatTarget.y, heatTarget.z) * 1000;
+            double specificHeat = ThermalHandler.getSpecificHeat(world, heatTarget.x, heatTarget.y, heatTarget.z) * 1000.0;
             double mass = MassHandler.getMass(world, heatTarget.x, heatTarget.y, heatTarget.z);
             int maxHeat = (int) (deltaTemp * specificHeat * mass / 1000.0); //Map stores heat in KJ but equation is in joules
             return Math.min(maxHeat, heat);
@@ -237,7 +237,7 @@ public class ThreadThermalAction extends ThreadDataChange
     {
         if (heatSpreadData.containsKey(pos))
         {
-            return MapHandler.THERMAL_MAP.getTemperature(world, pos.x, pos.y, pos.z, heatSpreadData.get(pos).x * 1000.0); //kj -> j
+            return MapHandler.THERMAL_MAP.getTemperature(world, pos.x, pos.y, pos.z, heatSpreadData.get(pos).x * 1000L); //kj -> j
         }
         return 0;
     }

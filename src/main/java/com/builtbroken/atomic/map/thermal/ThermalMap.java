@@ -14,6 +14,7 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -175,12 +176,12 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * @param z
      * @return
      */
-    public double getJoules(World world, int x, int y, int z)
+    public long getJoules(World world, int x, int y, int z)
     {
-        return getData(world, x, y, z) * 1000; //Map stores heat in kilo-joules
+        return getData(world, x, y, z) * 1000L; //Map stores heat in kilo-joules
     }
 
-    public double getActualJoules(World world, int x, int y, int z)
+    public long getActualJoules(World world, int x, int y, int z)
     {
         return getJoules(world, x, y, z) + getEnvironmentalJoules(world, x, y, z);
     }
@@ -246,9 +247,9 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * @param z     - location
      * @return energy in joules
      */
-    public double getEnvironmentalJoules(World world, int x, int y, int z)
+    public long getEnvironmentalJoules(World world, int x, int y, int z)
     {
-        return getEnvironmentalTemperature(world, x, y, z) * MassHandler.getMass(world, x, y, z) * ThermalHandler.getSpecificHeat(world, x, y, z) * 1000;
+        return ((long) Math.floor(getEnvironmentalTemperature(world, x, y, z) * MassHandler.getMass(world, x, y, z) * ThermalHandler.getSpecificHeat(world, x, y, z))) * 1000L; //x1000 for kj -> j
     }
 
     /**
@@ -270,15 +271,29 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     {
         World world = event.world();
         DataMap map = getMap(world, false);
-        if (world != null && map != null)
+        if (world != null && map != null && map.blockExists(event.x, event.y, event.z))
         {
-            if (map.blockExists(event.x, event.y, event.z) && ThermalHandler.canChangeStates(world, event.x, event.y, event.z))
+            checkForThermalChange(world, event.x, event.y, event.z, event.new_value);
+        }
+    }
+
+    @SubscribeEvent
+    public void onBlockPlaced(PlayerInteractEvent event)
+    {
+        if (!event.world.isRemote && event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+        {
+            checkForThermalChange(event.world, event.x, event.y, event.z, getData(event.world, event.x, event.y, event.z));
+        }
+    }
+
+    protected void checkForThermalChange(World world, int x, int y, int z, int heat)
+    {
+        if (ThermalHandler.canChangeStates(world, x, y, z))
+        {
+            long joules = heat * 1000 + getEnvironmentalJoules(world, x, y, z); //x1000 for kj -> j
+            if (joules > ThermalHandler.energyCostToChangeStates(world, x, y, z))
             {
-                double joules = event.new_value * 1000 + getEnvironmentalJoules(world, event.x, event.y, event.z);
-                if (joules > ThermalHandler.energyCostToChangeStates(world, event.x, event.y, event.z))
-                {
-                    ThermalHandler.changeStates(world, event.x, event.y, event.z);
-                }
+                ThermalHandler.changeStates(world, x, y, z);
             }
         }
     }
