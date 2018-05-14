@@ -2,6 +2,7 @@ package com.builtbroken.atomic.map.thermal;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.lib.MassHandler;
+import com.builtbroken.atomic.lib.thermal.HeatSpreadDirection;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
@@ -133,9 +134,9 @@ public class ThreadThermalAction extends ThreadDataChange
 
                 //Calculate heat pushed from all sides & look for new tiles to path
                 int heatAsPosition = 0;
-                for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+                for (HeatSpreadDirection direction : HeatSpreadDirection.values())
                 {
-                    final DataPos pos = DataPos.get(currentPos, direction);
+                    final DataPos pos = DataPos.get(currentPos.x + direction.offsetX, currentPos.y + direction.offsetY, currentPos.z + direction.offsetZ);
 
                     //Only path tiles in map and in range of source
                     if (inRange(cx, cy, cz, pos.x, pos.y, pos.z, range) && pos.y >= 0 && pos.y < 256)
@@ -147,11 +148,15 @@ public class ThreadThermalAction extends ThreadDataChange
                         else
                         {
                             int heatAtNext = heatSpreadData.get(pos).x;
-                            int heatMoved = getHeatToSpread(map, pos, currentPos, heatAtNext, heatSpreadData);
+                            int heatMoved = getHeatToSpread(map, pos, currentPos, heatAtNext, direction.percentage, heatSpreadData);
                             heatSpreadData.get(pos).y += heatMoved;
                             heatAsPosition += heatMoved;
                             pos.dispose();
                         }
+                    }
+                    else
+                    {
+                        pos.dispose();
                     }
                 }
 
@@ -196,12 +201,12 @@ public class ThreadThermalAction extends ThreadDataChange
      * @param heatSpreadData - data of current heat movement
      * @return heat moved
      */
-    protected int getHeatToSpread(DataMap map, DataPos heatSource, DataPos heatTarget, final int heatToMove, HashMap<DataPos, DataPos> heatSpreadData)
+    protected int getHeatToSpread(DataMap map, DataPos heatSource, DataPos heatTarget, final int heatToMove, final float percentage, HashMap<DataPos, DataPos> heatSpreadData)
     {
         if (map.blockExists(heatTarget.x, heatTarget.y, heatTarget.z))
         {
             //Get heat actual movement (only move 25% of heat)
-            return getHeatSpread(map.getWorld(), heatSource, heatTarget, (int) Math.floor(heatToMove / 7.0), heatSpreadData);
+            return getHeatSpread(map.getWorld(), heatSource, heatTarget, (int) Math.floor(heatToMove * percentage), heatSpreadData);
         }
         return heatToMove;
     }
