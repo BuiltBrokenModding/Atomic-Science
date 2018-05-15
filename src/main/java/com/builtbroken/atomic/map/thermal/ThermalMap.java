@@ -302,7 +302,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
             }
         }
 
-        int vap = ThermalHandler.getVaporRate(world, x, y, z, heat);
+        int vap = ThermalHandler.getVaporRate(world, x, y, z, heat * 1000 + getEnvironmentalJoules(world, x, y, z));
         DataPos pos = DataPos.get(x, y, z);
 
         final int dim = world.provider.dimensionId;
@@ -370,7 +370,12 @@ public class ThermalMap extends MapSystem implements IThermalSystem
                         {
                             if (Math.random() > 0.4)
                             {
-                                PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim, pos.x + r(), pos.y + r(), pos.z + r(), 0, 0, 0, "smoke");
+                                PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim, pos.x + r(), pos.y + 1.1, pos.z + r(), 0, 0, 0, "splash");
+                                PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, pos, 30);
+                            }
+                            else if (Math.random() > 0.4)
+                            {
+                                PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim, pos.x + r(), pos.y + 1.1, pos.z + r(), 0, 0, 0, "bubble");
                                 PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, pos, 30);
                             }
                         }
@@ -392,6 +397,6 @@ public class ThermalMap extends MapSystem implements IThermalSystem
 
     private double r()
     {
-        return Math.random() * 0.5 - Math.random() * 0.5;
+        return 0.5 + Math.random() * 0.5 - Math.random() * 0.5;
     }
 }
