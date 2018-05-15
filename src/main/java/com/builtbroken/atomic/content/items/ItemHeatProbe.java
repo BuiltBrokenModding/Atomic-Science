@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Simple accessor of data in the map
@@ -33,6 +34,13 @@ public class ItemHeatProbe extends Item
     {
         if (!world.isRemote)
         {
+            if (player.isSneaking())
+            {
+                ForgeDirection direction = ForgeDirection.getOrientation(side);
+                x += direction.offsetX;
+                y += direction.offsetY;
+                z += direction.offsetZ;
+            }
             double heat = MapHandler.THERMAL_MAP.getJoules(world, x, y, z);
             double env = MapHandler.THERMAL_MAP.getEnvironmentalJoules(world, x, y, z);
             double temp = MapHandler.THERMAL_MAP.getTemperature(world, x, y, z);
@@ -43,9 +51,15 @@ public class ItemHeatProbe extends Item
             player.addChatComponentMessage(new ChatComponentText("Heat: " + formatTemp(heat)
                             + " + " + formatTemp(env)
                             + "  Temp: " + tempDisplay + "k"
-                            + "  HTM: " + formatTemp(ThermalHandler.energyCostToChangeStates(world, x, y, z))
+                            + "  HTM: " + formatTemp(heat + env)
+                            + "/"
+                            + formatTemp(ThermalHandler.energyCostToChangeStates(world, x, y, z))
                     )
             );
+
+            int vap = ThermalHandler.getVaporRate(world, x, y, z);
+            player.addChatComponentMessage(new ChatComponentText("Vap: " + vap));
+
         }
         return true;
 

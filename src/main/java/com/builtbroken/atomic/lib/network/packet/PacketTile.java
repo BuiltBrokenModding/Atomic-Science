@@ -131,7 +131,7 @@ public class PacketTile extends PacketBase
         }
         else if (AtomicScience.runningAsDev)
         {
-            AtomicScience.logger.error("PacketTile#handle(" + player + ") - block is not loaded for player while handling packet. ", new RuntimeException());
+            AtomicScience.logger.error("PacketTile#handle(" + player + ") - block is not loaded for player while handling packet. ");
         }
     }
 

@@ -1,7 +1,6 @@
 package com.builtbroken.atomic.map.thermal;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.thermal.HeatSpreadDirection;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
@@ -52,7 +51,7 @@ public class ThreadThermalAction extends ThreadDataChange
             int heat = map.getData(dataPos.xi(), dataPos.yi(), dataPos.zi());
 
             //Remove heat
-            heat -= (entry.getValue().x - entry.getValue().y);
+            heat -= Math.max(entry.getValue().x * 0.1, entry.getValue().x - entry.getValue().y);
 
             //Update map
             map.setData(dataPos.xi(), dataPos.yi(), dataPos.zi(), Math.max(0, heat));
@@ -70,7 +69,7 @@ public class ThreadThermalAction extends ThreadDataChange
             int heat = map.getData(dataPos.xi(), dataPos.yi(), dataPos.zi());
 
             //add heat
-            heat += (entry.getValue().x - entry.getValue().y);
+            heat += Math.max(entry.getValue().x * 0.1, entry.getValue().x - entry.getValue().y);
 
             //Update map
             map.setData(dataPos.xi(), dataPos.yi(), dataPos.zi(), Math.max(0, heat));
@@ -127,6 +126,7 @@ public class ThreadThermalAction extends ThreadDataChange
             //Temp list of  node to path next for current position
             ArrayList<DataPos> tempHold = new ArrayList(6);
 
+
             //Breadth first pathfinder
             while (!pathNext.isEmpty())
             {
@@ -134,6 +134,19 @@ public class ThreadThermalAction extends ThreadDataChange
 
                 //Calculate heat pushed from all sides & look for new tiles to path
                 int heatAsPosition = 0;
+
+                double heatRateTotal = 0;
+                for (HeatSpreadDirection direction : HeatSpreadDirection.values())
+                {
+                    int x = currentPos.x + direction.offsetX;
+                    int y = currentPos.y + direction.offsetY;
+                    int z = currentPos.z + direction.offsetZ;
+                    if (inRange(cx, cy, cz, x, y, z, range) && y >= 0 && y < 256)
+                    {
+                        heatRateTotal += ThermalHandler.getHeatTransferRate(map.getWorld(), x, y, z);
+                    }
+                }
+
                 for (HeatSpreadDirection direction : HeatSpreadDirection.values())
                 {
                     final DataPos pos = DataPos.get(currentPos.x + direction.offsetX, currentPos.y + direction.offsetY, currentPos.z + direction.offsetZ);
@@ -143,12 +156,17 @@ public class ThreadThermalAction extends ThreadDataChange
                     {
                         if (!heatSpreadData.containsKey(pos))
                         {
-                            tempHold.add(pos);
+                            if (direction.ordinal() < 6)
+                            {
+                                tempHold.add(pos);
+                            }
                         }
                         else
                         {
                             int heatAtNext = heatSpreadData.get(pos).x;
-                            int heatMoved = getHeatToSpread(map, pos, currentPos, heatAtNext, direction.percentage, heatSpreadData);
+                            double transferRate = ThermalHandler.getHeatTransferRate(map.getWorld(), pos.x, pos.y, pos.z);
+                            double percentage = transferRate / heatRateTotal;
+                            int heatMoved = getHeatToSpread(map, pos, currentPos, heatAtNext, percentage * direction.percentage, heatSpreadData);
                             heatSpreadData.get(pos).y += heatMoved;
                             heatAsPosition += heatMoved;
                             pos.dispose();
@@ -201,7 +219,7 @@ public class ThreadThermalAction extends ThreadDataChange
      * @param heatSpreadData - data of current heat movement
      * @return heat moved
      */
-    protected int getHeatToSpread(DataMap map, DataPos heatSource, DataPos heatTarget, final int heatToMove, final float percentage, HashMap<DataPos, DataPos> heatSpreadData)
+    protected int getHeatToSpread(DataMap map, DataPos heatSource, DataPos heatTarget, final int heatToMove, final double percentage, HashMap<DataPos, DataPos> heatSpreadData)
     {
         if (map.blockExists(heatTarget.x, heatTarget.y, heatTarget.z))
         {
@@ -230,10 +248,10 @@ public class ThreadThermalAction extends ThreadDataChange
         double deltaTemp = getTemperature(world, heatSource, heatSpreadData); //We assume target is zero relative to source
         if (deltaTemp > 0)
         {
-            double specificHeat = ThermalHandler.getSpecificHeat(world, heatTarget.x, heatTarget.y, heatTarget.z) * 1000.0;
-            double mass = MassHandler.getMass(world, heatTarget.x, heatTarget.y, heatTarget.z);
-            int maxHeat = (int) (deltaTemp * specificHeat * mass / 1000.0); //Map stores heat in KJ but equation is in joules
-            return Math.min(maxHeat, heat);
+            double heatMovementRate1 = ThermalHandler.getHeatTransferRate(world, heatTarget.x, heatTarget.y, heatTarget.z) * deltaTemp;
+            //double heatMovementRate2 = ThermalHandler.getHeatTransferRate(world, heatSource.x, heatSource.y, heatSource.z) * deltaTemp;
+            //double heatMovementRate = (heatMovementRate1 + heatMovementRate2) / 2;
+            return (int) Math.min(heatMovementRate1 * 20 * 60, heat);
         }
         return 0;
     }

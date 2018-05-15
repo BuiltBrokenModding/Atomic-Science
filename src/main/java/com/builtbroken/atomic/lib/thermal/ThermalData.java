@@ -10,10 +10,13 @@ import net.minecraft.block.Block;
  */
 public class ThermalData
 {
-    /** Rate of heat movement, heat J/kgK (joules / kilo-grams kelvin) */
+    /** Rate at which heat can move through a block */
+    public float heatMovementRate;
+
+    /** Rate of heat movement, heat J/g K (joules / grams kelvin) */
     public float specificHeat;
 
-    /** heat of fusion or vaporization, heat J/kgK (joules / kilo-grams kelvin) */
+    /** heat of fusion or vaporization, heat J/g K (joules / grams kelvin) */
     public float changeStateHeat;
 
     /** Temperature to change state, kelvin */
@@ -22,8 +25,9 @@ public class ThermalData
     public Block changeBlock;
     public int changeMeta;
 
-    public ThermalData(float specificHeat, float changeStateHeat, float changeStateTemperature, Block changeBlock, int meta)
+    public ThermalData(float heatMovementRate, float specificHeat, float changeStateHeat, float changeStateTemperature, Block changeBlock, int meta)
     {
+        this.heatMovementRate = heatMovementRate;
         this.specificHeat = specificHeat;
         this.changeStateHeat = changeStateHeat;
         this.changeStateTemperature = changeStateTemperature;
@@ -31,17 +35,17 @@ public class ThermalData
         this.changeMeta = meta;
     }
 
-    public double energyToChangeStates(int mass)
+    public long energyToChangeStates(float mass)
     {
-        return mass * changeStateHeat * 1000; //x1000 for kj -> j
+        return (long) (mass * changeStateHeat * 1000L); //x1000 for kg to g
     }
 
-    public double energyForTempChange(int mass, float tempDelta)
+    public long energyForTempChange(float mass, float tempDelta)
     {
-        return mass * specificHeat * tempDelta * 1000; //x1000 for kj -> j
+        return (long) (mass * specificHeat * tempDelta * 1000L); //x1000 for kg to g
     }
 
-    public double energyToGetToStateChange(int mass)
+    public double energyToGetToStateChange(float mass)
     {
         return energyForTempChange(mass, changeStateTemperature);
     }

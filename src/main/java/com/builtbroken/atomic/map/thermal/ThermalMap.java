@@ -4,11 +4,14 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import com.builtbroken.atomic.lib.MassHandler;
+import com.builtbroken.atomic.lib.network.netty.PacketSystem;
+import com.builtbroken.atomic.lib.network.packet.client.PacketSpawnParticle;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.MapSystem;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataMap;
+import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -17,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -30,6 +34,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
 {
     /** List of thermal sources in the world */
     private HashMap<IHeatSource, ThermalSourceWrapper> thermalSourceMap = new HashMap();
+    private HashMap<Integer, HashSet<DataPos>> steamSources = new HashMap();
 
     public ThermalMap()
     {
@@ -296,6 +301,32 @@ public class ThermalMap extends MapSystem implements IThermalSystem
                 ThermalHandler.changeStates(world, x, y, z);
             }
         }
+
+        int vap = ThermalHandler.getVaporRate(world, x, y, z, heat);
+        DataPos pos = DataPos.get(x, y, z);
+
+        final int dim = world.provider.dimensionId;
+        if (!steamSources.containsKey(dim))
+        {
+            steamSources.put(dim, new HashSet());
+        }
+
+        if (vap > 0)
+        {
+            if (!steamSources.get(dim).contains(pos))
+            {
+                steamSources.get(dim).add(pos);
+            }
+            else
+            {
+                pos.dispose();
+            }
+        }
+        if (!steamSources.get(dim).contains(pos))
+        {
+            steamSources.remove(pos);
+            pos.dispose();
+        }
     }
 
     @SubscribeEvent
@@ -315,5 +346,52 @@ public class ThermalMap extends MapSystem implements IThermalSystem
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onWorldTick(TickEvent.WorldTickEvent event)
+    {
+        if (event.phase == TickEvent.Phase.END)
+        {
+            final World world = event.world;
+            final int dim = world.provider.dimensionId;
+
+            if (steamSources.containsKey(dim))
+            {
+                HashSet<DataPos> steamPositions = steamSources.get(dim);
+                Iterator<DataPos> it = steamPositions.iterator();
+                while (it.hasNext())
+                {
+                    DataPos pos = it.next();
+                    if (world.blockExists(pos.x, pos.y, pos.z))
+                    {
+                        int vap = ThermalHandler.getVaporRate(world, pos.x, pos.y, pos.z);
+                        if (vap > 0)
+                        {
+                            if (Math.random() > 0.4)
+                            {
+                                PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim, pos.x + r(), pos.y + r(), pos.z + r(), 0, 0, 0, "smoke");
+                                PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, pos, 30);
+                            }
+                        }
+                        else
+                        {
+                            it.remove();
+                            pos.dispose();
+                        }
+                    }
+                    else
+                    {
+                        it.remove();
+                        pos.dispose();
+                    }
+                }
+            }
+        }
+    }
+
+    private double r()
+    {
+        return Math.random() * 0.5 - Math.random() * 0.5;
     }
 }

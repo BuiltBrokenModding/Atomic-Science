@@ -118,4 +118,9 @@ public class CommonProxy implements IGuiHandler
     {
         return Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
     }
+
+    public void spawnParticle(String particle, double x, double y, double z, double vx, double vy, double vz)
+    {
+
+    }
 }

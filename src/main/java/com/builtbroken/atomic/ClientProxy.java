@@ -1,6 +1,7 @@
 package com.builtbroken.atomic;
 
 import com.builtbroken.atomic.content.ASClientReg;
+import net.minecraft.client.Minecraft;
 
 public class ClientProxy extends CommonProxy
 {
@@ -26,5 +27,13 @@ public class ClientProxy extends CommonProxy
     public void init()
     {
         super.init();
+    }
+
+    public void spawnParticle(String particle, double x, double y, double z, double vx, double vy, double vz)
+    {
+        if(Minecraft.getMinecraft().theWorld != null)
+        {
+            Minecraft.getMinecraft().theWorld.spawnParticle(particle, x, y, z, vx, vy, vz);
+        }
     }
 }

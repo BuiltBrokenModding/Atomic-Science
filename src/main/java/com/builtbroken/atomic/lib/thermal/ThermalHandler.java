@@ -1,9 +1,12 @@
 package com.builtbroken.atomic.lib.thermal;
 
+import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
+import com.builtbroken.atomic.map.MapHandler;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -19,20 +22,23 @@ public class ThermalHandler
 
     public static void init()
     {
-        setValue(Blocks.water, 4.187f, 2257, 373.15f);
-        setValue(Blocks.ice, 2.108f, 334, 273.15f, Blocks.water, 0);
-        setValue(Blocks.air, 0.718f, -1, -1);
+        setValue(Blocks.water, 0.58f, 4.187f, 2257, 373.15f);
+        setValue(Blocks.ice, 2.18f, 2.108f, 334, 273.15f, Blocks.water, 0);
+        setValue(Blocks.air, 0.024f, 0.718f, -1, -1);
+        setValue(Blocks.iron_block, 55f, 0.444f, -1, 1811.15f);
+        setValue(Blocks.gold_block, 315f, 0.129f, -1, 1337.15f);
         //Melting point of stone is 1473.15 Kelvin
+        //http://www.physicsclassroom.com/class/thermalP/Lesson-1/Rates-of-Heat-Transfer
     }
 
-    public static void setValue(Block block, float specificHeat, float changeHeat, float changeTemp)
+    public static void setValue(Block block, float rate, float specificHeat, float changeHeat, float changeTemp)
     {
-        setValue(block, specificHeat, changeHeat, changeTemp, null, 0);
+        setValue(block, rate, specificHeat, changeHeat, changeTemp, null, 0);
     }
 
-    public static void setValue(Block block, float specificHeat, float changeHeat, float changeTemp, Block changeBlock, int changeMeta)
+    public static void setValue(Block block, float rate, float specificHeat, float changeHeat, float changeTemp, Block changeBlock, int changeMeta)
     {
-        blockThermalDataMap.put(block, new ThermalData(specificHeat, changeHeat, changeTemp, changeBlock, changeMeta));
+        blockThermalDataMap.put(block, new ThermalData(rate, specificHeat, changeHeat, changeTemp, changeBlock, changeMeta));
     }
 
     public static ThermalData getThermalData(World world, int x, int y, int z)
@@ -78,7 +84,7 @@ public class ThermalHandler
         ThermalData data = getThermalData(world, x, y, z);
         if (data != null)
         {
-            int mass = MassHandler.getMass(world, x, y, z);
+            float mass = MassHandler.getMass(world, x, y, z);
             return (long) (data.energyToChangeStates(mass) + data.energyToGetToStateChange(mass));
         }
         return 0;
@@ -101,7 +107,22 @@ public class ThermalHandler
         {
             return data.specificHeat;
         }
-        return 1;
+        return 0.2f;
+    }
+
+    public static double getHeatTransferRate(World world, int x, int y, int z)
+    {
+        ThermalData data = getThermalData(world, x, y, z);
+        if (data != null)
+        {
+            return data.heatMovementRate;
+        }
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if(tile instanceof IHeatSource)
+        {
+            return 1000;
+        }
+        return 0.1;
     }
 
     public static void changeStates(World world, int x, int y, int z)
@@ -109,10 +130,54 @@ public class ThermalHandler
         ThermalData data = getThermalData(world, x, y, z);
         if (data != null && data.changeBlock != null)
         {
-            int mass = MassHandler.getMass(world, x, y, z);
+            float mass = MassHandler.getMass(world, x, y, z);
             double stateChangeEnergy = data.energyToChangeStates(mass);
             double energyToGetToChange = data.energyToGetToStateChange(mass);
             PlacementQueue.queue(new ThermalPlacement(world, x, y, z, data, (long) (stateChangeEnergy + energyToGetToChange)).delay(1 + (int) (Math.random() * 10)));
         }
+    }
+
+    /**
+     * Get amount of vapor produced per tick in mb
+     *
+     * @param world - location
+     * @param x     - location
+     * @param y     - location
+     * @param z     - location
+     * @return vapor in mb
+     */
+    public static int getVaporRate(World world, int x, int y, int z)
+    {
+        return getVaporRate(world, x, y, z, MapHandler.THERMAL_MAP.getActualJoules(world, x, y, z));
+    }
+
+    /**
+     * Get amount of vapor produced per tick in mb
+     *
+     * @param world - location
+     * @param x     - location
+     * @param y     - location
+     * @param z     - location
+     * @return vapor in mb
+     */
+    public static int getVaporRate(World world, int x, int y, int z, long heat)
+    {
+        Block block = world.getBlock(x, y, z);
+        double tempature = MapHandler.THERMAL_MAP.getTemperature(world, x, y, z, heat);
+        if (block == Blocks.water)
+        {
+            if (tempature > 373)
+            {
+                return (int) Math.ceil(120 * (tempature / 373));
+            }
+        }
+        else if (block == Blocks.flowing_water)
+        {
+            if (tempature > 373)
+            {
+                return (int) Math.ceil(40 * (tempature / 373));
+            }
+        }
+        return 0;
     }
 }

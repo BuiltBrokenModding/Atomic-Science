@@ -3,22 +3,22 @@ package com.builtbroken.atomic.lib.thermal;
 public enum HeatSpreadDirection
 {
     /** -Y */
-    DOWN(0, -1, 0, .12f),
+    DOWN(0, -1, 0, .16f),
 
     /** +Y */
-    UP(0, 1, 0, .12f),
+    UP(0, 1, 0, .16f),
 
     /** -Z */
-    NORTH(0, 0, -1, .12f),
+    NORTH(0, 0, -1, .16f),
 
     /** +Z */
-    SOUTH(0, 0, 1, .12f),
+    SOUTH(0, 0, 1, .16f),
 
     /** -X */
-    WEST(-1, 0, 0, .12f),
+    WEST(-1, 0, 0, .16f),
 
     /** +X */
-    EAST(1, 0, 0, .12f),
+    EAST(1, 0, 0, .16f),
 
     NE(1, 0, -1, 0.02f),
     NW(-1, 0, -1, 0.02f),
