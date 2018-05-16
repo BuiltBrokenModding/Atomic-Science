@@ -38,7 +38,7 @@ public class ASClientReg
             {
                 if (!fluid.makeBlock && fluid.texture != null)
                 {
-                    event.map.registerIcon(AtomicScience.PREFIX + fluid.texture); //TODO add flowing
+                    event.map.registerIcon(AtomicScience.PREFIX + "fluids/" + fluid.texture); //TODO add flowing
                 }
             }
         }
@@ -53,7 +53,7 @@ public class ASClientReg
             {
                 if (!fluid.makeBlock && fluid.texture != null)
                 {
-                    IIcon icon1 = event.map.getTextureExtry(AtomicScience.PREFIX + fluid.texture); //TODO add flowing
+                    IIcon icon1 = event.map.getTextureExtry(AtomicScience.PREFIX + "fluids/" + fluid.texture); //TODO add flowing
                     if (icon1 != null)
                     {
                         fluid.fluid.setIcons(icon1, icon1);

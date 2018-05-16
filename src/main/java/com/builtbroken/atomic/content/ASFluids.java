@@ -15,7 +15,7 @@ public enum ASFluids
     STRANGE_MATTER("strange_matter", false),
     DEUTERIUM("deuterium", false),
     TOXIC_WASTE("toxic_waste", true),
-    STEAM("steam", false);
+    STEAM("steam", "steam", false);
     //PLASMA("steam", false) TODO see if there is a use for plasma as a fluid
 
     public final String id;
