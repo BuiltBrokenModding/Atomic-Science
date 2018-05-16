@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.steam;
+package com.builtbroken.atomic.content.tiles.steam;
 
 import com.builtbroken.atomic.content.tiles.TileEntityMachine;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
@@ -12,9 +12,9 @@ import net.minecraft.init.Blocks;
  */
 public class TileEntitySteamInput extends TileEntityMachine
 {
-    boolean checkSteam = true;
-    int steam = 0;
-    DataPos topMostBlock = DataPos.get(0, 0, 0);
+    protected boolean checkSteam = true;
+    protected int steam = 0;
+    protected final DataPos topMostBlock = DataPos.get(0, 0, 0);
 
     @Override
     protected void update(int ticks)
@@ -28,17 +28,24 @@ public class TileEntitySteamInput extends TileEntityMachine
         //TODO produce steam effect on top of water
     }
 
+    public int getSteamGeneration()
+    {
+        return steam;
+    }
+
     protected void pathDown()
     {
         steam = 0;
-        topMostBlock = null;
         topMostBlock.y = -1;
 
         int y = yCoord - 1;
         Block block;
         do
         {
+            //Get block
             block = worldObj.getBlock(xCoord, y, zCoord);
+
+            //Check if block can produce vapor
             if (block == Blocks.water || block == Blocks.flowing_water)
             {
                 if (topMostBlock.y == -1)
@@ -47,13 +54,14 @@ public class TileEntitySteamInput extends TileEntityMachine
                     topMostBlock.y = y;
                     topMostBlock.z = zCoord;
                 }
-                steam += ThermalHandler.getVaporRate(worldObj, xCoord, yCoord, zCoord);
+                steam += ThermalHandler.getVaporRate(worldObj, xCoord, y, zCoord);
             }
+            //Stop if we hit a none-air block
             else if (!block.isAir(worldObj, xCoord, y, zCoord)) //TODO ignore blocks with small colliders
             {
                 break;
             }
         }
-        while (y > 0);
+        while (y-- > 0);
     }
 }

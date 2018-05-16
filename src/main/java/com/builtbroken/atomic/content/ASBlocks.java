@@ -3,6 +3,8 @@ package com.builtbroken.atomic.content;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.blocks.BlockRadioactiveDirt;
 import com.builtbroken.atomic.content.blocks.BlockRadioactiveGrass;
+import com.builtbroken.atomic.content.tiles.steam.funnel.BlockSteamFunnel;
+import com.builtbroken.atomic.content.tiles.steam.funnel.TileEntitySteamFunnel;
 import com.builtbroken.atomic.content.tiles.reactor.fission.BlockReactorCell;
 import com.builtbroken.atomic.content.tiles.reactor.fission.TileEntityReactorCell;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -18,6 +20,7 @@ public class ASBlocks
     public static Block blockRadioactiveGrass;
 
     public static Block blockReactorCell;
+    public static Block blockSteamFunnel;
 
     public static void register()
     {
@@ -25,7 +28,9 @@ public class ASBlocks
         GameRegistry.registerBlock(blockRadioactiveGrass = new BlockRadioactiveGrass(), "radioactive_grass");
 
         GameRegistry.registerBlock(blockReactorCell = new BlockReactorCell(), "reactor_cell");
+        GameRegistry.registerBlock(blockSteamFunnel = new BlockSteamFunnel(), "steam_funnel");
 
         GameRegistry.registerTileEntity(TileEntityReactorCell.class, AtomicScience.PREFIX + "reactor_cell");
+        GameRegistry.registerTileEntity(TileEntitySteamFunnel.class, AtomicScience.PREFIX + "steam_funnel");
     }
 }
