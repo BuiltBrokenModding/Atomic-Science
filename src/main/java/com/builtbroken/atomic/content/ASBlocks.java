@@ -3,10 +3,12 @@ package com.builtbroken.atomic.content;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.blocks.BlockRadioactiveDirt;
 import com.builtbroken.atomic.content.blocks.BlockRadioactiveGrass;
-import com.builtbroken.atomic.content.tiles.steam.funnel.BlockSteamFunnel;
-import com.builtbroken.atomic.content.tiles.steam.funnel.TileEntitySteamFunnel;
 import com.builtbroken.atomic.content.tiles.reactor.fission.BlockReactorCell;
 import com.builtbroken.atomic.content.tiles.reactor.fission.TileEntityReactorCell;
+import com.builtbroken.atomic.content.tiles.steam.funnel.BlockSteamFunnel;
+import com.builtbroken.atomic.content.tiles.steam.funnel.TileEntitySteamFunnel;
+import com.builtbroken.atomic.content.tiles.steam.generator.BlockSteamGenerator;
+import com.builtbroken.atomic.content.tiles.steam.generator.TileEntitySteamGenerator;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 
@@ -21,6 +23,7 @@ public class ASBlocks
 
     public static Block blockReactorCell;
     public static Block blockSteamFunnel;
+    public static Block blockSteamTurbine;
 
     public static void register()
     {
@@ -29,8 +32,10 @@ public class ASBlocks
 
         GameRegistry.registerBlock(blockReactorCell = new BlockReactorCell(), "reactor_cell");
         GameRegistry.registerBlock(blockSteamFunnel = new BlockSteamFunnel(), "steam_funnel");
+        GameRegistry.registerBlock(blockSteamTurbine = new BlockSteamGenerator(), "steam_turbine");
 
         GameRegistry.registerTileEntity(TileEntityReactorCell.class, AtomicScience.PREFIX + "reactor_cell");
         GameRegistry.registerTileEntity(TileEntitySteamFunnel.class, AtomicScience.PREFIX + "steam_funnel");
+        GameRegistry.registerTileEntity(TileEntitySteamGenerator.class, AtomicScience.PREFIX + "steam_turbine");
     }
 }

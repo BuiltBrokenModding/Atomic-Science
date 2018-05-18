@@ -6,5 +6,5 @@ package com.builtbroken.atomic.proxy.eu;
  */
 public class PowerHandlerEU
 {
-   
+
 }

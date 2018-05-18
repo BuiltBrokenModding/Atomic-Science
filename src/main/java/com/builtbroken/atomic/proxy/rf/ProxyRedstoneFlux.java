@@ -5,6 +5,7 @@ import com.builtbroken.atomic.content.tiles.steam.generator.BlockSteamGenerator;
 import com.builtbroken.atomic.content.tiles.steam.generator.TileEntitySteamGenRF;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import com.builtbroken.atomic.proxy.ContentProxy;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Proxy for Redstone Flux API
@@ -33,5 +34,6 @@ public class ProxyRedstoneFlux extends ContentProxy
         AtomicScience.logger.info(this + " Loaded");
         PowerSystem.register(new PowerHandlerRF());
         BlockSteamGenerator.rfFactory = () -> new TileEntitySteamGenRF();
+        GameRegistry.registerTileEntity(TileEntitySteamGenRF.class, AtomicScience.PREFIX + "steam_turbine_rf");
     }
 }
