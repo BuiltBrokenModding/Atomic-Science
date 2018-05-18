@@ -48,7 +48,7 @@ public class ClientProxy extends CommonProxy
             {
                 if(ConfigClient.BOILING_EFFECT)
                 {
-                    int count = Integer.parseInt(particle.split(";")[1]);
+                    int count = Integer.parseInt(particle.split(";")[1]); //TODO move to packet
 
                     for (int i = 0; i < count; i++)
                     {
