@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.lib.thermal;
 
 import com.builtbroken.atomic.api.thermal.IHeatSource;
+import com.builtbroken.atomic.config.ConfigPower;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
 import com.builtbroken.atomic.map.MapHandler;
@@ -118,7 +119,7 @@ public class ThermalHandler
             return data.heatMovementRate;
         }
         TileEntity tile = world.getTileEntity(x, y, z);
-        if(tile instanceof IHeatSource)
+        if (tile instanceof IHeatSource)
         {
             return 1000;
         }
@@ -163,19 +164,19 @@ public class ThermalHandler
     public static int getVaporRate(World world, int x, int y, int z, long heat)
     {
         Block block = world.getBlock(x, y, z);
-        double tempature = MapHandler.THERMAL_MAP.getTemperature(world, x, y, z, heat);
+        double temperature = MapHandler.THERMAL_MAP.getTemperature(world, x, y, z, heat);
         if (block == Blocks.water)
         {
-            if (tempature > 373)
+            if (temperature > 373)
             {
-                return (int) Math.ceil(120 * (tempature / 373));
+                return (int) Math.min(ConfigPower.WATER_VAPOR_MAX_RATE, Math.ceil(ConfigPower.WATER_VAPOR_RATE * (temperature / 373)));
             }
         }
         else if (block == Blocks.flowing_water)
         {
-            if (tempature > 373)
+            if (temperature > 373)
             {
-                return (int) Math.ceil(40 * (tempature / 373));
+                return (int) Math.min(ConfigPower.WATER_VAPOR_MAX_RATE, Math.ceil(ConfigPower.WATER_FLOWING_VAPOR_RATE * (temperature / 373)));
             }
         }
         return 0;

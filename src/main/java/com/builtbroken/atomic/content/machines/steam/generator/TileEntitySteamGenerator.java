@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines.steam.generator;
 
+import com.builtbroken.atomic.config.ConfigPower;
 import com.builtbroken.atomic.content.machines.steam.TileEntitySteamInput;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,7 +29,7 @@ public class TileEntitySteamGenerator extends TileEntitySteamInput
 
     public int getPowerToOutput()
     {
-        return 0;
+        return getSteamGeneration() * ConfigPower.STEAM_TO_UE_POWER;
     }
 
     //-------------------------------------------------
