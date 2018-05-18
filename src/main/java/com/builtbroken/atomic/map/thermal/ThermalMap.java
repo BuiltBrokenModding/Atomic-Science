@@ -368,16 +368,12 @@ public class ThermalMap extends MapSystem implements IThermalSystem
                         int vap = ThermalHandler.getVaporRate(world, pos.x, pos.y, pos.z);
                         if (vap > 0)
                         {
-                            if (Math.random() > 0.4)
-                            {
-                                PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim, pos.x + r(), pos.y + 1.1, pos.z + r(), 0, 0, 0, "splash");
-                                PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, pos, 30);
-                            }
-                            else if (Math.random() > 0.4)
-                            {
-                                PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim, pos.x + r(), pos.y + 1.1, pos.z + r(), 0, 0, 0, "bubble");
-                                PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, pos, 30);
-                            }
+                            int count = Math.min(10, Math.min(3, vap / 100));
+                            PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim,
+                                    pos.x, pos.y, pos.z,
+                                    0, 0, 0,
+                                    "boiling;" + count);
+                            PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, pos, 30);
                         }
                         else
                         {
@@ -393,10 +389,5 @@ public class ThermalMap extends MapSystem implements IThermalSystem
                 }
             }
         }
-    }
-
-    private double r()
-    {
-        return 0.5 + Math.random() * 0.5 - Math.random() * 0.5;
     }
 }
