@@ -12,6 +12,9 @@ import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
+import com.builtbroken.atomic.proxy.ContentProxy;
+import com.builtbroken.atomic.proxy.ProxyLoader;
+import com.builtbroken.atomic.proxy.rf.ProxyRedstoneFlux;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -51,6 +54,8 @@ public class AtomicScience
 
     public static final String MODEL_DIRECTORY = "models/";
 
+    public final String ENERGY_HANDLER_INTERFACE = "cofh.api.energy.IEnergyReceiver";
+
     @Mod.Instance(DOMAIN)
     public static AtomicScience INSTANCE;
 
@@ -60,22 +65,27 @@ public class AtomicScience
 
     public static CreativeTabs creativeTab;
 
-    @SidedProxy(clientSide = "com.builtbroken.atomic.ClientProxy", serverSide = "com.builtbroken.atomic.CommonProxy")
-    public static CommonProxy proxy;
+    @SidedProxy(clientSide = "com.builtbroken.atomic.ClientProxy", serverSide = "com.builtbroken.atomic.ServerProxy")
+    public static CommonProxy sideProxy;
 
-    public static Configuration config;
+    public static Configuration mainConfig;
+    public static ProxyLoader proxyLoader;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        config = new Configuration(event.getSuggestedConfigurationFile(), "/bbm/Atomic_Science.cfg");
+        mainConfig = new Configuration(event.getSuggestedConfigurationFile(), "/bbm/AtomicScience/Main.cfg");
 
         //Register handlers
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, sideProxy);
         FMLCommonHandler.instance().bus().register(new PlacementQueue());
         MapHandler.register();
         ThermalHandler.init();
         MassHandler.init();
+
+        proxyLoader = new ProxyLoader("AS");
+        proxyLoader.add(sideProxy);
+        proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
 
         //Create tab
         creativeTab = new CreativeTabs(DOMAIN)
@@ -94,20 +104,23 @@ public class AtomicScience
         ASBlocks.register();
 
         //Proxy
-        proxy.preInit();
+        proxyLoader.preInit();
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent evt)
     {
         PacketSystem.register();
-        proxy.init();
+
+        //Proxy
+        proxyLoader.init();
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        proxy.postInit();
+        //Proxy
+        proxyLoader.postInit();
     }
 
     @Mod.EventHandler

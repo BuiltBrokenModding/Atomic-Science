@@ -65,7 +65,7 @@ public class PacketSpawnParticle implements IPacket
     {
        if(player != null && player.worldObj.provider.dimensionId == dim)
        {
-           AtomicScience.proxy.spawnParticle(particle, x, y, z, vx, vy, vz);
+           AtomicScience.sideProxy.spawnParticle(particle, x, y, z, vx, vy, vz);
        }
     }
 }

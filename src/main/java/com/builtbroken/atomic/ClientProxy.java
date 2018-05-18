@@ -18,6 +18,11 @@ public class ClientProxy extends CommonProxy
     /** Client Cache: Amount of rads the player has taken */
     public static float PREV_RAD_PLAYER = 0;
 
+    public ClientProxy()
+    {
+        super("ClientProxy");
+    }
+
     @Override
     public void preInit()
     {

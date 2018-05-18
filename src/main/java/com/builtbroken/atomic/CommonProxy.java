@@ -1,6 +1,7 @@
 package com.builtbroken.atomic;
 
 import com.builtbroken.atomic.lib.gui.IGuiTile;
+import com.builtbroken.atomic.proxy.ContentProxy;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -11,22 +12,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
-public class CommonProxy implements IGuiHandler
+public abstract class CommonProxy extends ContentProxy implements IGuiHandler
 {
-
-    public void preInit()
+    public CommonProxy(String name)
     {
-
-    }
-
-    public void init()
-    {
-
-    }
-
-    public void postInit()
-    {
-
+        super(name);
     }
 
     @Override
