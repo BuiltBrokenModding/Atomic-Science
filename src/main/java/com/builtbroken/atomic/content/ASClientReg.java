@@ -4,6 +4,8 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.effects.client.RenderRadOverlay;
 import com.builtbroken.atomic.content.machines.reactor.fission.TESRReactorCell;
 import com.builtbroken.atomic.content.machines.reactor.fission.TileEntityReactorCell;
+import com.builtbroken.atomic.content.machines.steam.generator.TESRSteamGenerator;
+import com.builtbroken.atomic.content.machines.steam.generator.TileEntitySteamGenerator;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -27,6 +29,7 @@ public class ASClientReg
         MinecraftForge.EVENT_BUS.register(RenderRadOverlay.INSTANCE);
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorCell.class, new TESRReactorCell());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySteamGenerator.class, new TESRSteamGenerator());
     }
 
     @SubscribeEvent

@@ -9,9 +9,11 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
@@ -41,6 +43,21 @@ public class BlockSteamGenerator extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xHit, float yHit, float zHit)
     {
+        if (player.getHeldItem() != null && player.getHeldItem().getItem() == Items.stick)
+        {
+            if (!world.isRemote)
+            {
+                TileEntity tile = world.getTileEntity(x, y, z);
+                if (tile instanceof TileEntitySteamGenerator)
+                {
+                    player.addChatComponentMessage(new ChatComponentText("Steam: "
+                            + ((TileEntitySteamGenerator) tile).getSteamGeneration()
+                            + "mb Power: "
+                            + ((TileEntitySteamGenerator) tile).getPowerToOutput() + "watts"));
+                }
+            }
+            return true;
+        }
         return false;
     }
 
@@ -90,5 +107,33 @@ public class BlockSteamGenerator extends BlockContainer
             return euFactory != null ? euFactory.get() : new TileEntitySteamGenerator();
         }
         return new TileEntitySteamGenerator();
+    }
+
+    //-----------------------------------------------
+    //-------- Properties ---------------------------
+    //----------------------------------------------
+
+    @Override
+    public boolean renderAsNormalBlock()
+    {
+        return false;
+    }
+
+    @Override
+    public int getRenderType()
+    {
+        return -1;
+    }
+
+    @Override
+    public boolean isOpaqueCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isNormalCube()
+    {
+        return false;
     }
 }

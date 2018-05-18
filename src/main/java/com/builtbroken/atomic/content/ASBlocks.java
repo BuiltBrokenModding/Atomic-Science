@@ -8,6 +8,7 @@ import com.builtbroken.atomic.content.machines.reactor.fission.TileEntityReactor
 import com.builtbroken.atomic.content.machines.steam.funnel.BlockSteamFunnel;
 import com.builtbroken.atomic.content.machines.steam.funnel.TileEntitySteamFunnel;
 import com.builtbroken.atomic.content.machines.steam.generator.BlockSteamGenerator;
+import com.builtbroken.atomic.content.machines.steam.generator.ItemBlockSteamGenerator;
 import com.builtbroken.atomic.content.machines.steam.generator.TileEntitySteamGenerator;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
@@ -32,7 +33,7 @@ public class ASBlocks
 
         GameRegistry.registerBlock(blockReactorCell = new BlockReactorCell(), "reactor_cell");
         GameRegistry.registerBlock(blockSteamFunnel = new BlockSteamFunnel(), "steam_funnel");
-        GameRegistry.registerBlock(blockSteamTurbine = new BlockSteamGenerator(), "steam_turbine");
+        GameRegistry.registerBlock(blockSteamTurbine = new BlockSteamGenerator(), ItemBlockSteamGenerator.class, "steam_turbine");
 
         GameRegistry.registerTileEntity(TileEntityReactorCell.class, AtomicScience.PREFIX + "reactor_cell");
         GameRegistry.registerTileEntity(TileEntitySteamFunnel.class, AtomicScience.PREFIX + "steam_funnel");

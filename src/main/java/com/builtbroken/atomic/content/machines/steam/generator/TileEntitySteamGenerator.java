@@ -14,6 +14,8 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public class TileEntitySteamGenerator extends TileEntitySteamInput
 {
+    public float _clientTurbineRotation = 0;
+
     @Override
     public void firstTick()
     {
@@ -25,6 +27,11 @@ public class TileEntitySteamGenerator extends TileEntitySteamInput
     {
         super.update(ticks);
         PowerSystem.outputPower(worldObj, xCoord, yCoord, zCoord, ForgeDirection.UP, getPowerToOutput(), true);
+    }
+
+    public float getRotationSpeed()
+    {
+        return (getSteamGeneration() / 1000f) * 10;
     }
 
     public int getPowerToOutput()
