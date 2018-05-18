@@ -14,6 +14,7 @@ import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataMap;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
+import com.builtbroken.jlib.lang.StringHelpers;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Handles heat in the map
@@ -36,6 +38,8 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     /** List of thermal sources in the world */
     private HashMap<IHeatSource, ThermalSourceWrapper> thermalSourceMap = new HashMap();
     private HashMap<Integer, HashSet<DataPos>> steamSources = new HashMap();
+
+    public ConcurrentLinkedQueue<ThermalMapChange> dataFromThread = new ConcurrentLinkedQueue();
 
     public ThermalMap()
     {
@@ -352,7 +356,22 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event)
     {
-        if (event.phase == TickEvent.Phase.END)
+        if (event.phase == TickEvent.Phase.START)
+        {
+            long time = System.currentTimeMillis();
+            while (!dataFromThread.isEmpty() && System.currentTimeMillis() - time < 10)
+            {
+                ThermalMapChange change = dataFromThread.poll();
+                if (change != null)
+                {
+                    long t = System.nanoTime();
+                    change.pop();
+                    t = System.nanoTime() - t;
+                    AtomicScience.logger.info("ThermalMap: Dumped data from thread to map. Data size: " + change.size + " Time: " + StringHelpers.formatNanoTime(t));
+                }
+            }
+        }
+        else if (event.phase == TickEvent.Phase.END)
         {
             final World world = event.world;
             final int dim = world.provider.dimensionId;
@@ -369,9 +388,9 @@ public class ThermalMap extends MapSystem implements IThermalSystem
                         int vap = ThermalHandler.getVaporRate(world, pos.x, pos.y, pos.z);
                         if (vap > 0)
                         {
-                            int count = Math.min(10, Math.min(3, vap / 100));
+                            int count = Math.min(10, Math.max(1, vap / 100));
                             PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim,
-                                    pos.x, pos.y, pos.z,
+                                    pos.x + 0.5, pos.y + 0.5, pos.z + 0.5,
                                     0, 0, 0,
                                     "boiling;" + count);
                             PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, pos, 30);

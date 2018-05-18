@@ -44,41 +44,8 @@ public class ThreadThermalAction extends ThreadDataChange
         HashMap<DataPos, DataPos> old_data = calculateHeatSpread(map, cx, cy, cz, change.old_value);
         HashMap<DataPos, DataPos> new_data = calculateHeatSpread(map, cx, cy, cz, change.new_value);
 
-        //Clear old data
-        for (Map.Entry<DataPos, DataPos> entry : old_data.entrySet())
-        {
-            final DataPos dataPos = entry.getKey();
-            int heat = map.getData(dataPos.xi(), dataPos.yi(), dataPos.zi());
-
-            //Remove heat
-            heat -= Math.max(entry.getValue().x * 0.1, entry.getValue().x - entry.getValue().y);
-
-            //Update map
-            map.setData(dataPos.xi(), dataPos.yi(), dataPos.zi(), Math.max(0, heat));
-
-            //Recycle for next path
-            dataPos.dispose();
-            entry.getValue().dispose();
-        }
-        old_data.clear();
-
-        //Add new data
-        for (Map.Entry<DataPos, DataPos> entry : new_data.entrySet())
-        {
-            final DataPos dataPos = entry.getKey();
-            int heat = map.getData(dataPos.xi(), dataPos.yi(), dataPos.zi());
-
-            //add heat
-            heat += Math.max(entry.getValue().x * 0.1, entry.getValue().x - entry.getValue().y);
-
-            //Update map
-            map.setData(dataPos.xi(), dataPos.yi(), dataPos.zi(), Math.max(0, heat));
-
-            //Recycle for next path
-            dataPos.dispose();
-            entry.getValue().dispose();
-        }
-        new_data.clear();
+        ThermalMapChange mapChange = new ThermalMapChange(map, old_data, new_data);
+        MapHandler.THERMAL_MAP.dataFromThread.add(mapChange);
     }
 
     /**
@@ -264,4 +231,5 @@ public class ThreadThermalAction extends ThreadDataChange
         }
         return 0;
     }
+
 }

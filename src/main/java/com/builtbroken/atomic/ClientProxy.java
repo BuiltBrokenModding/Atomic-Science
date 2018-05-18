@@ -59,16 +59,16 @@ public class ClientProxy extends CommonProxy
                         if (block != null && block.isAir(Minecraft.getMinecraft().theWorld, xi, yi + 1, zi))
                         {
                             Minecraft.getMinecraft().theWorld.spawnParticle("splash",
-                                    x + 0.5 + r(0.4),
-                                    y + 1.1 + r(0.1),
-                                    z + 0.5 + r(0.4),
+                                    x + r(0.4),
+                                    y + 0.6 + r(0.1),
+                                    z + r(0.4),
                                     0, 0, 0);
                         }
 
                         Minecraft.getMinecraft().theWorld.spawnParticle("bubble",
-                                x + 0.5 + r(0.5),
-                                y + 0.5 + r(0.5),
-                                z + 0.5 + r(0.5),
+                                x + r(0.5),
+                                y + r(0.5),
+                                z + r(0.5),
                                 r(0.1) - r(0.1),
                                 r(0.1),
                                 r(0.1) - r(0.1));
