@@ -1,9 +1,8 @@
-package com.builtbroken.atomic.proxy.rf;
+package com.builtbroken.atomic.proxy.eu;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.tiles.steam.generator.BlockSteamGenerator;
-import com.builtbroken.atomic.content.tiles.steam.generator.TileEntitySteamGenRF;
-import com.builtbroken.atomic.lib.power.PowerSystem;
+import com.builtbroken.atomic.content.tiles.steam.generator.TileEntitySteamGenEU;
 import com.builtbroken.atomic.proxy.ContentProxy;
 
 /**
@@ -14,11 +13,11 @@ import com.builtbroken.atomic.proxy.ContentProxy;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/17/2018.
  */
-public class ProxyRedstoneFlux extends ContentProxy
+public class ProxyElectricalUnits extends ContentProxy
 {
-    public ProxyRedstoneFlux()
+    public ProxyElectricalUnits()
     {
-        super("RF Power API");
+        super("EU Power API");
     }
 
     @Override
@@ -31,7 +30,7 @@ public class ProxyRedstoneFlux extends ContentProxy
     public void preInit()
     {
         AtomicScience.logger.info(this + " Loaded");
-        PowerSystem.register(new PowerHandlerRF());
-        BlockSteamGenerator.rfFactory = () -> new TileEntitySteamGenRF();
+        //PowerSystem.register(new PowerHandlerEU());
+        BlockSteamGenerator.euFactory = () -> new TileEntitySteamGenEU();
     }
 }

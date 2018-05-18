@@ -6,11 +6,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Simple block that converts steam flow into power
@@ -20,6 +26,9 @@ import net.minecraft.world.World;
  */
 public class BlockSteamGenerator extends BlockContainer
 {
+    public static Supplier<TileEntitySteamGenerator> rfFactory;
+    public static Supplier<TileEntitySteamGenerator> euFactory;
+
     public BlockSteamGenerator()
     {
         super(Material.iron);
@@ -53,8 +62,33 @@ public class BlockSteamGenerator extends BlockContainer
     }
 
     @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+    public void getSubBlocks(Item item, CreativeTabs tab, List list)
     {
+        if (tab == getCreativeTabToDisplayOn())
+        {
+            list.add(new ItemStack(item, 1, 0));
+            if (rfFactory != null)
+            {
+                list.add(new ItemStack(item, 1, 1));
+            }
+            if (euFactory != null)
+            {
+                list.add(new ItemStack(item, 1, 2));
+            }
+        }
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World world, int meta)
+    {
+        if (meta == 1)
+        {
+            return rfFactory != null ? rfFactory.get() : new TileEntitySteamGenerator();
+        }
+        else if (meta == 2)
+        {
+            return euFactory != null ? euFactory.get() : new TileEntitySteamGenerator();
+        }
         return new TileEntitySteamGenerator();
     }
 }
