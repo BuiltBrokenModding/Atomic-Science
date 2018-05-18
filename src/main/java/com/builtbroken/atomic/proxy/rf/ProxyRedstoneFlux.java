@@ -1,8 +1,8 @@
 package com.builtbroken.atomic.proxy.rf;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.content.tiles.steam.generator.BlockSteamGenerator;
-import com.builtbroken.atomic.content.tiles.steam.generator.TileEntitySteamGenRF;
+import com.builtbroken.atomic.content.machines.steam.generator.BlockSteamGenerator;
+import com.builtbroken.atomic.content.machines.steam.generator.TileEntitySteamGenRF;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import com.builtbroken.atomic.proxy.ContentProxy;
 import cpw.mods.fml.common.registry.GameRegistry;

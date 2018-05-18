@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.tiles;
+package com.builtbroken.atomic.content.machines;
 
 import com.builtbroken.atomic.lib.network.IPacket;
 import com.builtbroken.atomic.lib.network.IPacketIDReceiver;

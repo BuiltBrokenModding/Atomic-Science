@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.tiles.steam;
+package com.builtbroken.atomic.content.machines.steam;
 
 import com.builtbroken.atomic.content.ASFluids;
 import net.minecraft.tileentity.TileEntity;

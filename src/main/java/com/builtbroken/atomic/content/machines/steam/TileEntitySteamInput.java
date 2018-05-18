@@ -1,6 +1,6 @@
-package com.builtbroken.atomic.content.tiles.steam;
+package com.builtbroken.atomic.content.machines.steam;
 
-import com.builtbroken.atomic.content.tiles.TileEntityMachine;
+import com.builtbroken.atomic.content.machines.TileEntityMachine;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.data.DataPos;
 import net.minecraft.block.Block;

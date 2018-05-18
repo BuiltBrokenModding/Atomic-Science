@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.tiles.steam.funnel;
+package com.builtbroken.atomic.content.machines.steam.funnel;
 
 import com.builtbroken.atomic.AtomicScience;
 import cpw.mods.fml.relauncher.Side;

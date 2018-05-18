@@ -1,10 +1,10 @@
-package com.builtbroken.atomic.content.tiles.reactor.fission;
+package com.builtbroken.atomic.content.machines.reactor.fission;
 
 import com.builtbroken.atomic.api.item.IFuelRodItem;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.reactor.IFissionReactor;
 import com.builtbroken.atomic.content.ASBlocks;
-import com.builtbroken.atomic.content.tiles.TileEntityInventoryMachine;
+import com.builtbroken.atomic.content.machines.TileEntityInventoryMachine;
 import com.builtbroken.atomic.map.MapHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;

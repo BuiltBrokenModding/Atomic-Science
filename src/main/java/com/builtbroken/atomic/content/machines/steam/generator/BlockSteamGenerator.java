@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.tiles.steam.generator;
+package com.builtbroken.atomic.content.machines.steam.generator;
 
 import com.builtbroken.atomic.AtomicScience;
 import cpw.mods.fml.relauncher.Side;

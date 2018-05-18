@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.tiles;
+package com.builtbroken.atomic.content.machines;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

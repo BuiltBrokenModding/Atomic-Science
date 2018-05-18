@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.tiles.steam.generator;
+package com.builtbroken.atomic.content.machines.steam.generator;
 
 /**
  * Version of the steam generator that outputs RF power

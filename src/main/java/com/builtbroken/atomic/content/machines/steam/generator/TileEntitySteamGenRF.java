@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.tiles.steam.generator;
+package com.builtbroken.atomic.content.machines.steam.generator;
 
 import cofh.api.energy.IEnergyConnection;
 import net.minecraftforge.common.util.ForgeDirection;

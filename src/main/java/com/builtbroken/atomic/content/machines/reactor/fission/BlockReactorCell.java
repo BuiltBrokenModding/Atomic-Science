@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.tiles.reactor.fission;
+package com.builtbroken.atomic.content.machines.reactor.fission;
 
 import com.builtbroken.atomic.AtomicScience;
 import cpw.mods.fml.relauncher.Side;

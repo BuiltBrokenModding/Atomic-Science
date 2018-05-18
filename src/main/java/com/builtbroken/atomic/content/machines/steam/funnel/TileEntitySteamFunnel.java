@@ -1,8 +1,8 @@
-package com.builtbroken.atomic.content.tiles.steam.funnel;
+package com.builtbroken.atomic.content.machines.steam.funnel;
 
 import com.builtbroken.atomic.content.ASFluids;
-import com.builtbroken.atomic.content.tiles.steam.SteamTank;
-import com.builtbroken.atomic.content.tiles.steam.TileEntitySteamInput;
+import com.builtbroken.atomic.content.machines.steam.SteamTank;
+import com.builtbroken.atomic.content.machines.steam.TileEntitySteamInput;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;

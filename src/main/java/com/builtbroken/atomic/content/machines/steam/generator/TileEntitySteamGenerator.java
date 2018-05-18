@@ -1,6 +1,6 @@
-package com.builtbroken.atomic.content.tiles.steam.generator;
+package com.builtbroken.atomic.content.machines.steam.generator;
 
-import com.builtbroken.atomic.content.tiles.steam.TileEntitySteamInput;
+import com.builtbroken.atomic.content.machines.steam.TileEntitySteamInput;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
