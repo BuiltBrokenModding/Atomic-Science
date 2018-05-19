@@ -69,11 +69,8 @@ public class TESRSteamGenerator extends TileEntitySpecialRenderer
     {
         if (tile instanceof TileEntitySteamGenerator)
         {
-            float rotation = ((TileEntitySteamGenerator) tile)._clientTurbineRotation;
-            rotation += ((TileEntitySteamGenerator) tile).getRotationSpeed() * deltaTick;
-            //rotation += 5;
-            rotation %= 360;
-            ((TileEntitySteamGenerator) tile)._clientTurbineRotation = rotation;
+            TileEntitySteamGenerator generator = ((TileEntitySteamGenerator) tile);
+            float rotation = generator.rotate(deltaTick);
 
             GL11.glPushMatrix();
             GL11.glTranslated(x + 0.5, y + 0.1, z + 0.5);
