@@ -4,6 +4,8 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.blocks.BlockRadioactiveDirt;
 import com.builtbroken.atomic.content.blocks.BlockRadioactiveGrass;
 import com.builtbroken.atomic.content.blocks.BlockUraniumOre;
+import com.builtbroken.atomic.content.machines.processing.extractor.BlockChemExtractor;
+import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.reactor.fission.BlockReactorCell;
 import com.builtbroken.atomic.content.machines.reactor.fission.TileEntityReactorCell;
 import com.builtbroken.atomic.content.machines.steam.funnel.BlockSteamFunnel;
@@ -29,6 +31,8 @@ public class ASBlocks
 
     public static Block blockUraniumOre;
 
+    public static Block blockChemExtractor;
+
     public static void register()
     {
         GameRegistry.registerBlock(blockRadioactiveDirt = new BlockRadioactiveDirt(), "radioactive_dirt");
@@ -36,11 +40,15 @@ public class ASBlocks
         GameRegistry.registerBlock(blockUraniumOre = new BlockUraniumOre(), "uranium_ore");
 
         GameRegistry.registerBlock(blockReactorCell = new BlockReactorCell(), "reactor_cell");
-        GameRegistry.registerBlock(blockSteamFunnel = new BlockSteamFunnel(), "steam_funnel");
-        GameRegistry.registerBlock(blockSteamTurbine = new BlockSteamGenerator(), ItemBlockSteamGenerator.class, "steam_turbine");
-
         GameRegistry.registerTileEntity(TileEntityReactorCell.class, AtomicScience.PREFIX + "reactor_cell");
+
+        GameRegistry.registerBlock(blockSteamFunnel = new BlockSteamFunnel(), "steam_funnel");
         GameRegistry.registerTileEntity(TileEntitySteamFunnel.class, AtomicScience.PREFIX + "steam_funnel");
+
+        GameRegistry.registerBlock(blockSteamTurbine = new BlockSteamGenerator(), ItemBlockSteamGenerator.class, "steam_turbine");
         GameRegistry.registerTileEntity(TileEntitySteamGenerator.class, AtomicScience.PREFIX + "steam_turbine");
+
+        GameRegistry.registerBlock(blockChemExtractor = new BlockChemExtractor(), "chem_extractor");
+        GameRegistry.registerTileEntity(TileEntityChemExtractor.class, AtomicScience.PREFIX + "chem_extractor");
     }
 }

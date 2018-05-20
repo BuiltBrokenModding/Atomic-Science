@@ -10,11 +10,11 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -27,8 +27,8 @@ import java.util.Map.Entry;
 
 public class GuiContainerBase<H> extends GuiContainer
 {
-    public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.GUI_TEXTURE_DIRECTORY  + "gui_components.png");
-    public static final ResourceLocation GUI_MC_BASE = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.GUI_TEXTURE_DIRECTORY  + "mc_base.png");
+    public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.GUI_TEXTURE_DIRECTORY + "gui_components.png");
+    public static final ResourceLocation GUI_MC_BASE = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.GUI_TEXTURE_DIRECTORY + "mc_base.png");
 
     public ResourceLocation baseTexture;
 
@@ -42,7 +42,6 @@ public class GuiContainerBase<H> extends GuiContainer
 
     protected int containerWidth;
     protected int containerHeight;
-    private float lastChangeFrameTime;
 
     /** Debug toogle to render text for the ID and inventory ID for a slot */
     public boolean renderSlotDebugIDs = false;
@@ -52,14 +51,9 @@ public class GuiContainerBase<H> extends GuiContainer
 
     public GuiContainerBase(Container container, H host)
     {
-        this(container);
-        this.host = host;
-    }
-
-    public GuiContainerBase(Container container)
-    {
         super(container);
         this.baseTexture = GUI_MC_BASE;
+        this.host = host;
     }
 
     @Override
@@ -69,11 +63,6 @@ public class GuiContainerBase<H> extends GuiContainer
         this.buttonList.clear();
         this.fields.clear();
         this.tooltips.clear();
-    }
-
-    public void actionPerformedCallback(GuiButton button)
-    {
-        actionPerformed(button);
     }
 
     /**
@@ -286,51 +275,6 @@ public class GuiContainerBase<H> extends GuiContainer
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.drawTexturedModalRect(this.containerWidth, this.containerHeight, 0, 0, this.xSize, this.ySize);
-    }
-
-    //TODO update and docs
-    protected void drawBulb(int x, int y, boolean isOn)
-    {
-        this.mc.renderEngine.bindTexture(this.baseTexture);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        if (isOn)
-        {
-            this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 161, 0, 6, 6);
-
-        }
-        else
-        {
-            this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 161, 4, 6, 6);
-        }
-    }
-
-    //TODO update and docs
-    protected void drawSlot(int x, int y, ItemStack itemStack)
-    {
-        this.mc.renderEngine.bindTexture(this.baseTexture);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 0, 0, 18, 18);
-
-        if (itemStack != null)
-        {
-            this.drawItemStack(itemStack, this.containerWidth + x, this.containerHeight + y);
-        }
-    }
-
-    //TODO update and docs
-    protected void drawItemStack(ItemStack itemStack, int x, int y)
-    {
-        x += 1;
-        y += 1;
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-
-        // drawTexturedModelRectFromIcon
-        // GL11.glEnable(GL11.GL_BLEND);
-        // GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        itemRender.renderItemAndEffectIntoGUI(fontRendererObj, this.mc.renderEngine, itemStack, x, y);
-        // GL11.glDisable(GL11.GL_BLEND);
     }
 
     //TODO update and docs
@@ -600,25 +544,34 @@ public class GuiContainerBase<H> extends GuiContainer
         this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 49 * 2, this.meterWidth, this.meterHeight);
     }
 
-    //TODO update and docs
-    protected void drawMeter(int x, int y, float scale, FluidStack liquidStack)
+
+    protected void drawFluidTank(int x, int y, IFluidTank tank)
     {
+        //Get data
+        final float scale = tank.getFluidAmount() / (float) tank.getCapacity();
+        final FluidStack fluidStack = tank.getFluid();
+
+        //Bing texture
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
 
+        //Reset color
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        /** Draw the background meter. */
+        //Draw background
         this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 0, meterWidth, meterHeight);
 
-        /** Draw liquid/gas inside */
-        if (liquidStack != null)
+        //Draw fluid
+        if (fluidStack != null)
         {
-            this.drawFluid(this.containerWidth + x, this.containerHeight + y, -10, 1, 12, (int) ((meterHeight - 1) * scale), liquidStack);
+            this.drawFluid(this.containerWidth + x, this.containerHeight + y, -10, 1, 12, (int) ((meterHeight - 1) * scale), fluidStack);
         }
 
-        /** Draw measurement lines */
+        //Draw lines
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
         this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 49 * 2, meterWidth, meterHeight);
+
+        //Reset color
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     public void drawTooltip(int x, int y, String... tooltips)
@@ -632,50 +585,43 @@ public class GuiContainerBase<H> extends GuiContainer
         drawHoveringText(tooltips, x, y, fontRendererObj);
     }
 
-    protected void drawFluid(int j, int k, int line, int col, int width, int squaled, FluidStack liquid)
+    protected void drawFluid(int x, int y, int line, int col, int width, int drawSize, FluidStack fluidStack)
     {
-        squaled -= 1;
-
-        if (liquid == null)
+        if (fluidStack != null && fluidStack.getFluid() != null)
         {
-            return;
-        }
+            drawSize -= 1; //TODO why?
 
-        int start = 0;
+            IIcon fluidIcon = null;
+            Fluid fluid = fluidStack.getFluid();
 
-        IIcon liquidIcon = null;
-        Fluid fluid = liquid.getFluid();
-
-        if (fluid != null && fluid.getStillIcon() != null)
-        {
-            liquidIcon = fluid.getStillIcon();
-        }
-
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(FMLClientHandler.instance().getClient().renderEngine.getResourceLocation(fluid.getSpriteNumber()));
-
-        if (liquidIcon != null)
-        {
-            while (true)
+            if (fluid != null && fluid.getStillIcon() != null)
             {
-                int x;
+                fluidIcon = fluid.getStillIcon();
+            }
 
-                if (squaled > 16)
-                {
-                    x = 16;
-                    squaled -= 16;
-                }
-                else
-                {
-                    x = squaled;
-                    squaled = 0;
-                }
+            //Find texture for fluid
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(FMLClientHandler.instance().getClient().renderEngine.getResourceLocation(fluid.getSpriteNumber()));
 
-                this.drawTexturedModelRectFromIcon(j + col, k + line + 58 - x - start, liquidIcon, width, 16 - (16 - x));
-                start = start + 16;
-
-                if (x == 0 || squaled == 0)
+            final int textureSize = 16;
+            int start = 0;
+            if (fluidIcon != null)
+            {
+                int renderY = textureSize;
+                while (renderY != 0 && drawSize != 0)
                 {
-                    break;
+                    if (drawSize > textureSize)
+                    {
+                        renderY = textureSize;
+                        drawSize -= textureSize;
+                    }
+                    else
+                    {
+                        renderY = drawSize;
+                        drawSize = 0;
+                    }
+
+                    this.drawTexturedModelRectFromIcon(x + col, y + line + 58 - renderY - start, fluidIcon, width, textureSize - (textureSize - renderY));
+                    start = start + textureSize;
                 }
             }
         }

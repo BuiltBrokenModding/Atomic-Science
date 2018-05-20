@@ -5,8 +5,10 @@ import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.TileEntityPowerInvMachine;
+import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -16,12 +18,13 @@ import net.minecraftforge.fluids.*;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/19/2018.
  */
-public class TileEntityChemExtractor extends TileEntityPowerInvMachine implements IFluidHandler
+public class TileEntityChemExtractor extends TileEntityPowerInvMachine implements IFluidHandler, IGuiTile
 {
     public static final int SLOT_FLUID_INPUT = 0;
     public static final int SLOT_ITEM_INPUT = 1;
     public static final int SLOT_ITEM_OUTPUT = 2;
     public static final int SLOT_BATTERY = 3;
+    public static final int SLOT_FLUID_OUTPUT = 4;
 
     public static int PROCESSING_TIME = 100;
     public static int ENERGY_PER_TICK = 100;
@@ -77,8 +80,8 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
                 FluidStack fluidStack = fluidContainerItem.getFluid(itemStack);
                 if (fluidStack != null && fluidStack.getFluid() == FluidRegistry.WATER)
                 {
-                    fluidStack = fluidContainerItem.drain(itemStack, inputTank.getCapacity() - inputTank.getFluidAmount(), false);
-                    int amount = inputTank.fill(fluidStack, true);
+                    fluidStack = fluidContainerItem.drain(itemStack, getInputTank().getCapacity() - getInputTank().getFluidAmount(), false);
+                    int amount = getInputTank().fill(fluidStack, true);
                     fluidContainerItem.drain(itemStack, amount, true);
                     setInventorySlotContents(SLOT_FLUID_INPUT, itemStack);
                 }
@@ -87,9 +90,9 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
             {
                 FluidStack stack = FluidContainerRegistry.getFluidForFilledItem(itemStack);
                 if (stack != null && stack.getFluid() == FluidRegistry.WATER
-                        && canOutputFluid(inputTank, FluidRegistry.WATER, stack.amount))
+                        && canOutputFluid(getInputTank(), FluidRegistry.WATER, stack.amount))
                 {
-                    inputTank.fill(stack, true);
+                    getInputTank().fill(stack, true);
                     decrStackSize(SLOT_FLUID_INPUT, 1);
 
                     ItemStack container = itemStack.getItem().getContainerItem(itemStack);
@@ -140,16 +143,16 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         //TODO move recipe to object
 
         if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem()
-                && hasInputFluid(inputTank, FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE)
-                && canOutputFluid(outputTank, ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE))
+                && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE)
+                && canOutputFluid(getOutputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE))
 
         {
             ItemStack outputStack = new ItemStack(ASItems.itemYellowCake, ConfigRecipe.YELLOW_CAKE_PER_ORE, 0);
             if (hasSpaceInOutput(outputStack))
             {
                 decrStackSize(SLOT_ITEM_INPUT, 1);
-                inputTank.drain(ConfigRecipe.WATER_USED_YELLOW_CAKE, true);
-                outputTank.fill(new FluidStack(ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE), true);
+                getInputTank().drain(ConfigRecipe.WATER_USED_YELLOW_CAKE, true);
+                getOutputTank().fill(new FluidStack(ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE), true);
                 addToOutput(outputStack);
             }
         }
@@ -231,12 +234,12 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
     {
         if (resource != null && canFill(from, resource.getFluid()))
         {
-            Fluid fluid = inputTank.getFluid() != null ? inputTank.getFluid().getFluid() : null;
-            int amount = inputTank.getFluidAmount();
+            Fluid fluid = getInputTank().getFluid() != null ? getInputTank().getFluid().getFluid() : null;
+            int amount = getInputTank().getFluidAmount();
 
-            int fill = inputTank.fill(resource, doFill);
+            int fill = getInputTank().fill(resource, doFill);
 
-            if (doFill && inputTank.getFluid() != null && (fluid != inputTank.getFluid().getFluid()) || inputTank.getFluidAmount() != amount)
+            if (doFill && getInputTank().getFluid() != null && (fluid != getInputTank().getFluid().getFluid()) || getInputTank().getFluidAmount() != amount)
             {
                 checkRecipe();
             }
@@ -249,7 +252,7 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
     {
-        if (outputTank.getFluid() != null && resource.getFluid() == outputTank.getFluid().getFluid())
+        if (getOutputTank().getFluid() != null && resource.getFluid() == getOutputTank().getFluid().getFluid())
         {
             return drain(from, resource.amount, doDrain);
         }
@@ -259,7 +262,7 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
     {
-        return outputTank.drain(maxDrain, doDrain);
+        return getOutputTank().drain(maxDrain, doDrain);
     }
 
     @Override
@@ -271,18 +274,40 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
     @Override
     public boolean canDrain(ForgeDirection from, Fluid fluid)
     {
-        return fluid == null || outputTank.getFluid() != null && outputTank.getFluid().getFluid() == fluid;
+        return fluid == null || getOutputTank().getFluid() != null && getOutputTank().getFluid().getFluid() == fluid;
     }
 
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from)
     {
-        return new FluidTankInfo[]{inputTank.getInfo(), outputTank.getInfo()};
+        return new FluidTankInfo[]{getInputTank().getInfo(), getOutputTank().getInfo()};
     }
 
     @Override
     public int getEnergyUsage()
     {
         return ENERGY_PER_TICK;
+    }
+
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player)
+    {
+        return new ContainerExtractor(player, this);
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player)
+    {
+        return new GuiExtractor(player, this);
+    }
+
+    public FluidTank getInputTank()
+    {
+        return inputTank;
+    }
+
+    public FluidTank getOutputTank()
+    {
+        return outputTank;
     }
 }

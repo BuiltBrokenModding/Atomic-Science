@@ -11,19 +11,41 @@ import java.util.Collection;
  */
 public interface IPlayerUsing
 {
-    Collection<EntityPlayer> getPlayersUsing();
+    /**
+     * Collection of player's using the GUI
+     * <p>
+     * May include players previously using the GUI but have
+     * not been cleared from the list yet.
+     *
+     * @return collection of players
+     */
+    Collection<EntityPlayer> getPlayersUsingGui();
 
-    default boolean addPlayerToUseList(EntityPlayer player)
+    /**
+     * Called when the GUI container has been opened
+     *
+     * @param player - player to add
+     */
+    default boolean addPlayerUsingGui(EntityPlayer player)
     {
-        if(getPlayersUsing() != null && !getPlayersUsing().contains(player))
+        if (!getPlayersUsingGui().contains(player))
         {
-            return getPlayersUsing().add(player);
+            return getPlayersUsingGui().add(player);
         }
-        return false;
+        return true; //Already added
     }
 
-    default boolean removePlayerToUseList(EntityPlayer player)
+    /**
+     * Called when the GUI container has been closed
+     *
+     * @param player - player to remove
+     */
+    default boolean removePlayerUsingGui(EntityPlayer player)
     {
-        return getPlayersUsing().remove(player);
+        if (getPlayersUsingGui().contains(player))
+        {
+            return getPlayersUsingGui().remove(player);
+        }
+        return true; //Already removed
     }
 }

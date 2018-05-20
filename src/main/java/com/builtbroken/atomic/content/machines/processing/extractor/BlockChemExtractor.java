@@ -46,7 +46,11 @@ public class BlockChemExtractor extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xHit, float yHit, float zHit)
     {
-        return false;
+        if (!world.isRemote)
+        {
+            player.openGui(AtomicScience.INSTANCE, 0, world, x, y, z);
+        }
+        return true;
     }
 
     //-----------------------------------------------

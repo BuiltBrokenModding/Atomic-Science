@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines;
 
+import com.builtbroken.atomic.lib.gui.IPlayerUsing;
 import com.builtbroken.atomic.lib.network.IPacket;
 import com.builtbroken.atomic.lib.network.IPacketIDReceiver;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
@@ -11,18 +12,21 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public abstract class TileEntityMachine extends TileEntity implements IPacketIDReceiver, IPosWorld
+public abstract class TileEntityMachine extends TileEntity implements IPacketIDReceiver, IPosWorld, IPlayerUsing
 {
     public static final int DESC_PACKET_ID = -1;
 
     private int _ticks = 0;
     private boolean _syncClientNextTick = true;
+
+    private ArrayList<EntityPlayer> playersUsingGUI = new ArrayList();
 
     //-----------------------------------------------
     //--------- Update methods ----------------------
@@ -144,6 +148,12 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
     protected boolean isClient()
     {
         return worldObj != null && worldObj.isRemote;
+    }
+
+    @Override
+    public Collection<EntityPlayer> getPlayersUsingGui()
+    {
+        return playersUsingGUI;
     }
 
     //-----------------------------------------------

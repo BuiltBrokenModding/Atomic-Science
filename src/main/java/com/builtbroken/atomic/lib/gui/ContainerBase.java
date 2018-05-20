@@ -42,7 +42,7 @@ public class ContainerBase<H extends Object> extends Container
         this.player = player;
         if (node instanceof IPlayerUsing)
         {
-            ((IPlayerUsing) node).addPlayerToUseList(player);
+            ((IPlayerUsing) node).addPlayerUsingGui(player);
         }
     }
 
@@ -51,7 +51,7 @@ public class ContainerBase<H extends Object> extends Container
     {
         if (host instanceof IPlayerUsing && entityplayer.openContainer != this)
         {
-            ((IPlayerUsing) host).removePlayerToUseList(entityplayer);
+            ((IPlayerUsing) host).removePlayerUsingGui(entityplayer);
         }
         super.onContainerClosed(entityplayer);
     }
@@ -65,7 +65,7 @@ public class ContainerBase<H extends Object> extends Container
     {
         if (this.inventory instanceof IPlayerUsing)
         {
-            ((IPlayerUsing) this.inventory).getPlayersUsing().add(player);
+            ((IPlayerUsing) this.inventory).addPlayerUsingGui(player);
         }
 
         //Inventory
