@@ -1,8 +1,6 @@
 package com.builtbroken.atomic.content.machines.power;
 
 import com.builtbroken.atomic.content.machines.TileEntityPowerInvMachine;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,18 +63,7 @@ public class PowerBusNetwork
         outputs.clear();
         for (TileEntityPowerBus bus : wires)
         {
-            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-            {
-                int x = bus.xCoord + direction.offsetX;
-                int y = bus.yCoord + direction.offsetY;
-                int z = bus.zCoord + direction.offsetZ;
-
-                TileEntity tile = bus.world().getTileEntity(x, y, z);
-                if (tile instanceof TileEntityPowerInvMachine)
-                {
-                    addConnection((TileEntityPowerInvMachine) tile);
-                }
-            }
+            bus.checkConnections(true);
         }
     }
 
@@ -86,5 +73,15 @@ public class PowerBusNetwork
         {
             outputs.add(machine);
         }
+    }
+
+    public void removeConnection(TileEntityPowerInvMachine oldConnection)
+    {
+        outputs.remove(oldConnection);
+    }
+
+    public void addWire(TileEntityPowerBus wire)
+    {
+        wire.setNetwork(this);
     }
 }

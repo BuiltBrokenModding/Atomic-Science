@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public class PowerHandlerRF extends PowerHandler
 {
-    float conversationRateToRF = 1;
+    public static int conversationRateToRF = 1;
 
     @Override
     public boolean canHandle(ForgeDirection side, TileEntity tile)
@@ -41,13 +41,13 @@ public class PowerHandlerRF extends PowerHandler
         return 0;
     }
 
-    public int toPower(int fromUE)
+    public static int toPower(int fromUE)
     {
-        return (int) Math.floor(fromUE * conversationRateToRF);
+        return fromUE * conversationRateToRF;
     }
 
-    public int toUE(int fromPower)
+    public static int toUE(int fromPower)
     {
-        return (int) Math.floor(fromPower / conversationRateToRF);
+        return fromPower / conversationRateToRF;
     }
 }

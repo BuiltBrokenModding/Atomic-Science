@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.proxy.rf;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.content.machines.power.BlockPowerBus;
 import com.builtbroken.atomic.content.machines.steam.generator.BlockSteamGenerator;
 import com.builtbroken.atomic.content.machines.steam.generator.TileEntitySteamGenRF;
 import com.builtbroken.atomic.lib.power.PowerSystem;
@@ -33,7 +34,11 @@ public class ProxyRedstoneFlux extends ContentProxy
     {
         AtomicScience.logger.info(this + " Loaded");
         PowerSystem.register(new PowerHandlerRF());
+
         BlockSteamGenerator.rfFactory = () -> new TileEntitySteamGenRF();
         GameRegistry.registerTileEntity(TileEntitySteamGenRF.class, AtomicScience.PREFIX + "steam_turbine_rf");
+
+        BlockPowerBus.rfFactory = () -> new TileEntityPowerBusRF();
+        GameRegistry.registerTileEntity(TileEntityPowerBusRF.class, AtomicScience.PREFIX + "power_bus_rf");
     }
 }
