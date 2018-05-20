@@ -56,9 +56,16 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         {
             fillTank();
             drainBattery();
-            if (processing && processTimer++ >= PROCESSING_TIME)
+            if (processing)
             {
-                doProcess();
+                if (processTimer++ >= PROCESSING_TIME)
+                {
+                    doProcess();
+                    checkRecipe();
+                }
+            }
+            else if (ticks % 20 == 0)
+            {
                 checkRecipe();
             }
             outputFluids();
@@ -75,6 +82,9 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         super.onSlotStackChanged(prev, stack, slot);
     }
 
+    /**
+     * Pulls fluids from container and insert into tank
+     */
     protected void fillTank()
     {
         ItemStack itemStack = getStackInSlot(SLOT_FLUID_INPUT);
@@ -125,7 +135,46 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
 
     protected void outputFluids()
     {
-        //TODO export fluid from output tank
+        ItemStack itemStack = getStackInSlot(SLOT_FLUID_OUTPUT);
+        if (itemStack != null && outputTank.getFluid() != null)
+        {
+            if (itemStack.getItem() instanceof IFluidContainerItem)
+            {
+                IFluidContainerItem fluidContainerItem = (IFluidContainerItem) itemStack.getItem();
+                FluidStack fluidStack = fluidContainerItem.getFluid(itemStack);
+                if (fluidStack == null || fluidStack.getFluid() == outputTank.getFluid().getFluid())
+                {
+                    int filled = fluidContainerItem.fill(itemStack, getOutputTank().getFluid(), true);
+                    getOutputTank().drain(filled, true);
+                }
+            }
+            else if (FluidContainerRegistry.isEmptyContainer(itemStack))
+            {
+                ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(getOutputTank().getFluid(), itemStack);
+                if (filledContainer != null)
+                {
+                    FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
+                    if (fluidStack.getFluid() == outputTank.getFluid().getFluid() && fluidStack.amount <= outputTank.getFluidAmount())
+                    {
+                        outputTank.drain(fluidStack.amount, true);
+                        decrStackSize(SLOT_FLUID_OUTPUT, 1);
+
+                        if (getStackInSlot(SLOT_FLUID_OUTPUT) == null)
+                        {
+                            setInventorySlotContents(SLOT_FLUID_OUTPUT, filledContainer);
+                        }
+                        else
+                        {
+                            //TODO add fluid container output slot
+                            EntityItem item = new EntityItem(worldObj);
+                            item.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
+                            item.setEntityItemStack(filledContainer);
+                            worldObj.spawnEntityInWorld(item);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected void drainBattery()
@@ -170,7 +219,7 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         FluidStack inputFluidStack = tank.getFluid();
         return inputFluidStack != null
                 && inputFluidStack.getFluid() == fluid
-                && inputFluidStack.amount > amount;
+                && inputFluidStack.amount >= amount;
     }
 
     protected boolean canOutputFluid(IFluidTank tank, Fluid fluid, int amount)
@@ -181,42 +230,42 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
                 && (tank.getCapacity() - outputFluidStack.amount) >= amount;
     }
 
-    protected boolean hasSpaceInOutput(ItemStack stack)
+    protected boolean hasSpaceInOutput(ItemStack insertStack)
     {
-        ItemStack outputSlot = getStackInSlot(SLOT_ITEM_OUTPUT);
-        if (outputSlot == null)
+        ItemStack stackInSlot = getStackInSlot(SLOT_ITEM_OUTPUT);
+        if (stackInSlot == null)
         {
             return true;
         }
-        else if (ItemStack.areItemStacksEqual(outputSlot, stack))
+        else if (stackInSlot.getItem() == insertStack.getItem() && stackInSlot.getItemDamage() == insertStack.getItemDamage())
         {
-            return getInventoryStackLimit() - outputSlot.stackSize >= stack.stackSize;
+            return getInventoryStackLimit() - stackInSlot.stackSize >= insertStack.stackSize;
         }
         return false;
     }
 
-    protected void addToOutput(ItemStack stack)
+    protected void addToOutput(ItemStack insertStack)
     {
-        ItemStack outputSlot = getStackInSlot(SLOT_ITEM_OUTPUT);
-        if (outputSlot == null)
+        ItemStack stackInSlot = getStackInSlot(SLOT_ITEM_OUTPUT);
+        if (stackInSlot == null)
         {
-            setInventorySlotContents(SLOT_ITEM_OUTPUT, stack);
+            setInventorySlotContents(SLOT_ITEM_OUTPUT, insertStack);
         }
-        else if (ItemStack.areItemStacksEqual(outputSlot, stack))
+        else if (stackInSlot.getItem() == insertStack.getItem() && stackInSlot.getItemDamage() == insertStack.getItemDamage())
         {
-            outputSlot.stackSize += stack.stackSize;
-            outputSlot.stackSize = Math.min(outputSlot.stackSize, outputSlot.getMaxStackSize());
-            outputSlot.stackSize = Math.min(outputSlot.stackSize, getInventoryStackLimit());
+            stackInSlot.stackSize += insertStack.stackSize;
+            stackInSlot.stackSize = Math.min(stackInSlot.stackSize, stackInSlot.getMaxStackSize());
+            stackInSlot.stackSize = Math.min(stackInSlot.stackSize, getInventoryStackLimit());
         }
     }
-
 
     protected boolean canProcess()
     {
         ItemStack stack = getStackInSlot(SLOT_ITEM_INPUT);
         if (stack != null)
         {
-            return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem();  //TODO move recipe to object
+            return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem()
+                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE);  //TODO move recipe to object
         }
         return false;
     }
