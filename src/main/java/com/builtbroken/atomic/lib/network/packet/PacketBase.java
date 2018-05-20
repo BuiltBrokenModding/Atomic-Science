@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.FluidTank;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -99,6 +100,10 @@ public class PacketBase implements IPacket
         else if (object instanceof ItemStack)
         {
             ByteBufUtils.writeItemStack(buffer, (ItemStack) object);
+        }
+        else if (object instanceof FluidTank)
+        {
+            ByteBufUtils.writeTag(buffer, ((FluidTank) object).writeToNBT(new NBTTagCompound()));
         }
         else if (object instanceof Pos)
         {

@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines;
 
+import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.lib.gui.IPlayerUsing;
 import com.builtbroken.atomic.lib.network.IPacket;
 import com.builtbroken.atomic.lib.network.IPacketIDReceiver;
@@ -8,11 +9,13 @@ import com.builtbroken.atomic.lib.network.packet.PacketTile;
 import com.builtbroken.atomic.lib.transform.IPosWorld;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,6 +25,7 @@ import java.util.List;
 public abstract class TileEntityMachine extends TileEntity implements IPacketIDReceiver, IPosWorld, IPlayerUsing
 {
     public static final int DESC_PACKET_ID = -1;
+    public static final int GUI_PACKET_ID = -2;
 
     private int _ticks = 0;
     private boolean _syncClientNextTick = true;
@@ -43,6 +47,27 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
         if (_ticks + 1 == Integer.MAX_VALUE)
         {
             _ticks = 1;
+        }
+
+        if (isServer() && _ticks % 3 == 0 && this instanceof IGuiTile)
+        {
+            Iterator<EntityPlayer> it = playersUsingGUI.iterator();
+            while (it.hasNext())
+            {
+                EntityPlayer player = it.next();
+                if (player instanceof EntityPlayerMP && shouldSendGuiPacket((EntityPlayerMP) player))
+                {
+                    PacketTile packet = new PacketTile("gui", GUI_PACKET_ID, this);
+                    List<Object> objects = new ArrayList();
+                    writeGuiPacket(objects, player);
+                    packet.addData(objects);
+                    PacketSystem.INSTANCE.sendToPlayer(packet, (EntityPlayerMP) player);
+                }
+                else
+                {
+                    it.remove();
+                }
+            }
         }
 
         if (_syncClientNextTick)
@@ -79,10 +104,18 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
     @Override
     public boolean read(ByteBuf buf, int id, EntityPlayer player, IPacket type)
     {
-        if (isClient() && id == DESC_PACKET_ID)
+        if (isClient())
         {
-            readDescPacket(buf, player);
-            return true;
+            if (id == DESC_PACKET_ID)
+            {
+                readDescPacket(buf, player);
+                return true;
+            }
+            else if (id == GUI_PACKET_ID)
+            {
+                readGuiPacket(buf, player);
+                return true;
+            }
         }
         return false;
     }
@@ -136,6 +169,32 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
 
     }
 
+    /**
+     * Called to write data to the packet
+     * <p>
+     * This works by building a list of objects to write. These objects
+     * will be written when the packet is encoded. This helps reduce issues
+     * trying to encode a bytebuf into a bytebuf.
+     *
+     * @param dataList - list of objects to write
+     * @param player   - player to send the packet, can be null
+     */
+    protected void writeGuiPacket(List<Object> dataList, EntityPlayer player)
+    {
+
+    }
+
+    /**
+     * Called to read the packet
+     *
+     * @param buf    - raw data
+     * @param player - player reading the data
+     */
+    protected void readGuiPacket(ByteBuf buf, EntityPlayer player)
+    {
+
+    }
+
     //-----------------------------------------------
     //--------- Helpers -----------------------------
     //-----------------------------------------------
@@ -154,6 +213,17 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
     public Collection<EntityPlayer> getPlayersUsingGui()
     {
         return playersUsingGUI;
+    }
+
+    /**
+     * Checks if the player should continue to receive GUI packets
+     *
+     * @param playerMP - player
+     * @return true if should continue to receive packets, false will remove the player from the list
+     */
+    protected boolean shouldSendGuiPacket(EntityPlayerMP playerMP)
+    {
+        return playerMP.isEntityAlive() && playerMP.openContainer != null;
     }
 
     //-----------------------------------------------

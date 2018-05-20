@@ -7,12 +7,16 @@ import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.TileEntityPowerInvMachine;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.lib.power.PowerSystem;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
+
+import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -25,6 +29,9 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
     public static final int SLOT_ITEM_OUTPUT = 2;
     public static final int SLOT_BATTERY = 3;
     public static final int SLOT_FLUID_OUTPUT = 4;
+    public static final int INVENTORY_SIZE = 5;
+    public static final int[] INPUT_SLOTS = new int[]{SLOT_ITEM_INPUT};
+    public static final int[] OUTPUT_SLOTS = new int[]{SLOT_ITEM_OUTPUT};
 
     public static int PROCESSING_TIME = 100;
     public static int ENERGY_PER_TICK = 100;
@@ -223,11 +230,9 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         }
     }
 
-    @Override
-    public int getSizeInventory()
-    {
-        return 4;
-    }
+    //-----------------------------------------------
+    //--------Fluid Tank Handling -------------------
+    //-----------------------------------------------
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
@@ -283,11 +288,35 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         return new FluidTankInfo[]{getInputTank().getInfo(), getOutputTank().getInfo()};
     }
 
+    public FluidTank getInputTank()
+    {
+        return inputTank;
+    }
+
+    public FluidTank getOutputTank()
+    {
+        return outputTank;
+    }
+
+    //-----------------------------------------------
+    //--------Props ---------------------------------
+    //-----------------------------------------------
+
     @Override
     public int getEnergyUsage()
     {
         return ENERGY_PER_TICK;
     }
+
+    @Override
+    public int getSizeInventory()
+    {
+        return INVENTORY_SIZE;
+    }
+
+    //-----------------------------------------------
+    //--------GUI Handler ---------------------------
+    //-----------------------------------------------
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player)
@@ -301,13 +330,21 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         return new GuiExtractor(player, this);
     }
 
-    public FluidTank getInputTank()
+    @Override
+    protected void writeGuiPacket(List<Object> dataList, EntityPlayer player)
     {
-        return inputTank;
+        super.writeGuiPacket(dataList, player);
+        dataList.add(processTimer);
+        dataList.add(getInputTank());
+        dataList.add(getOutputTank());
     }
 
-    public FluidTank getOutputTank()
+    @Override
+    protected void readGuiPacket(ByteBuf buf, EntityPlayer player)
     {
-        return outputTank;
+        super.readGuiPacket(buf, player);
+        processTimer = buf.readInt();
+        getInputTank().readFromNBT(ByteBufUtils.readTag(buf));
+        getOutputTank().readFromNBT(ByteBufUtils.readTag(buf));
     }
 }

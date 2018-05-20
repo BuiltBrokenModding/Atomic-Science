@@ -525,26 +525,13 @@ public class GuiContainerBase<H> extends GuiContainer
         }
     }
 
-    //TODO update and docs
-    protected void drawMeter(int x, int y, float scale, float r, float g, float b)
-    {
-        this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        /** Draw the background meter. */
-        this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 0, this.meterWidth, this.meterHeight);
-
-        /** Draw liquid/gas inside */
-        GL11.glColor4f(r, g, b, 1.0F);
-        int actualScale = (int) ((this.meterHeight - 1) * scale);
-        this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y + (this.meterHeight - 1 - actualScale), 40, 49, this.meterHeight - 1, actualScale);
-
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        /** Draw measurement lines */
-        this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 49 * 2, this.meterWidth, this.meterHeight);
-    }
-
-
+    /**
+     * Renders fluid tank (background, fluid, and glass meter overlay)
+     *
+     * @param x    - render position, containerWidth is added
+     * @param y    - render position, containerWidth is added
+     * @param tank - tank containing fluid
+     */
     protected void drawFluidTank(int x, int y, IFluidTank tank)
     {
         //Get data

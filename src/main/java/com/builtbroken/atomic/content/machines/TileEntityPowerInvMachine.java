@@ -1,5 +1,10 @@
 package com.builtbroken.atomic.content.machines;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+
+import java.util.List;
+
 /**
  * Prefab for machines that consume power
  *
@@ -59,4 +64,16 @@ public abstract class TileEntityPowerInvMachine extends TileEntityInventoryMachi
     }
 
     public abstract int getEnergyUsage();
+
+    @Override
+    protected void writeGuiPacket(List<Object> dataList, EntityPlayer player)
+    {
+       dataList.add(energyStored);
+    }
+
+    @Override
+    protected void readGuiPacket(ByteBuf buf, EntityPlayer player)
+    {
+        energyStored = buf.readInt();
+    }
 }
