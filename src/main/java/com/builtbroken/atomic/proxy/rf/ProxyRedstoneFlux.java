@@ -18,6 +18,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
  */
 public class ProxyRedstoneFlux extends ContentProxy
 {
+
+    public static int conversationRateToRF = 1;
+
     public ProxyRedstoneFlux()
     {
         super("RF Power API");
@@ -33,12 +36,28 @@ public class ProxyRedstoneFlux extends ContentProxy
     public void preInit()
     {
         AtomicScience.logger.info(this + " Loaded");
-        PowerSystem.register(new PowerHandlerRF());
+        PowerSystem.register(new PowerHandlerRFTile());
+
+        if (doesClassExist("cofh.api.energy.IEnergyContainerItem"))
+        {
+            PowerSystem.register(new PowerHandlerRFItem());
+        }
 
         BlockSteamGenerator.rfFactory = () -> new TileEntitySteamGenRF();
         GameRegistry.registerTileEntity(TileEntitySteamGenRF.class, AtomicScience.PREFIX + "steam_turbine_rf");
 
         BlockPowerBus.rfFactory = () -> new TileEntityPowerBusRF();
         GameRegistry.registerTileEntity(TileEntityPowerBusRF.class, AtomicScience.PREFIX + "power_bus_rf");
+    }
+
+
+    public static int toRF(int fromUE)
+    {
+        return fromUE * conversationRateToRF;
+    }
+
+    public static int toUE(int fromPower)
+    {
+        return fromPower / conversationRateToRF;
     }
 }

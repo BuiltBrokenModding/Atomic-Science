@@ -13,7 +13,7 @@ public class TileEntityPowerBusRF extends TileEntityPowerBus implements IEnergyR
     @Override
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
     {
-        return getPowerNetwork().addEnergy(PowerHandlerRF.toUE(maxReceive), simulate);
+        return getPowerNetwork().addEnergy(ProxyRedstoneFlux.toUE(maxReceive), simulate);
     }
 
     @Override

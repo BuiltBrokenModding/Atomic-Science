@@ -3,6 +3,7 @@ package com.builtbroken.atomic.content;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.blocks.BlockRadioactiveDirt;
 import com.builtbroken.atomic.content.blocks.BlockRadioactiveGrass;
+import com.builtbroken.atomic.content.blocks.BlockUraniumOre;
 import com.builtbroken.atomic.content.machines.reactor.fission.BlockReactorCell;
 import com.builtbroken.atomic.content.machines.reactor.fission.TileEntityReactorCell;
 import com.builtbroken.atomic.content.machines.steam.funnel.BlockSteamFunnel;
@@ -26,10 +27,13 @@ public class ASBlocks
     public static Block blockSteamFunnel;
     public static Block blockSteamTurbine;
 
+    public static Block blockUraniumOre;
+
     public static void register()
     {
         GameRegistry.registerBlock(blockRadioactiveDirt = new BlockRadioactiveDirt(), "radioactive_dirt");
         GameRegistry.registerBlock(blockRadioactiveGrass = new BlockRadioactiveGrass(), "radioactive_grass");
+        GameRegistry.registerBlock(blockUraniumOre = new BlockUraniumOre(), "uranium_ore");
 
         GameRegistry.registerBlock(blockReactorCell = new BlockReactorCell(), "reactor_cell");
         GameRegistry.registerBlock(blockSteamFunnel = new BlockSteamFunnel(), "steam_funnel");

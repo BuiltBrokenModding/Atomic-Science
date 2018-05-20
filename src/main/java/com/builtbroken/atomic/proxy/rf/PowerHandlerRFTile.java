@@ -8,13 +8,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
+ * Handles RF API for tiles
+ *
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/17/2018.
  */
-public class PowerHandlerRF extends PowerHandler
+public class PowerHandlerRFTile extends PowerHandler
 {
-    public static int conversationRateToRF = 1;
-
     @Override
     public boolean canHandle(ForgeDirection side, TileEntity tile)
     {
@@ -22,32 +22,22 @@ public class PowerHandlerRF extends PowerHandler
     }
 
     @Override
-    public int addPower(ForgeDirection side, Object object, int power, boolean doAction)
+    public int addPower(ForgeDirection side, TileEntity tile, int power, boolean doAction)
     {
-        if (object instanceof IEnergyReceiver)
+        if (tile instanceof IEnergyReceiver)
         {
-            return toUE(((IEnergyReceiver) object).receiveEnergy(side, toPower(power), !doAction));
+            return ProxyRedstoneFlux.toUE(((IEnergyReceiver) tile).receiveEnergy(side, ProxyRedstoneFlux.toRF(power), !doAction));
         }
         return 0;
     }
 
     @Override
-    public int removePower(ForgeDirection side, Object object, int power, boolean doAction)
+    public int removePower(ForgeDirection side, TileEntity tile, int power, boolean doAction)
     {
-        if (object instanceof IEnergyProvider)
+        if (tile instanceof IEnergyProvider)
         {
-            return toUE(((IEnergyProvider) object).extractEnergy(side, toPower(power), !doAction));
+            return ProxyRedstoneFlux.toUE(((IEnergyProvider) tile).extractEnergy(side, ProxyRedstoneFlux.toRF(power), !doAction));
         }
         return 0;
-    }
-
-    public static int toPower(int fromUE)
-    {
-        return fromUE * conversationRateToRF;
-    }
-
-    public static int toUE(int fromPower)
-    {
-        return fromPower / conversationRateToRF;
     }
 }

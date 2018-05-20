@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.lib.power;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -11,9 +12,39 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public abstract class PowerHandler
 {
-    public abstract boolean canHandle(ForgeDirection side, TileEntity tile);
+    public boolean canHandle(ForgeDirection side, TileEntity tile)
+    {
+        return false;
+    }
 
-    public abstract int addPower(ForgeDirection side, Object object, int power, boolean doAction);
+    public boolean canHandle(ItemStack stack)
+    {
+        return false;
+    }
 
-    public abstract int removePower(ForgeDirection side, Object object, int power, boolean doAction);
+    public int addPower(ForgeDirection side, TileEntity tileEntity, int power, boolean doAction)
+    {
+        return 0;
+    }
+
+    public int removePower(ForgeDirection side, TileEntity tileEntity, int power, boolean doAction)
+    {
+        return 0;
+    }
+
+
+    public int addPower(ItemStack stack, int power, boolean doAction)
+    {
+        return 0;
+    }
+
+    public int removePower(ItemStack stack, int power, boolean doAction)
+    {
+        return 0;
+    }
+
+    public int getPowerStored(ItemStack itemStack)
+    {
+        return 0;
+    }
 }

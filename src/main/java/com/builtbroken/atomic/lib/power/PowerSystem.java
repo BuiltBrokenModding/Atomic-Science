@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.lib.power;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -58,6 +59,21 @@ public class PowerSystem
         return null;
     }
 
+    public static PowerHandler getHandler(ItemStack stack)
+    {
+        if (stack != null && stack.getItem() != null)
+        {
+            for (PowerHandler handler : powerHandlers)
+            {
+                if (handler.canHandle(stack))
+                {
+                    return handler;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Called to output power
      *
@@ -93,5 +109,37 @@ public class PowerSystem
         {
             powerHandlers.add(powerHandler);
         }
+    }
+
+    /**
+     * Checks to see how much energy is stored
+     *
+     * @param itemStack - power item, can be null
+     * @return power in item (UE)
+     */
+    public static int getEnergyStored(ItemStack itemStack)
+    {
+        PowerHandler handler = getHandler(itemStack);
+        if (handler != null)
+        {
+            return handler.getPowerStored(itemStack);
+        }
+        return 0;
+    }
+
+    /**
+     * Removes power from an item
+     *
+     * @param itemStack - power item, can be null
+     * @return power removed (UE)
+     */
+    public static int removePower(ItemStack itemStack, int amount, boolean doAction)
+    {
+        PowerHandler handler = getHandler(itemStack);
+        if (handler != null)
+        {
+            return handler.removePower(itemStack, amount, false);
+        }
+        return 0;
     }
 }

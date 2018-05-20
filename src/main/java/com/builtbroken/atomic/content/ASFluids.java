@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content;
 
+import com.builtbroken.atomic.AtomicScience;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -14,9 +15,18 @@ public enum ASFluids
     ANTIMATTER("antimatter", false),
     STRANGE_MATTER("strange_matter", false),
     DEUTERIUM("deuterium", false),
-    TOXIC_WASTE("toxic_waste", true),
-    STEAM("steam", "steam", false);
-    //PLASMA("steam", false) TODO see if there is a use for plasma as a fluid
+    STEAM("steam", "steam", false),
+
+    //Waste fluid from reactor
+    REACTOR_WASTE("toxic_waste", true),
+    //Waste sludge from chemical extractor (trace minerals)
+    LIQUID_MINERAL_WASTE(AtomicScience.PREFIX + "mineral_waste", "waste_mineral", false),
+    //Waste water from boiler (trace minerals)
+    CONTAMINATED_MINERAL_WATER(AtomicScience.PREFIX + "contaminated_mineral_water", "contaminated_mineral_water", false),
+    //Waste water from cleaning items (contains trace radioactive dust)
+    CONTAMINATED_WATER(AtomicScience.PREFIX + "contaminated_water", "contaminated_water", false),
+    //Gas version of uranium
+    URANIUM_HEXAFLOURIDE(AtomicScience.PREFIX + "uranium_hexafluoride", "waste_mineral", false);
 
     public final String id;
     public final String texture;
