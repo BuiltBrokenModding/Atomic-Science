@@ -43,9 +43,10 @@ public class ASClientReg
         {
             for (ASFluids fluid : ASFluids.values())
             {
-                if (!fluid.makeBlock && fluid.texture != null)
+                if (!fluid.makeBlock && fluid.texture_still != null)
                 {
-                    event.map.registerIcon(AtomicScience.PREFIX + "fluids/" + fluid.texture); //TODO add flowing
+                    event.map.registerIcon(AtomicScience.PREFIX + "fluids/" + fluid.texture_still);
+                    event.map.registerIcon(AtomicScience.PREFIX + "fluids/" + fluid.texture_flow);
                 }
             }
         }
@@ -58,12 +59,19 @@ public class ASClientReg
         {
             for (ASFluids fluid : ASFluids.values())
             {
-                if (!fluid.makeBlock && fluid.texture != null)
+                if (!fluid.makeBlock && fluid.texture_still != null)
                 {
-                    IIcon icon1 = event.map.getTextureExtry(AtomicScience.PREFIX + "fluids/" + fluid.texture); //TODO add flowing
-                    if (icon1 != null)
+                    IIcon icon1 = event.map.getTextureExtry(AtomicScience.PREFIX + "fluids/" + fluid.texture_still);
+                    IIcon icon2 = event.map.getTextureExtry(AtomicScience.PREFIX + "fluids/" + fluid.texture_flow);
+                    if (icon1 != null && icon2 != null)
                     {
-                        fluid.fluid.setIcons(icon1, icon1);
+                        fluid.fluid.setIcons(icon1, icon2);
+                    }
+                    else
+                    {
+                        AtomicScience.logger.error("Failed to get registered fluid textures for " + fluid.id
+                                + " | Icon1: " + icon1 + "  Icon2: " + icon2
+                                + " | Key1: " + fluid.texture_still + " Key2: " + fluid.texture_flow);
                     }
                 }
             }
