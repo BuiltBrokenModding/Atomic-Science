@@ -6,9 +6,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 /**
@@ -53,6 +56,28 @@ public class BlockChemExtractor extends BlockContainer
         return true;
     }
 
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack stack)
+    {
+        int rotation = MathHelper.floor_double((double) (entityLivingBase.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+        if (rotation == 0)
+        {
+            world.setBlockMetadataWithNotify(x, y, z, 2, 2);
+        }
+        else if (rotation == 1)
+        {
+            world.setBlockMetadataWithNotify(x, y, z, 5, 2);
+        }
+        else if (rotation == 2)
+        {
+            world.setBlockMetadataWithNotify(x, y, z, 3, 2);
+        }
+        else if (rotation == 3)
+        {
+            world.setBlockMetadataWithNotify(x, y, z, 4, 2);
+        }
+    }
+
     //-----------------------------------------------
     //-------- Properties ---------------------------
     //----------------------------------------------
@@ -66,7 +91,7 @@ public class BlockChemExtractor extends BlockContainer
     @Override
     public int getRenderType()
     {
-        return 0; //TODO change when model is added
+        return -1;
     }
 
     @Override

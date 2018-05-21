@@ -2,6 +2,8 @@ package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.effects.client.RenderRadOverlay;
+import com.builtbroken.atomic.content.machines.processing.extractor.TESRChemExtractor;
+import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.reactor.fission.TESRReactorCell;
 import com.builtbroken.atomic.content.machines.reactor.fission.TileEntityReactorCell;
 import com.builtbroken.atomic.content.machines.steam.generator.TESRSteamGenerator;
@@ -30,6 +32,8 @@ public class ASClientReg
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorCell.class, new TESRReactorCell());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySteamGenerator.class, new TESRSteamGenerator());
+
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemExtractor.class, new TESRChemExtractor());
     }
 
     @SubscribeEvent

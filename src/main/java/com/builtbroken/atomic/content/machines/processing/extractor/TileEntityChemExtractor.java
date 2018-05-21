@@ -8,11 +8,16 @@ import com.builtbroken.atomic.content.machines.TileEntityPowerInvMachine;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
@@ -22,7 +27,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/19/2018.
  */
-public class TileEntityChemExtractor extends TileEntityPowerInvMachine implements IFluidHandler, IGuiTile
+public class TileEntityChemExtractor extends TileEntityPowerInvMachine implements IFluidHandler, IGuiTile, ISidedInventory
 {
     public static final int SLOT_FLUID_INPUT = 0;
     public static final int SLOT_ITEM_INPUT = 1;
@@ -32,6 +37,7 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
     public static final int INVENTORY_SIZE = 5;
     public static final int[] INPUT_SLOTS = new int[]{SLOT_ITEM_INPUT};
     public static final int[] OUTPUT_SLOTS = new int[]{SLOT_ITEM_OUTPUT};
+    public static final int[] ACCESSIBLE_SLOTS = new int[]{SLOT_ITEM_INPUT, SLOT_ITEM_OUTPUT};
 
     public static int PROCESSING_TIME = 100;
     public static int ENERGY_PER_TICK = 100;
@@ -41,6 +47,11 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
 
     boolean processing = false;
     int processTimer = 0;
+
+    ForgeDirection _facingDirectionCache;
+
+    float _processingAnimationRotationPrev = 0;
+    float _processingAnimationRotation = 0;
 
     public TileEntityChemExtractor()
     {
@@ -69,6 +80,15 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
                 checkRecipe();
             }
             outputFluids();
+        }
+        else if (processTimer > 0)
+        {
+            _processingAnimationRotation += 5f; //TODO move to val
+            if (_processingAnimationRotation > 360)
+            {
+                _processingAnimationRotation -= 360;
+                _processingAnimationRotationPrev -= 360;
+            }
         }
     }
 
@@ -175,6 +195,26 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
                 }
             }
         }
+
+        if (getOutputTank().getFluid() != null)
+        {
+            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+            {
+                int x = xCoord + direction.offsetX;
+                int y = yCoord + direction.offsetY;
+                int z = zCoord + direction.offsetZ;
+
+                if (worldObj.blockExists(x, y, z))
+                {
+                    TileEntity tile = worldObj.getTileEntity(x, y, z);
+                    if (tile instanceof IFluidHandler && getOutputTank().getFluid() != null && ((IFluidHandler) tile).canFill(direction.getOpposite(), getOutputTank().getFluid().getFluid()))
+                    {
+                        int fill = ((IFluidHandler) tile).fill(direction.getOpposite(), getOutputTank().getFluid(), true);
+                        outputTank.drain(fill, true);
+                    }
+                }
+            }
+        }
     }
 
     protected void drainBattery()
@@ -277,6 +317,12 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         {
             processTimer = 0;
         }
+        //Set to 1 for client sync
+        else if(processTimer == 0)
+        {
+            processTimer = 1;
+        }
+        syncClientNextTick();
     }
 
     //-----------------------------------------------
@@ -357,10 +403,29 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         return ENERGY_PER_TICK;
     }
 
-    @Override
-    public int getSizeInventory()
+    public ForgeDirection getFacingDirection()
     {
-        return INVENTORY_SIZE;
+        if (_facingDirectionCache == null)
+        {
+            _facingDirectionCache = ForgeDirection.getOrientation(getBlockMetadata());
+        }
+        return _facingDirectionCache;
+    }
+
+    @Override
+    public void markDirty()
+    {
+        if (isServer())
+        {
+            _facingDirectionCache = null;
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public float rotate(float delta)
+    {
+        _processingAnimationRotationPrev = _processingAnimationRotation + (_processingAnimationRotation - _processingAnimationRotationPrev) * delta;
+        return _processingAnimationRotationPrev;
     }
 
     //-----------------------------------------------
@@ -395,5 +460,79 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         processTimer = buf.readInt();
         getInputTank().readFromNBT(ByteBufUtils.readTag(buf));
         getOutputTank().readFromNBT(ByteBufUtils.readTag(buf));
+    }
+
+    //-----------------------------------------------
+    //--------Save/Load -----------------------------
+    //-----------------------------------------------
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbt)
+    {
+        super.writeToNBT(nbt);
+        nbt.setInteger("processingProgress", processTimer);
+        nbt.setTag("outputTank", getOutputTank().writeToNBT(new NBTTagCompound()));
+        nbt.setTag("inputTank", getInputTank().writeToNBT(new NBTTagCompound()));
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    {
+        super.readFromNBT(nbt);
+        processTimer = nbt.getInteger("processingProgress");
+        getOutputTank().readFromNBT(nbt.getCompoundTag("outputTank"));
+        getInputTank().readFromNBT(nbt.getCompoundTag("inputTank"));
+    }
+
+    @Override
+    protected void writeDescPacket(List<Object> dataList, EntityPlayer player)
+    {
+        super.writeGuiPacket(dataList, player);
+        dataList.add(processTimer);
+    }
+
+    @Override
+    protected void readDescPacket(ByteBuf buf, EntityPlayer player)
+    {
+        super.readGuiPacket(buf, player);
+        processTimer = buf.readInt();
+    }
+
+    //-----------------------------------------------
+    //--------Inventory Code ------------------------
+    //-----------------------------------------------
+
+    @Override
+    public int getSizeInventory()
+    {
+        return INVENTORY_SIZE;
+    }
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(int side)
+    {
+        return ACCESSIBLE_SLOTS;
+    }
+
+    @Override
+    public boolean canInsertItem(int slot, ItemStack stack, int side)
+    {
+        return slot == SLOT_ITEM_INPUT;
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack stack, int side)
+    {
+        return slot == SLOT_ITEM_OUTPUT;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack stack)
+    {
+        if (slot == SLOT_ITEM_INPUT)
+        {
+            return stack.getItem() == Item.getItemFromBlock(ASBlocks.blockUraniumOre);
+        }
+        return false;
     }
 }
