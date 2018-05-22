@@ -160,12 +160,31 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
         {
             if (itemStack.getItem() instanceof IFluidContainerItem)
             {
-                IFluidContainerItem fluidContainerItem = (IFluidContainerItem) itemStack.getItem();
-                FluidStack fluidStack = fluidContainerItem.getFluid(itemStack);
+                //Copy stack (fix for containers that can stack when empty)
+                final ItemStack fluidContainer = itemStack.copy();
+                fluidContainer.stackSize = 1;
+
+                IFluidContainerItem fluidContainerItem = (IFluidContainerItem) fluidContainer.getItem();
+                FluidStack fluidStack = fluidContainerItem.getFluid(fluidContainer);
                 if (fluidStack == null || fluidStack.getFluid() == outputTank.getFluid().getFluid())
                 {
-                    int filled = fluidContainerItem.fill(itemStack, getOutputTank().getFluid(), true);
+                    int filled = fluidContainerItem.fill(fluidContainer, getOutputTank().getFluid(), true);
                     getOutputTank().drain(filled, true);
+
+                    if(itemStack.stackSize == 1)
+                    {
+                        setInventorySlotContents(SLOT_FLUID_OUTPUT, fluidContainer);
+                    }
+                    else
+                    {
+                        decrStackSize(SLOT_FLUID_OUTPUT, 1);
+
+                        //TODO add fluid container output slot
+                        EntityItem item = new EntityItem(worldObj);
+                        item.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
+                        item.setEntityItemStack(fluidContainer);
+                        worldObj.spawnEntityInWorld(item);
+                    }
                 }
             }
             else if (FluidContainerRegistry.isEmptyContainer(itemStack))
@@ -318,7 +337,7 @@ public class TileEntityChemExtractor extends TileEntityPowerInvMachine implement
             processTimer = 0;
         }
         //Set to 1 for client sync
-        else if(processTimer == 0)
+        else if (processTimer == 0)
         {
             processTimer = 1;
         }
