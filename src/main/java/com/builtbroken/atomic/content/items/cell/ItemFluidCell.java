@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,6 +30,9 @@ public class ItemFluidCell extends Item implements IFluidContainerItem
     @SideOnly(Side.CLIENT)
     protected HashMap<Fluid, IIcon> fluidToIcon;
 
+    @SideOnly(Side.CLIENT)
+    protected IIcon fluidMask;
+
     /** Map of supported fluids to there texture path */
     public HashMap<Fluid, String> supportedFluidToTexturePath = new HashMap();
 
@@ -44,6 +48,17 @@ public class ItemFluidCell extends Item implements IFluidContainerItem
         this.setTextureName(AtomicScience.PREFIX + "cell_empty");
         this.setUnlocalizedName(AtomicScience.PREFIX + "cell.fluid");
         this.setCreativeTab(AtomicScience.creativeTab);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack cell, EntityPlayer player, List lines, boolean held)
+    {
+        FluidStack fluidStack = getFluid(cell);
+        if(fluidStack != null)
+        {
+            lines.add("Fluid: " + fluidStack.getLocalizedName() + " Amount: " + fluidStack.amount);
+        }
     }
 
     //----------------------------------------------------------------
@@ -71,11 +86,22 @@ public class ItemFluidCell extends Item implements IFluidContainerItem
     public void registerIcons(IIconRegister reg)
     {
         super.registerIcons(reg);
+        fluidMask = reg.registerIcon(AtomicScience.PREFIX + "cell_fluid_mask");
         fluidToIcon = new HashMap();
         for (Map.Entry<Fluid, String> entry : supportedFluidToTexturePath.entrySet())
         {
             fluidToIcon.put(entry.getKey(), reg.registerIcon(entry.getValue()));
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int meta)
+    {
+        if (meta == -1)
+        {
+            return fluidMask;
+        }
+        return this.itemIcon;
     }
 
     @Override
@@ -203,7 +229,7 @@ public class ItemFluidCell extends Item implements IFluidContainerItem
      */
     public boolean canSupportFluid(ItemStack container, FluidStack resource)
     {
-        return resource != null && supportedFluidToTexturePath.containsKey(resource.getFluid());
+        return resource != null;// && supportedFluidToTexturePath.containsKey(resource.getFluid());
     }
 
     @Override

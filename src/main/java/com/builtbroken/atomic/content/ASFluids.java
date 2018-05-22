@@ -18,13 +18,13 @@ public enum ASFluids
     STEAM("steam", "steam", false),
 
     //Waste fluid from reactor (yellow color as it has oxidized due to heat + water)
-    REACTOR_WASTE("toxic_waste", "toxic/reactor/still", "toxic/reactor/flow", true),
+    REACTOR_WASTE("toxic_waste", "toxic/reactor/still", "toxic/reactor/flow", false),
     //Waste sludge from chemical extractor (trace minerals)
-    LIQUID_MINERAL_WASTE(AtomicScience.PREFIX + "mineral_waste", "toxic/mineral/still", "toxic/mineral/flow", true),
+    LIQUID_MINERAL_WASTE(AtomicScience.PREFIX + "mineral_waste", "toxic/mineral/still", "toxic/mineral/flow", false),
     //Waste water from boiler (trace minerals)
-    CONTAMINATED_MINERAL_WATER(AtomicScience.PREFIX + "contaminated_mineral_water", "water/mineral/still", "water/mineral/flow", true),
+    CONTAMINATED_MINERAL_WATER(AtomicScience.PREFIX + "contaminated_mineral_water", "water/mineral/still", "water/mineral/flow", false),
     //Waste water from cleaning items (contains trace radioactive dust)
-    CONTAMINATED_WATER(AtomicScience.PREFIX + "contaminated_water", "water/contaminated/still", "water/contaminated/flow", true),
+    CONTAMINATED_WATER(AtomicScience.PREFIX + "contaminated_water", "water/contaminated/still", "water/contaminated/flow", false),
     //Gas version of uranium
     URANIUM_HEXAFLOURIDE(AtomicScience.PREFIX + "uranium_hexafluoride", "uranium.hexafluoride", false);
 

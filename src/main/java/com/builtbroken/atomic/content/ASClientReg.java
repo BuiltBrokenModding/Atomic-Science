@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.effects.client.RenderRadOverlay;
+import com.builtbroken.atomic.content.items.cell.ItemRendererCell;
 import com.builtbroken.atomic.content.machines.processing.extractor.TESRChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.reactor.fission.TESRReactorCell;
@@ -13,6 +14,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.IIcon;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -34,6 +36,8 @@ public class ASClientReg
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySteamGenerator.class, new TESRSteamGenerator());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemExtractor.class, new TESRChemExtractor());
+
+        MinecraftForgeClient.registerItemRenderer(ASItems.itemFluidCell, new ItemRendererCell());
     }
 
     @SubscribeEvent
@@ -61,16 +65,16 @@ public class ASClientReg
             {
                 if (!fluid.makeBlock && fluid.texture_still != null)
                 {
-                    IIcon icon1 = event.map.getTextureExtry(AtomicScience.PREFIX + "fluids/" + fluid.texture_still);
-                    IIcon icon2 = event.map.getTextureExtry(AtomicScience.PREFIX + "fluids/" + fluid.texture_flow);
-                    if (icon1 != null && icon2 != null)
+                    IIcon stillIcon = event.map.getTextureExtry(AtomicScience.PREFIX + "fluids/" + fluid.texture_still);
+                    IIcon flowingIcon = event.map.getTextureExtry(AtomicScience.PREFIX + "fluids/" + fluid.texture_flow);
+                    if (stillIcon != null && flowingIcon != null)
                     {
-                        fluid.fluid.setIcons(icon1, icon2);
+                        fluid.fluid.setIcons(stillIcon, flowingIcon);
                     }
                     else
                     {
                         AtomicScience.logger.error("Failed to get registered fluid textures for " + fluid.id
-                                + " | Icon1: " + icon1 + "  Icon2: " + icon2
+                                + " | Icon1: " + stillIcon + "  Icon2: " + flowingIcon
                                 + " | Key1: " + fluid.texture_still + " Key2: " + fluid.texture_flow);
                     }
                 }
