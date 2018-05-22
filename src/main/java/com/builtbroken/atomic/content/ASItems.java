@@ -40,6 +40,9 @@ public class ASItems
     public static Item itemUranium235;
     public static Item itemUranium238;
 
+    //Waste items
+    public static Item itemProcessingWaste;
+
     //Tools
     public static Item itemHeatProbe;
 
@@ -82,6 +85,9 @@ public class ASItems
         GameRegistry.registerItem(itemYellowCake = new ItemRadioactive("cake.yellow", "yellow_cake", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "yellow_cake");
         GameRegistry.registerItem(itemUranium235 = new ItemRadioactive("uranium.235", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235), "uranium_235");
         GameRegistry.registerItem(itemUranium238 = new ItemRadioactive("uranium.238", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238), "uranium_238");
+
+        //Waste items
+        GameRegistry.registerItem(itemProcessingWaste = new ItemRadioactive("processing.waste", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "processing_waste");
 
         //Tools
         GameRegistry.registerItem(itemHeatProbe = new ItemHeatProbe(), "heat_probe");

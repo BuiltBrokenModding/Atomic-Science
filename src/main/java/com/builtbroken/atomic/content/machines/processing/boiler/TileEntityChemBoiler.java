@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.processing.extractor;
+package com.builtbroken.atomic.content.machines.processing.boiler;
 
 import com.builtbroken.atomic.config.ConfigRecipe;
 import com.builtbroken.atomic.content.ASBlocks;
@@ -20,16 +20,17 @@ import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
- * Created by Dark(DarkGuardsman, Robert) on 5/19/2018.
+ * Created by Dark(DarkGuardsman, Robert) on 5/22/2018.
  */
-public class TileEntityChemExtractor extends TileEntityProcessingMachine implements IFluidHandler, IGuiTile, ISidedInventory
+public class TileEntityChemBoiler extends TileEntityProcessingMachine implements IFluidHandler, IGuiTile, ISidedInventory
 {
     public static final int SLOT_FLUID_INPUT = 0;
     public static final int SLOT_ITEM_INPUT = 1;
     public static final int SLOT_ITEM_OUTPUT = 2;
     public static final int SLOT_BATTERY = 3;
-    public static final int SLOT_FLUID_OUTPUT = 4;
-    public static final int INVENTORY_SIZE = 5;
+    public static final int SLOT_WASTE_FLUID = 4;
+    public static final int SLOT_HEX_FLUID = 5;
+    public static final int INVENTORY_SIZE = 6;
 
     public static final int[] INPUT_SLOTS = new int[]{SLOT_ITEM_INPUT};
     public static final int[] OUTPUT_SLOTS = new int[]{SLOT_ITEM_OUTPUT};
@@ -39,12 +40,17 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     public static int ENERGY_PER_TICK = 100;
 
     private final FluidTank inputTank;
-    private final FluidTank outputTank;
+    private final FluidTank wasteTank;
+    private final FluidTank hexTank;
 
-    public TileEntityChemExtractor()
+    boolean[] outputSideWasteTank = new boolean[6]; //TODO configure
+    boolean[] outputSideHexTank = new boolean[6]; //TODO configure
+
+    public TileEntityChemBoiler()
     {
         inputTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
-        outputTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
+        wasteTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
+        hexTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
     }
 
     @Override
@@ -63,8 +69,10 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     @Override
     protected void postProcess(int ticks)
     {
-        outputFluids(SLOT_FLUID_OUTPUT, getOutputTank());
-        outputFluidToTiles(getOutputTank(), null);
+        outputFluids(SLOT_WASTE_FLUID, getWasteTank());
+        outputFluids(SLOT_HEX_FLUID, getHexTank());
+        outputFluidToTiles(getWasteTank(), f -> outputSideWasteTank[f.ordinal()]);
+        outputFluidToTiles(getHexTank(), f -> outputSideHexTank[f.ordinal()]);
     }
 
     @Override
@@ -72,21 +80,37 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     {
 
         //Uranium Ore recipe
-        ItemStack inputItem = getStackInSlot(SLOT_ITEM_INPUT);
+        final ItemStack inputItem = getStackInSlot(SLOT_ITEM_INPUT);
         //TODO move recipe to object
 
         if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem()
-                && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE)
-                && canOutputFluid(getOutputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE))
+                && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE)
+                && canOutputFluid(getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_URANIUM_ORE))
 
         {
-            ItemStack outputStack = new ItemStack(ASItems.itemYellowCake, ConfigRecipe.YELLOW_CAKE_PER_ORE, 0);
+            ItemStack outputStack = new ItemStack(ASItems.itemYellowCake, ConfigRecipe.SOLID_WASTE_URANIUM_ORE, 0);
             if (hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
             {
                 decrStackSize(SLOT_ITEM_INPUT, 1);
-                getInputTank().drain(ConfigRecipe.WATER_USED_YELLOW_CAKE, true);
-                getOutputTank().fill(new FluidStack(ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE), true);
                 addToOutput(outputStack, SLOT_ITEM_OUTPUT);
+
+                getInputTank().drain(ConfigRecipe.WATER_BOIL_URANIUM_ORE, true);
+                getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_URANIUM_ORE), true);
+            }
+        }
+        else if (ASItems.itemYellowCake == inputItem.getItem()
+                && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE)
+                && canOutputFluid(getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_YELLOWCAKE))
+
+        {
+            ItemStack outputStack = new ItemStack(ASItems.itemYellowCake, ConfigRecipe.SOLID_WASTE_YELLOWCAKE, 0);
+            if (hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
+            {
+                decrStackSize(SLOT_ITEM_INPUT, 1);
+                addToOutput(outputStack, SLOT_ITEM_OUTPUT);
+
+                getInputTank().drain(ConfigRecipe.WATER_BOIL_YELLOWCAKE, true);
+                getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_YELLOWCAKE), true);
             }
         }
     }
@@ -98,7 +122,9 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
         if (stack != null)
         {
             return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem()
-                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE);  //TODO move recipe to object
+                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE)
+                    || ASItems.itemYellowCake == stack.getItem()
+                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE);  //TODO move recipe to object
         }
         return false;
     }
@@ -140,9 +166,13 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
     {
-        if (getOutputTank().getFluid() != null && resource.getFluid() == getOutputTank().getFluid().getFluid())
+        if (getWasteTank().getFluid() != null && resource.getFluid() == getWasteTank().getFluid().getFluid())
         {
-            return drain(from, resource.amount, doDrain);
+            return getWasteTank().drain(resource.amount, doDrain);
+        }
+        else if (getHexTank().getFluid() != null && resource.getFluid() == getHexTank().getFluid().getFluid())
+        {
+            return getHexTank().drain(resource.amount, doDrain);
         }
         return null;
     }
@@ -150,7 +180,12 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
     {
-        return getOutputTank().drain(maxDrain, doDrain);
+        FluidStack stack = getWasteTank().drain(maxDrain, doDrain);
+        if (stack == null)
+        {
+            return getHexTank().drain(maxDrain, doDrain);
+        }
+        return stack;
     }
 
     @Override
@@ -162,13 +197,15 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     @Override
     public boolean canDrain(ForgeDirection from, Fluid fluid)
     {
-        return fluid == null || getOutputTank().getFluid() != null && getOutputTank().getFluid().getFluid() == fluid;
+        return fluid == null
+                || getWasteTank().getFluid() != null && getWasteTank().getFluid().getFluid() == fluid
+                || getHexTank().getFluid() != null && getHexTank().getFluid().getFluid() == fluid;
     }
 
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from)
     {
-        return new FluidTankInfo[]{getInputTank().getInfo(), getOutputTank().getInfo()};
+        return new FluidTankInfo[]{getInputTank().getInfo(), getWasteTank().getInfo(), getHexTank().getInfo()};
     }
 
     public FluidTank getInputTank()
@@ -176,9 +213,14 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
         return inputTank;
     }
 
-    public FluidTank getOutputTank()
+    public FluidTank getWasteTank()
     {
-        return outputTank;
+        return wasteTank;
+    }
+
+    public FluidTank getHexTank()
+    {
+        return hexTank;
     }
 
     //-----------------------------------------------
@@ -198,13 +240,13 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player)
     {
-        return new ContainerExtractor(player, this);
+        return new ContainerChemBoiler(player, this);
     }
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player)
     {
-        return new GuiExtractor(player, this);
+        return new GuiChemBoiler(player, this);
     }
 
     @Override
@@ -212,7 +254,8 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     {
         super.writeGuiPacket(dataList, player);
         dataList.add(getInputTank());
-        dataList.add(getOutputTank());
+        dataList.add(getWasteTank());
+        dataList.add(getHexTank());
     }
 
     @Override
@@ -220,7 +263,8 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     {
         super.readGuiPacket(buf, player);
         getInputTank().readFromNBT(ByteBufUtils.readTag(buf));
-        getOutputTank().readFromNBT(ByteBufUtils.readTag(buf));
+        getWasteTank().readFromNBT(ByteBufUtils.readTag(buf));
+        getHexTank().readFromNBT(ByteBufUtils.readTag(buf));
     }
 
     //-----------------------------------------------
@@ -231,16 +275,18 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
-        nbt.setTag("outputTank", getOutputTank().writeToNBT(new NBTTagCompound()));
+        nbt.setTag("wasteTank", getWasteTank().writeToNBT(new NBTTagCompound()));
         nbt.setTag("inputTank", getInputTank().writeToNBT(new NBTTagCompound()));
+        nbt.setTag("hexTank", getHexTank().writeToNBT(new NBTTagCompound()));
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        getOutputTank().readFromNBT(nbt.getCompoundTag("outputTank"));
+        getWasteTank().readFromNBT(nbt.getCompoundTag("wasteTank"));
         getInputTank().readFromNBT(nbt.getCompoundTag("inputTank"));
+        getHexTank().readFromNBT(nbt.getCompoundTag("hexTank"));
     }
 
     //-----------------------------------------------
@@ -276,7 +322,8 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     {
         if (slot == SLOT_ITEM_INPUT)
         {
-            return stack.getItem() == Item.getItemFromBlock(ASBlocks.blockUraniumOre);
+            return stack.getItem() == Item.getItemFromBlock(ASBlocks.blockUraniumOre)
+                    || stack.getItem() == ASItems.itemYellowCake;
         }
         return false;
     }

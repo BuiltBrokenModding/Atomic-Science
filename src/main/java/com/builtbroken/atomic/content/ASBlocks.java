@@ -4,6 +4,8 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.blocks.BlockRadioactiveDirt;
 import com.builtbroken.atomic.content.blocks.BlockRadioactiveGrass;
 import com.builtbroken.atomic.content.blocks.BlockUraniumOre;
+import com.builtbroken.atomic.content.machines.processing.boiler.BlockChemBoiler;
+import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.extractor.BlockChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.reactor.fission.BlockReactorCell;
@@ -32,6 +34,7 @@ public class ASBlocks
     public static Block blockUraniumOre;
 
     public static Block blockChemExtractor;
+    public static Block blockChemBoiler;
 
     public static void register()
     {
@@ -50,5 +53,8 @@ public class ASBlocks
 
         GameRegistry.registerBlock(blockChemExtractor = new BlockChemExtractor(), "chem_extractor");
         GameRegistry.registerTileEntity(TileEntityChemExtractor.class, AtomicScience.PREFIX + "chem_extractor");
+
+        GameRegistry.registerBlock(blockChemBoiler = new BlockChemBoiler(), "chem_boiler");
+        GameRegistry.registerTileEntity(TileEntityChemBoiler.class, AtomicScience.PREFIX + "chem_boiler");
     }
 }
