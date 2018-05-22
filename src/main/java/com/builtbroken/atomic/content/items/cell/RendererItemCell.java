@@ -20,12 +20,12 @@ import org.lwjgl.opengl.GL11;
  * Created by Dark(DarkGuardsman, Robert) on 5/21/2018.
  * Credit to CoFH and Stackoverflow
  */
-public class ItemRendererCell implements IItemRenderer
+public class RendererItemCell implements IItemRenderer
 {
     @Override
     public boolean handleRenderType(ItemStack cell, ItemRenderType type)
     {
-        if(cell.getItem() instanceof ItemFluidCell && cell.stackTagCompound != null)
+        if (cell.getItem() instanceof ItemFluidCell && cell.stackTagCompound != null)
         {
             //Do not render for fluids that have provided textures
             final FluidStack fluid = ((ItemFluidCell) cell.getItem()).getFluid(cell);
@@ -90,7 +90,7 @@ public class ItemRendererCell implements IItemRenderer
                     tessellator.draw();
 
                     tessellator.startDrawingQuads();
-                    tessellator.setNormal(0, 0, -1);
+                    tessellator.setNormal(0, 0, -1); //TODO don't think is needed for inventory
                     generatedGeometry(maskIcon, type, -0.0635, -0.0635);
                     tessellator.draw();
 
@@ -106,7 +106,7 @@ public class ItemRendererCell implements IItemRenderer
                     tessellator.draw();
 
                     tessellator.startDrawingQuads();
-                    tessellator.setNormal(0, 0, -1);
+                    tessellator.setNormal(0, 0, -1); //TODO don't think is needed for inventory
                     generatedGeometry(subIcon, type, -0.0635, -0.0635);
                     tessellator.draw();
 

@@ -2,7 +2,7 @@ package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.effects.client.RenderRadOverlay;
-import com.builtbroken.atomic.content.items.cell.ItemRendererCell;
+import com.builtbroken.atomic.content.items.cell.RendererItemCell;
 import com.builtbroken.atomic.content.machines.processing.extractor.TESRChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.reactor.fission.TESRReactorCell;
@@ -37,7 +37,7 @@ public class ASClientReg
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemExtractor.class, new TESRChemExtractor());
 
-        MinecraftForgeClient.registerItemRenderer(ASItems.itemFluidCell, new ItemRendererCell());
+        MinecraftForgeClient.registerItemRenderer(ASItems.itemFluidCell, new RendererItemCell());
     }
 
     @SubscribeEvent
