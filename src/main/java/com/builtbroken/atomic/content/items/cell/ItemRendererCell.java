@@ -72,7 +72,7 @@ public class ItemRendererCell implements IItemRenderer
             if (fluid != null)
             {
                 final IIcon maskIcon = ASItems.itemFluidCell.getIconFromDamage(-1);
-                final IIcon subIcon = fluid.getIcon();
+                final IIcon subIcon = fluid.getFlowingIcon() != null ? fluid.getFlowingIcon() : fluid.getIcon();
 
                 if (maskIcon != null && subIcon != null)
                 {
@@ -145,7 +145,7 @@ public class ItemRendererCell implements IItemRenderer
         IIcon icon = ASItems.itemFluidCell.getIconFromDamage(0);
         if (!type.equals(ItemRenderType.INVENTORY))
         {
-            ItemRenderer.renderItemIn2D(Tessellator.instance, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(),
+            ItemRenderer.renderItemIn2D(Tessellator.instance, icon.getMinU(), icon.getMaxV(), icon.getMaxU(), icon.getMinV(), icon.getIconWidth(),
                     icon.getIconHeight(), 0.0625F);
         }
         else
