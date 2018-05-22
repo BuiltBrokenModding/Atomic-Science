@@ -5,6 +5,7 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.commands.CommandAS;
+import com.builtbroken.atomic.content.items.cell.CreativeTabCells;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
@@ -96,6 +97,11 @@ public class AtomicScience
                 return ASItems.itemArmorHazmatHelm;
             }
         };
+
+        if(runningAsDev)
+        {
+            new CreativeTabCells();
+        }
 
         //Register content
         ASIndirectEffects.register();
