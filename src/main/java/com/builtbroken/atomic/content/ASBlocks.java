@@ -15,6 +15,7 @@ import com.builtbroken.atomic.content.machines.steam.funnel.TileEntitySteamFunne
 import com.builtbroken.atomic.content.machines.steam.generator.BlockSteamGenerator;
 import com.builtbroken.atomic.content.machines.steam.generator.ItemBlockSteamGenerator;
 import com.builtbroken.atomic.content.machines.steam.generator.TileEntitySteamGenerator;
+import com.builtbroken.atomic.proxy.ContentProxy;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 
@@ -22,7 +23,7 @@ import net.minecraft.block.Block;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
-public class ASBlocks
+public class ASBlocks extends ContentProxy
 {
     public static Block blockRadioactiveDirt;
     public static Block blockRadioactiveGrass;
@@ -36,7 +37,13 @@ public class ASBlocks
     public static Block blockChemExtractor;
     public static Block blockChemBoiler;
 
-    public static void register()
+    public ASBlocks()
+    {
+        super("blocks");
+    }
+
+    @Override
+    public void preInit()
     {
         GameRegistry.registerBlock(blockRadioactiveDirt = new BlockRadioactiveDirt(), "radioactive_dirt");
         GameRegistry.registerBlock(blockRadioactiveGrass = new BlockRadioactiveGrass(), "radioactive_grass");

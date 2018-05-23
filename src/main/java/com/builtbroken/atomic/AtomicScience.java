@@ -5,7 +5,6 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.commands.CommandAS;
-import com.builtbroken.atomic.content.items.cell.CreativeTabCells;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
@@ -77,17 +76,6 @@ public class AtomicScience
     {
         mainConfig = new Configuration(event.getSuggestedConfigurationFile(), "/bbm/AtomicScience/Main.cfg");
 
-        //Register handlers
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, sideProxy);
-        FMLCommonHandler.instance().bus().register(new PlacementQueue());
-        MapHandler.register();
-        ThermalHandler.init();
-        MassHandler.init();
-
-        proxyLoader = new ProxyLoader("AS");
-        proxyLoader.add(sideProxy);
-        proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
-
         //Create tab
         creativeTab = new CreativeTabs(DOMAIN)
         {
@@ -98,16 +86,22 @@ public class AtomicScience
             }
         };
 
-        if(runningAsDev)
-        {
-            new CreativeTabCells();
-        }
+        //Register handlers
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, sideProxy);
+        FMLCommonHandler.instance().bus().register(new PlacementQueue());
+        MapHandler.register();
+        ThermalHandler.init();
+        MassHandler.init();
+
+        proxyLoader = new ProxyLoader("AS");
+        proxyLoader.add(sideProxy);
+        proxyLoader.add(new ASFluids.Proxy()); //must run before items and blocks
+        proxyLoader.add(new ASItems());
+        proxyLoader.add(new ASBlocks());
+        proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
 
         //Register content
         ASIndirectEffects.register();
-        ASFluids.register(); //must run before items and blocks
-        ASItems.register();
-        ASBlocks.register();
 
         //Proxy
         proxyLoader.preInit();

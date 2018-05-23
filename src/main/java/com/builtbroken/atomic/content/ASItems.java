@@ -6,19 +6,27 @@ import com.builtbroken.atomic.content.items.ItemFuelRod;
 import com.builtbroken.atomic.content.items.ItemHazmat;
 import com.builtbroken.atomic.content.items.ItemHeatProbe;
 import com.builtbroken.atomic.content.items.ItemRadioactive;
+import com.builtbroken.atomic.content.items.cell.CreativeTabCells;
 import com.builtbroken.atomic.content.items.cell.ItemFluidCell;
 import com.builtbroken.atomic.content.items.cell.ItemPoweredCell;
+import com.builtbroken.atomic.proxy.ContentProxy;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
-public class ASItems
+public class ASItems extends ContentProxy
 {
     //Armor
     public static ItemHazmat itemArmorHazmatHelm;
@@ -50,7 +58,15 @@ public class ASItems
     public static final int TICKS_MIN = TICKS_SECOND * 60;
     public static final int TICKS_HOUR = TICKS_MIN * 60;
 
-    public static void register()
+    List<ItemStack> oreDictionaryDust = new ArrayList();
+
+    public ASItems()
+    {
+        super("items");
+    }
+
+    @Override
+    public void preInit()
     {
         //Armor
         ItemHazmat.hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", 0, new int[]{0, 0, 0, 0}, 0);
@@ -91,5 +107,46 @@ public class ASItems
 
         //Tools
         GameRegistry.registerItem(itemHeatProbe = new ItemHeatProbe(), "heat_probe");
+
+        if(AtomicScience.runningAsDev)
+        {
+            new CreativeTabCells();
+        }
+    }
+
+    @Override
+    public void postInit()
+    {
+        //Search all orenames
+        for (String ore_name : OreDictionary.getOreNames())
+        {
+            //Only get dust
+            if (ore_name.contains("dust"))
+            {
+                //Get all subtypes
+                for (ItemStack stack : OreDictionary.getOres(ore_name))
+                {
+                    if (stack != null && stack.getItem() != null)
+                    {
+                        //Confirm that the dust turns into an ingot
+                        ItemStack smeltingResult = FurnaceRecipes.smelting().getSmeltingResult(stack);
+                        if (smeltingResult != null && smeltingResult.getItem() != null)
+                        {
+                            for (int id : OreDictionary.getOreIDs(smeltingResult))
+                            {
+                                String name = OreDictionary.getOreName(id);
+                                if (name != null && name.contains("ingot"))
+                                {
+                                    ItemStack stack1 = stack.copy();
+                                    stack1.stackSize = 1;
+                                    oreDictionaryDust.add(stack1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.proxy.ContentProxy;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -53,14 +54,23 @@ public enum ASFluids
         this.makeBlock = makeBlock;
     }
 
-    public static void register()
+    public static class Proxy extends ContentProxy
     {
-        for (ASFluids fluid : values())
+        public Proxy()
         {
-            fluid.fluid = new Fluid(fluid.id);
-            if (!FluidRegistry.registerFluid(fluid.fluid))
+            super("fluids");
+        }
+
+        @Override
+        public void preInit()
+        {
+            for (ASFluids fluid : values())
             {
-                fluid.fluid = FluidRegistry.getFluid(fluid.id);
+                fluid.fluid = new Fluid(fluid.id);
+                if (!FluidRegistry.registerFluid(fluid.fluid))
+                {
+                    fluid.fluid = FluidRegistry.getFluid(fluid.id);
+                }
             }
         }
     }
