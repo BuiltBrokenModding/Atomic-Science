@@ -43,6 +43,7 @@ public class GuiChemBoiler extends GuiContainerBase<TileEntityChemBoiler>
         renderFurnaceCookArrow(x, y, host.processTimer, TileEntityChemBoiler.PROCESSING_TIME);
 
         drawFluidTank(8, 20, host.getInputTank());
-        drawFluidTank(155, 20, host.getWasteTank());
+        drawFluidTank(135, 5, host.getWasteTank());
+        drawFluidTank(153, 5, host.getHexTank());
     }
 }

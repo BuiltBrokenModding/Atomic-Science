@@ -17,13 +17,13 @@ public class TESRChemBoiler extends TileEntitySpecialRenderer
 {
     IModelCustom model;
 
-    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/chem.extractor.png");
+    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/chem.boiler.png");
 
-    final String[] movingParts = new String[]{"MAGNET1", "MAGNET2", "MAIN_CHAMBER"};
+    final String[] movingParts = new String[]{"rrot", "srot"};
 
     public TESRChemBoiler()
     {
-        model = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chem.extractor.obj"));
+        model = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chem.boiler.obj"));
     }
 
     @Override
@@ -40,16 +40,16 @@ public class TESRChemBoiler extends TileEntitySpecialRenderer
             switch (facing)
             {
                 case NORTH:
-                    GL11.glRotatef(-90, 0, 1, 0);
+                    //Good by default
                     break;
                 case SOUTH:
-                    GL11.glRotatef(90, 0, 1, 0);
-                    break;
-                case EAST:
                     GL11.glRotatef(180, 0, 1, 0);
                     break;
+                case EAST:
+                    GL11.glRotatef(-90, 0, 1, 0);
+                    break;
                 case WEST:
-                    //Good by default
+                    GL11.glRotatef(90, 0, 1, 0);
                     break;
             }
 
@@ -59,9 +59,7 @@ public class TESRChemBoiler extends TileEntitySpecialRenderer
             model.renderAllExcept(movingParts);
 
             //Render rotating parts
-            GL11.glTranslated(-0.1875,0.4,  0);
-            GL11.glRotatef(((TileEntityChemBoiler) tile).rotate(deltaFrame), 0, 0, 1);
-            GL11.glTranslated(0.1875,-0.4,  0);
+            GL11.glRotatef(((TileEntityChemBoiler) tile).rotate(deltaFrame), 0, 1, 0);
             model.renderOnly(movingParts);
         }
 

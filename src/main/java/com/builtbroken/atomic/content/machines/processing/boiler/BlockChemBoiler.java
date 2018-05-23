@@ -1,7 +1,6 @@
 package com.builtbroken.atomic.content.machines.processing.boiler;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
@@ -10,8 +9,10 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -33,7 +34,7 @@ public class BlockChemBoiler extends BlockContainer
     @Override
     public TileEntity createNewTileEntity(World world, int meta)
     {
-        return new TileEntityChemExtractor();
+        return new TileEntityChemBoiler();
     }
 
     @Override
@@ -52,7 +53,27 @@ public class BlockChemBoiler extends BlockContainer
     {
         if (!world.isRemote)
         {
-            player.openGui(AtomicScience.INSTANCE, 0, world, x, y, z);
+            if (player.getHeldItem() != null && (player.getHeldItem().getItem() == Items.stick || player.getHeldItem().getItem() == Items.slime_ball)) //TODO replace with wrench
+            {
+                TileEntity tile = world.getTileEntity(x, y, z);
+                if (tile instanceof TileEntityChemBoiler)
+                {
+                    if (player.getHeldItem().getItem() == Items.slime_ball)
+                    {
+                        ((TileEntityChemBoiler) tile).outputSideWasteTank[side] = !((TileEntityChemBoiler) tile).outputSideWasteTank[side];
+                        player.addChatComponentMessage(new ChatComponentText("Side set to output waste water -> " + ((TileEntityChemBoiler) tile).outputSideWasteTank[side]));
+                    }
+                    else
+                    {
+                        ((TileEntityChemBoiler) tile).outputSideHexTank[side] = !((TileEntityChemBoiler) tile).outputSideHexTank[side];
+                        player.addChatComponentMessage(new ChatComponentText("Side set to output hexafluoride gas -> " + ((TileEntityChemBoiler) tile).outputSideHexTank[side]));
+                    }
+                }
+            }
+            else
+            {
+                player.openGui(AtomicScience.INSTANCE, 0, world, x, y, z);
+            }
         }
         return true;
     }

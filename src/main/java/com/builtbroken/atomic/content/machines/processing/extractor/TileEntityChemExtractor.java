@@ -70,23 +70,29 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     @Override
     protected void doProcess()
     {
+        //TODO move recipe to object
 
         //Uranium Ore recipe
         ItemStack inputItem = getStackInSlot(SLOT_ITEM_INPUT);
-        //TODO move recipe to object
-
-        if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem()
-                && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE)
-                && canOutputFluid(getOutputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE))
-
+        if(inputItem != null)
         {
-            ItemStack outputStack = new ItemStack(ASItems.itemYellowCake, ConfigRecipe.YELLOW_CAKE_PER_ORE, 0);
-            if (hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
+            if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem()
+                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE)
+                    && canOutputFluid(getOutputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE))
+
             {
-                decrStackSize(SLOT_ITEM_INPUT, 1);
-                getInputTank().drain(ConfigRecipe.WATER_USED_YELLOW_CAKE, true);
-                getOutputTank().fill(new FluidStack(ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE), true);
-                addToOutput(outputStack, SLOT_ITEM_OUTPUT);
+                ItemStack outputStack = new ItemStack(ASItems.itemYellowCake, ConfigRecipe.YELLOW_CAKE_PER_ORE, 0);
+                if (hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
+                {
+                    decrStackSize(SLOT_ITEM_INPUT, 1);
+                    getInputTank().drain(ConfigRecipe.WATER_USED_YELLOW_CAKE, true);
+                    getOutputTank().fill(new FluidStack(ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE), true);
+                    addToOutput(outputStack, SLOT_ITEM_OUTPUT);
+                }
+            }
+            else if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem())
+            {
+
             }
         }
     }

@@ -15,7 +15,8 @@ public class ContainerChemBoiler extends ContainerBase<TileEntityChemBoiler>
     {
         super(player, tile);
         addSlotToContainer(new Slot(tile, TileEntityChemBoiler.SLOT_FLUID_INPUT, 25, 52));
-        addSlotToContainer(new Slot(tile, TileEntityChemBoiler.SLOT_WASTE_FLUID, 136, 52));
+        addSlotToContainer(new Slot(tile, TileEntityChemBoiler.SLOT_WASTE_FLUID, 134, 57));
+        addSlotToContainer(new Slot(tile, TileEntityChemBoiler.SLOT_HEX_FLUID, 134 + 18, 57));
 
         addSlotToContainer(new SlotFurnace(player, tile, TileEntityChemBoiler.SLOT_ITEM_OUTPUT, 100, 30));
 
