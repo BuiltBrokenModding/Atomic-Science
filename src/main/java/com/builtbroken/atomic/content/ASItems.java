@@ -84,8 +84,8 @@ public class ASItems extends ContentProxy
         itemFluidCell.addSupportedFluid(ASFluids.DEUTERIUM.fluid, AtomicScience.PREFIX + "cell_deuterium", itemFluidCell.getUnlocalizedName() + ".deuterium");
 
         GameRegistry.registerItem(itemPoweredCell = new ItemPoweredCell(), "powered_cell");
-        itemPoweredCell.addSupportedFluid(ASFluids.ANTIMATTER.fluid, AtomicScience.PREFIX + "cell_antimatter", itemFluidCell.getUnlocalizedName() + ".antimatter");
-        itemPoweredCell.addSupportedFluid(ASFluids.STRANGE_MATTER.fluid, AtomicScience.PREFIX + "cell_strange_matter", itemFluidCell.getUnlocalizedName() + ".strange_matter");
+        itemPoweredCell.addSupportedFluid(ASFluids.ANTIMATTER.fluid, AtomicScience.PREFIX + "cell_antimatter", itemPoweredCell.getUnlocalizedName() + ".antimatter");
+        itemPoweredCell.addSupportedFluid(ASFluids.STRANGE_MATTER.fluid, AtomicScience.PREFIX + "cell_strange_matter", itemPoweredCell.getUnlocalizedName() + ".strange_matter");
 
         //Machine inputs
         GameRegistry.registerItem(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile", "cell_fissile_fuel",
