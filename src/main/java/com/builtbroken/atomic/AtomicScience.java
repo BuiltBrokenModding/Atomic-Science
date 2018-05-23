@@ -94,12 +94,12 @@ public class AtomicScience
         MassHandler.init();
 
         proxyLoader = new ProxyLoader("AS");
-        proxyLoader.add(sideProxy);
         proxyLoader.add(new ASFluids.Proxy()); //must run before items and blocks
         proxyLoader.add(new ASItems());
         proxyLoader.add(new ASBlocks());
         proxyLoader.add(PacketSystem.INSTANCE);
         proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
+        proxyLoader.add(sideProxy);
 
         //Register content
         ASIndirectEffects.register();
