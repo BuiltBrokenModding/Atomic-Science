@@ -1,8 +1,6 @@
 package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.content.blocks.BlockRadioactiveDirt;
-import com.builtbroken.atomic.content.blocks.BlockRadioactiveGrass;
 import com.builtbroken.atomic.content.blocks.BlockUraniumOre;
 import com.builtbroken.atomic.content.machines.processing.boiler.BlockChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
@@ -48,8 +46,8 @@ public class ASBlocks extends ContentProxy
     @Override
     public void preInit()
     {
-        GameRegistry.registerBlock(blockRadioactiveDirt = new BlockRadioactiveDirt(), "radioactive_dirt");
-        GameRegistry.registerBlock(blockRadioactiveGrass = new BlockRadioactiveGrass(), "radioactive_grass");
+        //GameRegistry.registerBlock(blockRadioactiveDirt = new BlockRadioactiveDirt(), "radioactive_dirt");
+        //GameRegistry.registerBlock(blockRadioactiveGrass = new BlockRadioactiveGrass(), "radioactive_grass");
         GameRegistry.registerBlock(blockUraniumOre = new BlockUraniumOre(), "uranium_ore");
 
         GameRegistry.registerBlock(blockReactorCell = new BlockReactorCell(), "reactor_cell");

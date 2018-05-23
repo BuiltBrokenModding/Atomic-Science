@@ -128,6 +128,17 @@ public class ItemFluidCell extends Item implements IFluidContainerItem
     //----------------------------------------------------------------
 
     @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        FluidStack fluidStack = getFluid(stack);
+        if(fluidStack != null && supportedFluidToLocalization.containsKey(fluidStack.getFluid()))
+        {
+            return supportedFluidToLocalization.get(fluidStack.getFluid());
+        }
+        return super.getUnlocalizedName();
+    }
+
+    @Override
     public int getItemStackLimit(ItemStack stack)
     {
         return isEmpty(stack) ? Items.bucket.getItemStackLimit(stack) : 1;

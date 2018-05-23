@@ -32,7 +32,7 @@ public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
     {
         super(hazmatArmorMaterial, 0, slot);
         this.setCreativeTab(AtomicScience.creativeTab);
-        this.setUnlocalizedName("hazmat." + type);
+        this.setUnlocalizedName(AtomicScience.PREFIX + "hazmat." + type);
         this.setTextureName(ARMOR_TEXTURE_FOLDER + "hazmat_" + type);
         this.setMaxDamage(200000);
     }

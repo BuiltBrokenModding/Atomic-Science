@@ -1,0 +1,61 @@
+
+## Blocks
+tile.atomicscience:ore.uranium.name=Uranium Ore
+
+## Machines
+tile.atomicscience:reactor.cell.name=Fission Reactor Core
+tile.atomicscience:steam.funnel.name=Steam Funnel
+
+tile.atomicscience:steam.generator.name=Steam Turbine
+tile.atomicscience:steam.generator.0.name=UE Steam Turbine
+tile.atomicscience:steam.generator.1.name=RF Steam Turbine
+tile.atomicscience:steam.generator.2.name=EU Steam Turbine
+
+tile.atomicscience:chem.centrifuge.name=Chemical Centrifuge
+tile.atomicscience:chem.centrifuge.gui.name=Chemical Centrifuge
+
+tile.atomicscience:chem.boiler.name=Chemical Boiler
+tile.atomicscience:chem.boiler.gui.name=Chemical Boiler
+
+tile.atomicscience:chem.extractor.name=Chemical Extractor
+tile.atomicscience:chem.extractor.gui.name=Chemical Extractor
+
+## Items
+item.atomicscience:hazmat.mask.name=Hazmat Mask
+item.atomicscience:hazmat.body.name=Hazmat Upper body
+item.atomicscience:hazmat.leggings.name=Hazmat Lower Body
+item.atomicscience:hazmat.boots.name=Hazmat Boots
+
+item.atomicscience:cell.fluid.name=Fluid Cell
+item.atomicscience:cell.fluid.water.name=Water Cell
+item.atomicscience:cell.fluid.deuterium.name=Deuterium Cell
+
+item.atomicscience:cell.powered.name=Powered Cell
+item.atomicscience:cell.powered.antimatter.name=Antimatter Cell
+item.atomicscience:cell.powered.strange_matter.name=Strange Matter Cell
+
+item.atomicscience:cell.fuel.fissile.name=Fission Fuel Rod
+item.atomicscience:cell.fuel.breeder.name=Fission Breeder Rod
+
+item.atomicscience:cell.empty.name=Empty Cell
+
+item.atomicscience:cake.yellow.name=Yellow Cake
+item.atomicscience:uranium.235.name=Uranium 235
+item.atomicscience:uranium.238.name=Uranium 238
+
+item.atomicscience:processing.waste.name=Toxic Mineral Waste
+item.atomicscience:toxic.waste.name=Toxic Waste
+
+## Tools
+item.atomicscience:heat.probe.name=Thermal Probe
+
+## Fluids
+fluid.atomicscience:antimatter=Antimatter
+fluid.atomicscience:strange_matter=Strange Matter
+fluid.atomicscience:deuterium=Deuterium
+fluid.atomicscience:steam=Steam
+fluid.atomicscience:toxic_waste=Toxic Waste
+fluid.atomicscience:mineral_waste=Contaminated Mineral Sludge
+fluid.atomicscience:contaminated_mineral_water=Contaminated Mineral Solution
+fluid.atomicscience:contaminated_water=Contaminated Water
+fluid.atomicscience:uranium_hexafluoride=Uranium Hexaflouride

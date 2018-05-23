@@ -67,6 +67,10 @@ public enum ASFluids
             for (ASFluids fluid : values())
             {
                 fluid.fluid = new Fluid(fluid.id);
+                if (!fluid.id.startsWith(AtomicScience.PREFIX))
+                {
+                    fluid.fluid.setUnlocalizedName(AtomicScience.PREFIX + fluid.id);
+                }
                 if (!FluidRegistry.registerFluid(fluid.fluid))
                 {
                     fluid.fluid = FluidRegistry.getFluid(fluid.id);
