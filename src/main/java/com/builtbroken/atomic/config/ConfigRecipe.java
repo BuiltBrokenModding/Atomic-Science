@@ -31,4 +31,12 @@ public class ConfigRecipe
 
     public static int SOLID_WASTE_YELLOWCAKE = 1; //TODO maybe make a % of an item, with progress bar to full item
     public static int SOLID_WASTE_URANIUM_ORE = 3; //TODO maybe make a % of an item, with progress bar to full item
+
+    //-----------------------------------
+    //-----Centrifuge
+    //-----------------------------------
+    public static int URANIUM_HEX_PER_CENTRIFUGE = 200;
+    public static int MINERAL_WASTE_WATER_PER_CENTRIFUGE = 1000;
+    public static int MINERAL_WASTE_WATER_PER_WATER = 1;
+    public static int SOLID_WASTE_PER_CENTRIFUGE = 1;
 }

@@ -5,6 +5,8 @@ import com.builtbroken.atomic.content.effects.client.RenderRadOverlay;
 import com.builtbroken.atomic.content.items.cell.RendererItemCell;
 import com.builtbroken.atomic.content.machines.processing.boiler.TESRChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.TESRChemCentrifuge;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.extractor.TESRChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.reactor.fission.TESRReactorCell;
@@ -39,6 +41,7 @@ public class ASClientReg
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemExtractor.class, new TESRChemExtractor());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemBoiler.class, new TESRChemBoiler());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemCentrifuge.class, new TESRChemCentrifuge());
 
         MinecraftForgeClient.registerItemRenderer(ASItems.itemFluidCell, new RendererItemCell());
     }
