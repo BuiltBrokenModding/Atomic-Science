@@ -1,3 +1,6 @@
+## Creative Tabs
+itemGroup.atomicscience=Atomic Science
+itemGroup.fluid.cells=[Dev] Fluid Cells
 
 ## Blocks
 tile.atomicscience:ore.uranium.name=Uranium Ore

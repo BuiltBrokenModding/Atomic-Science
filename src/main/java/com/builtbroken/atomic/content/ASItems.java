@@ -102,12 +102,12 @@ public class ASItems extends ContentProxy
                 .setCreativeTab(AtomicScience.creativeTab), "cell_empty");
 
         GameRegistry.registerItem(itemYellowCake = new ItemRadioactive("cake.yellow", "yellow_cake", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "yellow_cake");
-        GameRegistry.registerItem(itemUranium235 = new ItemRadioactive("uranium.235", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235), "uranium_235");
-        GameRegistry.registerItem(itemUranium238 = new ItemRadioactive("uranium.238", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238), "uranium_238");
+        GameRegistry.registerItem(itemUranium235 = new ItemRadioactive("uranium.235", "uranium.235", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235), "uranium_235");
+        GameRegistry.registerItem(itemUranium238 = new ItemRadioactive("uranium.238", "uranium.238", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238), "uranium_238");
 
         //Waste items
-        GameRegistry.registerItem(itemProcessingWaste = new ItemRadioactive("processing.waste", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "processing_waste");
-        GameRegistry.registerItem(itemToxicWaste = new ItemRadioactive("toxic.waste", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "toxic_waste");
+        GameRegistry.registerItem(itemProcessingWaste = new ItemRadioactive("processing.waste", "processing.waste", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "processing_waste");
+        GameRegistry.registerItem(itemToxicWaste = new ItemRadioactive("toxic.waste", "toxic.waste", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "toxic_waste");
 
         //Tools
         GameRegistry.registerItem(itemHeatProbe = new ItemHeatProbe(), "heat_probe");
