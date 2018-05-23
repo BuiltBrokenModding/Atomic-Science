@@ -98,6 +98,7 @@ public class AtomicScience
         proxyLoader.add(new ASFluids.Proxy()); //must run before items and blocks
         proxyLoader.add(new ASItems());
         proxyLoader.add(new ASBlocks());
+        proxyLoader.add(PacketSystem.INSTANCE);
         proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
 
         //Register content
@@ -110,8 +111,6 @@ public class AtomicScience
     @Mod.EventHandler
     public void init(FMLInitializationEvent evt)
     {
-        PacketSystem.register();
-
         //Proxy
         proxyLoader.init();
     }
@@ -121,6 +120,13 @@ public class AtomicScience
     {
         //Proxy
         proxyLoader.postInit();
+    }
+
+    @Mod.EventHandler
+    public void loadComplete(FMLLoadCompleteEvent event)
+    {
+        //Proxy
+        proxyLoader.loadComplete();
     }
 
     @Mod.EventHandler

@@ -11,6 +11,8 @@ import com.builtbroken.atomic.content.items.cell.ItemFluidCell;
 import com.builtbroken.atomic.content.items.cell.ItemPoweredCell;
 import com.builtbroken.atomic.proxy.ContentProxy;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -50,6 +52,7 @@ public class ASItems extends ContentProxy
 
     //Waste items
     public static Item itemProcessingWaste;
+    public static Item itemToxicWaste;
 
     //Tools
     public static Item itemHeatProbe;
@@ -58,7 +61,7 @@ public class ASItems extends ContentProxy
     public static final int TICKS_MIN = TICKS_SECOND * 60;
     public static final int TICKS_HOUR = TICKS_MIN * 60;
 
-    List<ItemStack> oreDictionaryDust = new ArrayList();
+    private static List<ItemStack> oreDictionaryDust = new ArrayList();
 
     public ASItems()
     {
@@ -104,24 +107,28 @@ public class ASItems extends ContentProxy
 
         //Waste items
         GameRegistry.registerItem(itemProcessingWaste = new ItemRadioactive("processing.waste", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "processing_waste");
+        GameRegistry.registerItem(itemToxicWaste = new ItemRadioactive("toxic.waste", "uranium", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "toxic_waste");
 
         //Tools
         GameRegistry.registerItem(itemHeatProbe = new ItemHeatProbe(), "heat_probe");
 
-        if(AtomicScience.runningAsDev)
+        if (AtomicScience.runningAsDev)
         {
             new CreativeTabCells();
         }
     }
 
     @Override
-    public void postInit()
+    public void loadComplete()
     {
+        oreDictionaryDust.clear();
+        oreDictionaryDust.add(new ItemStack(Items.redstone));
+        oreDictionaryDust.add(new ItemStack(Items.glowstone_dust));
         //Search all orenames
         for (String ore_name : OreDictionary.getOreNames())
         {
             //Only get dust
-            if (ore_name.contains("dust"))
+            if (ore_name.toLowerCase().contains("dust"))
             {
                 //Get all subtypes
                 for (ItemStack stack : OreDictionary.getOres(ore_name))
@@ -135,7 +142,7 @@ public class ASItems extends ContentProxy
                             for (int id : OreDictionary.getOreIDs(smeltingResult))
                             {
                                 String name = OreDictionary.getOreName(id);
-                                if (name != null && name.contains("ingot"))
+                                if (name != null && (name.toLowerCase().contains("ingot") || name.toLowerCase().equalsIgnoreCase("stoneDust")))
                                 {
                                     ItemStack stack1 = stack.copy();
                                     stack1.stackSize = 1;
@@ -148,5 +155,15 @@ public class ASItems extends ContentProxy
                 }
             }
         }
+    }
+
+    public static ItemStack getRandomDust()
+    {
+        int number = (int) Math.min(oreDictionaryDust.size() - 1, Math.random() * oreDictionaryDust.size());
+        if (number >= 0 && number < oreDictionaryDust.size())
+        {
+            return oreDictionaryDust.get(number);
+        }
+        return new ItemStack(Blocks.dirt);
     }
 }

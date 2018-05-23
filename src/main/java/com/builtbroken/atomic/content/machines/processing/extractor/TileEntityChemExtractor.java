@@ -90,9 +90,24 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
                     addToOutput(outputStack, SLOT_ITEM_OUTPUT);
                 }
             }
-            else if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem())
+            else if (ASItems.itemProcessingWaste == inputItem.getItem())
             {
+                ItemStack outputStack;
 
+                if(Math.random() > 0.4) //TODO switch over to progress bar/tank so output always contains toxic waste dust
+                {
+                    outputStack = new ItemStack(ASItems.itemToxicWaste, 1, 0);
+                }
+                else //TODO add stone dust with high drop rate
+                {
+                    outputStack = ASItems.getRandomDust();
+                }
+
+                if(hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
+                {
+                    decrStackSize(SLOT_ITEM_INPUT, 1);
+                    addToOutput(outputStack, SLOT_ITEM_OUTPUT);
+                }
             }
         }
     }
@@ -104,7 +119,8 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
         if (stack != null)
         {
             return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem()
-                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE);  //TODO move recipe to object
+                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE)
+                    || ASItems.itemProcessingWaste == stack.getItem();  //TODO move recipe to object
         }
         return false;
     }
@@ -282,7 +298,8 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     {
         if (slot == SLOT_ITEM_INPUT)
         {
-            return stack.getItem() == Item.getItemFromBlock(ASBlocks.blockUraniumOre);
+            return stack.getItem() == Item.getItemFromBlock(ASBlocks.blockUraniumOre)
+                    || stack.getItem() == ASItems.itemProcessingWaste;
         }
         return false;
     }

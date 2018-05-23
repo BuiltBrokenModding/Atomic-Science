@@ -3,6 +3,7 @@ package com.builtbroken.atomic.lib.network.netty;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.lib.network.IPacket;
 import com.builtbroken.atomic.lib.transform.IPosWorld;
+import com.builtbroken.atomic.proxy.ContentProxy;
 import com.builtbroken.jlib.data.vector.IPos3D;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
@@ -19,26 +20,24 @@ import java.util.EnumMap;
 /**
  * @author tgame14
  * @since 26/05/14
+ *
+ * Modified for current mod by Dark 5/?/2018
  */
-public class PacketSystem
+public class PacketSystem extends ContentProxy
 {
-    public static PacketSystem INSTANCE;
+    public static PacketSystem INSTANCE = new PacketSystem(AtomicScience.DOMAIN);
 
     public final String channel;
     protected EnumMap<Side, FMLEmbeddedChannel> channelEnumMap;
 
     public PacketSystem(String channel)
     {
+        super("network");
         this.channel = channel;
     }
 
-    public static void register()
-    {
-        INSTANCE = new PacketSystem(AtomicScience.DOMAIN);
-        INSTANCE.init();
-    }
-
-    private void init()
+    @Override
+    public void init()
     {
         channelEnumMap = NetworkRegistry.INSTANCE.newChannel(channel, new PacketEncoderDecoderHandler(), new PacketChannelInboundHandler());
     }

@@ -50,6 +50,7 @@ public class ProxyLoader extends ContentProxy
         proxyList.add(proxy);
     }
 
+    @Override
     public void preInit()
     {
         for (ContentProxy proxy : proxyList)
@@ -58,6 +59,7 @@ public class ProxyLoader extends ContentProxy
         }
     }
 
+    @Override
     public void init()
     {
         for (ContentProxy proxy : proxyList)
@@ -66,11 +68,21 @@ public class ProxyLoader extends ContentProxy
         }
     }
 
+    @Override
     public void postInit()
     {
         for (ContentProxy proxy : proxyList)
         {
             proxy.postInit();
+        }
+    }
+
+    @Override
+    public void loadComplete()
+    {
+        for (ContentProxy proxy : proxyList)
+        {
+            proxy.loadComplete();
         }
     }
 

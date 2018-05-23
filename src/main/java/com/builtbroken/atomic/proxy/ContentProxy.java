@@ -33,6 +33,11 @@ public class ContentProxy
 
     }
 
+    public void loadComplete()
+    {
+
+    }
+
     public static boolean doesClassExist(String className)
     {
         try
