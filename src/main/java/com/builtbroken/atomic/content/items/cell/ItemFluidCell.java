@@ -57,7 +57,8 @@ public class ItemFluidCell extends Item implements IFluidContainerItem
         FluidStack fluidStack = getFluid(cell);
         if(fluidStack != null)
         {
-            lines.add("Fluid: " + fluidStack.getLocalizedName() + " Amount: " + fluidStack.amount);
+            lines.add("Fluid: " + fluidStack.getLocalizedName());
+            lines.add("Amount: " + fluidStack.amount);
         }
     }
 
