@@ -1,10 +1,16 @@
 package com.builtbroken.atomic.config;
 
+import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.proxy.ContentProxy;
+import net.minecraftforge.common.config.Configuration;
+
+import java.io.File;
+
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/20/2018.
  */
-public class ConfigRecipe
+public class ConfigRecipe extends ContentProxy
 {
     //-----------------------------------
     //-----Extractor
@@ -39,4 +45,15 @@ public class ConfigRecipe
     public static int MINERAL_WASTE_WATER_PER_CENTRIFUGE = 1000;
     public static int MINERAL_WASTE_WATER_PER_WATER = 1;
     public static int SOLID_WASTE_PER_CENTRIFUGE = 1;
+
+    public ConfigRecipe()
+    {
+        super("config.recipe");
+    }
+
+    @Override
+    public void preInit()
+    {
+        Configuration configuration = new Configuration(new File(AtomicScience.configFolder, "Recipes.cfg"), AtomicScience.VERSION);
+    }
 }
