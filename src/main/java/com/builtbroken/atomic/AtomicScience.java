@@ -3,6 +3,7 @@ package com.builtbroken.atomic;
 import com.builtbroken.atomic.config.ConfigProxy;
 import com.builtbroken.atomic.content.*;
 import com.builtbroken.atomic.content.commands.CommandAS;
+import com.builtbroken.atomic.content.machines.processing.extractor.recipe.ChemExtractorRecipes;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
@@ -22,9 +23,10 @@ import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
 
 /**
  * Main mod class, handles references and registry calls
@@ -66,13 +68,14 @@ public class AtomicScience
     @SidedProxy(clientSide = "com.builtbroken.atomic.ClientProxy", serverSide = "com.builtbroken.atomic.ServerProxy")
     public static CommonProxy sideProxy;
 
-    public static Configuration mainConfig;
     public static ProxyLoader proxyLoader;
+
+    public static File configFolder;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        mainConfig = new Configuration(event.getSuggestedConfigurationFile(), "/bbm/AtomicScience/Main.cfg");
+        configFolder = new File(event.getSuggestedConfigurationFile(), "/bbm/AtomicScience");
 
         //Create tab
         creativeTab = new CreativeTabs(DOMAIN)
@@ -93,10 +96,17 @@ public class AtomicScience
 
         proxyLoader = new ProxyLoader("AS");
         proxyLoader.add(new ConfigProxy());
+
+        //Content
         proxyLoader.add(new ASFluids.Proxy()); //must run before items and blocks
         proxyLoader.add(new ASItems());
         proxyLoader.add(new ASBlocks());
         proxyLoader.add(new ASWorldGen());
+
+        //Recipes
+        proxyLoader.add(ChemExtractorRecipes.INSTANCE);
+
+        //Handlers
         proxyLoader.add(PacketSystem.INSTANCE);
         proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
         proxyLoader.add(sideProxy);

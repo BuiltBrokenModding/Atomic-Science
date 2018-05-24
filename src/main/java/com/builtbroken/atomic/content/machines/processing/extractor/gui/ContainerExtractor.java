@@ -1,5 +1,6 @@
-package com.builtbroken.atomic.content.machines.processing.extractor;
+package com.builtbroken.atomic.content.machines.processing.extractor.gui;
 
+import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.lib.gui.ContainerBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;

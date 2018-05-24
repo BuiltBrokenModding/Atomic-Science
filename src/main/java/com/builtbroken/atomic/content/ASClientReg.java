@@ -9,8 +9,8 @@ import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemB
 import com.builtbroken.atomic.content.machines.processing.centrifuge.RenderItemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TESRChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
-import com.builtbroken.atomic.content.machines.processing.extractor.RenderItemExtractor;
-import com.builtbroken.atomic.content.machines.processing.extractor.TESRChemExtractor;
+import com.builtbroken.atomic.content.machines.processing.extractor.render.RenderItemExtractor;
+import com.builtbroken.atomic.content.machines.processing.extractor.render.TESRChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.reactor.fission.RenderItemReactor;
 import com.builtbroken.atomic.content.machines.reactor.fission.TESRReactorCell;
