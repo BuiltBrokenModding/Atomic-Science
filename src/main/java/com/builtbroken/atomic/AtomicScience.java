@@ -1,9 +1,6 @@
 package com.builtbroken.atomic;
 
-import com.builtbroken.atomic.content.ASBlocks;
-import com.builtbroken.atomic.content.ASFluids;
-import com.builtbroken.atomic.content.ASIndirectEffects;
-import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.content.*;
 import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
@@ -97,6 +94,7 @@ public class AtomicScience
         proxyLoader.add(new ASFluids.Proxy()); //must run before items and blocks
         proxyLoader.add(new ASItems());
         proxyLoader.add(new ASBlocks());
+        proxyLoader.add(new ASWorldGen());
         proxyLoader.add(PacketSystem.INSTANCE);
         proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
         proxyLoader.add(sideProxy);
