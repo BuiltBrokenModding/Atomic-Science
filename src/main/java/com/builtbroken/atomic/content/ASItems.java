@@ -11,18 +11,10 @@ import com.builtbroken.atomic.content.items.cell.ItemFluidCell;
 import com.builtbroken.atomic.content.items.cell.ItemPoweredCell;
 import com.builtbroken.atomic.proxy.ContentProxy;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.oredict.OreDictionary;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -60,8 +52,6 @@ public class ASItems extends ContentProxy
     public static final int TICKS_SECOND = 20;
     public static final int TICKS_MIN = TICKS_SECOND * 60;
     public static final int TICKS_HOUR = TICKS_MIN * 60;
-
-    private static List<ItemStack> oreDictionaryDust = new ArrayList();
 
     public ASItems()
     {
@@ -116,54 +106,5 @@ public class ASItems extends ContentProxy
         {
             new CreativeTabCells();
         }
-    }
-
-    @Override
-    public void loadComplete()
-    {
-        oreDictionaryDust.clear();
-        oreDictionaryDust.add(new ItemStack(Items.redstone));
-        oreDictionaryDust.add(new ItemStack(Items.glowstone_dust));
-        //Search all orenames
-        for (String ore_name : OreDictionary.getOreNames())
-        {
-            //Only get dust
-            if (ore_name.toLowerCase().contains("dust"))
-            {
-                //Get all subtypes
-                for (ItemStack stack : OreDictionary.getOres(ore_name))
-                {
-                    if (stack != null && stack.getItem() != null)
-                    {
-                        //Confirm that the dust turns into an ingot
-                        ItemStack smeltingResult = FurnaceRecipes.smelting().getSmeltingResult(stack);
-                        if (smeltingResult != null && smeltingResult.getItem() != null)
-                        {
-                            for (int id : OreDictionary.getOreIDs(smeltingResult))
-                            {
-                                String name = OreDictionary.getOreName(id);
-                                if (name != null && (name.toLowerCase().contains("ingot") || name.toLowerCase().equalsIgnoreCase("stoneDust")))
-                                {
-                                    ItemStack stack1 = stack.copy();
-                                    stack1.stackSize = 1;
-                                    oreDictionaryDust.add(stack1);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public static ItemStack getRandomDust()
-    {
-        int number = (int) Math.min(oreDictionaryDust.size() - 1, Math.random() * oreDictionaryDust.size());
-        if (number >= 0 && number < oreDictionaryDust.size())
-        {
-            return oreDictionaryDust.get(number);
-        }
-        return new ItemStack(Blocks.dirt);
     }
 }

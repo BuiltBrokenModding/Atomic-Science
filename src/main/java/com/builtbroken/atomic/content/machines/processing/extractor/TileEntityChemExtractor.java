@@ -103,7 +103,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
                 }
                 else //TODO add stone dust with high drop rate
                 {
-                    outputStack = ASItems.getRandomDust();
+                    outputStack = ChemExtractorRecipes.getRandomDust();
                 }
 
                 if(hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
