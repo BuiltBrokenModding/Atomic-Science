@@ -75,7 +75,7 @@ public class AtomicScience
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        configFolder = new File(event.getSuggestedConfigurationFile(), "/bbm/AtomicScience");
+        configFolder = new File(event.getModConfigurationDirectory(), "/bbm/atomicscience");
 
         //Create tab
         creativeTab = new CreativeTabs(DOMAIN)
