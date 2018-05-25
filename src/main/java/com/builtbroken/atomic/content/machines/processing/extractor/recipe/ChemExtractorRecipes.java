@@ -14,7 +14,7 @@ public class ChemExtractorRecipes extends ProxyLoader
     public ChemExtractorRecipes()
     {
         super("chem.extractor.recipes");
-        add(new DustLootTable());
+        add(DustLootTable.INSTANCE);
     }
 
 
