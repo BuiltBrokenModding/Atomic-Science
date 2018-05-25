@@ -152,7 +152,10 @@ public class RecipeLootTable extends ContentProxy
             }
 
             item = iterator.next();
-            randomWeight -= item.weight;
+            if (item.weight > 0)
+            {
+                randomWeight -= item.weight;
+            }
         }
         while (randomWeight >= 0);
 

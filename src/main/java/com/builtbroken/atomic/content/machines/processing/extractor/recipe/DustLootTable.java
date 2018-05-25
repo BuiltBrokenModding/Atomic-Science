@@ -1,11 +1,14 @@
 package com.builtbroken.atomic.content.machines.processing.extractor.recipe;
 
+import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.machines.processing.recipes.RecipeLootTable;
 import com.builtbroken.atomic.content.machines.processing.recipes.RecipeRandomItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -23,10 +26,15 @@ public class DustLootTable extends RecipeLootTable
 
     //Used for config
     private final HashMap<String, List<RecipeRandomItem>> dustEntries = new HashMap();
+    private final HashMap<String, Integer> dustWeights = new HashMap();
 
-    public DustLootTable()
+    private DustLootTable()
     {
         super("chem.extractor.loot.table.dust");
+        dustWeights.put("dustCopper", 5);
+        dustWeights.put("dustIron", 5);
+        dustWeights.put("dustSteel", -1);
+        dustWeights.put("dustBronze", -1);
     }
 
     @Override
@@ -58,6 +66,34 @@ public class DustLootTable extends RecipeLootTable
 
         //Sort lower weights to front of list
         Collections.sort(lootItems, Comparator.comparingInt(o -> -o.weight));
+    }
+
+    @Override
+    public void loadConfiguration()
+    {
+        //Collect dust weights
+        dustEntries.keySet().forEach(key -> {
+            if (!dustWeights.containsKey(key))
+            {
+                dustWeights.put(key, dustEntries.get(key).get(0).weight);
+            }
+        });
+
+        //Load settings
+        Configuration configuration = new Configuration(new File(AtomicScience.configFolder, "DustLootTable.cfg"), AtomicScience.VERSION);
+        configuration.load();
+        configuration.setCategoryComment("loot_weights", "Weight in the loot table, higher the number lower the chance of dropping. Zero and lower will disable the entry.");
+
+        for (String dust_name : dustEntries.keySet())
+        {
+            int weight = configuration.getInt(dust_name, "loot_weights", dustWeights.get(dust_name), -1, Short.MAX_VALUE, "");
+            dustWeights.put(dust_name, weight);
+        }
+
+        configuration.save();
+
+        //Reload weight calculations
+        calculateTotalWeight();
     }
 
     @Override
