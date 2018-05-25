@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.processing.extractor.recipe;
+package com.builtbroken.atomic.content.machines.processing.recipes;
 
 import net.minecraft.item.ItemStack;
 
