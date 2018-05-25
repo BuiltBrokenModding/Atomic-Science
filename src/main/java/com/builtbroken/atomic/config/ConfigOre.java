@@ -30,6 +30,7 @@ public class ConfigOre extends ContentProxy
     public void preInit()
     {
         Configuration configuration = new Configuration(new File(AtomicScience.configFolder, "Ore.cfg"), AtomicScience.VERSION);
+        configuration.load();
         ENABLE_URANIUM_ORE = configuration.getBoolean("enable", CATEGORY_URANIUM, ENABLE_URANIUM_ORE, "Should world generation be enabled? True to allow ore to spawn; False to disable");
         URANIUM_ORE_MIN_Y = configuration.getInt("min_y", CATEGORY_URANIUM, URANIUM_ORE_MIN_Y, 0, 255, "Lowest y level (height) that ore can spawn");
         URANIUM_ORE_MAX_Y = configuration.getInt("max_y", CATEGORY_URANIUM, URANIUM_ORE_MAX_Y, 0, 255, "Highest y level (height) that ore can spawn");
@@ -42,5 +43,6 @@ public class ConfigOre extends ContentProxy
                 "*     Iron:    2\n" +
                 "*     Diamond: 3\n" +
                 "*     Gold:    0");
+        configuration.save();
     }
 }
