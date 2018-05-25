@@ -31,10 +31,24 @@ public class DustLootTable extends RecipeLootTable
     private DustLootTable()
     {
         super("chem.extractor.loot.table.dust");
+
+        //Default list for allowed dusts
         dustWeights.put("dustCopper", 5);
+        dustWeights.put("dustTin", 5);
         dustWeights.put("dustIron", 5);
+        dustWeights.put("dustLead", 8);
+        dustWeights.put("dustGold", 15);
+        dustWeights.put("dustNickel", 8);
+        dustWeights.put("dustPlatinum", 18);
+
+        //Disabled dusts (most are alloys or mod specific ores)
         dustWeights.put("dustSteel", -1);
         dustWeights.put("dustBronze", -1);
+        dustWeights.put("dustElectrum", -1);
+        dustWeights.put("dustInvar", -1);
+        dustWeights.put("dustLumium", -1);
+        dustWeights.put("dustMithril", -1);
+        dustWeights.put("dustSignalm", -1);
     }
 
     @Override
