@@ -4,6 +4,9 @@ import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemB
 import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeMineralWaste;
 import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeUraniumHex;
 import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeYellowcakeHex;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.recipe.RecipeConWater;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.recipe.RecipeUraniumPellet;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.recipe.DustLootTable;
 import com.builtbroken.atomic.content.machines.processing.extractor.recipe.RecipeWasteExtracting;
@@ -19,7 +22,7 @@ public final class ProcessorRecipeHandler extends ProxyLoader
 {
     public final ProcessingRecipeList<TileEntityChemExtractor> chemExtractorProcessingRecipe;
     public final ProcessingRecipeList<TileEntityChemBoiler> chemBoilerProcessingRecipe;
-    public final ProcessingRecipeList<TileEntityChemExtractor> chemCentrifugeProcessingRecipe;
+    public final ProcessingRecipeList<TileEntityChemCentrifuge> chemCentrifugeProcessingRecipe;
 
     public static final ProcessorRecipeHandler INSTANCE = new ProcessorRecipeHandler();
 
@@ -41,5 +44,7 @@ public final class ProcessorRecipeHandler extends ProxyLoader
 
         //Centrifuge
         add(chemCentrifugeProcessingRecipe = new ProcessingRecipeList("chem.centrifuge.recipes"));
+        chemCentrifugeProcessingRecipe.add(new RecipeConWater());
+        chemCentrifugeProcessingRecipe.add(new RecipeUraniumPellet());
     }
 }

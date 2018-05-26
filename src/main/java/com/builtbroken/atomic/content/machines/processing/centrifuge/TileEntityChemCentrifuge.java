@@ -1,8 +1,6 @@
 package com.builtbroken.atomic.content.machines.processing.centrifuge;
 
-import com.builtbroken.atomic.config.ConfigRecipe;
 import com.builtbroken.atomic.content.ASFluids;
-import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.gui.ContainerChemCentrifuge;
@@ -64,40 +62,6 @@ public class TileEntityChemCentrifuge extends TileEntityProcessingMachine implem
     {
         outputFluids(SLOT_FLUID_OUTPUT, getOutputTank());
         outputFluidToTiles(getOutputTank(), null);
-    }
-
-    @Override
-    protected void doProcess()
-    {
-        if (hasInputFluid(getInputTank(), ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.URANIUM_HEX_PER_CENTRIFUGE))
-        {
-            ItemStack outputStack = new ItemStack(ASItems.itemUranium235, 1, 0);
-            if (hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
-            {
-                addToOutput(outputStack, SLOT_ITEM_OUTPUT);
-
-                getInputTank().drain(ConfigRecipe.WATER_BOIL_URANIUM_ORE, true);
-            }
-        }
-        else if (hasInputFluid(getInputTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.MINERAL_WASTE_WATER_PER_CENTRIFUGE)
-                && canOutputFluid(getOutputTank(), FluidRegistry.WATER, ConfigRecipe.MINERAL_WASTE_WATER_PER_CENTRIFUGE * ConfigRecipe.MINERAL_WASTE_WATER_PER_WATER))
-        {
-            ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.SOLID_WASTE_PER_CENTRIFUGE, 0);
-            if (hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
-            {
-                addToOutput(outputStack, SLOT_ITEM_OUTPUT);
-
-                getInputTank().drain(ConfigRecipe.WATER_BOIL_URANIUM_ORE, true);
-                getOutputTank().fill(new FluidStack(FluidRegistry.WATER, ConfigRecipe.MINERAL_WASTE_WATER_PER_CENTRIFUGE * ConfigRecipe.MINERAL_WASTE_WATER_PER_WATER), true);
-            }
-        }
-    }
-
-    @Override
-    protected boolean canProcess()
-    {
-        return hasInputFluid(getInputTank(), ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.URANIUM_HEX_PER_CENTRIFUGE)
-                || hasInputFluid(getInputTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.MINERAL_WASTE_WATER_PER_CENTRIFUGE);
     }
 
     @Override
