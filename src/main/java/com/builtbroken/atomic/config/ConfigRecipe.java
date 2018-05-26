@@ -55,5 +55,16 @@ public class ConfigRecipe extends ContentProxy
     public void preInit()
     {
         Configuration configuration = new Configuration(new File(AtomicScience.configFolder, "Recipes.cfg"), AtomicScience.VERSION);
+        configuration.load();
+
+        final String cat_extractor = "extractor";
+        WATER_USED_YELLOW_CAKE = configuration.getInt("water_used_yellowcake", cat_extractor, WATER_USED_YELLOW_CAKE, 0, 10000,
+                "Amount of water (mb) used when extracting yellowcake");
+        LIQUID_WASTE_PRODUCED_TO_WATER = configuration.getInt("liquid_waste_produced_yellowcake", cat_extractor, LIQUID_WASTE_PRODUCED_YELLOW_CAKE, 0, 10000,
+                "Amount of mineral waste (mb) produced when processing uranium ore into yellowcake");
+        YELLOW_CAKE_PER_ORE = configuration.getInt("uranium_ore_to_yellowcake", cat_extractor, YELLOW_CAKE_PER_ORE, 1, 64,
+                "Number of items to output per uranium ore processed");
+
+        configuration.save();
     }
 }
