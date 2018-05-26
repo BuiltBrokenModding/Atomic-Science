@@ -40,8 +40,11 @@ public class ConfigRadiation extends ContentProxy
     //Start of configs  TODO CONFIG
     //-------------------------------------------------------------------------------
 
-    /** Enable the entire system */
-    public static boolean ENABLE = true;
+    /** Enable radiation events */
+    public static boolean ENABLE_EXPOSURE = true;
+
+    /** Enable radiation map */
+    public static boolean ENABLE_MAP = true;
 
     /** Time to wait from last radiation remove to remove again */
     public static int RAD_REMOVE_TIMER = 5 * 60 * 20; //5mins
@@ -87,7 +90,12 @@ public class ConfigRadiation extends ContentProxy
     {
         Configuration configuration = new Configuration(new File(AtomicScience.configFolder, "Radiation.cfg"), AtomicScience.VERSION);
         configuration.load();
-        ENABLE = configuration.getBoolean("enable", Configuration.CATEGORY_GENERAL, ENABLE, "Allows disabling the radiation system to reduce CPU and RAM load of the system.");
+        ENABLE_EXPOSURE = configuration.getBoolean("enable_exposure", Configuration.CATEGORY_GENERAL, ENABLE_EXPOSURE,
+                "(true -> on, false -> off) Enabled event handling used to apply radiation to entities and update damage effects.");
+
+        ENABLE_MAP = configuration.getBoolean("enable_map", Configuration.CATEGORY_GENERAL, ENABLE_MAP,
+                "(true -> on, false -> off) Enabled events used to update the radiation map. If disabled other radiation systems will stop working as well. " +
+                        "However, the mod is playable as this is just related to radiation used to harm entities, machines, and items.");
 
         //Map settings
         final String cat_map = "rad_map";

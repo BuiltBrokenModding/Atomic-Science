@@ -2,6 +2,7 @@ package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.AtomicScienceAPI;
+import com.builtbroken.atomic.config.ConfigRadiation;
 import com.builtbroken.atomic.map.exposure.RadiationMap;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThermalMap;
@@ -49,8 +50,11 @@ public final class MapHandler
 
         MinecraftForge.EVENT_BUS.register(new MapHandler());
 
-        MinecraftForge.EVENT_BUS.register(RADIATION_MAP);
-        FMLCommonHandler.instance().bus().register(RADIATION_MAP);
+        if(ConfigRadiation.ENABLE_MAP)
+        {
+            MinecraftForge.EVENT_BUS.register(RADIATION_MAP);
+            FMLCommonHandler.instance().bus().register(RADIATION_MAP);
+        }
 
         MinecraftForge.EVENT_BUS.register(THERMAL_MAP);
         FMLCommonHandler.instance().bus().register(THERMAL_MAP);
