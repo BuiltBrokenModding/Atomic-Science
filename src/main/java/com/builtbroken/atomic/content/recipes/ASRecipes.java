@@ -4,8 +4,10 @@ import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.proxy.ContentProxy;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -38,14 +40,14 @@ public class ASRecipes extends ContentProxy
                 " T ",
                 "TGT",
                 " T ",
-                'G', new ItemStack(Blocks.glass),
-                'T', getOreItem("ingotTin", new ItemStack(Items.iron_ingot)));
+                'G', Blocks.glass,
+                'T', getOreItem("ingotTin", Items.iron_ingot));
 
         //Fuel Rod
         addRecipe(new ItemStack(ASItems.itemFissileFuelCell),
                 "PPP",
                 "PTP",
-                "PTP",
+                "PPP",
                 'P', ASItems.itemUranium235,
                 'T', ASItems.itemEmptyCell);
 
@@ -60,8 +62,8 @@ public class ASRecipes extends ContentProxy
         addRecipe(new ItemStack(ASItems.itemPoweredCell),
                 "TC",
                 "CB",
-                'C', getOreItem("circuitAdvanced", new ItemStack(Blocks.gold_block)),
-                'B', getOreItem("battery", new ItemStack(Blocks.redstone_block)),
+                'C', getOreItem("circuitAdvanced", Blocks.gold_block),
+                'B', getOreItem("battery", Blocks.redstone_block),
                 'T', ASItems.itemEmptyCell);
     }
 
@@ -72,32 +74,32 @@ public class ASRecipes extends ContentProxy
                 "ICI",
                 "TMT",
                 "TPT",
-                'I', getOreItem("ingotSteel", new ItemStack(Items.iron_ingot)),
-                'T', new ItemStack(ASItems.itemEmptyCell),
-                'M', getOreItem("motor", new ItemStack(Items.repeater)),
-                'P', getOreItem("plateIron", new ItemStack(Items.gold_ingot)),
-                'C', getOreItem("circuitAdvanced", new ItemStack(Items.redstone)));
+                'I', getOreItem("ingotSteel", Items.iron_ingot),
+                'T', ASItems.itemEmptyCell,
+                'M', getOreItem("motor", Items.repeater),
+                'P', getOreItem("plateIron", Items.gold_ingot),
+                'C', getOreItem("circuitAdvanced", Items.redstone));
 
         //Boiler
         addRecipe(new ItemStack(ASBlocks.blockChemBoiler),
                 "PCP",
                 "TFT",
                 "PMP",
-                'F', new ItemStack(Blocks.furnace),
-                'T', new ItemStack(ASItems.itemEmptyCell),
-                'M', getOreItem("motor", new ItemStack(Items.repeater)),
-                'P', getOreItem("plateIron", new ItemStack(Items.gold_ingot)),
-                'C', getOreItem("circuitAdvanced", new ItemStack(Items.redstone)));
+                'F', Blocks.furnace,
+                'T', ASItems.itemEmptyCell,
+                'M', getOreItem("motor", Items.repeater),
+                'P', getOreItem("plateIron", Items.gold_ingot),
+                'C', getOreItem("circuitAdvanced", Items.redstone));
 
         //Extractor
         addRecipe(new ItemStack(ASBlocks.blockChemExtractor),
                 "IPI",
                 "MCM",
                 "IPI",
-                'I', getOreItem("ingotSteel", new ItemStack(Items.iron_ingot)),
-                'M', getOreItem("motor", new ItemStack(Items.repeater)),
-                'P', getOreItem("plateIron", new ItemStack(Items.gold_ingot)),
-                'C', getOreItem("circuitElite", new ItemStack(Blocks.gold_block)));
+                'I', getOreItem("ingotSteel", Items.iron_ingot),
+                'M', getOreItem("motor", Items.repeater),
+                'P', getOreItem("plateIron", Items.gold_ingot),
+                'C', getOreItem("circuitElite", Blocks.gold_block));
     }
 
     private void reactorRecipes()
@@ -105,20 +107,21 @@ public class ASRecipes extends ContentProxy
         //Reactor Core
         addRecipe(new ItemStack(ASBlocks.blockReactorCell),
                 "PCP",
-                "MCM",
+                "MTM",
                 "PCP",
-                'M', getOreItem("motor", new ItemStack(Items.repeater)),
-                'P', getOreItem("plateIron", new ItemStack(Blocks.iron_block)),
-                'C', getOreItem("circuitAdvanced", new ItemStack(Blocks.dispenser)));
+                'M', getOreItem("motor", Items.repeater),
+                'P', getOreItem("plateIron", Blocks.iron_block),
+                'C', getOreItem("circuitAdvanced", Blocks.dispenser),
+                'C', ASItems.itemPoweredCell);
 
         //Turbine
         addRecipe(new ItemStack(ASBlocks.blockSteamTurbine),
                 "IPI",
                 "PMP",
                 "IPI",
-                'M', getOreItem("motor", new ItemStack(Items.repeater)),
-                'P', getOreItem("plateIron", new ItemStack(Blocks.iron_block)),
-                'I', getOreItem("rodIron", new ItemStack(Blocks.iron_bars)));
+                'M', getOreItem("motor", Items.repeater),
+                'P', getOreItem("plateIron", Blocks.iron_block),
+                'I', getOreItem("rodIron", Blocks.iron_bars));
 
         //Turbine
         addRecipe(new ItemStack(ASBlocks.blockSteamFunnel),
@@ -126,8 +129,8 @@ public class ASRecipes extends ContentProxy
                 "PHP",
                 "IPI",
                 'H', Blocks.hopper,
-                'P', getOreItem("plateIron", new ItemStack(Blocks.iron_block)),
-                'I', getOreItem("rodIron", new ItemStack(Blocks.iron_bars)));
+                'P', getOreItem("plateIron", Blocks.iron_block),
+                'I', getOreItem("rodIron", Blocks.iron_bars));
     }
 
     private void armorRecipes()
@@ -137,56 +140,56 @@ public class ASRecipes extends ContentProxy
                 "CCC",
                 "ILI",
                 "GHG",
-                'I', getOreItem("ingotLead", new ItemStack(Items.iron_ingot)),
+                'I', getOreItem("ingotLead", Items.iron_ingot),
                 'C', Blocks.wool,
                 'L', Items.leather_helmet,
                 'G', Blocks.glass_pane,
-                'H', getOreItem("circuitBasic", new ItemStack(Blocks.gold_block)));
+                'H', getOreItem("circuitBasic", Blocks.gold_block));
 
         //Hazmat Body
         addRecipe(new ItemStack(ASItems.itemArmorHazmatChest),
                 "CCC",
                 "ILI",
                 "THT",
-                'I', getOreItem("ingotLead", new ItemStack(Items.iron_ingot)),
+                'I', getOreItem("ingotLead", Items.iron_ingot),
                 'C', Blocks.wool,
                 'L', Items.leather_chestplate,
                 'T', ASItems.itemEmptyCell,
-                'H', getOreItem("circuitBasic", new ItemStack(Blocks.gold_block)));
+                'H', getOreItem("circuitBasic", Blocks.gold_block));
 
         //Hazmat Legs
         addRecipe(new ItemStack(ASItems.itemArmorHazmatLegs),
                 "CCC",
                 "ILI",
                 "CHC",
-                'I', getOreItem("ingotLead", new ItemStack(Items.iron_ingot)),
+                'I', getOreItem("ingotLead", Items.iron_ingot),
                 'C', Blocks.wool,
                 'L', Items.leather_leggings,
-                'H', getOreItem("circuitBasic", new ItemStack(Blocks.gold_block)));
+                'H', getOreItem("circuitBasic", Blocks.gold_block));
 
         //Hazmat boots
         addRecipe(new ItemStack(ASItems.itemArmorHazmatBoots),
                 "CCC",
                 "ILI",
                 "CHC",
-                'I', getOreItem("ingotLead", new ItemStack(Items.iron_ingot)),
+                'I', getOreItem("ingotLead", Items.iron_ingot),
                 'C', Blocks.wool,
                 'L', Items.leather_boots,
-                'H', getOreItem("circuitBasic", new ItemStack(Blocks.gold_block)));
+                'H', getOreItem("circuitBasic", Blocks.gold_block));
     }
 
     private void toolRecipes()
     {
         //Hazmat helm
-        addRecipe(new ItemStack(ASItems.itemArmorHazmatHelm),
+        addRecipe(new ItemStack(ASItems.itemHeatProbe),
                 "ICI",
                 "ICI",
                 "WBW",
-                'I', getOreItem("ingotSteel", new ItemStack(Items.iron_ingot)),
-                'W', getOreItem("wireCopper", new ItemStack(Items.gold_ingot)),
+                'I', getOreItem("ingotSteel", Items.iron_ingot),
+                'W', getOreItem("wireCopper", Items.gold_ingot),
                 'B', Items.gold_nugget,
                 'G', Blocks.glass_pane,
-                'C', getOreItem("circuitBasic", new ItemStack(Blocks.gold_block)));
+                'C', getOreItem("circuitBasic", Blocks.gold_block));
     }
 
     protected void addRecipe(ItemStack output, Object... params)
@@ -195,6 +198,36 @@ public class ASRecipes extends ContentProxy
     }
 
     protected Object getOreItem(String ore_name, ItemStack alt)
+    {
+        if (OreDictionary.doesOreNameExist(ore_name))
+        {
+            for (ItemStack itemStack : OreDictionary.getOres(ore_name))
+            {
+                if (itemStack != null)
+                {
+                    return ore_name;
+                }
+            }
+        }
+        return alt;
+    }
+
+    protected Object getOreItem(String ore_name, Item alt)
+    {
+        if (OreDictionary.doesOreNameExist(ore_name))
+        {
+            for (ItemStack itemStack : OreDictionary.getOres(ore_name))
+            {
+                if (itemStack != null)
+                {
+                    return ore_name;
+                }
+            }
+        }
+        return alt;
+    }
+
+    protected Object getOreItem(String ore_name, Block alt)
     {
         if (OreDictionary.doesOreNameExist(ore_name))
         {

@@ -86,5 +86,37 @@ public class ConfigRadiation extends ContentProxy
     public void preInit()
     {
         Configuration configuration = new Configuration(new File(AtomicScience.configFolder, "Radiation.cfg"), AtomicScience.VERSION);
+        configuration.load();
+        ENABLE = configuration.getBoolean("enable", Configuration.CATEGORY_GENERAL, ENABLE, "Allows disabling the radiation system to reduce CPU and RAM load of the system.");
+
+        //Map settings
+        final String cat_map = "rad_map";
+        MAX_UPDATE_RANGE = configuration.getInt("map_update_range", cat_map, MAX_UPDATE_RANGE, 10, 100,
+                "Max range to update radiation values when a radiation source has changed.");
+
+        MAP_VALUE_TO_MILI_RAD = configuration.getFloat("material_to_radiation", cat_map, MAP_VALUE_TO_MILI_RAD, 0.0001f, 100,
+                "Conversation rate of material on the map to radiation values produced. Value is material -> milli-rad. " +
+                        "Keep value low as map is limited to ~2.7 billion for values. Meaning values to large will not function." +
+                        "Example (good) 0.01 * 10000 = 100");
+
+        //Entity settings
+        final String cat_entity = "entity";
+        RAD_REMOVE_TIMER = configuration.getInt("rad_remove_timer", cat_entity, RAD_REMOVE_TIMER, 1, Integer.MAX_VALUE,
+                "Amount of time in ticks (20 ticks a second) to wait before removing radiation");
+
+        RAD_REMOVE_PERCENTAGE = configuration.getFloat("rad_remove_percentage", cat_entity, RAD_REMOVE_PERCENTAGE, 0, 1, "Percentage of radiation to remove each removal cycle");
+
+        RADIATION_DEATH_POINT = configuration.getFloat("death_radiation_point", cat_entity, RADIATION_DEATH_POINT, 1, Integer.MAX_VALUE, "Amount of radiation before the player dies");
+
+        //Material settings
+        final String cat_rad_mat = "source_rad_material_values";
+        configuration.setCategoryComment(cat_rad_mat, "Amount of radioactive material present inside of each source. This value is used to calculate radiation to emmit.");
+        RADIOACTIVE_MAT_VALUE_U235 = configuration.getInt("U235", cat_rad_mat, RADIOACTIVE_MAT_VALUE_U235, 1, Integer.MAX_VALUE, "Radiation material value for U235 pellet");
+        RADIOACTIVE_MAT_VALUE_U238 = configuration.getInt("U238", cat_rad_mat, RADIOACTIVE_MAT_VALUE_U238, 1, Integer.MAX_VALUE, "Radiation material value for U238 pellet");
+        RADIOACTIVE_MAT_VALUE_YELLOW_CAKE = configuration.getInt("yellowcake", cat_rad_mat, RADIOACTIVE_MAT_VALUE_YELLOW_CAKE, 1, Integer.MAX_VALUE, "Radiation material value for yellowcake");
+        RADIOACTIVE_MAT_VALUE_FUEL_ROD = configuration.getInt("fuel_rod", cat_rad_mat, RADIOACTIVE_MAT_VALUE_FUEL_ROD, 1, Integer.MAX_VALUE, "Radiation material value for fission fuel rod");
+        RADIOACTIVE_MAT_VALUE_BREEDER_ROD = configuration.getInt("breeder_rod", cat_rad_mat, RADIOACTIVE_MAT_VALUE_BREEDER_ROD, 1, Integer.MAX_VALUE, "Radiation material value for fission breeder rod");
+
+        configuration.save();
     }
 }

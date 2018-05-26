@@ -24,5 +24,9 @@ public class ConfigNetwork extends ContentProxy
     public void preInit()
     {
         Configuration configuration = new Configuration(new File(AtomicScience.configFolder, "Network.cfg"), AtomicScience.VERSION);
+        configuration.load();
+        BOILING_EFFECT = configuration.getBoolean("boiling_effect", "particles", BOILING_EFFECT, "Disables the boiling effect to help reduce network load");
+        STEAM_EFFECT = configuration.getBoolean("steam_effect", "particles", BOILING_EFFECT, "Disables the steam effect to help reduce network load");
+        configuration.save();
     }
 }
