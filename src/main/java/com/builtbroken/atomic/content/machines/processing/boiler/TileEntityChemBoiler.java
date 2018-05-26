@@ -4,7 +4,9 @@ import com.builtbroken.atomic.config.ConfigRecipe;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
+import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
@@ -149,6 +151,12 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
         {
             return hasInputFluid(getInputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER);
         }
+    }
+
+    @Override
+    protected ProcessingRecipeList getRecipeList()
+    {
+        return ProcessorRecipeHandler.INSTANCE.chemCentrifugeProcessingRecipe;
     }
 
     @Override

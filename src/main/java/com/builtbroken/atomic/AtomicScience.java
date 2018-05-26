@@ -3,7 +3,7 @@ package com.builtbroken.atomic;
 import com.builtbroken.atomic.config.ConfigProxy;
 import com.builtbroken.atomic.content.*;
 import com.builtbroken.atomic.content.commands.CommandAS;
-import com.builtbroken.atomic.content.machines.processing.extractor.recipe.ChemExtractorRecipes;
+import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
@@ -104,7 +104,7 @@ public class AtomicScience
         proxyLoader.add(new ASWorldGen());
 
         //Recipes
-        proxyLoader.add(ChemExtractorRecipes.INSTANCE);
+        proxyLoader.add(ProcessorRecipeHandler.INSTANCE);
 
         //Handlers
         proxyLoader.add(PacketSystem.INSTANCE);

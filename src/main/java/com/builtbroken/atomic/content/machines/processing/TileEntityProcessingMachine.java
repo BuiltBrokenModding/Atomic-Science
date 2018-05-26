@@ -1,6 +1,8 @@
 package com.builtbroken.atomic.content.machines.processing;
 
 import com.builtbroken.atomic.content.machines.TileEntityPowerInvMachine;
+import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
+import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -101,7 +103,11 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
      */
     protected void doProcess()
     {
-
+        ProcessingRecipe recipe = getRecipeList().getMatchingRecipe(this);
+        if (recipe != null)
+        {
+            recipe.applyRecipe(this);
+        }
     }
 
     /**
@@ -130,7 +136,17 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
      *
      * @return true if machine has a valid recipe and can function
      */
-    protected abstract boolean canProcess();
+    protected boolean canProcess()
+    {
+        return getRecipeList().getMatchingRecipe(this) != null; //TODO store recipe
+    }
+
+    /**
+     * Gets the list of recipes supported by this machine
+     *
+     * @return
+     */
+    protected abstract ProcessingRecipeList getRecipeList();
 
     /**
      * Called after the process has run
@@ -161,7 +177,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
         }
     }
 
-    protected boolean hasSpaceInOutput(ItemStack insertStack, int slot)
+    public boolean hasSpaceInOutput(ItemStack insertStack, int slot)
     {
         ItemStack stackInSlot = getStackInSlot(slot);
         if (stackInSlot == null)
@@ -175,7 +191,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
         return false;
     }
 
-    protected void addToOutput(ItemStack insertStack, int slot)
+    public void addToOutput(ItemStack insertStack, int slot)
     {
         ItemStack stackInSlot = getStackInSlot(slot);
         if (stackInSlot == null)
@@ -327,7 +343,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
         {
             for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
             {
-                if(canUseSideFunction == null || canUseSideFunction.apply(direction))
+                if (canUseSideFunction == null || canUseSideFunction.apply(direction))
                 {
                     int x = xCoord + direction.offsetX;
                     int y = yCoord + direction.offsetY;
@@ -355,7 +371,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
      * @param amount - fluid volume to match >=
      * @return true if enough fluid exists
      */
-    protected boolean hasInputFluid(IFluidTank tank, Fluid fluid, int amount)
+    public boolean hasInputFluid(IFluidTank tank, Fluid fluid, int amount)
     {
         FluidStack inputFluidStack = tank.getFluid();
         return inputFluidStack != null
@@ -371,7 +387,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
      * @param amount - amount to drain
      * @return true if enough fluid
      */
-    protected boolean canOutputFluid(IFluidTank tank, Fluid fluid, int amount)
+    public boolean canOutputFluid(IFluidTank tank, Fluid fluid, int amount)
     {
         FluidStack outputFluidStack = tank.getFluid();
         return outputFluidStack == null && tank.getCapacity() >= amount

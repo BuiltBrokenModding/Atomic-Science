@@ -1,13 +1,12 @@
 package com.builtbroken.atomic.content.machines.processing.extractor;
 
-import com.builtbroken.atomic.config.ConfigRecipe;
 import com.builtbroken.atomic.content.ASBlocks;
-import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.ContainerExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.GuiExtractor;
-import com.builtbroken.atomic.content.machines.processing.extractor.recipe.ChemExtractorRecipes;
+import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
@@ -71,61 +70,9 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     }
 
     @Override
-    protected void doProcess()
+    protected ProcessingRecipeList getRecipeList()
     {
-        //TODO move recipe to object
-
-        //Uranium Ore recipe
-        ItemStack inputItem = getStackInSlot(SLOT_ITEM_INPUT);
-        if(inputItem != null)
-        {
-            if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem()
-                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE)
-                    && canOutputFluid(getOutputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE))
-
-            {
-                ItemStack outputStack = new ItemStack(ASItems.itemYellowCake, ConfigRecipe.YELLOW_CAKE_PER_ORE, 0);
-                if (hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
-                {
-                    decrStackSize(SLOT_ITEM_INPUT, 1);
-                    getInputTank().drain(ConfigRecipe.WATER_USED_YELLOW_CAKE, true);
-                    getOutputTank().fill(new FluidStack(ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE), true);
-                    addToOutput(outputStack, SLOT_ITEM_OUTPUT);
-                }
-            }
-            else if (ASItems.itemProcessingWaste == inputItem.getItem())
-            {
-                ItemStack outputStack;
-
-                if(Math.random() > 0.4) //TODO switch over to progress bar/tank so output always contains toxic waste dust
-                {
-                    outputStack = new ItemStack(ASItems.itemToxicWaste, 1, 0);
-                }
-                else //TODO add stone dust with high drop rate
-                {
-                    outputStack = ChemExtractorRecipes.getRandomDust();
-                }
-
-                if(hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
-                {
-                    decrStackSize(SLOT_ITEM_INPUT, 1);
-                    addToOutput(outputStack, SLOT_ITEM_OUTPUT);
-                }
-            }
-        }
-    }
-
-    @Override
-    protected boolean canProcess()
-    {
-        ItemStack stack = getStackInSlot(SLOT_ITEM_INPUT);
-        if (stack != null)
-        {
-            return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem()
-                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE)
-                    || ASItems.itemProcessingWaste == stack.getItem();  //TODO move recipe to object
-        }
-        return false;
+        return ProcessorRecipeHandler.INSTANCE.chemExtractorProcessingRecipe;
     }
 
     @Override
