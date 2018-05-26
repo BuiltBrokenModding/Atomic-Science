@@ -4,6 +4,7 @@ import com.builtbroken.atomic.config.ConfigProxy;
 import com.builtbroken.atomic.content.*;
 import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
+import com.builtbroken.atomic.content.recipes.ASRecipes;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
@@ -105,6 +106,7 @@ public class AtomicScience
 
         //Recipes
         proxyLoader.add(ProcessorRecipeHandler.INSTANCE);
+        proxyLoader.add(new ASRecipes());
 
         //Handlers
         proxyLoader.add(PacketSystem.INSTANCE);
