@@ -1,5 +1,6 @@
-package com.builtbroken.atomic.content.machines.processing.boiler;
+package com.builtbroken.atomic.content.machines.processing.boiler.gui;
 
+import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.lib.gui.ContainerBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;

@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.processing.boiler;
+package com.builtbroken.atomic.content.machines.processing.boiler.render;
 
 import com.builtbroken.atomic.AtomicScience;
 import cpw.mods.fml.client.FMLClientHandler;

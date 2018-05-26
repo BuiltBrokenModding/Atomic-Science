@@ -1,6 +1,7 @@
-package com.builtbroken.atomic.content.machines.processing.boiler;
+package com.builtbroken.atomic.content.machines.processing.boiler.render;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
