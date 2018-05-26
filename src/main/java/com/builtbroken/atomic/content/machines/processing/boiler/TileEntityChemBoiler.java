@@ -1,6 +1,5 @@
 package com.builtbroken.atomic.content.machines.processing.boiler;
 
-import com.builtbroken.atomic.config.ConfigRecipe;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
@@ -80,85 +79,9 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     }
 
     @Override
-    protected void doProcess()
-    {
-        //Uranium Ore recipe
-        final ItemStack inputItem = getStackInSlot(SLOT_ITEM_INPUT);
-        //TODO move recipe to object
-
-        if (inputItem != null)
-        {
-            if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem()
-                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE)
-                    && canOutputFluid(getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_URANIUM_ORE)
-                    && canOutputFluid(getHexTank(), ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_URANIUM_ORE))
-
-            {
-                ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.SOLID_WASTE_URANIUM_ORE, 0);
-                if (hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
-                {
-                    decrStackSize(SLOT_ITEM_INPUT, 1);
-                    addToOutput(outputStack, SLOT_ITEM_OUTPUT);
-
-                    getInputTank().drain(ConfigRecipe.WATER_BOIL_URANIUM_ORE, true);
-                    getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_URANIUM_ORE), true);
-                    getHexTank().fill(new FluidStack(ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_URANIUM_ORE), true);
-                }
-            }
-            else if (ASItems.itemYellowCake == inputItem.getItem()
-                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE)
-                    && canOutputFluid(getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_YELLOWCAKE)
-                    && canOutputFluid(getHexTank(), ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_YELLOWCAKE))
-
-            {
-                ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.SOLID_WASTE_YELLOWCAKE, 0);
-                if (hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
-                {
-                    decrStackSize(SLOT_ITEM_INPUT, 1);
-                    addToOutput(outputStack, SLOT_ITEM_OUTPUT);
-
-                    getInputTank().drain(ConfigRecipe.WATER_BOIL_YELLOWCAKE, true);
-                    getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_YELLOWCAKE), true);
-                    getHexTank().fill(new FluidStack(ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_YELLOWCAKE), true);
-                }
-            }
-        }
-        else if (hasInputFluid(getInputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER)
-                && canOutputFluid(getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER))
-        {
-            ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.LIQUID_WASTE_SOLID_WASTE, 0);
-            if (hasSpaceInOutput(outputStack, SLOT_ITEM_OUTPUT))
-            {
-                decrStackSize(SLOT_ITEM_INPUT, 1);
-                addToOutput(outputStack, SLOT_ITEM_OUTPUT);
-
-                getInputTank().drain(ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER, true);
-                getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER), true);
-            }
-        }
-    }
-
-    @Override
-    protected boolean canProcess()
-    {
-        ItemStack stack = getStackInSlot(SLOT_ITEM_INPUT);
-        if (stack != null)
-        {
-            return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem()
-                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE)
-                    || ASItems.itemYellowCake == stack.getItem()
-                    && hasInputFluid(getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE);  //TODO move recipe to object
-        }
-        else
-        {
-            return hasInputFluid(getInputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER);
-        }
-    }
-
-    @Override
     protected ProcessingRecipeList getRecipeList()
     {
-        return ProcessorRecipeHandler.INSTANCE.chemCentrifugeProcessingRecipe;
+        return ProcessorRecipeHandler.INSTANCE.chemBoilerProcessingRecipe;
     }
 
     @Override

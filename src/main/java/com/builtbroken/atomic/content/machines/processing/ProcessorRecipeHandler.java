@@ -1,6 +1,9 @@
 package com.builtbroken.atomic.content.machines.processing;
 
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
+import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeMineralWaste;
+import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeUraniumHex;
+import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeYellowcakeHex;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.recipe.DustLootTable;
 import com.builtbroken.atomic.content.machines.processing.extractor.recipe.RecipeWasteExtracting;
@@ -32,6 +35,9 @@ public final class ProcessorRecipeHandler extends ProxyLoader
 
         //Boiler
         add(chemBoilerProcessingRecipe = new ProcessingRecipeList("chem.boiler.recipes"));
+        chemBoilerProcessingRecipe.add(new RecipeMineralWaste());
+        chemBoilerProcessingRecipe.add(new RecipeUraniumHex());
+        chemBoilerProcessingRecipe.add(new RecipeYellowcakeHex());
 
         //Centrifuge
         add(chemCentrifugeProcessingRecipe = new ProcessingRecipeList("chem.centrifuge.recipes"));
