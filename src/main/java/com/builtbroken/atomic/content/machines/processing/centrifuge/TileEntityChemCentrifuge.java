@@ -5,6 +5,8 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.gui.ContainerChemCentrifuge;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.gui.GuiChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import cpw.mods.fml.common.network.ByteBufUtils;

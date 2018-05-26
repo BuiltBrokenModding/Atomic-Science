@@ -1,5 +1,6 @@
-package com.builtbroken.atomic.content.machines.processing.centrifuge;
+package com.builtbroken.atomic.content.machines.processing.centrifuge.gui;
 
+import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import com.builtbroken.atomic.lib.gui.ContainerBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
