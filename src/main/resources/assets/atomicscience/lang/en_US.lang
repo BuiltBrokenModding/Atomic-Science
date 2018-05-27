@@ -15,13 +15,13 @@ tile.atomicscience:steam.generator.1.name=RF Steam Turbine
 tile.atomicscience:steam.generator.2.name=EU Steam Turbine
 
 tile.atomicscience:chem.centrifuge.name=Chemical Centrifuge
-tile.atomicscience:chem.centrifuge.gui.name=Chemical Centrifuge
+tile.atomicscience:chem.centrifuge.gui=Chemical Centrifuge
 
 tile.atomicscience:chem.boiler.name=Chemical Boiler
-tile.atomicscience:chem.boiler.gui.name=Chemical Boiler
+tile.atomicscience:chem.boiler.gui=Chemical Boiler
 
 tile.atomicscience:chem.extractor.name=Chemical Extractor
-tile.atomicscience:chem.extractor.gui.name=Chemical Extractor
+tile.atomicscience:chem.extractor.gui=Chemical Extractor
 
 ## Items
 item.atomicscience:hazmat.mask.name=Hazmat Mask
