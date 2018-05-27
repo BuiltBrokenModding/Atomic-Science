@@ -42,15 +42,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     public RadiationMap()
     {
         super(MapHandler.RAD_EXPOSURE_MAP_ID, null); //Doesn't save
-        wrapperFactories.put(EntityItem.class, e ->
-        {
-            EntityItem entityItem = (EntityItem) e;
-            if (entityItem.getEntityItem() != null && entityItem.getEntityItem().getItem() instanceof IRadioactiveItem)
-            {
-                return new RadSourceEntityItem(entityItem);
-            }
-            return null;
-        });
+        wrapperFactories.put(EntityItem.class, e -> RadSourceEntityItem.build((EntityItem) e));
     }
 
     ///----------------------------------------------------------------
@@ -347,7 +339,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent()
     public void entityJoinWorld(EntityJoinWorldEvent event)
     {
-        if (!event.world.isRemote)
+        if (!event.world.isRemote && event.entity.isEntityAlive())
         {
             //Add source handles checking if its an actual source
             addSource(event.entity);
