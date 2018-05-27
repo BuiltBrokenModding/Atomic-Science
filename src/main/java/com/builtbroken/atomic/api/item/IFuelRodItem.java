@@ -42,6 +42,15 @@ public interface IFuelRodItem extends IRadioactiveItem
     int getHeatOutput(ItemStack stack, IReactor reactor);
 
     /**
+     * Amount of radioactive material the rod represents when active
+     *
+     * @param reactor - reactor consuming the fuel, may be null
+     * @param stack   - fuel rod
+     * @return radioactive value
+     */
+    int getRadioactiveMaterial(ItemStack stack, IReactor reactor);
+
+    /**
      * Called each tick the fuel runs
      * <p>
      * Use this to decrease the fuel runtime

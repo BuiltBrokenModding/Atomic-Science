@@ -15,11 +15,17 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
 {
     /** Time in ticks the fuel can run, when full */
     public final int maxFuelRuntime;
+    /** Radioactivity of the fuel rod when the reactor is active */
+    public final int reactorRadioactivity;
+    /** Heat of the fuel rod when the reactor is active */
+    public final int reactorHeatOutput;
 
-    public ItemFuelRod(String name, String texture, int maxFuelRuntime, int radioactiveMaterialValue)
+    public ItemFuelRod(String name, String texture, int maxFuelRuntime, int radioactiveMaterialValue, int reactorRadioactivity, int reactorHeatOutput)
     {
         super(name, texture, radioactiveMaterialValue);
         this.maxFuelRuntime = maxFuelRuntime;
+        this.reactorRadioactivity = reactorRadioactivity;
+        this.reactorHeatOutput = reactorHeatOutput;
     }
 
     @Override
@@ -42,8 +48,13 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
     @Override
     public int getHeatOutput(ItemStack stack, IReactor reactor)
     {
-        //To boil 1 block of water takes 1,562,379.05 KJ
-        return 1562379 * 20;
+        return reactorHeatOutput;
+    }
+
+    @Override
+    public int getRadioactiveMaterial(ItemStack stack, IReactor reactor)
+    {
+        return reactorRadioactivity;
     }
 
     @Override

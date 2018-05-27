@@ -1,6 +1,6 @@
 package com.builtbroken.atomic;
 
-import com.builtbroken.atomic.config.ConfigProxy;
+import com.builtbroken.atomic.config.ProxyConfigLoader;
 import com.builtbroken.atomic.content.*;
 import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
@@ -96,7 +96,7 @@ public class AtomicScience
         MassHandler.init();
 
         proxyLoader = new ProxyLoader("AS");
-        proxyLoader.add(new ConfigProxy());
+        proxyLoader.add(new ProxyConfigLoader());
 
         //Content
         proxyLoader.add(new ASFluids.Proxy()); //must run before items and blocks

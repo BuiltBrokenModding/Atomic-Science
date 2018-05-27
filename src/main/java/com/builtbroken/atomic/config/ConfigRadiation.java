@@ -77,6 +77,9 @@ public class ConfigRadiation extends ContentProxy
     public static int RADIOACTIVE_MAT_VALUE_FUEL_ROD = RADIOACTIVE_MAT_VALUE_U235 * 100;
     public static int RADIOACTIVE_MAT_VALUE_BREEDER_ROD = RADIOACTIVE_MAT_VALUE_FUEL_ROD / 10;
 
+    public static int RADIOACTIVE_REACTOR_VALUE_FUEL_ROD = RADIOACTIVE_MAT_VALUE_FUEL_ROD * 100;
+    public static int RADIOACTIVE_REACTOR_VALUE_BREEDER_ROD = RADIOACTIVE_MAT_VALUE_BREEDER_ROD * 100;
+
     /** Max distance in meters to update radiation on the map. */
     public static int MAX_UPDATE_RANGE = 50;
 

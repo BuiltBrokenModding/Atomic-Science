@@ -148,7 +148,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         IFuelRodItem fuelRod = getFuelRod();
         if (fuelRod != null)
         {
-            return fuelRod.getRadioactiveMaterial(getFuelRodStack()) * 100;
+            return fuelRod.getRadioactiveMaterial(getFuelRodStack(), this);
         }
         return 0;
     }
