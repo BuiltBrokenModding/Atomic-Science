@@ -46,6 +46,15 @@ public class ConfigRadiation extends ContentProxy
     /** Enable radiation map */
     public static boolean ENABLE_MAP = true;
 
+    /** Enable tracking of inventories for radiation */
+    public static boolean ENABLE_INVENTORY = true;
+
+    /** Enable tracking of entity items (dropped items) */
+    public static boolean ENABLE_ENTITY_ITEMS = true;
+
+    /** Enable tracking of inventories for entities */
+    public static boolean ENABLE_ENTITY = true;
+
     /** Time to wait from last radiation remove to remove again */
     public static int RAD_REMOVE_TIMER = 5 * 60 * 20; //5mins
     /** Amount of radiation to remove (as a percentage) */
