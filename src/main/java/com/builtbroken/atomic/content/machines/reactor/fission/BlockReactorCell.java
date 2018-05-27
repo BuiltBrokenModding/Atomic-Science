@@ -9,8 +9,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -56,7 +58,15 @@ public class BlockReactorCell extends BlockContainer
             ItemStack heldItem = player.getHeldItem();
             if (heldItem != null)
             {
-                if (reactorCell.isItemValidForSlot(0, heldItem))
+                if(heldItem.getItem() == Items.stick)
+                {
+                    if (!world.isRemote)
+                    {
+                        player.addChatComponentMessage(new ChatComponentText("Fuel: " + reactorCell.getFuelRuntime()));
+                    }
+                    return true;
+                }
+                else if (reactorCell.isItemValidForSlot(0, heldItem))
                 {
                     if (!world.isRemote && reactorCell.getStackInSlot(0) == null)
                     {

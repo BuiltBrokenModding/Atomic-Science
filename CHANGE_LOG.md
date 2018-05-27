@@ -23,6 +23,7 @@ Improved: handling of entity item radiation tracking
 Fixed: GUI localizations
 Fixed: NPE when checking if can output fluids from processing machines
 Fixed: Fuel rods being usable beyond time limit (timer going negative)
+Fixed: Inventory stack size on reactor core (now 1, instead of 64)
 
 ## 3.0.1
 ### Changes

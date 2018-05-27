@@ -220,6 +220,12 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     }
 
     @Override
+    public int getInventoryStackLimit()
+    {
+        return 1;
+    }
+
+    @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
         return slot == SLOT_FUEL_ROD && stack.getItem() instanceof IFuelRodItem;
