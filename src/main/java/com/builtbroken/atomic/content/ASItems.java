@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.config.ConfigPower;
 import com.builtbroken.atomic.config.ConfigRadiation;
 import com.builtbroken.atomic.config.ConfigThermal;
 import com.builtbroken.atomic.content.items.ItemFuelRod;
@@ -50,10 +51,6 @@ public class ASItems extends ContentProxy
     //Tools
     public static Item itemHeatProbe;
 
-    public static final int TICKS_SECOND = 20;
-    public static final int TICKS_MIN = TICKS_SECOND * 60;
-    public static final int TICKS_HOUR = TICKS_MIN * 60;
-
     public ASItems()
     {
         super("items");
@@ -80,11 +77,11 @@ public class ASItems extends ContentProxy
 
         //Machine inputs
         GameRegistry.registerItem(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile", "cell_fissile_fuel",
-                        5 * TICKS_HOUR, ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD
+                        ConfigPower.FUEL_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD
                         , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_FUEL_ROD, ConfigThermal.HEAT_REACTOR_FUEL_ROD),
                 "fissile_fuel_cell");
         GameRegistry.registerItem(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder", "cell_breeder_fuel",
-                        2 * TICKS_HOUR, ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD
+                        ConfigPower.BREEDER_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD
                         , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_BREEDER_ROD, ConfigThermal.HEAT_REACTOR_BREEDER_ROD),
                 "breeder_fuel_cell");
 

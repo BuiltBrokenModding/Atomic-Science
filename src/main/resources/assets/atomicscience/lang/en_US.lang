@@ -38,7 +38,10 @@ item.atomicscience:cell.powered.antimatter.name=Antimatter Cell
 item.atomicscience:cell.powered.strange_matter.name=Strange Matter Cell
 
 item.atomicscience:cell.fuel.fissile.name=Fission Fuel Rod
+item.atomicscience:cell.fuel.fissile.info.fuel=Fuel: %time% / %maxTime%
+
 item.atomicscience:cell.fuel.breeder.name=Fission Breeder Rod
+item.atomicscience:cell.fuel.breeder.info.fuel=Fuel: %time% / %maxTime%
 
 item.atomicscience:cell.empty.name=Empty Cell
 

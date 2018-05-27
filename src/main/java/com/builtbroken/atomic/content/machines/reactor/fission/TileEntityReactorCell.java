@@ -9,7 +9,9 @@ import com.builtbroken.atomic.map.MapHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 import java.util.List;
 
@@ -17,8 +19,10 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public class TileEntityReactorCell extends TileEntityInventoryMachine implements IFissionReactor, IRadiationSource
+public class TileEntityReactorCell extends TileEntityInventoryMachine implements IFissionReactor, IRadiationSource, ISidedInventory
 {
+    public static final int SLOT_FUEL_ROD = 0;
+    public static final int[] ACCESSIBLE_SIDES = new int[]{SLOT_FUEL_ROD};
     /** Client side */
     private boolean _running = false;
     private boolean _renderFuel = false;
@@ -51,6 +55,34 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
                 if (ticks % 20 == 0)
                 {
                     doOperationTick();
+                }
+            }
+
+            //Every 5 seconds, Check if we need to move rods (works like a hopper)
+            if (ticks % 100 == 0 && getFuelRod() != null)
+            {
+                TileEntity tile = worldObj.getTileEntity(xi(), yi() - 1, zi());
+                if (tile instanceof TileEntityReactorCell)
+                {
+                    //always move lowest rod to bottom of stack (ensures dead rods exit core)
+                    if (((TileEntityReactorCell) tile).getFuelRod() != null)
+                    {
+                        int runTime = getFuelRuntime();
+                        int otherRunTime = ((TileEntityReactorCell) tile).getFuelRuntime();
+
+                        if (runTime < otherRunTime)
+                        {
+                            ItemStack stack = ((TileEntityReactorCell) tile).getFuelRodStack();
+                            ((TileEntityReactorCell) tile).setFuelRod(getFuelRodStack());
+                            setFuelRod(stack);
+                        }
+                    }
+                    //If not rod in lower core, move cell
+                    else
+                    {
+                        ((TileEntityReactorCell) tile).setFuelRod(getFuelRodStack());
+                        setFuelRod(null);
+                    }
                 }
             }
         }
@@ -86,7 +118,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         //TODO check for safety (water, temp, etc)
         //TODO check if can generate neutrons (controls rods can force off)
         //TODO check for redstone disable
-        return hasFuel();
+        return hasFuel() && getFuelRuntime() > 0;
     }
 
     @Override
@@ -136,10 +168,15 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         return stack != null && stack.getItem() instanceof IFuelRodItem ? (IFuelRodItem) stack.getItem() : null;
     }
 
+    public void setFuelRod(ItemStack stack)
+    {
+        setInventorySlotContents(SLOT_FUEL_ROD, stack);
+    }
+
     @Override
     public ItemStack getFuelRodStack()
     {
-        return getStackInSlot(0);
+        return getStackInSlot(SLOT_FUEL_ROD);
     }
 
     @Override
@@ -171,8 +208,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         IFuelRodItem fuelRodItem = getFuelRod();
         if (fuelRodItem != null)
         {
-            int heat = fuelRodItem.getHeatOutput(getFuelRodStack(), this);
-            return getActualHeat(heat);
+            return getActualHeat(fuelRodItem.getHeatOutput(getFuelRodStack(), this));
         }
         return 0;
     }
@@ -186,7 +222,33 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        return slot == 0 && stack.getItem() instanceof IFuelRodItem;
+        return slot == SLOT_FUEL_ROD && stack.getItem() instanceof IFuelRodItem;
+    }
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(int p_94128_1_)
+    {
+        return ACCESSIBLE_SIDES;
+    }
+
+    @Override
+    public boolean canInsertItem(int slot, ItemStack stack, int side)
+    {
+        return SLOT_FUEL_ROD == slot;
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack stack, int side)
+    {
+        if (SLOT_FUEL_ROD == slot)
+        {
+            if (stack.getItem() instanceof IFuelRodItem)
+            {
+                return ((IFuelRodItem) stack.getItem()).getFuelRodRuntime(stack, this) <= 0;
+            }
+            return true;
+        }
+        return false;
     }
 
     //-----------------------------------------------

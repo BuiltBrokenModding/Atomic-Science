@@ -22,6 +22,9 @@ public class ConfigPower extends ContentProxy
     /** Max amount of steam that can be produced per tick from a water source */
     public static int WATER_VAPOR_MAX_RATE = 1000;
 
+    public static int FUEL_ROD_RUNTIME = 5 * AtomicScience.TICKS_HOUR;
+    public static int BREEDER_ROD_RUNTIME = 2 * AtomicScience.TICKS_HOUR;
+
     public ConfigPower()
     {
         super("config.power");
@@ -45,6 +48,8 @@ public class ConfigPower extends ContentProxy
         WATER_FLOWING_VAPOR_RATE = configuration.getInt("vapor_rate_water_flowing", "vapor", WATER_FLOWING_VAPOR_RATE, 1, 10000,
                 "Default amount of vapor a flowing water source can produce when heated. Scales with temperature but works as a lower limit.");
 
+        FUEL_ROD_RUNTIME = configuration.getInt("fuel_rod", "reactor_runtime", FUEL_ROD_RUNTIME, 1, Integer.MAX_VALUE, "How long the fuel rod runs in ticks (20 ticks a second)");
+        BREEDER_ROD_RUNTIME = configuration.getInt("breeder_rod", "reactor_runtime", BREEDER_ROD_RUNTIME, 1, Integer.MAX_VALUE, "How long the fuel rod runs in ticks (20 ticks a second)");
         configuration.save();
     }
 }

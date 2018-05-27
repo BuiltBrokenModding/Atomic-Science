@@ -55,6 +55,10 @@ public class AtomicScience
 
     public static final String MODEL_DIRECTORY = "models/";
 
+    public static final int TICKS_SECOND = 20;
+    public static final int TICKS_MIN = TICKS_SECOND * 60;
+    public static final int TICKS_HOUR = TICKS_MIN * 60;
+
     public final String ENERGY_HANDLER_INTERFACE = "cofh.api.energy.IEnergyReceiver";
 
     @Mod.Instance(DOMAIN)

@@ -2,8 +2,14 @@ package com.builtbroken.atomic.content.items;
 
 import com.builtbroken.atomic.api.item.IFuelRodItem;
 import com.builtbroken.atomic.api.reactor.IReactor;
+import com.builtbroken.atomic.lib.LanguageUtility;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.List;
 
 /**
  * Simple fuel rod
@@ -26,6 +32,31 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
         this.maxFuelRuntime = maxFuelRuntime;
         this.reactorRadioactivity = reactorRadioactivity;
         this.reactorHeatOutput = reactorHeatOutput;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean isHeld)
+    {
+        int time = getFuelRodRuntime(stack, null);
+        int maxTime = getMaxFuelRodRuntime(stack, null);
+
+        String translation = LanguageUtility.getLocal(getUnlocalizedName() + ".info.fuel");
+        translation = translation.replace("%time%", "" + time);
+        translation = translation.replace("%maxTime%", "" + maxTime);
+        lines.add(translation);
+    }
+
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack)
+    {
+        return Math.min(1, Math.max(0, getFuelRodRuntime(stack, null) / (double) getMaxFuelRodRuntime(stack, null)));
+    }
+
+    @Override
+    public boolean showDurabilityBar(ItemStack stack)
+    {
+        return getFuelRodRuntime(stack, null) != getMaxFuelRodRuntime(stack, null);
     }
 
     @Override
@@ -64,7 +95,7 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
         {
             stack.setTagCompound(new NBTTagCompound());
         }
-        stack.getTagCompound().setInteger("fuelTimer", fuelTick - 1);
+        stack.getTagCompound().setInteger("fuelTimer", Math.max(0, fuelTick - 1));
         return stack;
     }
 }
