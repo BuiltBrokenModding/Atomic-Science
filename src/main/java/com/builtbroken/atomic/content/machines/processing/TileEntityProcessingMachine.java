@@ -389,10 +389,20 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
      */
     public boolean canOutputFluid(IFluidTank tank, Fluid fluid, int amount)
     {
-        FluidStack outputFluidStack = tank.getFluid();
-        return outputFluidStack == null && tank.getCapacity() >= amount
-                || outputFluidStack.getFluid() == fluid
-                && (tank.getCapacity() - outputFluidStack.amount) >= amount;
+        if(fluid != null && amount > 0)
+        {
+            if (tank.getFluid() != null)
+            {
+                //Space left in tank
+                final int room = tank.getCapacity() - tank.getFluid().amount;
+                return room >= amount && fluid == tank.getFluid().getFluid();
+            }
+            else
+            {
+                return tank.getCapacity() >= amount;
+            }
+        }
+        return false;
     }
 
     //-----------------------------------------------
