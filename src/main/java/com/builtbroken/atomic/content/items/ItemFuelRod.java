@@ -50,7 +50,7 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
     {
-        return Math.min(1, Math.max(0, getFuelRodRuntime(stack, null) / (double) getMaxFuelRodRuntime(stack, null)));
+        return Math.min(1, Math.max(0, 1 - (getFuelRodRuntime(stack, null) / (double) getMaxFuelRodRuntime(stack, null))));
     }
 
     @Override
