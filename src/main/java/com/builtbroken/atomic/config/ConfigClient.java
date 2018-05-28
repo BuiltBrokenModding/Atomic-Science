@@ -13,6 +13,8 @@ import java.io.File;
 public class ConfigClient extends ContentProxy
 {
     public static boolean BOILING_EFFECT = true;
+    public static boolean MACHINE_COMPLETE = true;
+    public static boolean MACHINE_RUNNING = true;
     public static boolean STEAM_EFFECT = true;
 
     public ConfigClient()
@@ -24,5 +26,15 @@ public class ConfigClient extends ContentProxy
     public void preInit()
     {
         Configuration configuration = new Configuration(new File(AtomicScience.configFolder, "Client.cfg"), AtomicScience.VERSION);
+        configuration.load();
+
+        final String cat_particle = "particles";
+        BOILING_EFFECT = configuration.getBoolean("boiling", cat_particle, BOILING_EFFECT, "Allows disabling the water boiling effect.");
+        STEAM_EFFECT = configuration.getBoolean("steam", cat_particle, STEAM_EFFECT, "Allows disabling the water steam effect.");
+
+        MACHINE_COMPLETE = configuration.getBoolean("machine_complete", cat_particle, MACHINE_COMPLETE, "Allows disabling the effect generated when machine finishes a recipe.");
+        MACHINE_RUNNING = configuration.getBoolean("machine_running", cat_particle, MACHINE_RUNNING, "Allows disabling the effect generated when machine processing materials.");
+
+        configuration.save();
     }
 }

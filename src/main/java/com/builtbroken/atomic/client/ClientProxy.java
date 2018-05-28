@@ -120,55 +120,84 @@ public class ClientProxy extends CommonProxy
 
     private void boilerComplete(double x, double y, double z)
     {
-        final float randomSpeed = 0.05f;
-        int rand = Minecraft.getMinecraft().theWorld.rand.nextInt(5);
-        Color color = Color.GREEN.darker().darker();
-        for (int i = 0; i < 10 + rand; i++)
+        if (ConfigClient.MACHINE_COMPLETE)
         {
-            FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
-                    x,
-                    y - 0.3,
-                    z,
-                    r(randomSpeed) - r(randomSpeed),
-                    r(randomSpeed) - r(randomSpeed),
-                    r(randomSpeed) - r(randomSpeed),
-                    (float) (1f - r(0.2) + r(0.2)));
-
-            if (r(1) > 0.5)
+            final float randomSpeed = 0.05f;
+            int rand = Minecraft.getMinecraft().theWorld.rand.nextInt(5);
+            Color color = Color.GREEN.darker().darker();
+            for (int i = 0; i < 10 + rand; i++)
             {
-                color.darker();
+                FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
+                        x,
+                        y - 0.3,
+                        z,
+                        r(randomSpeed) - r(randomSpeed),
+                        r(randomSpeed) - r(randomSpeed),
+                        r(randomSpeed) - r(randomSpeed),
+                        (float) (1f - r(0.2) + r(0.2)));
+
+                if (r(1) > 0.5)
+                {
+                    color.darker();
+                }
+
+                Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(color));
             }
 
-            Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(color));
-        }
-
-        for (int i = 0; i < 10 + rand; i++)
-        {
-            FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
-                    x,
-                    y,
-                    z,
-                    r(randomSpeed) - r(randomSpeed),
-                    r(randomSpeed) - r(randomSpeed),
-                    r(randomSpeed) - r(randomSpeed),
-                    (float) (1f - r(0.2) + r(0.2)));
-
-            if (r(1) > 0.5)
+            for (int i = 0; i < 10 + rand; i++)
             {
-                color.darker();
-            }
+                FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
+                        x,
+                        y,
+                        z,
+                        r(randomSpeed) - r(randomSpeed),
+                        r(randomSpeed) - r(randomSpeed),
+                        r(randomSpeed) - r(randomSpeed),
+                        (float) (1f - r(0.2) + r(0.2)));
 
-            Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(color));
+                if (r(1) > 0.5)
+                {
+                    color.darker();
+                }
+
+                Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(color));
+            }
         }
     }
 
     private void centrifugeComplete(double x, double y, double z)
     {
-        final float randomSpeed = 0.05f;
-        int rand = Minecraft.getMinecraft().theWorld.rand.nextInt(5);
-        Color color = Color.GREEN.darker().darker();
-        for (int i = 0; i < 10 + rand; i++)
+        if (ConfigClient.MACHINE_COMPLETE)
         {
+            final float randomSpeed = 0.05f;
+            int rand = Minecraft.getMinecraft().theWorld.rand.nextInt(5);
+            Color color = Color.GREEN.darker().darker();
+            for (int i = 0; i < 10 + rand; i++)
+            {
+                FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
+                        x,
+                        y,
+                        z,
+                        r(randomSpeed) - r(randomSpeed),
+                        r(randomSpeed) - r(randomSpeed),
+                        r(randomSpeed) - r(randomSpeed),
+                        (float) (1f - r(0.2) + r(0.2)));
+
+                if (r(1) > 0.5)
+                {
+                    color.darker();
+                }
+
+                Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(color));
+            }
+        }
+    }
+
+    private void centrifugeRunning(double x, double y, double z)
+    {
+        if (ConfigClient.MACHINE_RUNNING)
+        {
+            final float randomSpeed = 0.02f;
             FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
                     x,
                     y,
@@ -178,39 +207,48 @@ public class ClientProxy extends CommonProxy
                     r(randomSpeed) - r(randomSpeed),
                     (float) (1f - r(0.2) + r(0.2)));
 
-            if (r(1) > 0.5)
-            {
-                color.darker();
-            }
-
-            Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(color));
+            Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(Color.GREEN));
         }
-    }
-
-    private void centrifugeRunning(double x, double y, double z)
-    {
-        final float randomSpeed = 0.02f;
-        FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
-                x,
-                y,
-                z,
-                r(randomSpeed) - r(randomSpeed),
-                r(randomSpeed) - r(randomSpeed),
-                r(randomSpeed) - r(randomSpeed),
-                (float) (1f - r(0.2) + r(0.2)));
-
-        Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(Color.GREEN));
     }
 
     private void extractorComplete(double x, double y, double z, int facing)
     {
-        final float randomSpeed = 0.05f;
-        int rand = Minecraft.getMinecraft().theWorld.rand.nextInt(5);
-        Color color = Color.GREEN.darker().darker();
-
-        ForgeDirection direction = ForgeDirection.getOrientation(facing);
-        for (int i = 0; i < 10 + rand; i++)
+        if (ConfigClient.MACHINE_COMPLETE)
         {
+            final float randomSpeed = 0.05f;
+            int rand = Minecraft.getMinecraft().theWorld.rand.nextInt(5);
+            Color color = Color.GREEN.darker().darker();
+
+            ForgeDirection direction = ForgeDirection.getOrientation(facing);
+            for (int i = 0; i < 10 + rand; i++)
+            {
+                FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
+                        x + direction.offsetX * 0.2,
+                        y + direction.offsetY * 0.2,
+                        z + direction.offsetZ * 0.2,
+                        r(randomSpeed) - r(randomSpeed),
+                        r(randomSpeed) - r(randomSpeed),
+                        r(randomSpeed) - r(randomSpeed),
+                        (float) (1f - r(0.2) + r(0.2)));
+
+                if (r(1) > 0.5)
+                {
+                    color.darker();
+                }
+
+                Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(color));
+            }
+        }
+    }
+
+    private void extractorRunning(double x, double y, double z, int facing)
+    {
+        if (ConfigClient.MACHINE_RUNNING)
+        {
+            final float randomSpeed = 0.02f;
+
+            ForgeDirection direction = ForgeDirection.getOrientation(facing);
+
             FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
                     x + direction.offsetX * 0.2,
                     y + direction.offsetY * 0.2,
@@ -219,51 +257,28 @@ public class ClientProxy extends CommonProxy
                     r(randomSpeed) - r(randomSpeed),
                     r(randomSpeed) - r(randomSpeed),
                     (float) (1f - r(0.2) + r(0.2)));
+            Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(Color.GREEN));
 
-            if (r(1) > 0.5)
-            {
-                color.darker();
-            }
+            smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
+                    x + direction.offsetX * 0.2 + direction.offsetZ * 0.3,
+                    y + direction.offsetY * 0.2,
+                    z + direction.offsetZ * 0.2 + direction.offsetX * 0.3,
+                    r(randomSpeed) - r(randomSpeed),
+                    r(randomSpeed) - r(randomSpeed),
+                    r(randomSpeed) - r(randomSpeed),
+                    (float) (1f - r(0.2) + r(0.2)));
+            Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(Color.GREEN));
 
-            Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(color));
+            smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
+                    x + direction.offsetX * 0.2 - direction.offsetZ * 0.3,
+                    y + direction.offsetY * 0.2,
+                    z + direction.offsetZ * 0.2 - direction.offsetX * 0.3,
+                    r(randomSpeed) - r(randomSpeed),
+                    r(randomSpeed) - r(randomSpeed),
+                    r(randomSpeed) - r(randomSpeed),
+                    (float) (1f - r(0.2) + r(0.2)));
+            Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(Color.GREEN));
         }
-    }
-
-    private void extractorRunning(double x, double y, double z, int facing)
-    {
-        final float randomSpeed = 0.02f;
-
-        ForgeDirection direction = ForgeDirection.getOrientation(facing);
-
-        FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
-                x + direction.offsetX * 0.2,
-                y + direction.offsetY * 0.2,
-                z + direction.offsetZ * 0.2,
-                r(randomSpeed) - r(randomSpeed),
-                r(randomSpeed) - r(randomSpeed),
-                r(randomSpeed) - r(randomSpeed),
-                (float) (1f - r(0.2) + r(0.2)));
-        Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(Color.GREEN));
-
-        smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
-                x + direction.offsetX * 0.2 + direction.offsetZ * 0.3,
-                y + direction.offsetY * 0.2,
-                z + direction.offsetZ * 0.2 + direction.offsetX * 0.3,
-                r(randomSpeed) - r(randomSpeed),
-                r(randomSpeed) - r(randomSpeed),
-                r(randomSpeed) - r(randomSpeed),
-                (float) (1f - r(0.2) + r(0.2)));
-        Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(Color.GREEN));
-
-        smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
-                x + direction.offsetX * 0.2 - direction.offsetZ * 0.3,
-                y + direction.offsetY * 0.2,
-                z + direction.offsetZ * 0.2 - direction.offsetX * 0.3,
-                r(randomSpeed) - r(randomSpeed),
-                r(randomSpeed) - r(randomSpeed),
-                r(randomSpeed) - r(randomSpeed),
-                (float) (1f - r(0.2) + r(0.2)));
-        Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(Color.GREEN));
     }
 
     private double r(double random)
