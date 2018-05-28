@@ -1,6 +1,8 @@
 package com.builtbroken.atomic.content.machines.processing.recipes;
 
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 
 /**
  * Prefab for recipes used in the processing machine
@@ -33,4 +35,26 @@ public abstract class ProcessingRecipe<H extends TileEntityProcessingMachine> //
      * @return true when recipe was applied
      */
     public abstract boolean applyRecipe(H machine);
+
+    /**
+     * Checks if the fluid is a component in the recipe.
+     * <p>
+     * This is mainly used to handle fluid input into the machine
+     *
+     * @param fluid
+     * @param machine - machine to apply recipe to
+     * @return
+     */
+    public abstract boolean isComponent(H machine, Fluid fluid);
+
+    /**
+     * Checks if the item is a component in the recipe.
+     * <p>
+     * This is mainly used to handle inventory input into the machine
+     *
+     * @param stack
+     * @param machine - machine to apply recipe to
+     * @return
+     */
+    public abstract boolean isComponent(H machine, ItemStack stack);
 }

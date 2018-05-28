@@ -6,6 +6,7 @@ import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -37,6 +38,18 @@ public class RecipeConWater extends ProcessingRecipe<TileEntityChemCentrifuge>
                 return true;
             }
         }
+        return false;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemCentrifuge machine, Fluid fluid)
+    {
+        return fluid == ASFluids.CONTAMINATED_MINERAL_WATER.fluid;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemCentrifuge machine, ItemStack stack)
+    {
         return false;
     }
 }

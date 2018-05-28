@@ -6,6 +6,7 @@ import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -37,6 +38,18 @@ public class RecipeMineralWaste extends ProcessingRecipe<TileEntityChemBoiler>
                 return true;
             }
         }
+        return false;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemBoiler machine, Fluid fluid)
+    {
+        return  fluid == ASFluids.LIQUID_MINERAL_WASTE.fluid;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemBoiler machine, ItemStack stack)
+    {
         return false;
     }
 }

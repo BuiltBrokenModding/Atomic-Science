@@ -6,6 +6,7 @@ import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -54,5 +55,17 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemBoiler machine, Fluid fluid)
+    {
+        return fluid == FluidRegistry.WATER;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemBoiler machine, ItemStack stack)
+    {
+        return ASItems.itemYellowCake == stack.getItem();
     }
 }

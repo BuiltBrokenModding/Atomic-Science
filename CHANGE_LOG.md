@@ -11,12 +11,15 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ## 3.0.2
 ### Runtime Changes
-Added: Configs for content
+Added: Configs for content & features
 Added: Settings to disable radiation system
 Added: ISidedInventory support (hopper and pipe support) for reactor cores 
 Added: Mechanic to move lowest time rod to bottom of reactor stack
 Added: Damage display to fuel rods
 Added: Display info to fuel rods
+Added: particles to show machines runing
+Added: particles to show when machine finishes a recipe
+Added: particles to show when reactor is running
 
 Improved: handling of entity item radiation tracking
 
@@ -24,6 +27,11 @@ Fixed: GUI localizations
 Fixed: NPE when checking if can output fluids from processing machines
 Fixed: Fuel rods being usable beyond time limit (timer going negative)
 Fixed: Inventory stack size on reactor core (now 1, instead of 64)
+Fixed: Fluid cells not emptying into processing machines
+
+### Development Changes
+Added: check if a fluid or itemstack was supported by a recipe
+Added: call backs to recipe to allow items and fluids into processing machines
 
 ## 3.0.1
 ### Changes

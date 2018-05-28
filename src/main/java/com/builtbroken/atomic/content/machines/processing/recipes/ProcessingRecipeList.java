@@ -2,6 +2,8 @@ package com.builtbroken.atomic.content.machines.processing.recipes;
 
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.proxy.ProxyLoader;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 
 import java.util.ArrayList;
 
@@ -36,5 +38,15 @@ public class ProcessingRecipeList<H extends TileEntityProcessingMachine> extends
             }
         }
         return null;
+    }
+
+    public boolean isComponent(H machine, Fluid fluid)
+    {
+        return recipes.stream().anyMatch(r -> r.isComponent(machine, fluid));
+    }
+
+    public boolean isComponent(H machine, ItemStack stack)
+    {
+        return recipes.stream().anyMatch(r -> r.isComponent(machine, stack));
     }
 }

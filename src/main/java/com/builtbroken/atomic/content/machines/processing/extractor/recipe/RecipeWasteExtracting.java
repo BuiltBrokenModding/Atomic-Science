@@ -4,6 +4,7 @@ import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -43,6 +44,18 @@ public class RecipeWasteExtracting extends ProcessingRecipe<TileEntityChemExtrac
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemExtractor machine, Fluid fluid)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemExtractor machine, ItemStack stack)
+    {
+        return stack.getItem() == ASItems.itemProcessingWaste;
     }
 
 

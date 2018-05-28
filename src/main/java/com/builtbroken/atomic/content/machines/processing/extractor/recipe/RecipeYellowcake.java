@@ -8,6 +8,7 @@ import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityCh
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -54,5 +55,17 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemExtractor machine, Fluid fluid)
+    {
+        return fluid == FluidRegistry.WATER;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemExtractor machine, ItemStack stack)
+    {
+        return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem();
     }
 }

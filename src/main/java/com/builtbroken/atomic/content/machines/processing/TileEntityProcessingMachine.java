@@ -246,7 +246,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
                 IFluidContainerItem fluidContainerItem = (IFluidContainerItem) itemStack.getItem();
 
                 FluidStack fluidStack = fluidContainerItem.getFluid(itemStack);
-                if (fluidStack != null && fluidStack.getFluid() == FluidRegistry.WATER)
+                if (fluidStack != null && getRecipeList().isComponent(this, fluidStack.getFluid()))
                 {
                     fluidStack = fluidContainerItem.drain(itemStack, inputTank.getCapacity() - inputTank.getFluidAmount(), false);
                     int amount = inputTank.fill(fluidStack, true);
@@ -257,8 +257,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
             else if (FluidContainerRegistry.isFilledContainer(itemStack))
             {
                 FluidStack stack = FluidContainerRegistry.getFluidForFilledItem(itemStack);
-                if (stack != null && stack.getFluid() == FluidRegistry.WATER
-                        && canOutputFluid(inputTank, FluidRegistry.WATER, stack.amount))
+                if (stack != null && getRecipeList().isComponent(this, stack.getFluid()))
                 {
                     inputTank.fill(stack, true);
                     decrStackSize(slot, 1);

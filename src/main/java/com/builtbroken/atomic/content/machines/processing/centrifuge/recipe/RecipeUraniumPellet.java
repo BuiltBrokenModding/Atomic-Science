@@ -6,6 +6,7 @@ import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -33,6 +34,18 @@ public class RecipeUraniumPellet extends ProcessingRecipe<TileEntityChemCentrifu
                 return true;
             }
         }
+        return false;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemCentrifuge machine, Fluid fluid)
+    {
+        return ASFluids.URANIUM_HEXAFLOURIDE.fluid == fluid;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemCentrifuge machine, ItemStack stack)
+    {
         return false;
     }
 }

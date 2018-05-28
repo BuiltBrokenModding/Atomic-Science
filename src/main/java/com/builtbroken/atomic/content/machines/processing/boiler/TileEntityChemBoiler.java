@@ -2,9 +2,7 @@ package com.builtbroken.atomic.content.machines.processing.boiler;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.EffectRefs;
-import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
-import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.boiler.gui.ContainerChemBoiler;
@@ -17,7 +15,6 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -303,8 +300,7 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     {
         if (slot == SLOT_ITEM_INPUT)
         {
-            return stack.getItem() == Item.getItemFromBlock(ASBlocks.blockUraniumOre)
-                    || stack.getItem() == ASItems.itemYellowCake;
+            return getRecipeList().isComponent(this, stack);
         }
         return false;
     }

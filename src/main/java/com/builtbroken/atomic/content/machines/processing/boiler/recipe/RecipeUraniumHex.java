@@ -8,6 +8,7 @@ import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemB
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -58,5 +59,17 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemBoiler machine, Fluid fluid)
+    {
+        return fluid == FluidRegistry.WATER;
+    }
+
+    @Override
+    public boolean isComponent(TileEntityChemBoiler machine, ItemStack stack)
+    {
+        return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem();
     }
 }
