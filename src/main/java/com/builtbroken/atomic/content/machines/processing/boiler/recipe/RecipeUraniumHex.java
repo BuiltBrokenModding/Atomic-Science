@@ -30,7 +30,7 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
     }
 
     @Override
-    public void applyRecipe(TileEntityChemBoiler machine)
+    public boolean applyRecipe(TileEntityChemBoiler machine)
     {
         //Uranium Ore recipe
         final ItemStack inputItem = machine.getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
@@ -53,8 +53,10 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
                     machine.getInputTank().drain(ConfigRecipe.WATER_BOIL_URANIUM_ORE, true);
                     machine.getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_URANIUM_ORE), true);
                     machine.getHexTank().fill(new FluidStack(ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_URANIUM_ORE), true);
+                    return true;
                 }
             }
         }
+        return false;
     }
 }

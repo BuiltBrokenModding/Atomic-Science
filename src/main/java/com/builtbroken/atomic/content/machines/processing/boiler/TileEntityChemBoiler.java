@@ -1,5 +1,7 @@
 package com.builtbroken.atomic.content.machines.processing.boiler;
 
+import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.client.EffectRefs;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
@@ -9,6 +11,8 @@ import com.builtbroken.atomic.content.machines.processing.boiler.gui.ContainerCh
 import com.builtbroken.atomic.content.machines.processing.boiler.gui.GuiChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
+import com.builtbroken.atomic.lib.network.netty.PacketSystem;
+import com.builtbroken.atomic.lib.network.packet.client.PacketSpawnParticle;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,6 +58,28 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
         inputTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
         wasteTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
         hexTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
+    }
+
+    @Override
+    protected void onProcessed()
+    {
+        if (isServer())
+        {
+            PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(worldObj.provider.dimensionId,
+                    xi() + 0.5, yi() + 0.5, zi() + 0.5,
+                    0, 0, 0,
+                    EffectRefs.BOILER_COMPLETE);
+            PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, worldObj, this, 30);
+        }
+    }
+
+    @Override
+    protected void doEffects(int ticks)
+    {
+        if (worldObj.rand.nextFloat() > 0.3)
+        {
+            AtomicScience.sideProxy.spawnParticle(EffectRefs.BOILER_RUNNING, xi() + 0.5, yi() + 0.5, zi() + 0.5, 0, 0, 0);
+        }
     }
 
     @Override

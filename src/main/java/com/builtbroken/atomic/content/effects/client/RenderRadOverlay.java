@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.content.effects.client;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.ClientProxy;
+import com.builtbroken.atomic.client.ClientProxy;
 import com.builtbroken.atomic.config.ConfigRadiation;
 import com.builtbroken.atomic.lib.Render2DHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

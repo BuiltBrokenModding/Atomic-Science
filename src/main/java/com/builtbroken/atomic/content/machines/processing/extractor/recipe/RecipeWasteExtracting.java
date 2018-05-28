@@ -19,7 +19,7 @@ public class RecipeWasteExtracting extends ProcessingRecipe<TileEntityChemExtrac
     }
 
     @Override
-    public void applyRecipe(TileEntityChemExtractor machine)
+    public boolean applyRecipe(TileEntityChemExtractor machine)
     {
         ItemStack inputItem = machine.getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
         if (inputItem != null && ASItems.itemProcessingWaste == inputItem.getItem())
@@ -40,7 +40,9 @@ public class RecipeWasteExtracting extends ProcessingRecipe<TileEntityChemExtrac
                 machine.decrStackSize(TileEntityChemExtractor.SLOT_ITEM_INPUT, 1);
                 machine.addToOutput(outputStack, TileEntityChemExtractor.SLOT_ITEM_OUTPUT);
             }
+            return true;
         }
+        return false;
     }
 
 

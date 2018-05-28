@@ -30,7 +30,7 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
     }
 
     @Override
-    public void applyRecipe(TileEntityChemExtractor machine)
+    public boolean applyRecipe(TileEntityChemExtractor machine)
     {
         //Uranium Ore recipe
         ItemStack inputItem = machine.getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
@@ -48,8 +48,11 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
                     machine.getInputTank().drain(ConfigRecipe.WATER_USED_YELLOW_CAKE, true);
                     machine.getOutputTank().fill(new FluidStack(ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE), true);
                     machine.addToOutput(outputStack, TileEntityChemExtractor.SLOT_ITEM_OUTPUT);
+
+                    return true;
                 }
             }
         }
+        return false;
     }
 }

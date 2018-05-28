@@ -22,7 +22,7 @@ public class RecipeConWater extends ProcessingRecipe<TileEntityChemCentrifuge>
     }
 
     @Override
-    public void applyRecipe(TileEntityChemCentrifuge machine)
+    public boolean applyRecipe(TileEntityChemCentrifuge machine)
     {
         if (machine.hasInputFluid(machine.getInputTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.MINERAL_WASTE_WATER_PER_CENTRIFUGE)
                 && machine.canOutputFluid(machine.getOutputTank(), FluidRegistry.WATER, ConfigRecipe.MINERAL_WASTE_WATER_PER_CENTRIFUGE * ConfigRecipe.MINERAL_WASTE_WATER_PER_WATER))
@@ -34,7 +34,9 @@ public class RecipeConWater extends ProcessingRecipe<TileEntityChemCentrifuge>
 
                 machine.getInputTank().drain(ConfigRecipe.WATER_BOIL_URANIUM_ORE, true);
                 machine.getOutputTank().fill(new FluidStack(FluidRegistry.WATER, ConfigRecipe.MINERAL_WASTE_WATER_PER_CENTRIFUGE * ConfigRecipe.MINERAL_WASTE_WATER_PER_WATER), true);
+                return true;
             }
         }
+        return false;
     }
 }

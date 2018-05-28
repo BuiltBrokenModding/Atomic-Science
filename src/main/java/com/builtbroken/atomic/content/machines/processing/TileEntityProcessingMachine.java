@@ -44,13 +44,24 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
         }
         else if (processTimer > 0)
         {
-            _processingAnimationRotation += 5f; //TODO move to val
-            if (_processingAnimationRotation > 360)
-            {
-                _processingAnimationRotation -= 360;
-                _processingAnimationRotationPrev -= 360;
-            }
+            doAnimation(ticks);
+            doEffects(ticks);
         }
+    }
+
+    protected void doAnimation(int ticks)
+    {
+        _processingAnimationRotation += 5f; //TODO move to val
+        if (_processingAnimationRotation > 360)
+        {
+            _processingAnimationRotation -= 360;
+            _processingAnimationRotationPrev -= 360;
+        }
+    }
+
+    protected void doEffects(int ticks)
+    {
+
     }
 
     //-----------------------------------------------
@@ -92,6 +103,14 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
     }
 
     /**
+     * Called when we finish a recipe
+     */
+    protected void onProcessed()
+    {
+
+    }
+
+    /**
      * How long each process cycle takes before running
      */
     protected abstract int getProcessingTime();
@@ -106,7 +125,10 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
         ProcessingRecipe recipe = getRecipeList().getMatchingRecipe(this);
         if (recipe != null)
         {
-            recipe.applyRecipe(this);
+            if (recipe.applyRecipe(this))
+            {
+                onProcessed();
+            }
         }
     }
 
@@ -389,7 +411,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
      */
     public boolean canOutputFluid(IFluidTank tank, Fluid fluid, int amount)
     {
-        if(fluid != null && amount > 0)
+        if (fluid != null && amount > 0)
         {
             if (tank.getFluid() != null)
             {

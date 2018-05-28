@@ -20,7 +20,7 @@ public class RecipeUraniumPellet extends ProcessingRecipe<TileEntityChemCentrifu
     }
 
     @Override
-    public void applyRecipe(TileEntityChemCentrifuge machine)
+    public boolean applyRecipe(TileEntityChemCentrifuge machine)
     {
         if (machine.hasInputFluid(machine.getInputTank(), ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.URANIUM_HEX_PER_CENTRIFUGE))
         {
@@ -30,7 +30,9 @@ public class RecipeUraniumPellet extends ProcessingRecipe<TileEntityChemCentrifu
                 machine.addToOutput(outputStack, TileEntityChemCentrifuge.SLOT_ITEM_OUTPUT);
 
                 machine.getInputTank().drain(ConfigRecipe.WATER_BOIL_URANIUM_ORE, true);
+                return true;
             }
         }
+        return false;
     }
 }

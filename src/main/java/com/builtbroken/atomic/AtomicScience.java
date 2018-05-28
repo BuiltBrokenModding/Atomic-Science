@@ -70,7 +70,7 @@ public class AtomicScience
 
     public static CreativeTabs creativeTab;
 
-    @SidedProxy(clientSide = "com.builtbroken.atomic.ClientProxy", serverSide = "com.builtbroken.atomic.ServerProxy")
+    @SidedProxy(clientSide = "com.builtbroken.atomic.client.ClientProxy", serverSide = "com.builtbroken.atomic.ServerProxy")
     public static CommonProxy sideProxy;
 
     public static ProxyLoader proxyLoader;

@@ -21,7 +21,7 @@ public class RecipeMineralWaste extends ProcessingRecipe<TileEntityChemBoiler>
     }
 
     @Override
-    public void applyRecipe(TileEntityChemBoiler machine)
+    public boolean applyRecipe(TileEntityChemBoiler machine)
     {
         if (machine.hasInputFluid(machine.getInputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER)
                 && machine.canOutputFluid(machine.getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER))
@@ -34,7 +34,9 @@ public class RecipeMineralWaste extends ProcessingRecipe<TileEntityChemBoiler>
 
                 machine.getInputTank().drain(ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER, true);
                 machine.getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER), true);
+                return true;
             }
         }
+        return false;
     }
 }

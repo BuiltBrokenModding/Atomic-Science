@@ -28,7 +28,7 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
     }
 
     @Override
-    public void applyRecipe(TileEntityChemBoiler machine)
+    public boolean applyRecipe(TileEntityChemBoiler machine)
     {
         final ItemStack inputItem = machine.getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
         if (inputItem != null)
@@ -48,8 +48,11 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
                     machine.getInputTank().drain(ConfigRecipe.WATER_BOIL_YELLOWCAKE, true);
                     machine.getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_YELLOWCAKE), true);
                     machine.getHexTank().fill(new FluidStack(ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_YELLOWCAKE), true);
+
+                    return true;
                 }
             }
         }
+        return false;
     }
 }

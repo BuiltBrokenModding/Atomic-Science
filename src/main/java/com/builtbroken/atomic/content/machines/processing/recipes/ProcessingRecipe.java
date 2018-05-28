@@ -30,6 +30,7 @@ public abstract class ProcessingRecipe<H extends TileEntityProcessingMachine> //
      * and power as needed.
      *
      * @param machine - machine to apply recipe to
+     * @return true when recipe was applied
      */
-    public abstract void applyRecipe(H machine);
+    public abstract boolean applyRecipe(H machine);
 }

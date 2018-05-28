@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.lib.network.packet.sync;
 
-import com.builtbroken.atomic.ClientProxy;
+import com.builtbroken.atomic.client.ClientProxy;
 import com.builtbroken.atomic.lib.network.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
