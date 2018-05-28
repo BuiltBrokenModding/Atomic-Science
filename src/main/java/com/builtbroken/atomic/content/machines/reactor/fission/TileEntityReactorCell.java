@@ -1,8 +1,10 @@
 package com.builtbroken.atomic.content.machines.reactor.fission;
 
+import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.item.IFuelRodItem;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.reactor.IFissionReactor;
+import com.builtbroken.atomic.client.EffectRefs;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.machines.TileEntityInventoryMachine;
 import com.builtbroken.atomic.map.MapHandler;
@@ -49,13 +51,24 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         super.update(ticks);
         if (isServer())
         {
+            boolean prev_running = _running;
             if (canOperate())
             {
+                _running = true;
                 consumeFuel(ticks);
                 if (ticks % 20 == 0)
                 {
                     doOperationTick();
                 }
+            }
+            else
+            {
+                _running = false;
+            }
+
+            if (prev_running != _running || ticks % 20 == 0)
+            {
+                syncClientNextTick();
             }
 
             //Every 5 seconds, Check if we need to move rods (works like a hopper)
@@ -88,7 +101,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         }
         else if (_running)
         {
-            //TODO run client side effects
+            AtomicScience.sideProxy.spawnParticle(EffectRefs.REACTOR_RUNNING, xi() + 0.5, yi() + 0.5, zi() + 0.5, 0, 0, 0);
         }
     }
 
@@ -283,6 +296,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     protected void writeDescPacket(List<Object> dataList, EntityPlayer player)
     {
         super.writeDescPacket(dataList, player);
+        dataList.add(_running ||canOperate());
         dataList.add(hasFuel());
         dataList.add(getFuelRenderLevel());
     }
@@ -291,6 +305,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     protected void readDescPacket(ByteBuf buf, EntityPlayer player)
     {
         super.readDescPacket(buf, player);
+        _running = buf.readBoolean();
         _renderFuel = buf.readBoolean();
         _renderFuelLevel = buf.readFloat();
     }

@@ -17,4 +17,6 @@ public final class EffectRefs
 
     public static final String CENTRIFUGE_COMPLETE = "centrifuge:complete";
     public static final String CENTRIFUGE_RUNNING = "centrifuge:running";
+
+    public static final String REACTOR_RUNNING = "reactor:running";
 }

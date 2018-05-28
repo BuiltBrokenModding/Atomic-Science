@@ -49,7 +49,11 @@ public class ClientProxy extends CommonProxy
         {
             if (particle.startsWith(EffectRefs.STEAM))
             {
-
+                //TODO implement
+            }
+            else if (particle.startsWith(EffectRefs.REACTOR_RUNNING))
+            {
+                reactorRunning(x, y, z);
             }
             else if (particle.startsWith(EffectRefs.BOILING))
             {
@@ -278,6 +282,42 @@ public class ClientProxy extends CommonProxy
                     r(randomSpeed) - r(randomSpeed),
                     (float) (1f - r(0.2) + r(0.2)));
             Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(Color.GREEN));
+        }
+    }
+
+    private void reactorRunning(double x, double y, double z)
+    {
+        if (ConfigClient.REACTOR_RUNNING)
+        {
+            final float randomSpeed = 0.05f;
+            Color color = Color.GREEN;
+            for(int j = 0; j < 6; j++)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().theWorld,
+                            x + r(0.01) - r(0.01),
+                            y + 0.15 - 0.15 * j,
+                            z + r(0.01) - r(0.01),
+                            r(randomSpeed) - r(randomSpeed),
+                            r(0.01) - r(0.01),
+                            r(randomSpeed) - r(randomSpeed),
+                            (float) (1f - r(0.2) + r(0.2)))
+                            .setColor(color)
+                            .setYAcceleration(0);
+
+                    if (r(1) > 0.5)
+                    {
+                        color = color.darker();
+                    }
+                    else
+                    {
+                        color = color.brighter();
+                    }
+
+                    Minecraft.getMinecraft().effectRenderer.addEffect(smoke);
+                }
+            }
         }
     }
 

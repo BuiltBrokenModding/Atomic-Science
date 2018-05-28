@@ -15,6 +15,7 @@ public class ConfigClient extends ContentProxy
     public static boolean BOILING_EFFECT = true;
     public static boolean MACHINE_COMPLETE = true;
     public static boolean MACHINE_RUNNING = true;
+    public static boolean REACTOR_RUNNING = true;
     public static boolean STEAM_EFFECT = true;
 
     public ConfigClient()
@@ -34,6 +35,8 @@ public class ConfigClient extends ContentProxy
 
         MACHINE_COMPLETE = configuration.getBoolean("machine_complete", cat_particle, MACHINE_COMPLETE, "Allows disabling the effect generated when machine finishes a recipe.");
         MACHINE_RUNNING = configuration.getBoolean("machine_running", cat_particle, MACHINE_RUNNING, "Allows disabling the effect generated when machine processing materials.");
+
+        REACTOR_RUNNING = configuration.getBoolean("reactor_running", cat_particle, REACTOR_RUNNING, "Allows disabling the effect generated when reactor is running.");
 
         configuration.save();
     }
