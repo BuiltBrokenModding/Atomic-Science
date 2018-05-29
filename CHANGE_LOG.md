@@ -28,6 +28,7 @@ Fixed: NPE when checking if can output fluids from processing machines
 Fixed: Fuel rods being usable beyond time limit (timer going negative)
 Fixed: Inventory stack size on reactor core (now 1, instead of 64)
 Fixed: Fluid cells not emptying into processing machines
+Fixed: Boiler recipe consuming 1mb waste instead of 1000mb
 
 ### Development Changes
 Added: check if a fluid or itemstack was supported by a recipe
