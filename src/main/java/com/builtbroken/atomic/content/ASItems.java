@@ -11,6 +11,7 @@ import com.builtbroken.atomic.content.items.ItemRadioactive;
 import com.builtbroken.atomic.content.items.cell.CreativeTabCells;
 import com.builtbroken.atomic.content.items.cell.ItemFluidCell;
 import com.builtbroken.atomic.content.items.cell.ItemPoweredCell;
+import com.builtbroken.atomic.content.items.wrench.ItemWrench;
 import com.builtbroken.atomic.proxy.ContentProxy;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
@@ -50,6 +51,7 @@ public class ASItems extends ContentProxy
 
     //Tools
     public static Item itemHeatProbe;
+    public static ItemWrench itemWrench;
 
     public ASItems()
     {
@@ -101,6 +103,7 @@ public class ASItems extends ContentProxy
 
         //Tools
         GameRegistry.registerItem(itemHeatProbe = new ItemHeatProbe(), "heat_probe");
+        GameRegistry.registerItem(itemWrench = new ItemWrench(), "wrench");
 
         if (AtomicScience.runningAsDev)
         {

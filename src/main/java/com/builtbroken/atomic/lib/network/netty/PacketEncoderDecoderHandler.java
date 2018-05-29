@@ -6,6 +6,7 @@ import com.builtbroken.atomic.lib.network.packet.client.PacketSpawnParticle;
 import com.builtbroken.atomic.lib.network.packet.sync.PacketPlayerRadiation;
 import com.builtbroken.atomic.lib.network.packet.PacketPlayerItem;
 import com.builtbroken.atomic.lib.network.packet.PacketTile;
+import com.builtbroken.atomic.lib.network.packet.trigger.PacketMouse;
 import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,6 +27,7 @@ public class PacketEncoderDecoderHandler extends FMLIndexedMessageToMessageCodec
         addPacket(PacketPlayerItem.class);
         addPacket(PacketPlayerRadiation.class);
         addPacket(PacketSpawnParticle.class);
+        addPacket(PacketMouse.class);
     }
 
     public void addPacket(Class<? extends IPacket> clazz)

@@ -4,8 +4,16 @@ import com.builtbroken.atomic.CommonProxy;
 import com.builtbroken.atomic.client.fx.FxSmoke;
 import com.builtbroken.atomic.config.ConfigClient;
 import com.builtbroken.atomic.content.ASClientReg;
+import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.lib.network.netty.PacketSystem;
+import com.builtbroken.atomic.lib.network.packet.trigger.PacketMouse;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.awt.*;
@@ -32,6 +40,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void preInit()
     {
+        MinecraftForge.EVENT_BUS.register(this);
         ASClientReg.register();
     }
 
@@ -39,6 +48,21 @@ public class ClientProxy extends CommonProxy
     public void init()
     {
         super.init();
+    }
+
+    @SubscribeEvent
+    public void mouseEvent(MouseEvent e)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        ItemStack stack = player.getCurrentEquippedItem();
+        if (stack != null && stack.getItem() == ASItems.itemWrench)  //TODO add interface when more than wrench use
+        {
+            if (player.isSneaking() && e.dwheel != 0)
+            {
+                PacketSystem.INSTANCE.sendToServer(new PacketMouse());
+                e.setCanceled(true);
+            }
+        }
     }
 
     @Override

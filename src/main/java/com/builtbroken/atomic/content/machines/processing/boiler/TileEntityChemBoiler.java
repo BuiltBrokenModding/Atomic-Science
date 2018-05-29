@@ -3,6 +3,8 @@ package com.builtbroken.atomic.content.machines.processing.boiler;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.EffectRefs;
 import com.builtbroken.atomic.content.ASFluids;
+import com.builtbroken.atomic.content.items.wrench.WrenchColor;
+import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.boiler.gui.ContainerChemBoiler;
@@ -115,6 +117,22 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
             checkRecipe();
         }
         super.onSlotStackChanged(prev, stack, slot);
+    }
+
+    @Override
+    public void onWrench(WrenchMode type, WrenchColor color, ForgeDirection side, EntityPlayer player)
+    {
+        if (type == WrenchMode.FLUID && side != ForgeDirection.UNKNOWN)
+        {
+            if (color == WrenchColor.GREEN)
+            {
+                outputSideWasteTank[side.ordinal()] = !outputSideWasteTank[side.ordinal()];
+            }
+            else if (color == WrenchColor.YELLOW)
+            {
+                outputSideHexTank[side.ordinal()] = !outputSideHexTank[side.ordinal()];
+            }
+        }
     }
 
     //-----------------------------------------------

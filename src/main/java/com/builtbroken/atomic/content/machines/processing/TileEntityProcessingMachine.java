@@ -1,5 +1,7 @@
 package com.builtbroken.atomic.content.machines.processing;
 
+import com.builtbroken.atomic.content.items.wrench.WrenchColor;
+import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.TileEntityPowerInvMachine;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
@@ -60,6 +62,11 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
     }
 
     protected void doEffects(int ticks)
+    {
+
+    }
+
+    public void onWrench(WrenchMode type, WrenchColor color, ForgeDirection side, EntityPlayer player)
     {
 
     }
