@@ -47,8 +47,8 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     private final FluidTank wasteTank;
     private final FluidTank hexTank;
 
-    boolean[] outputSideWasteTank = new boolean[6]; //TODO configure
-    boolean[] outputSideHexTank = new boolean[6]; //TODO configure
+    boolean[] outputSideWasteTank = new boolean[6]; //TODO bitshift
+    boolean[] outputSideHexTank = new boolean[6]; //TODO bitshift
 
     public TileEntityChemBoiler()
     {
@@ -256,6 +256,20 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
         nbt.setTag("wasteTank", getWasteTank().writeToNBT(new NBTTagCompound()));
         nbt.setTag("inputTank", getInputTank().writeToNBT(new NBTTagCompound()));
         nbt.setTag("hexTank", getHexTank().writeToNBT(new NBTTagCompound()));
+
+        NBTTagCompound outputSidesWasteTankSave = new NBTTagCompound();
+        for (int i = 0; i < outputSideWasteTank.length; i++)
+        {
+            outputSidesWasteTankSave.setBoolean("" + i, outputSideWasteTank[i]);
+        }
+        nbt.setTag("wasteTankSides", outputSidesWasteTankSave);
+
+        NBTTagCompound outputSideHexTankSave = new NBTTagCompound();
+        for (int i = 0; i < outputSideHexTank.length; i++)
+        {
+            outputSideHexTankSave.setBoolean("" + i, outputSideHexTank[i]);
+        }
+        nbt.setTag("hexTankSides", outputSideHexTankSave);
     }
 
     @Override
@@ -265,6 +279,18 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
         getWasteTank().readFromNBT(nbt.getCompoundTag("wasteTank"));
         getInputTank().readFromNBT(nbt.getCompoundTag("inputTank"));
         getHexTank().readFromNBT(nbt.getCompoundTag("hexTank"));
+
+        NBTTagCompound outputSidesWasteTankSave = nbt.getCompoundTag("wasteTankSides");
+        for (int i = 0; i < outputSideWasteTank.length; i++)
+        {
+            outputSideWasteTank[i] = outputSidesWasteTankSave.getBoolean("" + i);
+        }
+
+        NBTTagCompound outputSideHexTankSave = nbt.getCompoundTag("hexTankSides");
+        for (int i = 0; i < outputSideHexTank.length; i++)
+        {
+            outputSideHexTank[i] = outputSideHexTankSave.getBoolean("" + i);
+        }
     }
 
     //-----------------------------------------------
