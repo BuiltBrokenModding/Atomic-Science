@@ -24,8 +24,9 @@ public class RecipeMineralWaste extends ProcessingRecipe<TileEntityChemBoiler>
     @Override
     public boolean applyRecipe(TileEntityChemBoiler machine)
     {
-        if (machine.hasInputFluid(machine.getInputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER)
-                && machine.canOutputFluid(machine.getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER))
+        if (machine.hasInputFluid(machine.getInputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL)
+                && machine.canOutputFluid(machine.getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid,
+                ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER))
         {
             ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.LIQUID_WASTE_SOLID_WASTE, 0);
             if (machine.hasSpaceInOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT))
@@ -33,8 +34,9 @@ public class RecipeMineralWaste extends ProcessingRecipe<TileEntityChemBoiler>
                 machine.decrStackSize(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1);
                 machine.addToOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT);
 
-                machine.getInputTank().drain(ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER, true);
-                machine.getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER), true);
+                machine.getInputTank().drain(ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL, true);
+                machine.getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid,
+                        ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER), true);
                 return true;
             }
         }
