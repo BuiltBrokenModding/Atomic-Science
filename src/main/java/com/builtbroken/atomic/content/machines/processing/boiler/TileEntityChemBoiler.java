@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
@@ -127,10 +128,12 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
             if (color == WrenchColor.GREEN)
             {
                 outputSideWasteTank[side.ordinal()] = !outputSideWasteTank[side.ordinal()];
+                player.addChatComponentMessage(new ChatComponentText(outputSideWasteTank[side.ordinal()] ? "Green tank set to output on side" : "Green tank set to ignore side"));
             }
             else if (color == WrenchColor.YELLOW)
             {
                 outputSideHexTank[side.ordinal()] = !outputSideHexTank[side.ordinal()];
+                player.addChatComponentMessage(new ChatComponentText(outputSideHexTank[side.ordinal()] ? "Yellow tank set to output on side" : "Yellow tank set to ignore side"));
             }
         }
     }

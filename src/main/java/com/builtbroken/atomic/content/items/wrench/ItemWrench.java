@@ -46,7 +46,7 @@ public class ItemWrench extends Item
     //===============================================
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float xHit, float yHit, float zHit)
+    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
         if (!world.isRemote)
         {
@@ -55,8 +55,9 @@ public class ItemWrench extends Item
             {
                 ((TileEntityProcessingMachine) tile).onWrench(getMode(stack), getColor(stack), ForgeDirection.getOrientation(side), player);
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
