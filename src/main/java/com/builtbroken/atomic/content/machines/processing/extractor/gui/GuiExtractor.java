@@ -7,6 +7,8 @@ import com.builtbroken.atomic.lib.gui.GuiContainerBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 
+import java.awt.*;
+
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/20/2018.
@@ -43,7 +45,7 @@ public class GuiExtractor extends GuiContainerBase<TileEntityChemExtractor>
         int y = 30;
         renderFurnaceCookArrow(x, y, host.processTimer, TileEntityChemExtractor.PROCESSING_TIME);
 
-        drawFluidTank(8, 20, host.getInputTank());
-        drawFluidTank(155, 20, host.getOutputTank());
+        drawFluidTank(8, 20, host.getInputTank(), Color.blue);
+        drawFluidTank(155, 20, host.getOutputTank(), Color.green);
     }
 }

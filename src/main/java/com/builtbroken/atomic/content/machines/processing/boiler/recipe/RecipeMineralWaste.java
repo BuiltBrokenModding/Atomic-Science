@@ -18,14 +18,14 @@ public class RecipeMineralWaste extends ProcessingRecipe<TileEntityChemBoiler>
     @Override
     public boolean matches(TileEntityChemBoiler machine)
     {
-        return machine.hasInputFluid(machine.getInputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER);
+        return machine.hasInputFluid(machine.getBlueTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER);
     }
 
     @Override
     public boolean applyRecipe(TileEntityChemBoiler machine)
     {
-        if (machine.hasInputFluid(machine.getInputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL)
-                && machine.canOutputFluid(machine.getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid,
+        if (machine.hasInputFluid(machine.getBlueTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL)
+                && machine.canOutputFluid(machine.getGreenTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid,
                 ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER))
         {
             ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.LIQUID_WASTE_SOLID_WASTE, 0);
@@ -34,8 +34,8 @@ public class RecipeMineralWaste extends ProcessingRecipe<TileEntityChemBoiler>
                 machine.decrStackSize(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1);
                 machine.addToOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT);
 
-                machine.getInputTank().drain(ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL, true);
-                machine.getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid,
+                machine.getBlueTank().drain(ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL, true);
+                machine.getGreenTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid,
                         ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER), true);
                 return true;
             }

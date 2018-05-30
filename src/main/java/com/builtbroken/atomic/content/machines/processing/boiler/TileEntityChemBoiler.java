@@ -46,19 +46,19 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     public static int PROCESSING_TIME = 100;
     public static int ENERGY_PER_TICK = 100;
 
-    private final FluidTank inputTank;
-    private final FluidTank wasteTank;
-    private final FluidTank hexTank;
+    private final FluidTank blueTank;
+    private final FluidTank greenTank;
+    private final FluidTank yellowTank;
 
-    SideSettings wasteTankSideSettings = new SideSettings();
-    SideSettings hexTankSideSettings = new SideSettings();
-    SideSettings waterTankSideSettings = new SideSettings();
+    private final SideSettings greenTankSideSettings = new SideSettings(false);
+    private final SideSettings yellowTankSideSettings = new SideSettings(false);
+    private final SideSettings blueTankSideSettings = new SideSettings(true);
 
     public TileEntityChemBoiler()
     {
-        inputTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
-        wasteTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
-        hexTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
+        blueTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
+        greenTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
+        yellowTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     @Override
     protected void preProcess(int ticks)
     {
-        fillTank(SLOT_FLUID_INPUT, getInputTank());
+        fillTank(SLOT_FLUID_INPUT, getBlueTank());
         drainBattery(SLOT_BATTERY);
     }
 
@@ -99,10 +99,10 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     @Override
     protected void postProcess(int ticks)
     {
-        outputFluids(SLOT_WASTE_FLUID, getWasteTank());
-        outputFluids(SLOT_HEX_FLUID, getHexTank());
-        outputFluidToTiles(getWasteTank(), f -> waterTankSideSettings.get(f));
-        outputFluidToTiles(getHexTank(), f -> hexTankSideSettings.get(f));
+        outputFluids(SLOT_WASTE_FLUID, getGreenTank());
+        outputFluids(SLOT_HEX_FLUID, getYellowTank());
+        outputFluidToTiles(getGreenTank(), f -> greenTankSideSettings.get(f));
+        outputFluidToTiles(getYellowTank(), f -> yellowTankSideSettings.get(f));
     }
 
     @Override
@@ -128,18 +128,18 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
         {
             if (color == WrenchColor.GREEN)
             {
-                waterTankSideSettings.toggle(side);
-                player.addChatComponentMessage(new ChatComponentText(waterTankSideSettings.get(side) ? "Green tank set to output on side" : "Green tank set to ignore side"));
+                greenTankSideSettings.toggle(side);
+                player.addChatComponentMessage(new ChatComponentText(greenTankSideSettings.get(side) ? "Green tank set to output on side" : "Green tank set to ignore side"));
             }
             else if (color == WrenchColor.YELLOW)
             {
-                hexTankSideSettings.toggle(side);
-                player.addChatComponentMessage(new ChatComponentText(hexTankSideSettings.get(side) ? "Yellow tank set to output on side" : "Yellow tank set to ignore side"));
+                yellowTankSideSettings.toggle(side);
+                player.addChatComponentMessage(new ChatComponentText(yellowTankSideSettings.get(side) ? "Yellow tank set to output on side" : "Yellow tank set to ignore side"));
             }
             else if (color == WrenchColor.BLUE)
             {
-                waterTankSideSettings.toggle(side);
-                player.addChatComponentMessage(new ChatComponentText(waterTankSideSettings.get(side) ? "Blue tank set to input on side" : "Blue tank set to ignore side"));
+                blueTankSideSettings.toggle(side);
+                player.addChatComponentMessage(new ChatComponentText(blueTankSideSettings.get(side) ? "Blue tank set to input on side" : "Blue tank set to ignore side"));
             }
         }
     }
@@ -153,12 +153,12 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     {
         if (resource != null && canFill(from, resource.getFluid()))
         {
-            Fluid fluid = getInputTank().getFluid() != null ? getInputTank().getFluid().getFluid() : null;
-            int amount = getInputTank().getFluidAmount();
+            Fluid fluid = getBlueTank().getFluid() != null ? getBlueTank().getFluid().getFluid() : null;
+            int amount = getBlueTank().getFluidAmount();
 
-            int fill = getInputTank().fill(resource, doFill);
+            int fill = getBlueTank().fill(resource, doFill);
 
-            if (doFill && getInputTank().getFluid() != null && (tankMatch(getInputTank(), fluid) || getInputTank().getFluidAmount() != amount))
+            if (doFill && getBlueTank().getFluid() != null && (tankMatch(getBlueTank(), fluid) || getBlueTank().getFluidAmount() != amount))
             {
                 checkRecipe();
             }
@@ -171,13 +171,13 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
     {
-        if (tankMatch(getWasteTank(), resource))
+        if (tankMatch(getGreenTank(), resource))
         {
-            return getWasteTank().drain(resource.amount, doDrain);
+            return getGreenTank().drain(resource.amount, doDrain);
         }
-        else if (tankMatch(getHexTank(), resource))
+        else if (tankMatch(getYellowTank(), resource))
         {
-            return getHexTank().drain(resource.amount, doDrain);
+            return getYellowTank().drain(resource.amount, doDrain);
         }
         return null;
     }
@@ -185,10 +185,10 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
     {
-        FluidStack stack = getWasteTank().drain(maxDrain, doDrain);
+        FluidStack stack = getGreenTank().drain(maxDrain, doDrain);
         if (stack == null)
         {
-            return getHexTank().drain(maxDrain, doDrain);
+            return getYellowTank().drain(maxDrain, doDrain);
         }
         return stack;
     }
@@ -196,36 +196,36 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     @Override
     public boolean canFill(ForgeDirection from, Fluid fluid)
     {
-        return waterTankSideSettings.get(from) && getRecipeList().isComponent(this, fluid);
+        return blueTankSideSettings.get(from) && getRecipeList().isComponent(this, fluid);
     }
 
     @Override
     public boolean canDrain(ForgeDirection from, Fluid fluid)
     {
-        return fluid == null && wasteTankSideSettings.get(from) && hexTankSideSettings.get(from)
-                || wasteTankSideSettings.get(from) && tankMatch(getWasteTank(), fluid)
-                || hexTankSideSettings.get(from) && tankMatch(getHexTank(), fluid);
+        return fluid == null && greenTankSideSettings.get(from) && yellowTankSideSettings.get(from)
+                || greenTankSideSettings.get(from) && tankMatch(getGreenTank(), fluid)
+                || yellowTankSideSettings.get(from) && tankMatch(getYellowTank(), fluid);
     }
 
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from)
     {
-        return new FluidTankInfo[]{getInputTank().getInfo(), getWasteTank().getInfo(), getHexTank().getInfo()};
+        return new FluidTankInfo[]{getBlueTank().getInfo(), getGreenTank().getInfo(), getYellowTank().getInfo()};
     }
 
-    public FluidTank getInputTank()
+    public FluidTank getBlueTank()
     {
-        return inputTank;
+        return blueTank;
     }
 
-    public FluidTank getWasteTank()
+    public FluidTank getGreenTank()
     {
-        return wasteTank;
+        return greenTank;
     }
 
-    public FluidTank getHexTank()
+    public FluidTank getYellowTank()
     {
-        return hexTank;
+        return yellowTank;
     }
 
     //-----------------------------------------------
@@ -258,18 +258,18 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     protected void writeGuiPacket(List<Object> dataList, EntityPlayer player)
     {
         super.writeGuiPacket(dataList, player);
-        dataList.add(getInputTank());
-        dataList.add(getWasteTank());
-        dataList.add(getHexTank());
+        dataList.add(getBlueTank());
+        dataList.add(getGreenTank());
+        dataList.add(getYellowTank());
     }
 
     @Override
     protected void readGuiPacket(ByteBuf buf, EntityPlayer player)
     {
         super.readGuiPacket(buf, player);
-        getInputTank().readFromNBT(ByteBufUtils.readTag(buf));
-        getWasteTank().readFromNBT(ByteBufUtils.readTag(buf));
-        getHexTank().readFromNBT(ByteBufUtils.readTag(buf));
+        getBlueTank().readFromNBT(ByteBufUtils.readTag(buf));
+        getGreenTank().readFromNBT(ByteBufUtils.readTag(buf));
+        getYellowTank().readFromNBT(ByteBufUtils.readTag(buf));
     }
 
     //-----------------------------------------------
@@ -280,26 +280,26 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
-        nbt.setTag("wasteTank", getWasteTank().writeToNBT(new NBTTagCompound()));
-        nbt.setTag("inputTank", getInputTank().writeToNBT(new NBTTagCompound()));
-        nbt.setTag("hexTank", getHexTank().writeToNBT(new NBTTagCompound()));
+        nbt.setTag("wasteTank", getGreenTank().writeToNBT(new NBTTagCompound()));
+        nbt.setTag("inputTank", getBlueTank().writeToNBT(new NBTTagCompound()));
+        nbt.setTag("hexTank", getYellowTank().writeToNBT(new NBTTagCompound()));
 
-        nbt.setTag("wasteTankSides", wasteTankSideSettings.save(new NBTTagCompound()));
-        nbt.setTag("hexTankSides", hexTankSideSettings.save(new NBTTagCompound()));
-        nbt.setTag("waterTankSides", waterTankSideSettings.save(new NBTTagCompound()));
+        nbt.setTag("wasteTankSides", greenTankSideSettings.save(new NBTTagCompound()));
+        nbt.setTag("hexTankSides", yellowTankSideSettings.save(new NBTTagCompound()));
+        nbt.setTag("waterTankSides", blueTankSideSettings.save(new NBTTagCompound()));
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        getWasteTank().readFromNBT(nbt.getCompoundTag("wasteTank"));
-        getInputTank().readFromNBT(nbt.getCompoundTag("inputTank"));
-        getHexTank().readFromNBT(nbt.getCompoundTag("hexTank"));
+        getGreenTank().readFromNBT(nbt.getCompoundTag("wasteTank"));
+        getBlueTank().readFromNBT(nbt.getCompoundTag("inputTank"));
+        getYellowTank().readFromNBT(nbt.getCompoundTag("hexTank"));
 
-        wasteTankSideSettings.load(nbt.getCompoundTag("wasteTankSides"));
-        hexTankSideSettings.load(nbt.getCompoundTag("hexTankSides"));
-        waterTankSideSettings.load(nbt.getCompoundTag("waterTankSides"));
+        greenTankSideSettings.load(nbt.getCompoundTag("wasteTankSides"));
+        yellowTankSideSettings.load(nbt.getCompoundTag("hexTankSides"));
+        blueTankSideSettings.load(nbt.getCompoundTag("waterTankSides"));
     }
 
     //-----------------------------------------------

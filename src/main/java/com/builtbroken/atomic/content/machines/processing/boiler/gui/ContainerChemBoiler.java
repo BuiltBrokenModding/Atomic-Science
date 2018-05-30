@@ -2,9 +2,11 @@ package com.builtbroken.atomic.content.machines.processing.boiler.gui;
 
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.lib.gui.ContainerBase;
+import com.builtbroken.atomic.lib.gui.slot.MachineSlot;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotFurnace;
+
+import java.awt.*;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -15,15 +17,15 @@ public class ContainerChemBoiler extends ContainerBase<TileEntityChemBoiler>
     public ContainerChemBoiler(EntityPlayer player, TileEntityChemBoiler tile)
     {
         super(player, tile);
-        addSlotToContainer(new Slot(tile, TileEntityChemBoiler.SLOT_FLUID_INPUT, 25, 52));
-        addSlotToContainer(new Slot(tile, TileEntityChemBoiler.SLOT_WASTE_FLUID, 134, 57));
-        addSlotToContainer(new Slot(tile, TileEntityChemBoiler.SLOT_HEX_FLUID, 134 + 18, 57));
+        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_FLUID_INPUT, 25, 52).setColor(Color.blue));
+        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_WASTE_FLUID, 134, 57).setColor(Color.green));
+        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_HEX_FLUID, 134 + 18, 57).setColor(Color.yellow));
 
         addSlotToContainer(new SlotFurnace(player, tile, TileEntityChemBoiler.SLOT_ITEM_OUTPUT, 100, 30));
 
         int x = 50;
-        addSlotToContainer(new Slot(tile, TileEntityChemBoiler.SLOT_ITEM_INPUT, x, 30));
-        addSlotToContainer(new Slot(tile, TileEntityChemBoiler.SLOT_BATTERY, x, 52));
+        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_ITEM_INPUT, x, 30).setColor(Color.RED));
+        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_BATTERY, x, 52));
         addPlayerInventory(player);
     }
 }

@@ -23,7 +23,7 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
         if (stack != null)
         {
             return ASItems.itemYellowCake == stack.getItem()
-                    && machine.hasInputFluid(machine.getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE);
+                    && machine.hasInputFluid(machine.getBlueTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE);
         }
         return false;
     }
@@ -35,9 +35,9 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
         if (inputItem != null)
         {
             if (ASItems.itemYellowCake == inputItem.getItem()
-                    && machine.hasInputFluid(machine.getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE)
-                    && machine.canOutputFluid(machine.getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_YELLOWCAKE)
-                    && machine.canOutputFluid(machine.getHexTank(), ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_YELLOWCAKE))
+                    && machine.hasInputFluid(machine.getBlueTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE)
+                    && machine.canOutputFluid(machine.getGreenTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_YELLOWCAKE)
+                    && machine.canOutputFluid(machine.getYellowTank(), ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_YELLOWCAKE))
 
             {
                 ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.SOLID_WASTE_YELLOWCAKE, 0);
@@ -46,9 +46,9 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
                     machine.decrStackSize(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1);
                     machine.addToOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT);
 
-                    machine.getInputTank().drain(ConfigRecipe.WATER_BOIL_YELLOWCAKE, true);
-                    machine.getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_YELLOWCAKE), true);
-                    machine.getHexTank().fill(new FluidStack(ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_YELLOWCAKE), true);
+                    machine.getBlueTank().drain(ConfigRecipe.WATER_BOIL_YELLOWCAKE, true);
+                    machine.getGreenTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_YELLOWCAKE), true);
+                    machine.getYellowTank().fill(new FluidStack(ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_YELLOWCAKE), true);
 
                     return true;
                 }

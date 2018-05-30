@@ -11,6 +11,14 @@ public class SideSettings
 {
     private boolean[] sides = new boolean[6]; //TODO bitshift
 
+    public SideSettings(boolean init)
+    {
+        for (int i = 0; i < sides.length; i++)
+        {
+            sides[i] = init;
+        }
+    }
+
     public void set(ForgeDirection side, boolean b)
     {
         set(side.ordinal(), b);

@@ -5,7 +5,8 @@ import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemB
 import com.builtbroken.atomic.lib.LanguageUtility;
 import com.builtbroken.atomic.lib.gui.GuiContainerBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
+
+import java.awt.*;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -30,21 +31,19 @@ public class GuiChemBoiler extends GuiContainerBase<TileEntityChemBoiler>
     protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY)
     {
         super.drawGuiContainerBackgroundLayer(f, mouseX, mouseY);
-        for (Object object : inventorySlots.inventorySlots)
-        {
-            if (object instanceof Slot)
-            {
-                drawSlot((Slot) object);
-            }
-        }
+        drawContainerSlots();
 
         //Render progress arrow
         int x = 72;
         int y = 30;
         renderFurnaceCookArrow(x, y, host.processTimer, TileEntityChemBoiler.PROCESSING_TIME);
 
-        drawFluidTank(8, 20, host.getInputTank());
-        drawFluidTank(135, 5, host.getWasteTank());
-        drawFluidTank(153, 5, host.getHexTank());
+        drawFluidTank(8, 20, host.getBlueTank(), Color.blue);
+        drawFluidTank(135, 5, host.getGreenTank(), Color.green);
+        drawFluidTank(153, 5, host.getYellowTank(), Color.yellow);
+
+        drawElectricity(25, 15, 0.8f);
+
+
     }
 }

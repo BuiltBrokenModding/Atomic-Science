@@ -25,7 +25,7 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
         if (stack != null)
         {
             return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem()
-                    && machine.hasInputFluid(machine.getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE);
+                    && machine.hasInputFluid(machine.getBlueTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE);
         }
         return false;
     }
@@ -40,9 +40,9 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
         if (inputItem != null)
         {
             if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem()
-                    && machine.hasInputFluid(machine.getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE)
-                    && machine.canOutputFluid(machine.getWasteTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_URANIUM_ORE)
-                    && machine.canOutputFluid(machine.getHexTank(), ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_URANIUM_ORE))
+                    && machine.hasInputFluid(machine.getBlueTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE)
+                    && machine.canOutputFluid(machine.getGreenTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_URANIUM_ORE)
+                    && machine.canOutputFluid(machine.getYellowTank(), ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_URANIUM_ORE))
 
             {
                 ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.SOLID_WASTE_URANIUM_ORE, 0);
@@ -51,9 +51,9 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
                     machine.decrStackSize(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1);
                     machine.addToOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT);
 
-                    machine.getInputTank().drain(ConfigRecipe.WATER_BOIL_URANIUM_ORE, true);
-                    machine.getWasteTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_URANIUM_ORE), true);
-                    machine.getHexTank().fill(new FluidStack(ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_URANIUM_ORE), true);
+                    machine.getBlueTank().drain(ConfigRecipe.WATER_BOIL_URANIUM_ORE, true);
+                    machine.getGreenTank().fill(new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_URANIUM_ORE), true);
+                    machine.getYellowTank().fill(new FluidStack(ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_URANIUM_ORE), true);
                     return true;
                 }
             }

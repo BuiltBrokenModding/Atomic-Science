@@ -318,17 +318,15 @@ public class GuiContainerBase<H> extends GuiContainer
     //TODO update and docs
     protected void drawSlot(Slot slot)
     {
-        drawSlot(slot.xDisplayPosition - 1, slot.yDisplayPosition - 1); //TODO add option to ISlotRender to disable default rendering
-
         if (slot instanceof ISlotRender)
         {
-            //Only draw slot background if empty
-            if (!slot.getHasStack())
-            {
-                ((ISlotRender) slot).renderSlotOverlay(this, this.containerWidth + slot.xDisplayPosition - 1, this.containerHeight + slot.yDisplayPosition - 1);
-            }
-            //TODO add foreground rendering for slot
+            ((ISlotRender) slot).renderSlotOverlay(this, this.containerWidth + slot.xDisplayPosition - 1, this.containerHeight + slot.yDisplayPosition - 1);
         }
+        else
+        {
+            drawSlot(slot.xDisplayPosition - 1, slot.yDisplayPosition - 1);
+        }
+
         if (AtomicScience.runningAsDev && renderSlotDebugIDs)
         {
             this.drawStringCentered("" + slot.getSlotIndex(), guiLeft + slot.xDisplayPosition + 9, guiTop + slot.yDisplayPosition + 9, Color.YELLOW);
@@ -534,6 +532,18 @@ public class GuiContainerBase<H> extends GuiContainer
      */
     protected void drawFluidTank(int x, int y, IFluidTank tank)
     {
+        drawFluidTank(x, y, tank, null);
+    }
+
+    /**
+     * Renders fluid tank (background, fluid, and glass meter overlay)
+     *
+     * @param x    - render position, containerWidth is added
+     * @param y    - render position, containerWidth is added
+     * @param tank - tank containing fluid
+     */
+    protected void drawFluidTank(int x, int y, IFluidTank tank, Color edgeColor)
+    {
         //Get data
         final float scale = tank.getFluidAmount() / (float) tank.getCapacity();
         final FluidStack fluidStack = tank.getFluid();
@@ -545,7 +555,18 @@ public class GuiContainerBase<H> extends GuiContainer
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         //Draw background
-        this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 0, meterWidth, meterHeight);
+        if (edgeColor != null)
+        {
+            GL11.glColor4f(edgeColor.getRed() / 255f, edgeColor.getGreen() / 255f, edgeColor.getBlue() / 255f, edgeColor.getAlpha() / 255f);
+            this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 0, meterWidth, meterHeight);
+
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            this.drawTexturedModalRect(this.containerWidth + x + 1, this.containerHeight + y + 1, 41, 1, meterWidth - 2, meterHeight - 2);
+        }
+        else
+        {
+            this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 0, meterWidth, meterHeight);
+        }
 
         //Draw fluid
         if (fluidStack != null)
