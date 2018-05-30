@@ -433,6 +433,20 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
         return false;
     }
 
+    public boolean tankMatch(IFluidTank tank, FluidStack fluidStack)
+    {
+        if (fluidStack != null)
+        {
+            return tank.getFluid() != null && tank.getFluid().getFluid() == fluidStack.getFluid();
+        }
+        return false;
+    }
+
+    public boolean tankMatch(IFluidTank tank, Fluid fluid)
+    {
+        return tank.getFluid() != null && tank.getFluid().getFluid() == fluid;
+    }
+
     //-----------------------------------------------
     //--------Props ---------------------------------
     //-----------------------------------------------
