@@ -35,6 +35,7 @@ public class PacketMouse implements IPacket
     {
         buffer.writeInt(slot);
         buffer.writeBoolean(forward);
+        buffer.writeBoolean(ctrl);
     }
 
     @Override
@@ -42,6 +43,7 @@ public class PacketMouse implements IPacket
     {
         slot = buffer.readInt();
         forward = buffer.readBoolean();
+        ctrl = buffer.readBoolean();
     }
 
     @Override
@@ -50,14 +52,7 @@ public class PacketMouse implements IPacket
         ItemStack stack = player.inventory.getStackInSlot(slot);
         if (stack.getItem() == ASItems.itemWrench) //TODO add interface when more than wrench use
         {
-            if (ctrl)
-            {
-                ASItems.itemWrench.toggleMode(stack, forward);
-            }
-            else
-            {
-                ASItems.itemWrench.toggleColor(stack, forward);
-            }
+            ASItems.itemWrench.handleMouseWheelAction(stack, player, ctrl, forward);
         }
     }
 }

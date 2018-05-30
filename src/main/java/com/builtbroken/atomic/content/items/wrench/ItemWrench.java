@@ -37,7 +37,7 @@ public class ItemWrench extends Item
     public ItemWrench()
     {
         this.setUnlocalizedName(AtomicScience.PREFIX + "wrench");
-        this.setTextureName(AtomicScience.PREFIX + "wrench");
+        this.setTextureName(AtomicScience.PREFIX + "wrench/wrench");
         this.setCreativeTab(AtomicScience.creativeTab);
     }
 
@@ -57,6 +57,27 @@ public class ItemWrench extends Item
             }
         }
         return true;
+    }
+
+    /**
+     * Called to handle mouse wheel movement
+     *
+     * @param stack   - this
+     * @param player  - player using the item
+     * @param ctrl    - was ctrl held
+     * @param forward - is mouse wheel moving forward
+     */
+    public void handleMouseWheelAction(ItemStack stack, EntityPlayer player, boolean ctrl, boolean forward)
+    {
+        if (ctrl)
+        {
+            toggleMode(stack, forward);
+        }
+        else
+        {
+            toggleColor(stack, forward);
+        }
+        player.inventoryContainer.detectAndSendChanges();
     }
 
     //===============================================
@@ -183,6 +204,10 @@ public class ItemWrench extends Item
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack stack, int pass)
     {
+        if (pass == 0)
+        {
+            return super.getColorFromItemStack(stack, pass);
+        }
         return getColor(stack).getColorInt();
     }
 }

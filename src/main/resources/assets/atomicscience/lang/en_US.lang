@@ -65,3 +65,52 @@ fluid.atomicscience:mineral_waste=Contaminated Mineral Sludge
 fluid.atomicscience:contaminated_mineral_water=Contaminated Mineral Solution
 fluid.atomicscience:contaminated_water=Contaminated Water
 fluid.atomicscience:uranium_hexafluoride=Uranium Hexaflouride
+
+## Wrench
+item.atomicscience:wrench.name=Adjuster
+item.atomicscience:wrench.rotation.name=Rotation Adjuster
+item.atomicscience:wrench.item.name=Item Adjuster
+item.atomicscience:wrench.fluid.name=Fluid Adjuster
+item.atomicscience:wrench.redstone.name=Redstone Adjuster
+
+item.atomicscience:wrench.rotation.green.name=Green Rotation Adjuster
+item.atomicscience:wrench.rotation.yellow.name=Yellow Rotation Adjuster
+item.atomicscience:wrench.rotation.red.name=Red Rotation Adjuster
+item.atomicscience:wrench.rotation.blue.name=Blue Rotation Adjuster
+item.atomicscience:wrench.rotation.purple.name=Purple Rotation Adjuster
+
+item.atomicscience:wrench.item.green.name=Green Item Adjuster
+item.atomicscience:wrench.item.yellow.name=Yellow Item Adjuster
+item.atomicscience:wrench.item.red.name=Red Item Adjuster
+item.atomicscience:wrench.item.blue.name=Blue Item Adjuster
+item.atomicscience:wrench.item.purple.name=Purple Item Adjuster
+
+item.atomicscience:wrench.fluid.green.name=Green Fluid Adjuster
+item.atomicscience:wrench.fluid.yellow.name=Yellow Fluid Adjuster
+item.atomicscience:wrench.fluid.red.name=Red Fluid Adjuster
+item.atomicscience:wrench.fluid.blue.name=Blue Fluid Adjuster
+item.atomicscience:wrench.fluid.purple.name=Purple FluidAdjuster
+
+item.atomicscience:wrench.redstone.green.name=Green Redstone Adjuster
+item.atomicscience:wrench.redstone.yellow.name=Yellow Redstone Adjuster
+item.atomicscience:wrench.redstone.red.name=Red Redstone Adjuster
+item.atomicscience:wrench.redstone.blue.name=Blue Redstone Adjuster
+item.atomicscience:wrench.redstone.purple.name=Purple Redstone Adjuster
+
+## Wrench Info
+item.atomicscience:wrench.mode.rotation.info=Mode: §bRotation
+item.atomicscience:wrench.mode.item.info=Mode: §eItem
+item.atomicscience:wrench.mode.fluid.info=Mode: §9Fluid
+item.atomicscience:wrench.mode.redstone.info=Mode: §4Redstone
+
+item.atomicscience:wrench.color.green.info=Color: Green
+item.atomicscience:wrench.color.yellow.info=Color: Yellow
+item.atomicscience:wrench.color.red.info=Color: Red
+item.atomicscience:wrench.color.blue.info=Color: Blue
+item.atomicscience:wrench.color.purple.info=Color: Purple
+
+item.atomicscience:wrench.more.info=Hold §bSHIFT§f for more
+
+item.atomicscience:wrench.info=Adjusts machine settings
+item.atomicscience:wrench.wheel.info=Mouse wheel switches modes
+item.atomicscience:wrench.ctrl.info=Ctrl + wheel switches color

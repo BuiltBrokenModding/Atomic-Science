@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 
@@ -59,7 +60,8 @@ public class ClientProxy extends CommonProxy
         {
             if (player.isSneaking() && e.dwheel != 0)
             {
-                PacketSystem.INSTANCE.sendToServer(new PacketMouse());
+                boolean ctrl = Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
+                PacketSystem.INSTANCE.sendToServer(new PacketMouse(player.inventory.currentItem, ctrl, e.dwheel > 0));
                 e.setCanceled(true);
             }
         }
@@ -315,7 +317,7 @@ public class ClientProxy extends CommonProxy
         {
             final float randomSpeed = 0.05f;
             Color color = Color.GREEN;
-            for(int j = 0; j < 6; j++)
+            for (int j = 0; j < 6; j++)
             {
                 for (int i = 0; i < 4; i++)
                 {
