@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import com.builtbroken.atomic.lib.LanguageUtility;
 import com.builtbroken.atomic.lib.gui.GuiContainerBase;
+import com.builtbroken.atomic.lib.gui.tip.ToolTipTank;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.awt.*;
@@ -14,9 +15,20 @@ import java.awt.*;
  */
 public class GuiChemCentrifuge extends GuiContainerBase<TileEntityChemCentrifuge>
 {
+    public final Rectangle AREA_BLUE_TANK = new Rectangle(8, 20, meterWidth, meterHeight);
+    public final Rectangle AREA_GREEN_TANK = new Rectangle(155, 20, meterWidth, meterHeight);
+
     public GuiChemCentrifuge(EntityPlayer player, TileEntityChemCentrifuge host)
     {
         super(new ContainerChemCentrifuge(player, host), host);
+    }
+
+    @Override
+    public void initGui()
+    {
+        super.initGui();
+        addToolTip(new ToolTipTank(AREA_BLUE_TANK, TOOLTIP_TANK, host.getInputTank()));
+        addToolTip(new ToolTipTank(AREA_GREEN_TANK, TOOLTIP_TANK, host.getOutputTank()));
     }
 
     @Override

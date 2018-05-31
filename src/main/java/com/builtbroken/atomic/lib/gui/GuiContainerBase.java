@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.lib.gui;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.lib.LanguageUtility;
+import com.builtbroken.atomic.lib.gui.tip.ToolTip;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiButton;
@@ -21,20 +21,19 @@ import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 public class GuiContainerBase<H> extends GuiContainer
 {
+    public static final String TOOLTIP_TANK = "gui.tank.tooltip";
     public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.GUI_TEXTURE_DIRECTORY + "gui_components.png");
     public static final ResourceLocation GUI_MC_BASE = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.GUI_TEXTURE_DIRECTORY + "mc_base.png");
 
     public ResourceLocation baseTexture;
 
-    public String currentToolTip = "";
+    public ToolTip currentToolTip = null;
 
-    protected HashMap<Rectangle, String> tooltips = new HashMap();
+    protected List<ToolTip> tooltips = new ArrayList();
     protected ArrayList<GuiTextField> fields = new ArrayList();
 
     protected int meterHeight = 49;
@@ -79,25 +78,14 @@ public class GuiContainerBase<H> extends GuiContainer
     }
 
     /**
-     * Called to add a tooltip to the GUI
+     * Adds a tooltip to the GUI
      *
-     * @param triggerArea - area to show tip inside
-     * @param text        - text to display
+     * @param text      - text to display
+     * @param translate - should the text be translated
      */
-    protected void addToolTip(Rectangle triggerArea, String text)
+    protected void addToolTip(int x, int y, int w, int h, String text, boolean translate)
     {
-        addToolTip(triggerArea, text, false);
-    }
-
-    /**
-     * Called to add a tooltip translation to the GUI
-     *
-     * @param triggerArea - area to show tip inside
-     * @param translation - translation key to get text
-     */
-    protected void addToolTipWithTranslation(Rectangle triggerArea, String translation)
-    {
-        addToolTip(triggerArea, translation, true);
+        addToolTip(new Rectangle(x, y, w, h), text, translate);
     }
 
     /**
@@ -109,16 +97,12 @@ public class GuiContainerBase<H> extends GuiContainer
      */
     protected void addToolTip(Rectangle triggerArea, String text, boolean translate)
     {
-        String actual_text = text.trim();
-        if (translate)
-        {
-            String translation = LanguageUtility.getLocal(actual_text);
-            if (translation != null && !translation.isEmpty())
-            {
-                actual_text = translation.trim();
-            }
-        }
-        tooltips.put(triggerArea, actual_text);
+        addToolTip(new ToolTip(triggerArea, text, translate));
+    }
+
+    protected void addToolTip(ToolTip toolTip)
+    {
+        tooltips.add(toolTip);
     }
 
     protected void drawString(String str, int x, int y, int color)
@@ -207,21 +191,21 @@ public class GuiContainerBase<H> extends GuiContainer
 
         //TODO rework to be object based
         //TODO rework to be attached to components rather than free floating
-        for (Entry<Rectangle, String> entry : this.tooltips.entrySet())
+        for (ToolTip toolTip : this.tooltips)
         {
-            if (entry.getKey().contains(new Point(mouseX - this.guiLeft, mouseY - this.guiTop)))
+            if (toolTip.isInArea(mouseX - this.guiLeft, mouseY - this.guiTop))
             {
-                this.currentToolTip = entry.getValue();
+                this.currentToolTip = toolTip;
                 break;
             }
         }
 
-        if (this.currentToolTip != null && this.currentToolTip != "")
+        if (this.currentToolTip != null)
         {
-            this.drawTooltip(mouseX, mouseY, currentToolTip.split(";"));
+            this.drawTooltip(mouseX, mouseY, currentToolTip.getString().split(";"));
         }
 
-        this.currentToolTip = "";
+        this.currentToolTip = null;
 
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
@@ -277,36 +261,9 @@ public class GuiContainerBase<H> extends GuiContainer
         this.drawTexturedModalRect(this.containerWidth, this.containerHeight, 0, 0, this.xSize, this.ySize);
     }
 
-    //TODO update and docs
-    protected void drawTextWithTooltip(String textName, String format, int x, int y, int mouseX, int mouseY)
-    {
-        this.drawTextWithTooltip(textName, format, x, y, mouseX, mouseY, 4210752);
-    }
-
-    //TODO update and docs
-    protected void drawTextWithTooltip(String textName, String format, int x, int y, int mouseX, int mouseY, int color)
-    {
-        String name = LanguageUtility.getLocal("gui." + textName + ".name");
-        String text = format.replaceAll("%1", name);
-        fontRendererObj.drawString(text, x, y, color);
-
-        String tooltip = LanguageUtility.getLocal("gui." + textName + ".tooltip");
-
-        if (tooltip != null && tooltip != "")
-        {
-            if (new Rectangle(x, y, (int) (text.length() * 4.8), 12).contains(new Point(mouseX, mouseY)))
-            {
-                this.currentToolTip = tooltip;
-            }
-        }
-    }
-
-    //TODO update and docs
-    protected void drawTextWithTooltip(String textName, int x, int y, int mouseX, int mouseY)
-    {
-        this.drawTextWithTooltip(textName, "%1", x, y, mouseX, mouseY);
-    }
-
+    /**
+     * Draws all slots into the GUI
+     */
     protected void drawContainerSlots()
     {
         for (Object object : inventorySlots.inventorySlots)
@@ -315,7 +272,11 @@ public class GuiContainerBase<H> extends GuiContainer
         }
     }
 
-    //TODO update and docs
+    /**
+     * Renders a slot using a standard icon or using {@link ISlotRender}
+     *
+     * @param slot - slot to render
+     */
     protected void drawSlot(Slot slot)
     {
         if (slot instanceof ISlotRender)

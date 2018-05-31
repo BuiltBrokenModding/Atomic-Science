@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.lib.LanguageUtility;
 import com.builtbroken.atomic.lib.gui.GuiContainerBase;
+import com.builtbroken.atomic.lib.gui.tip.ToolTipTank;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.awt.*;
@@ -14,9 +15,22 @@ import java.awt.*;
  */
 public class GuiChemBoiler extends GuiContainerBase<TileEntityChemBoiler>
 {
+    public final Rectangle AREA_BLUE_TANK = new Rectangle(8, 20, meterWidth, meterHeight);
+    public final Rectangle AREA_GREEN_TANK = new Rectangle(135, 5, meterWidth, meterHeight);
+    public final Rectangle AREA_YELLOW_TANK = new Rectangle(153, 5, meterWidth, meterHeight);
+
     public GuiChemBoiler(EntityPlayer player, TileEntityChemBoiler host)
     {
         super(new ContainerChemBoiler(player, host), host);
+    }
+
+    @Override
+    public void initGui()
+    {
+        super.initGui();
+        addToolTip(new ToolTipTank(AREA_BLUE_TANK, TOOLTIP_TANK, host.getBlueTank()));
+        addToolTip(new ToolTipTank(AREA_GREEN_TANK, TOOLTIP_TANK, host.getGreenTank()));
+        addToolTip(new ToolTipTank(AREA_YELLOW_TANK, TOOLTIP_TANK, host.getYellowTank()));
     }
 
     @Override

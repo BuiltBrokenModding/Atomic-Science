@@ -114,3 +114,7 @@ item.atomicscience:wrench.more.info=Hold §bSHIFT§f for more
 item.atomicscience:wrench.info=Adjusts machine settings
 item.atomicscience:wrench.wheel.info=Mouse wheel switches modes
 item.atomicscience:wrench.ctrl.info=Ctrl + wheel switches color
+
+## Gui
+gui.tank.tooltip=-fluid-;-vol-/-cap-
+gui.tank.tooltip.empty=Empty
