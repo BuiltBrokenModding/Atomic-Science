@@ -49,4 +49,9 @@ public class ProcessingRecipeList<H extends TileEntityProcessingMachine> extends
     {
         return recipes.stream().anyMatch(r -> r.isComponent(machine, stack));
     }
+
+    public boolean isInput(H machine, Fluid fluid)
+    {
+        return false;
+    }
 }

@@ -27,13 +27,17 @@ public class RecipeWasteExtracting extends ProcessingRecipe<TileEntityChemExtrac
         {
             ItemStack outputStack;
 
-            if (Math.random() > 0.4) //TODO switch over to progress bar/tank so output always contains toxic waste dust
+            if (Math.random() > 0.2) //TODO switch over to progress bar/tank so output always contains toxic waste dust
             {
                 outputStack = new ItemStack(ASItems.itemToxicWaste, 1, 0);
             }
-            else //TODO add stone dust with high drop rate
+            else
             {
-                outputStack = RecipeWasteExtracting.getRandomDust();
+                outputStack = getRandomDust();
+                if(outputStack == null)
+                {
+                    outputStack = new ItemStack(ASItems.itemToxicWaste, 1, 0);
+                }
             }
 
             if (machine.hasSpaceInOutput(outputStack, TileEntityChemExtractor.SLOT_ITEM_OUTPUT))

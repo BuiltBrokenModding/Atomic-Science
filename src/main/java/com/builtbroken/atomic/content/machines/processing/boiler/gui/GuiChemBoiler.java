@@ -56,8 +56,6 @@ public class GuiChemBoiler extends GuiContainerBase<TileEntityChemBoiler>
         drawFluidTank(135, 5, host.getGreenTank(), Color.green);
         drawFluidTank(153, 5, host.getYellowTank(), Color.yellow);
 
-        drawElectricity(25, 15, 0.8f);
-
-
+        drawElectricity(25, 15, host.getEnergyStored() / (float) host.getMaxEnergyStored());
     }
 }

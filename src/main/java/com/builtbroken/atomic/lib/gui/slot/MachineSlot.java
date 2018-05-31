@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -27,6 +28,12 @@ public class MachineSlot extends Slot implements ISlotRender
     {
         edgeColor = color;
         return this;
+    }
+
+    @Override
+    public boolean isItemValid(ItemStack stack)
+    {
+        return inventory.isItemValidForSlot(getSlotIndex(), stack);
     }
 
     @Override

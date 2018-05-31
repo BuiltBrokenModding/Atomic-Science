@@ -333,7 +333,19 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if (slot == SLOT_ITEM_INPUT)
+        if (slot == SLOT_FLUID_INPUT)
+        {
+            return isInputFluid(SLOT_FLUID_INPUT);
+        }
+        else if (slot == SLOT_HEX_FLUID)
+        {
+            return isEmptyFluidContainer(SLOT_HEX_FLUID);
+        }
+        else if (slot == SLOT_WASTE_FLUID)
+        {
+            return isEmptyFluidContainer(SLOT_WASTE_FLUID);
+        }
+        else if (slot == SLOT_ITEM_INPUT)
         {
             return getRecipeList().isComponent(this, stack);
         }

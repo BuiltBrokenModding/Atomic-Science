@@ -3,6 +3,8 @@ package com.builtbroken.atomic.content.machines.processing.boiler.gui;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.lib.gui.ContainerBase;
 import com.builtbroken.atomic.lib.gui.slot.MachineSlot;
+import com.builtbroken.atomic.lib.gui.slot.SlotEnergy;
+import com.builtbroken.atomic.lib.gui.slot.SlotFluid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.SlotFurnace;
 
@@ -17,15 +19,15 @@ public class ContainerChemBoiler extends ContainerBase<TileEntityChemBoiler>
     public ContainerChemBoiler(EntityPlayer player, TileEntityChemBoiler tile)
     {
         super(player, tile);
-        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_FLUID_INPUT, 25, 52).setColor(Color.blue));
-        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_WASTE_FLUID, 134, 57).setColor(Color.green));
-        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_HEX_FLUID, 134 + 18, 57).setColor(Color.yellow));
+        addSlotToContainer(new SlotFluid(tile, TileEntityChemBoiler.SLOT_FLUID_INPUT, 25, 52, true).setColor(Color.blue));
+        addSlotToContainer(new SlotFluid(tile, TileEntityChemBoiler.SLOT_WASTE_FLUID, 134, 57, false).setColor(Color.green));
+        addSlotToContainer(new SlotFluid(tile, TileEntityChemBoiler.SLOT_HEX_FLUID, 134 + 18, 57, false).setColor(Color.yellow));
 
         addSlotToContainer(new SlotFurnace(player, tile, TileEntityChemBoiler.SLOT_ITEM_OUTPUT, 100, 30));
 
         int x = 50;
         addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_ITEM_INPUT, x, 30).setColor(Color.RED));
-        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_BATTERY, x, 52));
+        addSlotToContainer(new SlotEnergy(tile, TileEntityChemBoiler.SLOT_BATTERY, x, 52));
         addPlayerInventory(player);
     }
 }

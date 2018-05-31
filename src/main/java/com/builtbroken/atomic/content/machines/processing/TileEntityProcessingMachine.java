@@ -208,14 +208,17 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
 
     public boolean hasSpaceInOutput(ItemStack insertStack, int slot)
     {
-        ItemStack stackInSlot = getStackInSlot(slot);
-        if (stackInSlot == null)
+        if (insertStack != null)
         {
-            return true;
-        }
-        else if (stackInSlot.getItem() == insertStack.getItem() && stackInSlot.getItemDamage() == insertStack.getItemDamage())
-        {
-            return getInventoryStackLimit() - stackInSlot.stackSize >= insertStack.stackSize;
+            ItemStack stackInSlot = getStackInSlot(slot);
+            if (stackInSlot == null)
+            {
+                return true;
+            }
+            else if (stackInSlot.getItem() == insertStack.getItem() && stackInSlot.getItemDamage() == insertStack.getItemDamage())
+            {
+                return getInventoryStackLimit() - stackInSlot.stackSize >= insertStack.stackSize;
+            }
         }
         return false;
     }
@@ -239,6 +242,61 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
     //--------Fluid Handling ------------------------
     //-----------------------------------------------
 
+    protected boolean containsFluid(final int slot)
+    {
+        return getFluid(slot) != null;
+    }
+
+    protected boolean containsFluid(final int slot, Fluid fluid)
+    {
+        FluidStack fluidStack = getFluid(slot);
+        if (fluidStack != null)
+        {
+            return fluidStack.getFluid() == fluid;
+        }
+        return false;
+    }
+
+    protected boolean isInputFluid(final int slot)
+    {
+        FluidStack fluidStack = getFluid(slot);
+        if (fluidStack != null)
+        {
+            return getRecipeList().isInput(this, fluidStack.getFluid());
+        }
+        return false;
+    }
+
+    protected FluidStack getFluid(final int slot)
+    {
+        final ItemStack itemStack = getStackInSlot(slot);
+        if (itemStack != null)
+        {
+            if (itemStack.getItem() instanceof IFluidContainerItem)
+            {
+                return ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack);
+            }
+            else if (FluidContainerRegistry.isFilledContainer(itemStack))
+            {
+                return FluidContainerRegistry.getFluidForFilledItem(itemStack);
+            }
+        }
+        return null;
+    }
+
+    protected boolean isEmptyFluidContainer(final int slot)
+    {
+        final ItemStack itemStack = getStackInSlot(slot);
+        if (itemStack != null)
+        {
+            if (itemStack.getItem() instanceof IFluidContainerItem)
+            {
+                return ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack) == null;
+            }
+            return FluidContainerRegistry.isEmptyContainer(itemStack);
+        }
+        return false;
+    }
 
     /**
      * Pulls fluids from container and insert into tank
