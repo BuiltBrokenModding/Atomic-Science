@@ -18,24 +18,24 @@ import java.awt.*;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/30/2018.
  */
-public class MachineSlot extends Slot implements ISlotRender, ISlotToolTip
+public class SlotMachine extends Slot implements ISlotRender, ISlotToolTip
 {
     protected Color edgeColor = null;
 
     protected String toolTip;
 
-    public MachineSlot(IInventory inventory, int index, int x, int y)
+    public SlotMachine(IInventory inventory, int index, int x, int y)
     {
         super(inventory, index, x, y);
     }
 
-    public MachineSlot setColor(Color color)
+    public SlotMachine setColor(Color color)
     {
         edgeColor = color;
         return this;
     }
 
-    public MachineSlot setToolTip(String toolTip)
+    public SlotMachine setToolTip(String toolTip)
     {
         this.toolTip = toolTip;
         return this;

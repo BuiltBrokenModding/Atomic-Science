@@ -3,7 +3,7 @@ package com.builtbroken.atomic.content.machines.processing.boiler.gui;
 import com.builtbroken.atomic.content.items.wrench.WrenchColor;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.lib.gui.ContainerBase;
-import com.builtbroken.atomic.lib.gui.slot.MachineSlot;
+import com.builtbroken.atomic.lib.gui.slot.SlotMachine;
 import com.builtbroken.atomic.lib.gui.slot.SlotEnergy;
 import com.builtbroken.atomic.lib.gui.slot.SlotFluid;
 import com.builtbroken.atomic.lib.gui.slot.SlotOutput;
@@ -29,7 +29,7 @@ public class ContainerChemBoiler extends ContainerBase<TileEntityChemBoiler>
                 .setColor(WrenchColor.ORANGE.getColor()).setToolTip("gui.tooltip.slot.output"));
 
         int x = 50;
-        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_ITEM_INPUT, x, 30)
+        addSlotToContainer(new SlotMachine(tile, TileEntityChemBoiler.SLOT_ITEM_INPUT, x, 30)
                 .setColor(WrenchColor.RED.getColor()).setToolTip("gui.tooltip.slot.input"));
         addSlotToContainer(new SlotEnergy(tile, TileEntityChemBoiler.SLOT_BATTERY, x, 52, "gui.tooltip.slot.energy.input").setColor(WrenchColor.PURPLE.getColor()));
         addPlayerInventory(player);

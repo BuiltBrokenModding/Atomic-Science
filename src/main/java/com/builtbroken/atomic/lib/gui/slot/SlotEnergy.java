@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/30/2018.
  */
-public class SlotEnergy extends MachineSlot implements ISlotRender, ISlotToolTip
+public class SlotEnergy extends SlotMachine implements ISlotRender, ISlotToolTip
 {
     String toolTip;
 
