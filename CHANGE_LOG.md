@@ -16,6 +16,7 @@ Added: Orange color for energy slots
 Added: insert limits to boiler slots
 Added: colors to all processing slots
 Added: tooltips for all processing slots
+Added: wrench recipe
 
 Changed: slot types for processing machines to match expected input
 

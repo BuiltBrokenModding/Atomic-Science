@@ -180,7 +180,7 @@ public class ASRecipes extends ContentProxy
 
     private void toolRecipes()
     {
-        //Hazmat helm
+        //Heat probe
         addRecipe(new ItemStack(ASItems.itemHeatProbe),
                 "ICI",
                 "ICI",
@@ -190,6 +190,15 @@ public class ASRecipes extends ContentProxy
                 'B', Items.gold_nugget,
                 'G', Blocks.glass_pane,
                 'C', getOreItem("circuitBasic", Blocks.gold_block));
+
+        //Heat probe
+        addRecipe(new ItemStack(ASItems.itemWrench),
+                "ICI",
+                "GIG",
+                "GIG",
+                'I', getOreItem("ingotSteel", Items.iron_ingot),
+                'G', Blocks.wool,
+                'C', getOreItem("circuitBasic", Items.redstone));
     }
 
     protected void addRecipe(ItemStack output, Object... params)
