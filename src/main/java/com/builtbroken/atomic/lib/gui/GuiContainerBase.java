@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.lib.gui;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.lib.gui.tip.ISlotToolTip;
 import com.builtbroken.atomic.lib.gui.tip.ToolTip;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -62,6 +63,17 @@ public class GuiContainerBase<H> extends GuiContainer
         this.buttonList.clear();
         this.fields.clear();
         this.tooltips.clear();
+
+        inventorySlots.inventorySlots.stream().forEach(s -> {
+            if (s instanceof ISlotToolTip)
+            {
+                ToolTip toolTip = ((ISlotToolTip) s).getToolTip();
+                if (toolTip != null)
+                {
+                    tooltips.add(toolTip);
+                }
+            }
+        });
     }
 
     /**
@@ -200,7 +212,7 @@ public class GuiContainerBase<H> extends GuiContainer
             }
         }
 
-        if (this.currentToolTip != null)
+        if (this.currentToolTip != null && this.currentToolTip.shouldShow())
         {
             this.drawTooltip(mouseX, mouseY, currentToolTip.getString().split(";"));
         }

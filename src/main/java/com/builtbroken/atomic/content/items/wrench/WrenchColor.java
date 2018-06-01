@@ -12,7 +12,8 @@ public enum WrenchColor
     YELLOW(Color.YELLOW),
     RED(Color.RED),
     BLUE(Color.BLUE),
-    PURPLE(Color.MAGENTA);
+    PURPLE(Color.MAGENTA),
+    ORANGE(Color.ORANGE);
 
     final Color color;
 
@@ -53,5 +54,10 @@ public enum WrenchColor
             i = values().length - 1;
         }
         return values()[i];
+    }
+
+    public Color getColor()
+    {
+        return color;
     }
 }

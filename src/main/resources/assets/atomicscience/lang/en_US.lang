@@ -118,3 +118,10 @@ item.atomicscience:wrench.ctrl.info=Ctrl + wheel switches color
 ## Gui
 gui.tank.tooltip=-fluid-;-vol-/-cap-
 gui.tank.tooltip.empty=Empty
+
+gui.tooltip.slot.tank.input.blue=Blue Tank Input
+
+gui.tooltip.slot.tank.output.green=Green Tank Output
+gui.tooltip.slot.tank.output.yellow=Yellow Tank Output
+
+gui.tooltip.slot.energy.input=Energy

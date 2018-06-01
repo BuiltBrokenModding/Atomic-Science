@@ -45,4 +45,8 @@ public class ToolTip
         return area.contains(x, y);
     }
 
+    public boolean shouldShow()
+    {
+        return true;
+    }
 }
