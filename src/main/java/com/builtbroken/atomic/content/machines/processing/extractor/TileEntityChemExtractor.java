@@ -2,11 +2,14 @@ package com.builtbroken.atomic.content.machines.processing.extractor;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.EffectRefs;
+import com.builtbroken.atomic.content.items.wrench.WrenchColor;
+import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.ContainerExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.GuiExtractor;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
+import com.builtbroken.atomic.lib.SideSettings;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.lib.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.network.packet.client.PacketSpawnParticle;
@@ -16,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
@@ -43,6 +47,9 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
 
     private final FluidTank inputTank;
     private final FluidTank outputTank;
+
+    private final SideSettings inputTankSideSettings = new SideSettings(true);
+    private final SideSettings outputTankSideSettings = new SideSettings(false);
 
     public TileEntityChemExtractor()
     {
@@ -106,6 +113,24 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
             checkRecipe();
         }
         super.onSlotStackChanged(prev, stack, slot);
+    }
+
+    @Override
+    public void onWrench(WrenchMode type, WrenchColor color, ForgeDirection side, EntityPlayer player)
+    {
+        if (type == WrenchMode.FLUID && side != ForgeDirection.UNKNOWN)
+        {
+            if (color == WrenchColor.GREEN)
+            {
+                outputTankSideSettings.toggle(side);
+                player.addChatComponentMessage(new ChatComponentText(outputTankSideSettings.get(side) ? "Green tank set to output on side" : "Green tank set to ignore side"));
+            }
+            else if (color == WrenchColor.BLUE)
+            {
+                inputTankSideSettings.toggle(side);
+                player.addChatComponentMessage(new ChatComponentText(inputTankSideSettings.get(side) ? "Blue tank set to input on side" : "Blue tank set to ignore side"));
+            }
+        }
     }
 
     //-----------------------------------------------
@@ -228,6 +253,9 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
         super.writeToNBT(nbt);
         nbt.setTag("outputTank", getOutputTank().writeToNBT(new NBTTagCompound()));
         nbt.setTag("inputTank", getInputTank().writeToNBT(new NBTTagCompound()));
+
+        nbt.setTag("outputTankSides", outputTankSideSettings.save(new NBTTagCompound()));
+        nbt.setTag("inputTankSides", inputTankSideSettings.save(new NBTTagCompound()));
     }
 
     @Override
@@ -236,6 +264,9 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
         super.readFromNBT(nbt);
         getOutputTank().readFromNBT(nbt.getCompoundTag("outputTank"));
         getInputTank().readFromNBT(nbt.getCompoundTag("inputTank"));
+
+        outputTankSideSettings.load(nbt.getCompoundTag("outputTankSides"));
+        inputTankSideSettings.load(nbt.getCompoundTag("inputTankSides"));
     }
 
     //-----------------------------------------------

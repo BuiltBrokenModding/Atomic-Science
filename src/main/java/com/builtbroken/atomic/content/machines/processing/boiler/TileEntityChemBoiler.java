@@ -50,9 +50,9 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     private final FluidTank greenTank;
     private final FluidTank yellowTank;
 
+    private final SideSettings blueTankSideSettings = new SideSettings(true);
     private final SideSettings greenTankSideSettings = new SideSettings(false);
     private final SideSettings yellowTankSideSettings = new SideSettings(false);
-    private final SideSettings blueTankSideSettings = new SideSettings(true);
 
     public TileEntityChemBoiler()
     {

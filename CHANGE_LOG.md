@@ -11,9 +11,12 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ## 3.#.4 - 6/1/2018
 ### Runtime Changes
-Added: Slot validation for centrifuge
-Added: Slot validation for extractor
-Fixed: Slot validation for boiler
+* Added: Slot validation for centrifuge
+* Added: Slot validation for extractor
+* Added: Fluid wrench support to centrifuge
+* Added: Fluid wrench support to extractor
+
+* Fixed: Slot validation for boiler
 
 ### Development Changes
 
