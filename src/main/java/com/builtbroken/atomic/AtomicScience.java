@@ -15,7 +15,9 @@ import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
 import com.builtbroken.atomic.proxy.ContentProxy;
 import com.builtbroken.atomic.proxy.ProxyLoader;
 import com.builtbroken.atomic.proxy.rf.ProxyRedstoneFlux;
+import com.builtbroken.atomic.proxy.te.ProxyRedstoneThermalExpansion;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.*;
@@ -115,6 +117,7 @@ public class AtomicScience
         //Handlers
         proxyLoader.add(PacketSystem.INSTANCE);
         proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
+        proxyLoader.add(ProxyRedstoneThermalExpansion.class, Loader.isModLoaded("ThermalExpansion"));
         proxyLoader.add(sideProxy);
 
         //Register content
