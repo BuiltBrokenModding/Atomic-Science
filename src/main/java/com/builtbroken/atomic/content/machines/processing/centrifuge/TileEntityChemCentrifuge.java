@@ -257,6 +257,14 @@ public class TileEntityChemCentrifuge extends TileEntityProcessingMachine implem
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
+        if (slot == SLOT_FLUID_INPUT)
+        {
+            return isInputFluid(stack);
+        }
+        else if (slot == SLOT_FLUID_OUTPUT)
+        {
+            return isEmptyFluidContainer(stack);
+        }
         return false;
     }
 }

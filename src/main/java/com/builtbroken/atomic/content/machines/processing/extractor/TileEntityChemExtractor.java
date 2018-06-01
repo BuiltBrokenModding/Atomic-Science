@@ -269,7 +269,15 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
-        if (slot == SLOT_ITEM_INPUT)
+        if (slot == SLOT_FLUID_INPUT)
+        {
+            return isInputFluid(stack);
+        }
+        else if (slot == SLOT_FLUID_OUTPUT)
+        {
+            return isEmptyFluidContainer(stack);
+        }
+        else if (slot == SLOT_ITEM_INPUT)
         {
             return getRecipeList().isComponent(this, stack);
         }
