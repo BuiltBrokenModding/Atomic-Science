@@ -335,15 +335,15 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     {
         if (slot == SLOT_FLUID_INPUT)
         {
-            return isInputFluid(SLOT_FLUID_INPUT);
+            return isInputFluid(stack);
         }
         else if (slot == SLOT_HEX_FLUID)
         {
-            return isEmptyFluidContainer(SLOT_HEX_FLUID);
+            return isEmptyFluidContainer(stack);
         }
         else if (slot == SLOT_WASTE_FLUID)
         {
-            return isEmptyFluidContainer(SLOT_WASTE_FLUID);
+            return isEmptyFluidContainer(stack);
         }
         else if (slot == SLOT_ITEM_INPUT)
         {

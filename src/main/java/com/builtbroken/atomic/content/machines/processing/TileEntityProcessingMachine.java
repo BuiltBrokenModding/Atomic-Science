@@ -11,6 +11,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -259,17 +260,26 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
 
     protected boolean isInputFluid(final int slot)
     {
-        FluidStack fluidStack = getFluid(slot);
+        return isInputFluid(getStackInSlot(slot));
+    }
+
+    protected boolean isInputFluid(ItemStack stack)
+    {
+        FluidStack fluidStack = getFluid(stack);
         if (fluidStack != null)
         {
-            return getRecipeList().isInput(this, fluidStack.getFluid());
+            return getRecipeList().isComponent(this, fluidStack.getFluid());
         }
         return false;
     }
 
     protected FluidStack getFluid(final int slot)
     {
-        final ItemStack itemStack = getStackInSlot(slot);
+        return getFluid(getStackInSlot(slot));
+    }
+
+    protected FluidStack getFluid(ItemStack itemStack)
+    {
         if (itemStack != null)
         {
             if (itemStack.getItem() instanceof IFluidContainerItem)
@@ -286,14 +296,18 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
 
     protected boolean isEmptyFluidContainer(final int slot)
     {
-        final ItemStack itemStack = getStackInSlot(slot);
+        return isEmptyFluidContainer(getStackInSlot(slot));
+    }
+
+    protected boolean isEmptyFluidContainer(ItemStack itemStack)
+    {
         if (itemStack != null)
         {
             if (itemStack.getItem() instanceof IFluidContainerItem)
             {
                 return ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack) == null;
             }
-            return FluidContainerRegistry.isEmptyContainer(itemStack);
+            return FluidContainerRegistry.isEmptyContainer(itemStack) || itemStack.getItem() == Items.bucket;
         }
         return false;
     }
