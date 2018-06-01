@@ -9,7 +9,7 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ### Development Changes
 
-## 3.0.3
+## 3.0.3 - 6/1/2018
 ### Runtime Changes
 Added: Wrench color orange
 Added: Orange color for energy slots
@@ -26,7 +26,7 @@ Added: Orange to WrenchColor enum for output slots
 Added: ISlotToolTip
 Added: handling for ISlotToolTip to auto add tooltips to GUI from slots
 
-## 3.0.2
+## 3.0.2 - 5/30/2018
 ### Runtime Changes
 Added: Configs for content & features
 Added: Settings to disable radiation system

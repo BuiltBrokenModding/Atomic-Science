@@ -20,7 +20,8 @@ public class ContainerChemCentrifuge extends ContainerBase<TileEntityChemCentrif
         addSlotToContainer(new SlotFluid(tile, "gui.tooltip.slot.tank.input.blue", TileEntityChemCentrifuge.SLOT_FLUID_INPUT, 25, 52).setColor(WrenchColor.BLUE.getColor()));
         addSlotToContainer(new SlotFluid(tile, "gui.tooltip.slot.tank.output.green", TileEntityChemCentrifuge.SLOT_FLUID_OUTPUT, 136, 52).setColor(WrenchColor.GREEN.getColor()));
 
-        addSlotToContainer(new SlotOutput(tile, TileEntityChemCentrifuge.SLOT_ITEM_OUTPUT, 100, 30).setColor(WrenchColor.ORANGE.getColor()));
+        addSlotToContainer(new SlotOutput(tile, TileEntityChemCentrifuge.SLOT_ITEM_OUTPUT, 100, 30)
+                .setColor(WrenchColor.ORANGE.getColor()).setToolTip("gui.tooltip.slot.output"));
 
         int x = 50;
         addSlotToContainer(new SlotEnergy(tile, TileEntityChemCentrifuge.SLOT_BATTERY, x, 52, "gui.tooltip.slot.energy.input").setColor(WrenchColor.PURPLE.getColor()));

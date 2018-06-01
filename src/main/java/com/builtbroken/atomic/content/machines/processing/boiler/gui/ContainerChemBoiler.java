@@ -25,10 +25,12 @@ public class ContainerChemBoiler extends ContainerBase<TileEntityChemBoiler>
         addSlotToContainer(new SlotFluid(tile,"gui.tooltip.slot.tank.output.yellow",  TileEntityChemBoiler.SLOT_HEX_FLUID, 134 + 18, 57)
                 .setColor(WrenchColor.YELLOW.getColor()));
 
-        addSlotToContainer(new SlotOutput(tile, TileEntityChemBoiler.SLOT_ITEM_OUTPUT, 100, 30).setColor(WrenchColor.ORANGE.getColor()));
+        addSlotToContainer(new SlotOutput(tile, TileEntityChemBoiler.SLOT_ITEM_OUTPUT, 100, 30)
+                .setColor(WrenchColor.ORANGE.getColor()).setToolTip("gui.tooltip.slot.output"));
 
         int x = 50;
-        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_ITEM_INPUT, x, 30).setColor(WrenchColor.RED.getColor()));
+        addSlotToContainer(new MachineSlot(tile, TileEntityChemBoiler.SLOT_ITEM_INPUT, x, 30)
+                .setColor(WrenchColor.RED.getColor()).setToolTip("gui.tooltip.slot.input"));
         addSlotToContainer(new SlotEnergy(tile, TileEntityChemBoiler.SLOT_BATTERY, x, 52, "gui.tooltip.slot.energy.input").setColor(WrenchColor.PURPLE.getColor()));
         addPlayerInventory(player);
     }

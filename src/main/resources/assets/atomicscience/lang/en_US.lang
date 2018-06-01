@@ -125,3 +125,6 @@ gui.tooltip.slot.tank.output.green=Green Tank Output
 gui.tooltip.slot.tank.output.yellow=Yellow Tank Output
 
 gui.tooltip.slot.energy.input=Energy
+
+gui.tooltip.slot.input=Input
+gui.tooltip.slot.output=Output
