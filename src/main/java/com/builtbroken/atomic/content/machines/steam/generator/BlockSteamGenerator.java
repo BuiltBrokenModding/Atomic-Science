@@ -81,17 +81,14 @@ public class BlockSteamGenerator extends BlockContainer
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list)
     {
-        if (tab == getCreativeTabToDisplayOn())
+        list.add(new ItemStack(item, 1, 0));
+        if (rfFactory != null)
         {
-            list.add(new ItemStack(item, 1, 0));
-            if (rfFactory != null)
-            {
-                list.add(new ItemStack(item, 1, 1));
-            }
-            if (euFactory != null)
-            {
-                list.add(new ItemStack(item, 1, 2));
-            }
+            list.add(new ItemStack(item, 1, 1));
+        }
+        if (euFactory != null)
+        {
+            list.add(new ItemStack(item, 1, 2));
         }
     }
 

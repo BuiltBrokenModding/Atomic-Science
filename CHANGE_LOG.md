@@ -20,6 +20,7 @@ Added: tooltips for all processing slots
 Changed: slot types for processing machines to match expected input
 
 Fixed: processing machine models being slightly in the ground causing z-fighting
+Fixed: NEI showing 16 turbines
 
 ### Development Changes
 Added: Orange to WrenchColor enum for output slots
