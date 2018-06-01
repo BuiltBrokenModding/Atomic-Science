@@ -9,6 +9,21 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ### Development Changes
 
+## 3.0.3
+### Runtime Changes
+Added: Wrench color orange
+Added: Orange color for energy slots
+Added: insert limits to boiler slots
+Added: more slot colors for boiler Gui
+Added: tooltips for boiler slots
+
+Fixed: processing machine models being slightly in the ground causing z-fighting
+
+### Development Changes
+Added: Orange to WrenchColor enum for output slots
+Added: ISlotToolTip
+Added: handling for ISlotToolTip to auto add tooltips to GUI from slots
+
 ## 3.0.2
 ### Runtime Changes
 Added: Configs for content & features
@@ -20,6 +35,11 @@ Added: Display info to fuel rods
 Added: particles to show machines runing
 Added: particles to show when machine finishes a recipe
 Added: particles to show when reactor is running
+Added: Gui edge colors to tanks and slots
+Added: wrench (adjustor) with:
+        Modes: Rotation, items, fluids, redstone
+        Colors: green, yellow, red, blue, purple
+Added: tooltip for tanks
 
 Improved: handling of entity item radiation tracking
 
@@ -33,6 +53,8 @@ Fixed: Boiler recipe consuming 1mb waste instead of 1000mb
 ### Development Changes
 Added: check if a fluid or itemstack was supported by a recipe
 Added: call backs to recipe to allow items and fluids into processing machines
+
+Renamed: tank fields to reduce confusion
 
 ## 3.0.1
 ### Changes
