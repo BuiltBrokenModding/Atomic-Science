@@ -31,7 +31,7 @@ public class TESRChemCentrifuge extends TileEntitySpecialRenderer
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float deltaFrame)
     {
         GL11.glPushMatrix();
-        GL11.glTranslated(x + 0.5, y, z + 0.5);
+        GL11.glTranslated(x + 0.5, y + 0.036, z + 0.5);
 
         if (tile instanceof TileEntityChemCentrifuge)
         {
