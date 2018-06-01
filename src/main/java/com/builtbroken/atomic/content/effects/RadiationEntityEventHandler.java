@@ -36,13 +36,16 @@ public class RadiationEntityEventHandler
         {
             EntityLivingBase entity = event.entityLiving;
 
-            //Increase radiation from environment
-            applyExposure(entity);
-
-            //Sync data to client if changes
-            if (entity instanceof EntityPlayerMP)
+            if(entity.isEntityAlive())
             {
-                syncPlayerData((EntityPlayerMP) entity);
+                //Increase radiation from environment
+                applyExposure(entity);
+
+                //Sync data to client if changes
+                if (entity instanceof EntityPlayerMP)
+                {
+                    syncPlayerData((EntityPlayerMP) entity);
+                }
             }
         }
     }
@@ -103,6 +106,7 @@ public class RadiationEntityEventHandler
      */
     protected void syncPlayerData(EntityPlayerMP player)
     {
+        boolean sendPacket = false;
         //Only sync if we have data to sync
         if (ASIndirectEffects.hasRadiationData(player))
         {
@@ -125,13 +129,27 @@ public class RadiationEntityEventHandler
             //Only sync if change has happened in data
             if (delta_rad > syncError || delta_exposure > syncError || player.ticksExisted % 20 == 0)
             {
-                PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(rad, exposure, data.getInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER)), player);
-
+                sendPacket = true;
                 //Update previous, always do in sync to prevent slow creep of precision errors
                 data.setFloat(ASIndirectEffects.NBT_RADS_PREV, rad);
                 data.setFloat(ASIndirectEffects.NBT_RADS_ENVIROMENT_PREV, exposure);
             }
         }
+
+        //Update client
+        if (sendPacket || player.ticksExisted % 5 == 0)
+        {
+            sendPacket(player);
+        }
+    }
+
+    public static void sendPacket(EntityPlayerMP player)
+    {
+        NBTTagCompound data = ASIndirectEffects.getRadiationData(player, false);
+        PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(
+                data.getFloat(ASIndirectEffects.NBT_RADS),
+                MapHandler.RADIATION_MAP.getRemExposure(player),
+                data.getInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER)), player);
     }
 
     @SubscribeEvent

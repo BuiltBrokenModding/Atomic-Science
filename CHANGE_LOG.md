@@ -16,7 +16,10 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 * Added: Fluid wrench support to centrifuge
 * Added: Fluid wrench support to extractor
 
+* Added: death mechanic for radiation, entities will take radiation damage until dead.
+
 * Fixed: Slot validation for boiler
+* Fixed: ThermalExpansion recipes loading without the mod
 
 ### Development Changes
 

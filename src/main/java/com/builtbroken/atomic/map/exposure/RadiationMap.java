@@ -261,10 +261,10 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
         value += getRadLevel(entity.worldObj, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY), (int) Math.floor(entity.posZ));
 
         //Average TODO build alg to use body size (collision box)
-        value /= 3;
+        value /= 3f;
 
         //Convert from mili rem to rem
-        value /= 1000;
+        value /= 1000f;
 
         return value;
     }
