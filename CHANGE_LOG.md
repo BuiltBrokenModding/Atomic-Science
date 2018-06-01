@@ -14,8 +14,10 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 Added: Wrench color orange
 Added: Orange color for energy slots
 Added: insert limits to boiler slots
-Added: more slot colors for boiler Gui
-Added: tooltips for boiler slots
+Added: colors to all processing slots
+Added: tooltips for all processing slots
+
+Changed: slot types for processing machines to match expected input
 
 Fixed: processing machine models being slightly in the ground causing z-fighting
 

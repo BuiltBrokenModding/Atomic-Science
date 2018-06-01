@@ -8,9 +8,6 @@ import com.builtbroken.atomic.lib.gui.tip.ToolTipSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -19,24 +16,12 @@ import org.lwjgl.opengl.GL11;
  */
 public class SlotFluid extends MachineSlot implements ISlotRender, ISlotToolTip
 {
-    private final boolean doCheck;
     private final String toolTip;
 
-    public SlotFluid(IInventory inventory, String toolTip, int index, int x, int y, boolean doCheck)
+    public SlotFluid(IInventory inventory, String toolTip, int index, int x, int y)
     {
         super(inventory, index, x, y);
         this.toolTip = toolTip;
-        this.doCheck = doCheck;
-    }
-
-    @Override
-    public boolean isItemValid(ItemStack stack)
-    {
-        if (doCheck && stack != null)
-        {
-            return FluidContainerRegistry.isFilledContainer(stack) || stack.getItem() instanceof IFluidContainerItem;
-        }
-        return super.isItemValid(stack);
     }
 
     @Override

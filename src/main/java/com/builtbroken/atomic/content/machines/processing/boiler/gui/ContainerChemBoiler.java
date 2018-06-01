@@ -18,11 +18,11 @@ public class ContainerChemBoiler extends ContainerBase<TileEntityChemBoiler>
     public ContainerChemBoiler(EntityPlayer player, TileEntityChemBoiler tile)
     {
         super(player, tile);
-        addSlotToContainer(new SlotFluid(tile, "gui.tooltip.slot.tank.input.blue", TileEntityChemBoiler.SLOT_FLUID_INPUT, 25, 52, true)
+        addSlotToContainer(new SlotFluid(tile, "gui.tooltip.slot.tank.input.blue", TileEntityChemBoiler.SLOT_FLUID_INPUT, 25, 52)
                 .setColor(WrenchColor.BLUE.getColor()));
-        addSlotToContainer(new SlotFluid(tile, "gui.tooltip.slot.tank.output.green", TileEntityChemBoiler.SLOT_WASTE_FLUID, 134, 57, false)
+        addSlotToContainer(new SlotFluid(tile, "gui.tooltip.slot.tank.output.green", TileEntityChemBoiler.SLOT_WASTE_FLUID, 134, 57)
                 .setColor(WrenchColor.GREEN.getColor()));
-        addSlotToContainer(new SlotFluid(tile,"gui.tooltip.slot.tank.output.yellow",  TileEntityChemBoiler.SLOT_HEX_FLUID, 134 + 18, 57, false)
+        addSlotToContainer(new SlotFluid(tile,"gui.tooltip.slot.tank.output.yellow",  TileEntityChemBoiler.SLOT_HEX_FLUID, 134 + 18, 57)
                 .setColor(WrenchColor.YELLOW.getColor()));
 
         addSlotToContainer(new SlotOutput(tile, TileEntityChemBoiler.SLOT_ITEM_OUTPUT, 100, 30).setColor(WrenchColor.ORANGE.getColor()));
