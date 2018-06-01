@@ -10,6 +10,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
@@ -21,6 +22,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
  */
 public class RadiationEntityEventHandler
 {
+    public static DamageSource radiationDeathDamage = new DamageSource("radiation").setDamageBypassesArmor().setDamageIsAbsolute();
     //TODO use Java 8 functions or interface object to trigger effects (makes the code easier to work with)
     //TODO reduce max HP base on rad level (1Hp per 10 rad, max of 10hp [50%])
     //TODO if over 200 start removing hp slowly (simulation radiation poisoning)
@@ -85,6 +87,12 @@ public class RadiationEntityEventHandler
                 //Update remove timer
                 data.setInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER, removeTimer + 1);
             }
+        }
+
+        //Kill entity
+        if (ASIndirectEffects.getRadiation(entity) > ConfigRadiation.RADIATION_DEATH_POINT)
+        {
+            entity.attackEntityFrom(radiationDeathDamage, 5);
         }
     }
 
