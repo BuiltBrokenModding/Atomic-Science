@@ -13,6 +13,11 @@ import java.io.File;
 public class ConfigRecipe extends ContentProxy
 {
     //-----------------------------------
+    //-----Recipes
+    //-----------------------------------
+    public static boolean DISABLE_BASE_RECIPES = false;
+
+    //-----------------------------------
     //-----Extractor
     //-----------------------------------
     public static int WATER_USED_YELLOW_CAKE = 1000;
@@ -56,6 +61,9 @@ public class ConfigRecipe extends ContentProxy
     {
         Configuration configuration = new Configuration(new File(AtomicScience.configFolder, "Recipes.cfg"), AtomicScience.VERSION);
         configuration.load();
+
+        DISABLE_BASE_RECIPES = configuration.getBoolean("disable_recipes", Configuration.CATEGORY_GENERAL, DISABLE_BASE_RECIPES,
+                "Allows disabling base crafting grid recipes. Does not disable mod specific recipes. Those can be disabled in each mod specific config file.");
 
         final String cat_extractor = "extractor";
         WATER_USED_YELLOW_CAKE = configuration.getInt("water_used_yellowcake", cat_extractor, WATER_USED_YELLOW_CAKE, 0, 10000,

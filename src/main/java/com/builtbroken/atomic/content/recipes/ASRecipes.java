@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.recipes;
 
+import com.builtbroken.atomic.config.ConfigRecipe;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.proxy.ContentProxy;
@@ -18,6 +19,9 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
  */
 public class ASRecipes extends ContentProxy
 {
+    public static boolean disableRecipes = false;
+    public static boolean allowAltItems = true;
+
     public ASRecipes()
     {
         super("recipes");
@@ -26,11 +30,14 @@ public class ASRecipes extends ContentProxy
     @Override
     public void init()
     {
-        itemRecipes();
-        machineRecipes();
-        reactorRecipes();
-        armorRecipes();
-        toolRecipes();
+        if (!ConfigRecipe.DISABLE_BASE_RECIPES && !disableRecipes)
+        {
+            itemRecipes();
+            machineRecipes();
+            reactorRecipes();
+            armorRecipes();
+            toolRecipes();
+        }
     }
 
     private void itemRecipes()
@@ -191,7 +198,7 @@ public class ASRecipes extends ContentProxy
                 'G', Blocks.glass_pane,
                 'C', getOreItem("circuitBasic", Blocks.gold_block));
 
-        //Heat probe
+        //Wrench
         addRecipe(new ItemStack(ASItems.itemWrench),
                 "ICI",
                 "GIG",
@@ -201,12 +208,40 @@ public class ASRecipes extends ContentProxy
                 'C', getOreItem("circuitBasic", Items.redstone));
     }
 
-    protected void addRecipe(ItemStack output, Object... params)
+    public static void addRecipe(ItemStack output, Object... params)
     {
         GameRegistry.addRecipe(new ShapedOreRecipe(output, params));
     }
 
-    protected Object getOreItem(String ore_name, ItemStack alt)
+    public static Item getItem(String id)
+    {
+        return (Item) Item.itemRegistry.getObject(id);
+    }
+
+    public static ItemStack getItem(String id, int meta)
+    {
+        Item item = getItem(id);
+        if(item != null)
+        {
+            return new ItemStack(item, 1, meta);
+        }
+        else
+        {
+            Block block = getBlock(id);
+            if(block != null && block != Blocks.air)
+            {
+                return new ItemStack(block, 1, meta);
+            }
+        }
+        return null;
+    }
+
+    public static Block getBlock(String id)
+    {
+        return (Block) Block.blockRegistry.getObject(id);
+    }
+
+    public static Object getOreItem(String ore_name, ItemStack alt)
     {
         if (OreDictionary.doesOreNameExist(ore_name))
         {
@@ -218,10 +253,10 @@ public class ASRecipes extends ContentProxy
                 }
             }
         }
-        return alt;
+        return allowAltItems && alt != null ? alt : ore_name;
     }
 
-    protected Object getOreItem(String ore_name, Item alt)
+    public static Object getOreItem(String ore_name, Item alt)
     {
         if (OreDictionary.doesOreNameExist(ore_name))
         {
@@ -233,10 +268,10 @@ public class ASRecipes extends ContentProxy
                 }
             }
         }
-        return alt;
+        return allowAltItems && alt != null ? alt : ore_name;
     }
 
-    protected Object getOreItem(String ore_name, Block alt)
+    public static Object getOreItem(String ore_name, Block alt)
     {
         if (OreDictionary.doesOreNameExist(ore_name))
         {
@@ -248,7 +283,6 @@ public class ASRecipes extends ContentProxy
                 }
             }
         }
-        return alt;
+        return allowAltItems && alt != null ? alt : ore_name;
     }
-
 }

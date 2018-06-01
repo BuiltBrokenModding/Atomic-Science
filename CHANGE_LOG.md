@@ -16,7 +16,11 @@ Added: Orange color for energy slots
 Added: insert limits to boiler slots
 Added: colors to all processing slots
 Added: tooltips for all processing slots
+
 Added: wrench recipe
+Added: thermal expansion compatibiliy recipes
+
+Added: config to disable base recipes
 
 Changed: slot types for processing machines to match expected input
 
@@ -27,6 +31,10 @@ Fixed: NEI showing 16 turbines
 Added: Orange to WrenchColor enum for output slots
 Added: ISlotToolTip
 Added: handling for ISlotToolTip to auto add tooltips to GUI from slots
+
+Added: override to disable base recipes
+Added: override to disable repacement items for recipes
+Added: helper methods for getting recipe items
 
 ## 3.0.2 - 5/30/2018
 ### Runtime Changes
