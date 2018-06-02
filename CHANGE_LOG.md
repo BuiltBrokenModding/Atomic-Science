@@ -9,7 +9,7 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ### Development Changes
 
-## 3.#.4 - 6/1/2018
+## 3.0.4 - 6/1/2018
 ### Runtime Changes
 * Added: Slot validation for centrifuge
 * Added: Slot validation for extractor
