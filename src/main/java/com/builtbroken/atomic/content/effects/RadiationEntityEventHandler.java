@@ -160,6 +160,8 @@ public class RadiationEntityEventHandler
             //Clear data client side for respawn
             if (event.entity instanceof EntityPlayerMP)
             {
+                float remExposure = MapHandler.RADIATION_MAP.getRemExposure(event.entity);
+                System.out.println(remExposure);
                 PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(0, 0, 0), (EntityPlayerMP) event.entity);
             }
         }

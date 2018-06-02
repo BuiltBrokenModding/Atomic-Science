@@ -28,6 +28,9 @@ public class DataChunk
     /** The dimension of the world of the chunk. */
     public final int dimension;
 
+    /** Number of world ticks this chunk has been in the unload queue */
+    public int unloadTick = 0;
+
     /** Array of active layers, modified by yStart */
     protected DataLayer[] layers = new DataLayer[256];
 

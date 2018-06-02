@@ -61,7 +61,7 @@ public class ConfigRadiation extends ContentProxy
     public static float RAD_REMOVE_PERCENTAGE = 0.05f;
 
     /** Amount of rads required to kill the player */
-    public static float RADIATION_DEATH_POINT = 1000;
+    public static float RADIATION_DEATH_POINT = 10000;
 
     //Scale value to convert RADs to REMs
     //RBE -> relative biological effectiveness (how each type relates to xray & gamma)

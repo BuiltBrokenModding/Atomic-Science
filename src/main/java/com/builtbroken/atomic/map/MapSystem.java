@@ -175,6 +175,15 @@ public class MapSystem
         }
     }
 
+    public void onWorldTick(World world)
+    {
+        DataMap map = getMap(world, false);
+        if (map != null)
+        {
+            map.onWorldTick(world);
+        }
+    }
+
     ///----------------------------------------------------------------
     ///-------Chunk Events
     ///----------------------------------------------------------------

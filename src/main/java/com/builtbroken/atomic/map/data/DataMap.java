@@ -10,6 +10,8 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Stores a collection of chunks holding data
@@ -25,7 +27,9 @@ public class DataMap
     public final MapSystem mapSystem;
     public final int dim;
 
-    protected final HashMap<Long, DataChunk> loadedChunks = new HashMap();
+    protected final HashMap<Long, DataChunk> chunksCurrentlyLoaded = new HashMap();
+    protected final HashMap<Long, DataChunk> chunksWaitingToUnload = new HashMap();
+
 
     public DataMap(MapSystem mapSystem, int dim)
     {
@@ -120,27 +124,44 @@ public class DataMap
 
     public void onWorldUnload()
     {
-        loadedChunks.clear();
+        chunksCurrentlyLoaded.clear();
+    }
+
+    public void onWorldTick(World world)
+    {
+        Iterator<Map.Entry<Long, DataChunk>> it = chunksWaitingToUnload.entrySet().iterator();
+        while (it.hasNext())
+        {
+            final Map.Entry<Long, DataChunk> entry = it.next();
+            final DataChunk chunk = entry.getValue();
+
+            //Should not happen but could
+            if (chunk == null)
+            {
+                it.remove();
+            }
+            //Chunk is loaded, so we can re-add data
+            else if (world.getChunkProvider().chunkExists(chunk.xPosition, chunk.zPosition))
+            {
+                chunksCurrentlyLoaded.put(entry.getKey(), chunk);
+                it.remove();
+            }
+            //Delay chunk remove to give a chance for chunk to reload
+            else if (entry.getValue().unloadTick++ > 1000) //TODO move to config
+            {
+                MinecraftForge.EVENT_BUS.post(new MapSystemEvent.RemoveChunk(this, entry.getValue()));
+                it.remove();
+            }
+        }
     }
 
     public void unloadChunk(Chunk chunk)
     {
-        removeChunk(index(chunk));
-    }
-
-    protected void removeChunk(long index)
-    {
-        if (loadedChunks.containsKey(index))
+        long index = index(chunk);
+        if (chunksCurrentlyLoaded.containsKey(index))
         {
-            //Trigger event
-            DataChunk chunk = loadedChunks.get(index);
-            if (chunk != null)
-            {
-                MinecraftForge.EVENT_BUS.post(new MapSystemEvent.RemoveChunk(this, chunk));
-            }
-
-            //Remove chunk
-            loadedChunks.remove(index);
+            chunksWaitingToUnload.put(index, chunksCurrentlyLoaded.get(index));
+            chunksCurrentlyLoaded.remove(index);
         }
     }
 
@@ -156,13 +177,10 @@ public class DataMap
     public void saveChunk(Chunk chunk, NBTTagCompound data)
     {
         long index = index(chunk);
-        if (loadedChunks.containsKey(index))
+        DataChunk radiationChunk = findChunk(index, true);
+        if (radiationChunk != null)
         {
-            DataChunk radiationChunk = loadedChunks.get(index);
-            if (radiationChunk != null)
-            {
-                radiationChunk.save(data);
-            }
+            radiationChunk.save(data);
         }
     }
 
@@ -179,20 +197,8 @@ public class DataMap
      */
     public void loadChunk(Chunk chunk, NBTTagCompound data)
     {
-        final long index = index(chunk);
-
         //Get chunk
-        DataChunk radiationChunk = null;
-        if (loadedChunks.containsKey(index))
-        {
-            radiationChunk = loadedChunks.get(index);
-        }
-
-        //init chunk if missing
-        if (radiationChunk == null)
-        {
-            radiationChunk = createNewChunk(chunk.worldObj.provider.dimensionId, chunk.zPosition, chunk.xPosition);
-        }
+        DataChunk radiationChunk = getChunk(chunk.xPosition, chunk.zPosition, true);
 
         //Load
         radiationChunk.load(data);
@@ -208,7 +214,7 @@ public class DataMap
     {
         long index = index(chunkX, chunkZ);
         DataChunk radiationChunk = new DataChunk(dim, chunkX, chunkZ);
-        loadedChunks.put(index, radiationChunk);
+        chunksCurrentlyLoaded.put(index, radiationChunk);
         return radiationChunk;
     }
 
@@ -223,12 +229,30 @@ public class DataMap
 
     public DataChunk getChunk(int chunk_x, int chunk_z, boolean init)
     {
-        long index = ChunkCoordIntPair.chunkXZ2Int(chunk_x, chunk_z);
-        DataChunk chunk = loadedChunks.get(index);
+        DataChunk chunk = findChunk(chunk_x, chunk_z, init);
         if (chunk == null && init)
         {
-            chunk = new DataChunk(dim, chunk_x, chunk_z);
-            loadedChunks.put(index, chunk);
+            chunk = createNewChunk(dim, chunk_x, chunk_z);
+        }
+        return chunk;
+    }
+
+    protected DataChunk findChunk(int chunk_x, int chunk_z, boolean load)
+    {
+        return findChunk(index(chunk_x, chunk_z), load);
+    }
+
+    protected DataChunk findChunk(long index, boolean load)
+    {
+        DataChunk chunk = chunksCurrentlyLoaded.get(index);
+        if (chunk == null && load)
+        {
+            chunk = chunksWaitingToUnload.get(index);
+            if (chunk != null)
+            {
+                chunksWaitingToUnload.remove(index);
+                chunksCurrentlyLoaded.put(index, chunk);
+            }
         }
         return chunk;
     }

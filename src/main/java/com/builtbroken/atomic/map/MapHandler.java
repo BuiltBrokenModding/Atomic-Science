@@ -9,6 +9,7 @@ import com.builtbroken.atomic.map.thermal.ThermalMap;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -41,6 +42,8 @@ public final class MapHandler
     /** Thread used to move heat around the map */
     public static ThreadThermalAction THREAD_THERMAL_ACTION;
 
+    public static final MapHandler INSTANCE = new MapHandler();
+
 
     public static void register()
     {
@@ -48,7 +51,8 @@ public final class MapHandler
         AtomicScienceAPI.radioactiveMaterialSystem = MATERIAL_MAP;
         AtomicScienceAPI.thermalSystem = THERMAL_MAP;
 
-        MinecraftForge.EVENT_BUS.register(new MapHandler());
+        MinecraftForge.EVENT_BUS.register(INSTANCE);
+        FMLCommonHandler.instance().bus().register(INSTANCE);
 
         if(ConfigRadiation.ENABLE_MAP)
         {
@@ -70,6 +74,14 @@ public final class MapHandler
         RADIATION_MAP.onWorldUnload(event.world);
         MATERIAL_MAP.onWorldUnload(event.world);
         THERMAL_MAP.onWorldUnload(event.world);
+    }
+
+    @SubscribeEvent
+    public void onWorldTick(TickEvent.WorldTickEvent event)
+    {
+        RADIATION_MAP.onWorldTick(event.world);
+        MATERIAL_MAP.onWorldTick(event.world);
+        THERMAL_MAP.onWorldTick(event.world);
     }
 
     ///----------------------------------------------------------------

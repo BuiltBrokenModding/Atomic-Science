@@ -18,8 +18,11 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 * Added: death mechanic for radiation, entities will take radiation damage until dead.
 
+* Changed: Radiation death point from 1000 to 10000
+
 * Fixed: Slot validation for boiler
 * Fixed: ThermalExpansion recipes loading without the mod
+* Fixed: Map data clearing on player death (caused by game unloading chunks while moving the player)
 
 ### Development Changes
 

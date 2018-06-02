@@ -276,6 +276,14 @@ public class ThermalMap extends MapSystem implements IThermalSystem
         return 290; //Slightly under room temp
     }
 
+    @Override
+    public void onWorldUnload(World world)
+    {
+        super.onWorldUnload(world);
+        thermalSourceMap.clear();
+        steamSources.clear();
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onHeatChanged(MapSystemEvent.UpdateValue event)
     {

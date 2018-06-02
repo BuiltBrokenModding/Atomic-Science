@@ -273,6 +273,14 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     ///--------Edit events
     ///----------------------------------------------------------------
 
+    @Override
+    public void onWorldUnload(World world)
+    {
+        super.onWorldUnload(world);
+        radiationSourceMap.clear();
+        radiationEntityMap.clear();
+    }
+
     @SubscribeEvent()
     public void onChunkAdded(MapSystemEvent.AddChunk event)
     {
