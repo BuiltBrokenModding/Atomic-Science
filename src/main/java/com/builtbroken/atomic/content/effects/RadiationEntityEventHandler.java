@@ -10,6 +10,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -39,9 +41,76 @@ public class RadiationEntityEventHandler
             if (entity.isEntityAlive())
             {
                 //Increase radiation from environment
-                if (!entity.isInvisible() || entity instanceof EntityPlayerMP && !((EntityPlayerMP) entity).capabilities.isCreativeMode)
+                if (!entity.isInvisible() && (!(entity instanceof EntityPlayerMP) || !((EntityPlayerMP) entity).capabilities.isCreativeMode))
                 {
                     applyExposure(entity);
+
+                    float rad = ASIndirectEffects.getRadiation(entity);
+                    //Kill entity
+                    if (rad > ConfigRadiation.RADIATION_DEATH_POINT) ///TODO get per entity
+                    {
+                        entity.attackEntityFrom(radiationDeathDamage, 5);
+                    }
+
+                    //Apply potion effects
+                    if (entity.ticksExisted % 5 == 0)
+                    {
+                        //TODO move to separate functions to allow injecting new effects easily and turning off effects
+                        //Apply first check
+                        if (rad > ConfigRadiation.RADIATION_SICKNESS_POINT) ///TODO get per entity
+                        {
+                            float chance = (rad - ConfigRadiation.RADIATION_SICKNESS_POINT) / (ConfigRadiation.RADIATION_DEATH_POINT - ConfigRadiation.RADIATION_SICKNESS_POINT);
+                            if (chance > entity.worldObj.rand.nextFloat())
+                            {
+                                if (entity.getActivePotionEffect(Potion.hunger) == null || entity.getActivePotionEffect(Potion.hunger).getDuration() < 10)
+                                {
+                                    entity.addPotionEffect(new PotionEffect(Potion.hunger.id, 100));
+                                }
+                            }
+
+                            //Apply second check
+                            if (rad > ConfigRadiation.RADIATION_WEAKNESS_POINT) ///TODO get per entity
+                            {
+                                chance = (rad - ConfigRadiation.RADIATION_WEAKNESS_POINT) / (ConfigRadiation.RADIATION_DEATH_POINT - ConfigRadiation.RADIATION_WEAKNESS_POINT);
+                                if (chance > entity.worldObj.rand.nextFloat())
+                                {
+                                    if (entity.getActivePotionEffect(Potion.weakness) == null || entity.getActivePotionEffect(Potion.weakness).getDuration() < 10)
+                                    {
+                                        entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 100));
+                                    }
+                                }
+
+                                if (chance > entity.worldObj.rand.nextFloat())
+                                {
+                                    if (entity.getActivePotionEffect(Potion.digSlowdown) == null || entity.getActivePotionEffect(Potion.digSlowdown).getDuration() < 10)
+                                    {
+                                        entity.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, 100));
+                                    }
+                                }
+
+                                if (chance > entity.worldObj.rand.nextFloat())
+                                {
+                                    if (entity.getActivePotionEffect(Potion.moveSlowdown) == null || entity.getActivePotionEffect(Potion.moveSlowdown).getDuration() < 10)
+                                    {
+                                        entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100));
+                                    }
+                                }
+
+                                //Apply third check
+                                if (rad > ConfigRadiation.RADIATION_CONFUSION_POINT) ///TODO get per entity
+                                {
+                                    chance = (rad - ConfigRadiation.RADIATION_CONFUSION_POINT) / (ConfigRadiation.RADIATION_DEATH_POINT - ConfigRadiation.RADIATION_CONFUSION_POINT);
+                                    if (chance > entity.worldObj.rand.nextFloat())
+                                    {
+                                        if (entity.getActivePotionEffect(Potion.confusion) == null || entity.getActivePotionEffect(Potion.confusion).getDuration() < 10)
+                                        {
+                                            entity.addPotionEffect(new PotionEffect(Potion.confusion.id, 100));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 //Sync data to client if changes
@@ -93,12 +162,6 @@ public class RadiationEntityEventHandler
                 //Update remove timer
                 data.setInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER, removeTimer + 1);
             }
-        }
-
-        //Kill entity
-        if (ASIndirectEffects.getRadiation(entity) > ConfigRadiation.RADIATION_DEATH_POINT)
-        {
-            entity.attackEntityFrom(radiationDeathDamage, 5);
         }
     }
 

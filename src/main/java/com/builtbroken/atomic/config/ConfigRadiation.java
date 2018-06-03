@@ -63,6 +63,15 @@ public class ConfigRadiation extends ContentProxy
     /** Amount of rads required to kill the player */
     public static float RADIATION_DEATH_POINT = 10000;
 
+    /** Amount of rads required to start causing problems */
+    public static float RADIATION_SICKNESS_POINT = 1000;
+
+    /** Amount of rads required to start causing problems */
+    public static float RADIATION_WEAKNESS_POINT = 5000;
+
+    /** Amount of rads required to start causing problems */
+    public static float RADIATION_CONFUSION_POINT = 8000;
+
     //Scale value to convert RADs to REMs
     //RBE -> relative biological effectiveness (how each type relates to xray & gamma)
     //https://community.dur.ac.uk/ian.terry/teaching/nplab/dose_test.htm
