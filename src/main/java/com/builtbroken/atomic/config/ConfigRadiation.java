@@ -101,6 +101,11 @@ public class ConfigRadiation extends ContentProxy
     /** Max distance in meters to update radiation on the map. */
     public static int MAX_UPDATE_RANGE = 50;
 
+    public static float RADIATION_DECAY_PER_BLOCK = 0.05f;
+    public static float RADIATION_DECAY_PER_FLUID = 0.10f;
+    public static float RADIATION_DECAY_METAL = 0.50f;
+    public static float RADIATION_DECAY_STONE = 0.20f;
+
     public ConfigRadiation()
     {
         super("config.rad");

@@ -12,6 +12,9 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 ## 3.0.5
 ### Runtime Changes
 Added: fill + drain checks for centrifuge & extractor
+Added: potion effects for radiation exposure
+
+Implemented: raytracing for radiation (allows blocking radiation from reactors with walls)
 
 Fixed: radiation adding in creative mode
 

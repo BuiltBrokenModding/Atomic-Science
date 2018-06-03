@@ -13,6 +13,7 @@ import com.builtbroken.atomic.map.MapSystem;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataMap;
 import com.builtbroken.atomic.map.data.DataPos;
+import com.builtbroken.atomic.map.data.MapChangeSet;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import com.builtbroken.jlib.lang.StringHelpers;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -39,7 +40,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     private HashMap<IHeatSource, ThermalSourceWrapper> thermalSourceMap = new HashMap();
     private HashMap<Integer, HashSet<DataPos>> steamSources = new HashMap();
 
-    public ConcurrentLinkedQueue<ThermalMapChange> dataFromThread = new ConcurrentLinkedQueue();
+    public ConcurrentLinkedQueue<MapChangeSet> dataFromThread = new ConcurrentLinkedQueue();
 
     public ThermalMap()
     {
@@ -369,7 +370,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
             long time = System.currentTimeMillis();
             while (!dataFromThread.isEmpty() && System.currentTimeMillis() - time < 10)
             {
-                ThermalMapChange change = dataFromThread.poll();
+                MapChangeSet change = dataFromThread.poll();
                 if (change != null)
                 {
                     long t = System.nanoTime();

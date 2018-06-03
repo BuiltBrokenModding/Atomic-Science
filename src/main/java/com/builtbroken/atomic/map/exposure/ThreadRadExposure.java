@@ -3,10 +3,16 @@ package com.builtbroken.atomic.map.exposure;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.ConfigRadiation;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.data.DataChange;
-import com.builtbroken.atomic.map.data.DataMap;
-import com.builtbroken.atomic.map.data.ThreadDataChange;
+import com.builtbroken.atomic.map.data.*;
 import com.builtbroken.jlib.lang.StringHelpers;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.world.World;
+
+import java.util.HashMap;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 
 /**
  * Handles updating the radiation map
@@ -33,11 +39,12 @@ public class ThreadRadExposure extends ThreadDataChange
 
         long time = System.nanoTime();
 
-        //Clear old values
-        updateValue(map, change.old_value, change.xi(), change.yi(), change.zi(), true);
-
-        //Add new value, completed as a separate step due to range differences
-        updateValue(map, change.new_value, change.xi(), change.yi(), change.zi(), false);
+        HashMap<DataPos, DataPos> old_data = updateValue(map, change.xi(), change.yi(), change.zi(), change.old_value);
+        HashMap<DataPos, DataPos> new_data = updateValue(map, change.xi(), change.yi(), change.zi(), change.new_value);
+        if (shouldRun)
+        {
+            new MapChangeSet(map, old_data, new_data).pop(); //TODO move to main thread to run
+        }
 
         if (AtomicScience.runningAsDev)
         {
@@ -60,7 +67,7 @@ public class ThreadRadExposure extends ThreadDataChange
      * @param cz    - change location
      * @return true if finished
      */
-    protected boolean updateValue(DataMap map, int value, int cx, int cy, int cz, boolean remove)
+    protected boolean updateValue2(DataMap map, int value, int cx, int cy, int cz, boolean remove) //Old method no used but saved TODO convert over to new system to allow users to cycle between methods
     {
         if (value > 0)
         {
@@ -173,5 +180,147 @@ public class ThreadRadExposure extends ThreadDataChange
             power = getRadForDistance(value, distance);
         }
         return distance;
+    }
+
+    /**
+     * Removes the old value from the map
+     *
+     * @param map   - map to edit
+     * @param value - value to remove
+     * @param cx    - change location
+     * @param cy    - change location
+     * @param cz    - change location
+     * @return map of position to edit
+     */
+    protected HashMap<DataPos, DataPos> updateValue(DataMap map, int cx, int cy, int cz, int value)
+    {
+        if (value > 0)
+        {
+            final World world = map.getWorld();
+            //Track data, also used to prevent editing same tiles (first pos is location, second stores data)
+            final HashMap<DataPos, DataPos> radiationData = new HashMap();
+
+            final int rad = getRadFromMaterial(value);
+            final int edit_range = Math.min(ConfigRadiation.MAX_UPDATE_RANGE, (int) Math.floor(getDecayRange(rad)));
+
+            //How many steps to go per rotation
+            final int steps = (int) Math.ceil(Math.PI / Math.atan(1.0D / edit_range));
+
+            double x;
+            double y;
+            double z;
+
+            double dx;
+            double dy;
+            double dz;
+
+            int power;
+
+            double yaw;
+            double pitch;
+
+            DataPos prevPos = null;
+
+            for (int phi_n = 0; phi_n < 2 * steps; phi_n++)
+            {
+                for (int theta_n = 0; theta_n < steps; theta_n++)
+                {
+                    //Calculate power
+                    power = rad;
+
+                    //Get angles for rotation steps
+                    yaw = Math.PI * 2 / steps * phi_n;
+                    pitch = Math.PI / steps * theta_n;
+
+                    //Figure out vector to move for trace (cut in half to improve trace skipping blocks)
+                    dx = sin(pitch) * cos(yaw) * 0.5;
+                    dy = cos(pitch) * 0.5;
+                    dz = sin(pitch) * sin(yaw) * 0.5;
+
+                    //Reset position to current
+                    x = cx;
+                    y = cy;
+                    z = cz;
+
+                    double distanceSQ;
+                    //Trace from start to end
+                    do
+                    {
+                        if (!shouldRun)
+                        {
+                            return new HashMap();
+                        }
+
+                        //Get distance from center
+                        double distanceX = cx - x;
+                        double distanceY = cy - y;
+                        double distanceZ = cz - z;
+                        distanceSQ = distanceX * distanceX + distanceZ * distanceZ + distanceY * distanceY;
+
+                        //Convert double position to int position
+                        int xi = (int) Math.floor(x);
+                        int yi = (int) Math.floor(y);
+                        int zi = (int) Math.floor(z);
+
+                        DataPos pos = DataPos.get(xi, yi, zi);
+
+                        //Only do action one time per block (not a perfect solution, but solves double hit on the same block in the same line)
+                        if (prevPos != pos)
+                        {
+                            //Decay power per block
+                            Block block = world.getBlock(xi, yi, zi);
+                            if (!block.isAir(world, xi, yi, zi))
+                            {
+                                if (block.getMaterial().isSolid())
+                                {
+                                    if (block.isOpaqueCube())
+                                    {
+                                        if (block.getMaterial() == Material.rock)
+                                        {
+                                            power -= ConfigRadiation.RADIATION_DECAY_STONE * power; //TODO decay per block (e.g. lead high decay)
+                                        }
+                                        else if (block.getMaterial() == Material.iron)
+                                        {
+                                            power -= ConfigRadiation.RADIATION_DECAY_METAL * power; //TODO decay per block (e.g. lead high decay)
+                                        }
+                                        else
+                                        {
+                                            power -= ConfigRadiation.RADIATION_DECAY_PER_BLOCK * power; //TODO decay per block (e.g. lead high decay)
+                                        }
+                                    }
+                                    else
+                                    {
+                                        power -= (ConfigRadiation.RADIATION_DECAY_PER_BLOCK * power / 2); //TODO decay per block (e.g. lead high decay)
+                                    }
+                                }
+                                else if (block.getMaterial().isLiquid())
+                                {
+                                    power -= ConfigRadiation.RADIATION_DECAY_PER_FLUID * power; //TODO decay per block (e.g. lead high decay)
+                                }
+                            }
+
+                            //Calculate radiation
+                            int change = getRadForDistance(power, distanceSQ);
+                            radiationData.put(pos, DataPos.get(change, 0, 0));
+
+                            //Note previous block
+                            prevPos = pos;
+                        }
+                        else
+                        {
+                            pos.dispose();
+                        }
+
+                        //Move forward
+                        x += dx;
+                        y += dy;
+                        z += dz;
+                    }
+                    while ((distanceSQ <= edit_range * edit_range) && power > 1);
+                }
+            }
+            return radiationData;
+        }
+        return new HashMap();
     }
 }

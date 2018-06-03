@@ -4,10 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.lib.thermal.HeatSpreadDirection;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.data.DataChange;
-import com.builtbroken.atomic.map.data.DataMap;
-import com.builtbroken.atomic.map.data.DataPos;
-import com.builtbroken.atomic.map.data.ThreadDataChange;
+import com.builtbroken.atomic.map.data.*;
 import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -44,7 +41,7 @@ public class ThreadThermalAction extends ThreadDataChange
         HashMap<DataPos, DataPos> old_data = calculateHeatSpread(map, cx, cy, cz, change.old_value);
         HashMap<DataPos, DataPos> new_data = calculateHeatSpread(map, cx, cy, cz, change.new_value);
 
-        ThermalMapChange mapChange = new ThermalMapChange(map, old_data, new_data);
+        MapChangeSet mapChange = new MapChangeSet(map, old_data, new_data);
         MapHandler.THERMAL_MAP.dataFromThread.add(mapChange);
     }
 
