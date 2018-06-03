@@ -124,6 +124,11 @@ public class DataMap
 
     public void onWorldUnload()
     {
+        clearData();
+    }
+
+    public void clearData()
+    {
         chunksCurrentlyLoaded.clear();
     }
 
