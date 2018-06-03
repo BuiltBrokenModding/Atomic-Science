@@ -36,10 +36,13 @@ public class RadiationEntityEventHandler
         {
             EntityLivingBase entity = event.entityLiving;
 
-            if(entity.isEntityAlive())
+            if (entity.isEntityAlive())
             {
                 //Increase radiation from environment
-                applyExposure(entity);
+                if (!entity.isInvisible() || entity instanceof EntityPlayerMP && !((EntityPlayerMP) entity).capabilities.isCreativeMode)
+                {
+                    applyExposure(entity);
+                }
 
                 //Sync data to client if changes
                 if (entity instanceof EntityPlayerMP)
