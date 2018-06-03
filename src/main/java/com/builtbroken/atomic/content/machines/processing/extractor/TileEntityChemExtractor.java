@@ -96,7 +96,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     protected void postProcess(int ticks)
     {
         outputFluids(SLOT_FLUID_OUTPUT, getOutputTank());
-        outputFluidToTiles(getOutputTank(), null);
+        outputFluidToTiles(getOutputTank(), f -> outputTankSideSettings.get(f));
     }
 
     @Override
@@ -160,7 +160,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
     {
-        if (getOutputTank().getFluid() != null && resource.getFluid() == getOutputTank().getFluid().getFluid())
+        if (outputTankSideSettings.get(from) && getOutputTank().getFluid() != null && resource.getFluid() == getOutputTank().getFluid().getFluid())
         {
             return drain(from, resource.amount, doDrain);
         }
@@ -170,13 +170,13 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
     {
-        return getOutputTank().drain(maxDrain, doDrain);
+        return outputTankSideSettings.get(from) ? getOutputTank().drain(maxDrain, doDrain) : null;
     }
 
     @Override
     public boolean canFill(ForgeDirection from, Fluid fluid)
     {
-        return fluid == FluidRegistry.WATER;
+        return inputTankSideSettings.get(from) && getRecipeList().isComponent(this, fluid);
     }
 
     @Override

@@ -9,6 +9,14 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ### Development Changes
 
+## 3.0.5
+### Runtime Changes
+Added: fill + drain checks for centrifuge & extractor
+
+Fixed: radiation adding in creative mode
+
+### Development Changes
+
 ## 3.0.4 - 6/1/2018
 ### Runtime Changes
 * Added: Slot validation for centrifuge

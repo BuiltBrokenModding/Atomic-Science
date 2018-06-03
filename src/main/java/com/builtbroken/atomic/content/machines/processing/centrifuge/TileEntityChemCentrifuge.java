@@ -2,7 +2,6 @@ package com.builtbroken.atomic.content.machines.processing.centrifuge;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.EffectRefs;
-import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.items.wrench.WrenchColor;
 import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
@@ -94,7 +93,7 @@ public class TileEntityChemCentrifuge extends TileEntityProcessingMachine implem
     protected void postProcess(int ticks)
     {
         outputFluids(SLOT_FLUID_OUTPUT, getOutputTank());
-        outputFluidToTiles(getOutputTank(), null);
+        outputFluidToTiles(getOutputTank(), f -> outputTankSideSettings.get(f));
     }
 
     @Override
@@ -148,7 +147,7 @@ public class TileEntityChemCentrifuge extends TileEntityProcessingMachine implem
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
     {
-        if (getOutputTank().getFluid() != null && resource.getFluid() == getOutputTank().getFluid().getFluid())
+        if (outputTankSideSettings.get(from) && getOutputTank().getFluid() != null && resource.getFluid() == getOutputTank().getFluid().getFluid())
         {
             return getOutputTank().drain(resource.amount, doDrain);
         }
@@ -158,13 +157,13 @@ public class TileEntityChemCentrifuge extends TileEntityProcessingMachine implem
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
     {
-        return getOutputTank().drain(maxDrain, doDrain);
+        return outputTankSideSettings.get(from) ? getOutputTank().drain(maxDrain, doDrain) : null;
     }
 
     @Override
     public boolean canFill(ForgeDirection from, Fluid fluid)
     {
-        return fluid == ASFluids.CONTAMINATED_MINERAL_WATER.fluid || fluid == ASFluids.URANIUM_HEXAFLOURIDE.fluid;
+        return inputTankSideSettings.get(from) && getRecipeList().isComponent(this, fluid);
     }
 
     @Override
