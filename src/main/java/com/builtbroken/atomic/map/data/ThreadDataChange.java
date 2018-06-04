@@ -184,7 +184,7 @@ public abstract class ThreadDataChange extends Thread
 
     public void queueChunkForRemoval(DataChunk chunk)
     {
-        if (chunk != null)
+        if (chunk != null && chunk.hasData())
         {
             removeScanQueue.add(chunk);
         }
@@ -192,7 +192,7 @@ public abstract class ThreadDataChange extends Thread
 
     public void queueChunkForAddition(DataChunk chunk)
     {
-        if (chunk != null)
+        if (chunk != null && chunk.hasData())
         {
             addScanQueue.add(chunk);
         }

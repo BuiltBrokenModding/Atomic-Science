@@ -1,6 +1,11 @@
 package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.api.radiation.IRadioactiveMaterialSystem;
+import com.builtbroken.atomic.map.data.DataChunk;
+import com.builtbroken.atomic.map.data.DataMap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles storing information about amount of radiation active material per area
@@ -16,5 +21,18 @@ public class RadMaterialMap extends MapSystem implements IRadioactiveMaterialSys
     public RadMaterialMap()
     {
         super(MapHandler.RAD_MATERIAL_MAP_ID, MapHandler.NBT_RAD_CHUNK);
+    }
+
+    public List<DataChunk> getAllChunks()
+    {
+        List<DataChunk> chunks = new ArrayList();
+        for (DataMap map : dimensionToMap.values())
+        {
+            if (map != null)
+            {
+                map.getLoadedChunks().forEach(c -> chunks.add(c));
+            }
+        }
+        return chunks;
     }
 }

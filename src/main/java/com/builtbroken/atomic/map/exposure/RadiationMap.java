@@ -326,8 +326,15 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
             if (reloadTimer++ >= AtomicScience.TICKS_MIN * 5) //TODO clear by grid (overlapping areas over radiation coverage) to reduce problems
             {
                 reloadTimer = 0;
+
+                //Clear data
                 dimensionToMap.values().forEach(m -> m.clearData());
+
+                //Clear check on sources, causes them to refresh
                 radiationSourceMap.values().forEach(s -> s.radioactiveMaterialValue = 0);
+
+                //Queue all chunks for rescan
+                MapHandler.MATERIAL_MAP.getAllChunks().forEach(c -> MapHandler.THREAD_RAD_EXPOSURE.queueChunkForAddition(c));
             }
 
             //Loop sources looking for changes

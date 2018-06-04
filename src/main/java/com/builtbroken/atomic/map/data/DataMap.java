@@ -9,6 +9,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -29,7 +30,6 @@ public class DataMap
 
     protected final HashMap<Long, DataChunk> chunksCurrentlyLoaded = new HashMap();
     protected final HashMap<Long, DataChunk> chunksWaitingToUnload = new HashMap();
-
 
     public DataMap(MapSystem mapSystem, int dim)
     {
@@ -116,6 +116,18 @@ public class DataMap
     public World getWorld()
     {
         return DimensionManager.getWorld(dim);
+    }
+
+    /**
+     * Gets all loaded chunks
+     * <p>
+     * Do not edit list
+     *
+     * @return list of chunks
+     */
+    public Collection<DataChunk> getLoadedChunks()
+    {
+        return chunksCurrentlyLoaded.values();
     }
 
     ///----------------------------------------------------------------

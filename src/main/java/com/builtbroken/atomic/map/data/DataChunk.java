@@ -268,4 +268,16 @@ public class DataChunk
     {
         return yStart;
     }
+
+    public boolean hasData()
+    {
+        for (DataLayer layer : getLayers())
+        {
+            if (layer != null && layer.blocksUsed > 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
