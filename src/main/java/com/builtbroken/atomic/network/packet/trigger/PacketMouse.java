@@ -1,7 +1,7 @@
-package com.builtbroken.atomic.lib.network.packet.trigger;
+package com.builtbroken.atomic.network.packet.trigger;
 
 import com.builtbroken.atomic.content.ASItems;
-import com.builtbroken.atomic.lib.network.IPacket;
+import com.builtbroken.atomic.network.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;

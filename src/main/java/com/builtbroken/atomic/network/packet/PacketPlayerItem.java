@@ -1,6 +1,6 @@
-package com.builtbroken.atomic.lib.network.packet;
+package com.builtbroken.atomic.network.packet;
 
-import com.builtbroken.atomic.lib.network.IPacketIDReceiver;
+import com.builtbroken.atomic.network.IPacketIDReceiver;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;

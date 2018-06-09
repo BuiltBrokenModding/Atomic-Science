@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.lib.network;
+package com.builtbroken.atomic.network;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

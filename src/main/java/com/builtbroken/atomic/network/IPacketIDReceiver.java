@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.lib.network;
+package com.builtbroken.atomic.network;
 
 import com.builtbroken.atomic.lib.transform.IPosWorld;
 import io.netty.buffer.ByteBuf;

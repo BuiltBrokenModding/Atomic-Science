@@ -2,10 +2,10 @@ package com.builtbroken.atomic.content.machines;
 
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.lib.gui.IPlayerUsing;
-import com.builtbroken.atomic.lib.network.IPacket;
-import com.builtbroken.atomic.lib.network.IPacketIDReceiver;
-import com.builtbroken.atomic.lib.network.netty.PacketSystem;
-import com.builtbroken.atomic.lib.network.packet.PacketTile;
+import com.builtbroken.atomic.network.IPacket;
+import com.builtbroken.atomic.network.IPacketIDReceiver;
+import com.builtbroken.atomic.network.netty.PacketSystem;
+import com.builtbroken.atomic.network.packet.PacketTile;
 import com.builtbroken.atomic.lib.transform.IPosWorld;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;

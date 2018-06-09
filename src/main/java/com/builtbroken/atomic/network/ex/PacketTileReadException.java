@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.lib.network.ex;
+package com.builtbroken.atomic.network.ex;
 
 import com.builtbroken.atomic.lib.transform.vector.Location;
 import net.minecraft.block.Block;

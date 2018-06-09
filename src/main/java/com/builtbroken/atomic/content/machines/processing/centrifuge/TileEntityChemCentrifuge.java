@@ -11,8 +11,8 @@ import com.builtbroken.atomic.content.machines.processing.centrifuge.gui.GuiChem
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.lib.SideSettings;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
-import com.builtbroken.atomic.lib.network.netty.PacketSystem;
-import com.builtbroken.atomic.lib.network.packet.client.PacketSpawnParticle;
+import com.builtbroken.atomic.network.netty.PacketSystem;
+import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;

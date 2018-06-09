@@ -1,7 +1,7 @@
-package com.builtbroken.atomic.lib.network.netty;
+package com.builtbroken.atomic.network.netty;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.lib.network.IPacket;
+import com.builtbroken.atomic.network.IPacket;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import io.netty.channel.ChannelHandler;

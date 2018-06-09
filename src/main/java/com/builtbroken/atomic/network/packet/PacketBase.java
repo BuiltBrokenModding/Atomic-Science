@@ -1,6 +1,6 @@
-package com.builtbroken.atomic.lib.network.packet;
+package com.builtbroken.atomic.network.packet;
 
-import com.builtbroken.atomic.lib.network.IPacket;
+import com.builtbroken.atomic.network.IPacket;
 import com.builtbroken.atomic.lib.transform.vector.Pos;
 import com.builtbroken.jlib.data.network.IByteBufWriter;
 import cpw.mods.fml.common.network.ByteBufUtils;

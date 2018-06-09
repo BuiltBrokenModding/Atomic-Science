@@ -6,7 +6,7 @@ import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.recipes.ASRecipes;
 import com.builtbroken.atomic.lib.MassHandler;
-import com.builtbroken.atomic.lib.network.netty.PacketSystem;
+import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;

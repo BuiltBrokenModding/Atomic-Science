@@ -1,8 +1,8 @@
-package com.builtbroken.atomic.lib.network.packet;
+package com.builtbroken.atomic.network.packet;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.lib.network.IPacketIDReceiver;
-import com.builtbroken.atomic.lib.network.ex.PacketTileReadException;
+import com.builtbroken.atomic.network.IPacketIDReceiver;
+import com.builtbroken.atomic.network.ex.PacketTileReadException;
 import com.builtbroken.atomic.lib.transform.vector.Location;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
