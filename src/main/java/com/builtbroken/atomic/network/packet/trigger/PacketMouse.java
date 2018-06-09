@@ -50,7 +50,7 @@ public class PacketMouse implements IPacket
     public void handleServerSide(EntityPlayer player)
     {
         ItemStack stack = player.inventory.getStackInSlot(slot);
-        if (stack.getItem() == ASItems.itemWrench) //TODO add interface when more than wrench use
+        if (stack != null && stack.getItem() == ASItems.itemWrench) //TODO add interface when more than wrench use
         {
             ASItems.itemWrench.handleMouseWheelAction(stack, player, ctrl, forward);
         }
