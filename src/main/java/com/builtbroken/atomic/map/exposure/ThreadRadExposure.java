@@ -291,8 +291,6 @@ public class ThreadRadExposure extends ThreadDataChange
                 //Only do action one time per block (not a perfect solution, but solves double hit on the same block in the same line)
                 if (prevPos != pos)
                 {
-
-
                     //Reduce radiation for distance
                     power = getRadForDistance(power, radDistance, distanceSQ);
 
