@@ -5,8 +5,10 @@ import com.builtbroken.atomic.client.fx.FxSmoke;
 import com.builtbroken.atomic.config.ConfigClient;
 import com.builtbroken.atomic.content.ASClientReg;
 import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.content.machines.steam.funnel.ISBRSteamFunnel;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.trigger.PacketMouse;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -42,6 +44,7 @@ public class ClientProxy extends CommonProxy
     public void preInit()
     {
         MinecraftForge.EVENT_BUS.register(this);
+        RenderingRegistry.registerBlockHandler(new ISBRSteamFunnel());
         ASClientReg.register();
     }
 

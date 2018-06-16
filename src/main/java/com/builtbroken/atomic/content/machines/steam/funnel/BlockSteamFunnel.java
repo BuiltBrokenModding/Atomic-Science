@@ -78,4 +78,16 @@ public class BlockSteamFunnel extends BlockContainer
     {
         return new TileEntitySteamFunnel();
     }
+
+    @Override
+    public int getRenderType()
+    {
+        return ISBRSteamFunnel.ID;
+    }
+
+    @Override
+    public boolean isOpaqueCube()
+    {
+        return false;
+    }
 }

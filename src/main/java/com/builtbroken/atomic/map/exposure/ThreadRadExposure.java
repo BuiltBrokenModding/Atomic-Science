@@ -327,6 +327,8 @@ public class ThreadRadExposure extends ThreadDataChange
         //Get reduction
         float reduction = getReduceRadiationForBlock(world, xi, yi, zi);
 
+        //TODO add system to allow per block flat limit, then apply greater (limit or percentage)
+        //TODO add an upper limit, how much radiation a block can stop, pick small (limit or percentage)
         //Flat line
         if (power < ConfigRadiation.RADIATION_DECAY_STONE * 1000)
         {
