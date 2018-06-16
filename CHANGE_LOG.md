@@ -13,10 +13,23 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 ### Runtime Changes
 Added: fill + drain checks for centrifuge & extractor
 Added: potion effects for radiation exposure
+Added: Temp fix to reset radiation map every 5 mins to fix bad data
+
+Reworked: radiation pathfinder and calculations.
+
+Changed: wrench shift check to use GuiScreen.isShiftKeyDown() to midigate possible crashes
+Changed: reator recipe to use fluid cell instead of powered cell
+Changed: water radiation negation from 10% to 15% by default
 
 Implemented: raytracing for radiation (allows blocking radiation from reactors with walls)
 
 Fixed: radiation adding in creative mode
+Fixed: radiation values not being the same on all sides of a sources
+Fixed: radiation values not pathing correctly
+Fixed: radiation not decaying through walls correctly
+Fixed: radiation not calculating from center of sources
+Fixed: radiation not calculating to center of blocks
+Fixed: rounding errors in radiation math
 
 ### Development Changes
 

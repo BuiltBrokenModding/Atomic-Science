@@ -112,7 +112,7 @@ public class ThreadRadExposure extends ThreadDataChange
                         //Get data
                         double distanceSQ = dx * dx + dz * dz + dy * dy;
                         int current_value = map.getData(x, y, z);
-                        int change = getRadForDistance(rad, distanceSQ);
+                        int change = (int) Math.floor(getRadForDistance(rad, distanceSQ));
 
                         if (remove)
                         {
@@ -155,13 +155,30 @@ public class ThreadRadExposure extends ThreadDataChange
      * @param distanceSQ - distance to get current
      * @return distance reduced value, if less than 1 will return full
      */
-    protected int getRadForDistance(int power, double distanceSQ)
+    protected double getRadForDistance(double power, double distanceSQ)
     {
-        if (distanceSQ < 1)
+        //its assumed power is measured at 1 meter from source
+        return getRadForDistance(power, 1, distanceSQ);
+    }
+
+    /**
+     * Gets radiation value for the given distance
+     *
+     * @param power            - ordinal power at 1 meter
+     * @param distanceSourceSQ - distance from source were the power was measured
+     * @param distanceSQ       - distance to get current
+     * @return distance reduced value, if less than 1 will return full
+     */
+    protected double getRadForDistance(double power, double distanceSourceSQ, double distanceSQ)
+    {
+        //http://www.nde-ed.org/GeneralResources/Formula/RTFormula/InverseSquare/InverseSquareLaw.htm
+        if (distanceSQ < distanceSourceSQ)
         {
             return power;
         }
-        return (int) Math.floor(power / distanceSQ); //its assumed power is measured at 1 meter from source
+
+        //I_2 = I * D^2 / D_2^2
+        return (power * distanceSourceSQ) / distanceSQ;
     }
 
     /**
@@ -203,124 +220,158 @@ public class ThreadRadExposure extends ThreadDataChange
             final int rad = getRadFromMaterial(value);
             final int edit_range = Math.min(ConfigRadiation.MAX_UPDATE_RANGE, (int) Math.floor(getDecayRange(rad)));
 
-            //How many steps to go per rotation
-            final int steps = (int) Math.ceil(Math.PI / Math.atan(1.0D / edit_range));
-
-            double x;
-            double y;
-            double z;
-
-            double dx;
-            double dy;
-            double dz;
-
-            int power;
-
-            double yaw;
-            double pitch;
-
-            DataPos prevPos = null;
-
-            for (int phi_n = 0; phi_n < 2 * steps; phi_n++)
+            if (edit_range > 1)
             {
-                for (int theta_n = 0; theta_n < steps; theta_n++)
+                //How many steps to go per rotation
+                final int steps = (int) Math.ceil(Math.PI / Math.atan(1.0D / edit_range));
+
+                for (int phi_n = 0; phi_n < 2 * steps; phi_n++)
                 {
-                    //Calculate power
-                    power = rad;
-
-                    //Get angles for rotation steps
-                    yaw = Math.PI * 2 / steps * phi_n;
-                    pitch = Math.PI / steps * theta_n;
-
-                    //Figure out vector to move for trace (cut in half to improve trace skipping blocks)
-                    dx = sin(pitch) * cos(yaw) * 0.5;
-                    dy = cos(pitch) * 0.5;
-                    dz = sin(pitch) * sin(yaw) * 0.5;
-
-                    //Reset position to current
-                    x = cx;
-                    y = cy;
-                    z = cz;
-
-                    double distanceSQ;
-                    //Trace from start to end
-                    do
+                    for (int theta_n = 0; theta_n < 2 * steps; theta_n++)
                     {
-                        if (!shouldRun)
-                        {
-                            return new HashMap();
-                        }
+                        //Get angles for rotation steps
+                        double yaw = Math.PI * 2 / steps * phi_n;
+                        double pitch = Math.PI * 2 / steps * theta_n;
 
-                        //Get distance from center
-                        double distanceX = cx - x;
-                        double distanceY = cy - y;
-                        double distanceZ = cz - z;
-                        distanceSQ = distanceX * distanceX + distanceZ * distanceZ + distanceY * distanceY;
+                        //Figure out vector to move for trace (cut in half to improve trace skipping blocks)
+                        double dx = sin(pitch) * cos(yaw) * 0.5;
+                        double dy = cos(pitch) * 0.5;
+                        double dz = sin(pitch) * sin(yaw) * 0.5;
 
-                        //Convert double position to int position
-                        int xi = (int) Math.floor(x);
-                        int yi = (int) Math.floor(y);
-                        int zi = (int) Math.floor(z);
-
-                        DataPos pos = DataPos.get(xi, yi, zi);
-
-                        //Only do action one time per block (not a perfect solution, but solves double hit on the same block in the same line)
-                        if (prevPos != pos)
-                        {
-                            //Decay power per block
-                            Block block = world.getBlock(xi, yi, zi);
-                            if (!block.isAir(world, xi, yi, zi))
-                            {
-                                if (block.getMaterial().isSolid())
-                                {
-                                    if (block.isOpaqueCube())
-                                    {
-                                        if (block.getMaterial() == Material.rock)
-                                        {
-                                            power -= ConfigRadiation.RADIATION_DECAY_STONE * power; //TODO decay per block (e.g. lead high decay)
-                                        }
-                                        else if (block.getMaterial() == Material.iron)
-                                        {
-                                            power -= ConfigRadiation.RADIATION_DECAY_METAL * power; //TODO decay per block (e.g. lead high decay)
-                                        }
-                                        else
-                                        {
-                                            power -= ConfigRadiation.RADIATION_DECAY_PER_BLOCK * power; //TODO decay per block (e.g. lead high decay)
-                                        }
-                                    }
-                                    else
-                                    {
-                                        power -= (ConfigRadiation.RADIATION_DECAY_PER_BLOCK * power / 2); //TODO decay per block (e.g. lead high decay)
-                                    }
-                                }
-                                else if (block.getMaterial().isLiquid())
-                                {
-                                    power -= ConfigRadiation.RADIATION_DECAY_PER_FLUID * power; //TODO decay per block (e.g. lead high decay)
-                                }
-                            }
-
-                            //Calculate radiation
-                            int change = getRadForDistance(power, distanceSQ);
-                            radiationData.put(pos, DataPos.get(change, 0, 0));
-
-                            //Note previous block
-                            prevPos = pos;
-                        }
-                        else
-                        {
-                            pos.dispose();
-                        }
-
-                        //Move forward
-                        x += dx;
-                        y += dy;
-                        z += dz;
+                        path(radiationData, world,
+                                cx + 0.5, cy + 0.5, cz + 0.5,
+                                dx, dy, dz,
+                                rad, edit_range);
                     }
-                    while ((distanceSQ <= edit_range * edit_range) && power > 1);
                 }
             }
             return radiationData;
         }
         return new HashMap();
+    }
+
+    protected void path(HashMap<DataPos, DataPos> radiationData, World world,
+                        final double cx, final double cy, final double cz,
+                        final double dx, final double dy, final double dz,
+                        double power, double edit_range)
+    {
+        //Position
+        double x = cx + 0.5;
+        double y = cy + 0.5;
+        double z = cz + 0.5;
+
+        double distanceSQ = 1;
+        double radDistance = 1;
+
+        DataPos prevPos = null;
+
+        do
+        {
+            if (!shouldRun)
+            {
+                return;
+            }
+
+            //Convert double position to int position
+            int xi = (int) Math.floor(x);
+            int yi = (int) Math.floor(y);
+            int zi = (int) Math.floor(z);
+
+            //Get distance to center of block from center
+            double distanceX = cx - (xi + 0.5);
+            double distanceY = cy - (yi + 0.5);
+            double distanceZ = cz - (zi + 0.5);
+            distanceSQ = distanceX * distanceX + distanceZ * distanceZ + distanceY * distanceY;
+
+            //Ignore center block
+            if (distanceSQ > 0.5)
+            {
+                DataPos pos = DataPos.get(xi, yi, zi);
+
+                //Only do action one time per block (not a perfect solution, but solves double hit on the same block in the same line)
+                if (prevPos != pos)
+                {
+
+
+                    //Reduce radiation for distance
+                    power = getRadForDistance(power, radDistance, distanceSQ);
+
+                    //Reduce radiation
+                    power = reduceRadiationForBlock(world, xi, yi, zi, power);
+
+
+                    //Store change
+                    int change = (int) Math.floor(power);
+                    radiationData.put(pos, DataPos.get(change, 0, 0));
+
+                    //Note previous block
+                    prevPos = pos;
+
+                    //Track last distance of radiation, as power is now measured from that position
+                    radDistance = distanceSQ;
+                }
+                else
+                {
+                    pos.dispose();
+                }
+            }
+
+            //Move forward
+            x += dx;
+            y += dy;
+            z += dz;
+        }
+        while ((distanceSQ <= edit_range * edit_range) && power > 1);
+    }
+
+    protected double reduceRadiationForBlock(World world, int xi, int yi, int zi, double power)
+    {
+        //Decay power per block
+        Block block = world.getBlock(xi, yi, zi);
+        if (!block.isAir(world, xi, yi, zi))
+        {
+            if (block.getMaterial().isSolid())
+            {
+                if (block.isOpaqueCube())
+                {
+                    if (block.getMaterial() == Material.rock)
+                    {
+                        power -= ConfigRadiation.RADIATION_DECAY_STONE * power; //TODO decay per block (e.g. lead high decay)
+                    }
+                    else if (block.getMaterial() == Material.ground
+                            || block.getMaterial() == Material.grass
+                            || block.getMaterial() == Material.sand
+                            || block.getMaterial() == Material.clay)
+                    {
+                        power -= ((ConfigRadiation.RADIATION_DECAY_STONE * power) / 2); //TODO decay per block (e.g. lead high decay)
+                    }
+                    else if (block.getMaterial() == Material.ice
+                            || block.getMaterial() == Material.packedIce
+                            || block.getMaterial() == Material.craftedSnow)
+                    {
+                        power -= ((ConfigRadiation.RADIATION_DECAY_STONE * power) / 3); //TODO decay per block (e.g. lead high decay)
+                    }
+                    else if (block.getMaterial() == Material.iron)
+                    {
+                        power -= ConfigRadiation.RADIATION_DECAY_METAL * power; //TODO decay per block (e.g. lead high decay)
+                    }
+                    else
+                    {
+                        power -= ConfigRadiation.RADIATION_DECAY_PER_BLOCK * power; //TODO decay per block (e.g. lead high decay)
+                    }
+                }
+                else
+                {
+                    power -= ((ConfigRadiation.RADIATION_DECAY_PER_BLOCK * power) / 2); //TODO decay per block (e.g. lead high decay)
+                }
+            }
+            else if (block.getMaterial().isLiquid())
+            {
+                power -= ConfigRadiation.RADIATION_DECAY_PER_FLUID * power; //TODO decay per block (e.g. lead high decay)
+            }
+        }
+
+        //Calculate radiation
+        return power;
     }
 }
