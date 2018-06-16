@@ -324,8 +324,32 @@ public class ThreadRadExposure extends ThreadDataChange
 
     protected double reduceRadiationForBlock(World world, int xi, int yi, int zi, double power)
     {
+        //Get reduction
+        float reduction = getReduceRadiationForBlock(world, xi, yi, zi);
+
+        //Flat line
+        if (power < ConfigRadiation.RADIATION_DECAY_STONE * 1000)
+        {
+            return 0;
+        }
+
+        //Reduce if not flat
+        power -= power * reduction;
+
+
+        //Calculate radiation
+        return power;
+    }
+
+    protected float getReduceRadiationForBlock(World world, int xi, int yi, int zi) //TODO move to handler
+    {
+        //TODO add registry that allows decay per block & meta
+        //TODO add interface to define radiation based on tile data
+        //TODO add JSON data to allow users to customize values
+
         //Decay power per block
         Block block = world.getBlock(xi, yi, zi);
+
         if (!block.isAir(world, xi, yi, zi))
         {
             if (block.getMaterial().isSolid())
@@ -334,42 +358,40 @@ public class ThreadRadExposure extends ThreadDataChange
                 {
                     if (block.getMaterial() == Material.rock)
                     {
-                        power -= ConfigRadiation.RADIATION_DECAY_STONE * power; //TODO decay per block (e.g. lead high decay)
+                        return ConfigRadiation.RADIATION_DECAY_STONE;
                     }
                     else if (block.getMaterial() == Material.ground
                             || block.getMaterial() == Material.grass
                             || block.getMaterial() == Material.sand
                             || block.getMaterial() == Material.clay)
                     {
-                        power -= ((ConfigRadiation.RADIATION_DECAY_STONE * power) / 2); //TODO decay per block (e.g. lead high decay)
+                        return ConfigRadiation.RADIATION_DECAY_STONE / 2;
                     }
                     else if (block.getMaterial() == Material.ice
                             || block.getMaterial() == Material.packedIce
                             || block.getMaterial() == Material.craftedSnow)
                     {
-                        power -= ((ConfigRadiation.RADIATION_DECAY_STONE * power) / 3); //TODO decay per block (e.g. lead high decay)
+                        return ConfigRadiation.RADIATION_DECAY_STONE / 3;
                     }
                     else if (block.getMaterial() == Material.iron)
                     {
-                        power -= ConfigRadiation.RADIATION_DECAY_METAL * power; //TODO decay per block (e.g. lead high decay)
+                        return ConfigRadiation.RADIATION_DECAY_METAL;
                     }
                     else
                     {
-                        power -= ConfigRadiation.RADIATION_DECAY_PER_BLOCK * power; //TODO decay per block (e.g. lead high decay)
+                        return ConfigRadiation.RADIATION_DECAY_PER_BLOCK;
                     }
                 }
                 else
                 {
-                    power -= ((ConfigRadiation.RADIATION_DECAY_PER_BLOCK * power) / 2); //TODO decay per block (e.g. lead high decay)
+                    return ConfigRadiation.RADIATION_DECAY_PER_BLOCK / 2;
                 }
             }
             else if (block.getMaterial().isLiquid())
             {
-                power -= ConfigRadiation.RADIATION_DECAY_PER_FLUID * power; //TODO decay per block (e.g. lead high decay)
+                return ConfigRadiation.RADIATION_DECAY_PER_FLUID;
             }
         }
-
-        //Calculate radiation
-        return power;
+        return 0;
     }
 }
