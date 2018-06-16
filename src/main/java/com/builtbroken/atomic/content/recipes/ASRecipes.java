@@ -119,7 +119,7 @@ public class ASRecipes extends ContentProxy
                 'M', getOreItem("motor", Items.repeater),
                 'P', getOreItem("plateIron", Blocks.iron_block),
                 'C', getOreItem("circuitAdvanced", Blocks.dispenser),
-                'C', ASItems.itemPoweredCell);
+                'C', ASItems.itemFluidCell);
 
         //Turbine
         addRecipe(new ItemStack(ASBlocks.blockSteamTurbine),
