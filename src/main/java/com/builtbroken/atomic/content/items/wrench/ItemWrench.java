@@ -5,6 +5,7 @@ import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMa
 import com.builtbroken.atomic.lib.LanguageUtility;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -14,7 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 
@@ -91,7 +91,7 @@ public class ItemWrench extends Item
     {
         lines.add(LanguageUtility.getLocal(getUnlocalizedName() + ".mode." + getMode(stack).name().toLowerCase() + ".info"));
         lines.add(LanguageUtility.getLocal(getUnlocalizedName() + ".color." + getColor(stack).name().toLowerCase() + ".info"));
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+        if (GuiScreen.isShiftKeyDown())
         {
             lines.add(LanguageUtility.getLocal(getUnlocalizedName() + ".info"));
             lines.add(LanguageUtility.getLocal(getUnlocalizedName() + ".ctrl.info"));
