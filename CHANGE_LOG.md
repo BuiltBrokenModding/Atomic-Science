@@ -9,35 +9,40 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ### Development Changes
 
+## 3.0.6
+### Runtime Changes
+
+### Development Changes
+
 ## 3.0.5
 ### Runtime Changes
-Added: fill + drain checks for centrifuge & extractor
-Added: potion effects for radiation exposure
-Added: Reset of radiation map every 5 mins to fix bad data (temp fix)
-Added: blocks for fluids
-Added: radiation cut off lower limit, sets radiation to zero when under values
-Added: early version of ISBR model render for steam funnel
+* Added: fill + drain checks for centrifuge & extractor
+* Added: potion effects for radiation exposure
+* Added: Reset of radiation map every 5 mins to fix bad data (temp fix)
+* Added: blocks for fluids
+* Added: radiation cut off lower limit, sets radiation to zero when under values
+* Added: early version of ISBR model render for steam funnel
 
-Reworked: radiation pathfinder and calculations.
+* Reworked: radiation pathfinder and calculations.
 
-Changed: wrench shift check to use GuiScreen.isShiftKeyDown() to midigate possible crashes
-Changed: reator recipe to use fluid cell instead of powered cell
-Changed: water radiation negation from 10% to 15% by default
-Changed: radiation pathing to have a flat reduction when radiation falls below a limit 
+* Changed: wrench shift check to use GuiScreen.isShiftKeyDown() to midigate possible crashes
+* Changed: reator recipe to use fluid cell instead of powered cell
+* Changed: water radiation negation from 10% to 15% by default
+* Changed: radiation pathing to have a flat reduction when radiation falls below a limit 
         flat limit = (reduction * 1000)
         Ex: water -> 0.15
             0.15 * 1000 = 150mili-rem    
 
-Implemented: raytracing for radiation (allows blocking radiation from reactors with walls)
+* Implemented: raytracing for radiation (allows blocking radiation from reactors with walls)
 
-Fixed: radiation adding in creative mode
-Fixed: radiation values not being the same on all sides of a sources
-Fixed: radiation values not pathing correctly
-Fixed: radiation not decaying through walls correctly
-Fixed: radiation not calculating from center of sources
-Fixed: radiation not calculating to center of blocks
-Fixed: rounding errors in radiation math
-Fixed: missing fluid textures
+* Fixed: radiation adding in creative mode
+* Fixed: radiation values not being the same on all sides of a sources
+* Fixed: radiation values not pathing correctly
+* Fixed: radiation not decaying through walls correctly
+* Fixed: radiation not calculating from center of sources
+* Fixed: radiation not calculating to center of blocks
+* Fixed: rounding errors in radiation math
+* Fixed: missing fluid textures
 
 ### Development Changes
 
