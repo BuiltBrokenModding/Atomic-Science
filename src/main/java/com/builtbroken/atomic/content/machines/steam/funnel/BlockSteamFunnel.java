@@ -7,7 +7,6 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
@@ -22,6 +21,9 @@ import net.minecraft.world.World;
  */
 public class BlockSteamFunnel extends BlockContainer
 {
+    @SideOnly(Side.CLIENT)
+    private IIcon ventIcon;
+
     public BlockSteamFunnel()
     {
         super(Material.iron);
@@ -29,6 +31,7 @@ public class BlockSteamFunnel extends BlockContainer
         setResistance(5);
         setCreativeTab(AtomicScience.creativeTab);
         setBlockName(AtomicScience.PREFIX + "steam.funnel");
+        setBlockTextureName(AtomicScience.PREFIX + "funnel");
     }
 
     @Override
@@ -52,25 +55,23 @@ public class BlockSteamFunnel extends BlockContainer
         return false;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta)
     {
         if (side == 0)
         {
-            return Blocks.cauldron.getIcon(0, 0);
+            return ventIcon;
         }
-        else if (side == 1)
-        {
-            return Blocks.anvil.getIcon(0, 0);
-        }
-        return Blocks.iron_block.getIcon(0, 0);
+        return blockIcon;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister reg)
     {
-        //We pull icons from other blocks
+        this.blockIcon = reg.registerIcon(this.getTextureName() + "/body");
+        this.ventIcon = reg.registerIcon(this.getTextureName() + "/vent");
     }
 
     @Override
