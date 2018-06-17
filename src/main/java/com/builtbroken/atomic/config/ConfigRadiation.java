@@ -59,6 +59,7 @@ public class ConfigRadiation extends ContentProxy
     public static int RAD_REMOVE_TIMER = 5 * 60 * 20; //5mins
     /** Amount of radiation to remove (as a percentage) */
     public static float RAD_REMOVE_PERCENTAGE = 0.05f;
+    public static float RAD_REMOVE_LOWER_LIMIT = 1f;
 
     /** Amount of rads required to kill the player */
     public static float RADIATION_DEATH_POINT = 10000;
@@ -139,6 +140,7 @@ public class ConfigRadiation extends ContentProxy
                 "Amount of time in ticks (20 ticks a second) to wait before removing radiation");
 
         RAD_REMOVE_PERCENTAGE = configuration.getFloat("rad_remove_percentage", cat_entity, RAD_REMOVE_PERCENTAGE, 0, 1, "Percentage of radiation to remove each removal cycle");
+        RAD_REMOVE_LOWER_LIMIT = configuration.getFloat("rad_remove_lower_limit", cat_entity, RAD_REMOVE_LOWER_LIMIT, 0, 100000, "Amount that once below radiation is set to zero");
 
         RADIATION_DEATH_POINT = configuration.getFloat("death_radiation_point", cat_entity, RADIATION_DEATH_POINT, 1, Integer.MAX_VALUE, "Amount of radiation before the player dies");
 

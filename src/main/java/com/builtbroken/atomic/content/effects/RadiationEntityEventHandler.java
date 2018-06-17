@@ -3,9 +3,9 @@ package com.builtbroken.atomic.content.effects;
 import com.builtbroken.atomic.config.ConfigRadiation;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.effects.source.SourceWrapperPosition;
+import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.sync.PacketPlayerRadiation;
-import com.builtbroken.atomic.map.MapHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -150,9 +150,17 @@ public class RadiationEntityEventHandler
             int removeTimer = data.getInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER);
             if (removeTimer > ConfigRadiation.RAD_REMOVE_TIMER)
             {
-                //Remove a percentage of radiation
-                float amountToRemove = ASIndirectEffects.getRadiation(entity) * ConfigRadiation.RAD_REMOVE_PERCENTAGE;
-                ASIndirectEffects.removeRadiation(entity, amountToRemove);
+                float rad = ASIndirectEffects.getRadiation(entity);
+                if (rad <= ConfigRadiation.RAD_REMOVE_LOWER_LIMIT)
+                {
+                    ASIndirectEffects.setRadiation(entity, 0);
+                }
+                else
+                {
+                    //Remove a percentage of radiation
+                    float amountToRemove = rad * ConfigRadiation.RAD_REMOVE_PERCENTAGE;
+                    ASIndirectEffects.removeRadiation(entity, amountToRemove);
+                }
 
                 //Update remove timer
                 data.setInteger(ASIndirectEffects.NBT_RADS_REMOVE_TIMER, 0);
