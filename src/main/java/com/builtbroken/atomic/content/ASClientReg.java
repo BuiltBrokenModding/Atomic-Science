@@ -3,15 +3,15 @@ package com.builtbroken.atomic.content;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.effects.client.RenderRadOverlay;
 import com.builtbroken.atomic.content.items.cell.RendererItemCell;
+import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.render.RenderItemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.render.TESRChemBoiler;
-import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.render.RenderItemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.render.TESRChemCentrifuge;
-import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
+import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.render.RenderItemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.render.TESRChemExtractor;
-import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.reactor.fission.RenderItemReactor;
 import com.builtbroken.atomic.content.machines.reactor.fission.TESRReactorCell;
 import com.builtbroken.atomic.content.machines.reactor.fission.TileEntityReactorCell;
@@ -65,7 +65,7 @@ public class ASClientReg
         {
             for (ASFluids fluid : ASFluids.values())
             {
-                if (!fluid.makeBlock && fluid.texture_still != null)
+                if (!fluid.makeBlock && fluid.texture_still != null && fluid.fluid.getBlock() == null)
                 {
                     event.map.registerIcon(AtomicScience.PREFIX + "fluids/" + fluid.texture_still);
                     event.map.registerIcon(AtomicScience.PREFIX + "fluids/" + fluid.texture_flow);
@@ -81,7 +81,7 @@ public class ASClientReg
         {
             for (ASFluids fluid : ASFluids.values())
             {
-                if (!fluid.makeBlock && fluid.texture_still != null)
+                if (!fluid.makeBlock && fluid.texture_still != null && fluid.fluid.getBlock() == null)
                 {
                     IIcon stillIcon = event.map.getTextureExtry(AtomicScience.PREFIX + "fluids/" + fluid.texture_still);
                     IIcon flowingIcon = event.map.getTextureExtry(AtomicScience.PREFIX + "fluids/" + fluid.texture_flow);

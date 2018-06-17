@@ -26,7 +26,7 @@ public class ConfigMain extends ContentProxy
     {
         Configuration configuration = new Configuration(new File(AtomicScience.configFolder, "Main.cfg"), AtomicScience.VERSION);
         configuration.load();
-        configuration.getBoolean("enable_steam", "content", ENABLE_STEAM,
+        ENABLE_STEAM = configuration.getBoolean("enable_steam", "content", ENABLE_STEAM,
                 "Set to false to disable the build in steam fluid and block. " +
                         "Use this to allow other mods to take priority for creating the block.");
         configuration.save();
