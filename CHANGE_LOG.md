@@ -14,6 +14,9 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 Added: fill + drain checks for centrifuge & extractor
 Added: potion effects for radiation exposure
 Added: Reset of radiation map every 5 mins to fix bad data (temp fix)
+Added: blocks for fluids
+Added: radiation cut off lower limit, sets radiation to zero when under values
+Added: early version of ISBR model render for steam funnel
 
 Reworked: radiation pathfinder and calculations.
 
@@ -34,6 +37,7 @@ Fixed: radiation not decaying through walls correctly
 Fixed: radiation not calculating from center of sources
 Fixed: radiation not calculating to center of blocks
 Fixed: rounding errors in radiation math
+Fixed: missing fluid textures
 
 ### Development Changes
 
