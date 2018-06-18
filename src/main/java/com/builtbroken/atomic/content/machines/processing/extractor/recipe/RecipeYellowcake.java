@@ -1,13 +1,11 @@
 package com.builtbroken.atomic.content.machines.processing.extractor.recipe;
 
 import com.builtbroken.atomic.config.ConfigRecipe;
-import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import com.builtbroken.atomic.content.recipes.RecipeHelpers;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -67,6 +65,6 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
     @Override
     public boolean isComponent(TileEntityChemExtractor machine, ItemStack stack)
     {
-        return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem();
+        return RecipeHelpers.isUraniumOre(stack);
     }
 }

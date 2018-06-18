@@ -1,13 +1,11 @@
 package com.builtbroken.atomic.content.machines.processing.boiler.recipe;
 
 import com.builtbroken.atomic.config.ConfigRecipe;
-import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import com.builtbroken.atomic.content.recipes.RecipeHelpers;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -69,6 +67,6 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
     @Override
     public boolean isComponent(TileEntityChemBoiler machine, ItemStack stack)
     {
-        return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem();
+        return RecipeHelpers.isUraniumOre(stack);
     }
 }
