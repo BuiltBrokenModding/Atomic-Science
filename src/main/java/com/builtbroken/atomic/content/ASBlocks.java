@@ -8,8 +8,8 @@ import com.builtbroken.atomic.content.machines.processing.centrifuge.BlockChemCe
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.extractor.BlockChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
-import com.builtbroken.atomic.content.machines.reactor.fission.BlockReactorCell;
-import com.builtbroken.atomic.content.machines.reactor.fission.TileEntityReactorCell;
+import com.builtbroken.atomic.content.machines.reactor.fission.core.BlockReactorCell;
+import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
 import com.builtbroken.atomic.content.machines.steam.funnel.BlockSteamFunnel;
 import com.builtbroken.atomic.content.machines.steam.funnel.TileEntitySteamFunnel;
 import com.builtbroken.atomic.content.machines.steam.generator.BlockSteamGenerator;

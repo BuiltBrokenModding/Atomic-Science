@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.reactor.fission;
+package com.builtbroken.atomic.content.machines.reactor.fission.core;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.item.IFuelRodItem;

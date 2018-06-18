@@ -12,9 +12,9 @@ import com.builtbroken.atomic.content.machines.processing.centrifuge.render.TESR
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.render.RenderItemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.render.TESRChemExtractor;
-import com.builtbroken.atomic.content.machines.reactor.fission.RenderItemReactor;
-import com.builtbroken.atomic.content.machines.reactor.fission.TESRReactorCell;
-import com.builtbroken.atomic.content.machines.reactor.fission.TileEntityReactorCell;
+import com.builtbroken.atomic.content.machines.reactor.fission.core.RenderItemReactor;
+import com.builtbroken.atomic.content.machines.reactor.fission.core.TESRReactorCell;
+import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
 import com.builtbroken.atomic.content.machines.steam.generator.RenderItemSteamGenerator;
 import com.builtbroken.atomic.content.machines.steam.generator.TESRSteamGenerator;
 import com.builtbroken.atomic.content.machines.steam.generator.TileEntitySteamGenerator;
