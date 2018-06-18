@@ -6,6 +6,7 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
+import com.builtbroken.atomic.content.recipes.RecipeHelpers;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
@@ -24,7 +25,7 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
         ItemStack stack = machine.getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
         if (stack != null)
         {
-            return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem()
+            return RecipeHelpers.isUraniumOre(stack)
                     && machine.hasInputFluid(machine.getBlueTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE);
         }
         return false;
@@ -35,11 +36,9 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
     {
         //Uranium Ore recipe
         final ItemStack inputItem = machine.getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
-        //TODO move recipe to object
-
         if (inputItem != null)
         {
-            if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem()
+            if (RecipeHelpers.isUraniumOre(inputItem)
                     && machine.hasInputFluid(machine.getBlueTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE)
                     && machine.canOutputFluid(machine.getGreenTank(), ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.CON_WATER_URANIUM_ORE)
                     && machine.canOutputFluid(machine.getYellowTank(), ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_URANIUM_ORE))

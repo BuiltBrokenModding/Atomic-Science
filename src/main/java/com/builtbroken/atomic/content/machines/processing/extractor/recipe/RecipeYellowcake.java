@@ -6,6 +6,7 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
+import com.builtbroken.atomic.content.recipes.RecipeHelpers;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
@@ -24,7 +25,7 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
         ItemStack stack = machine.getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
         if (stack != null)
         {
-            return Item.getItemFromBlock(ASBlocks.blockUraniumOre) == stack.getItem()
+            return RecipeHelpers.isUraniumOre(stack)
                     && machine.hasInputFluid(machine.getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE);  //TODO move recipe to object
         }
         return false;
@@ -37,7 +38,7 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
         ItemStack inputItem = machine.getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
         if (inputItem != null)
         {
-            if (Item.getItemFromBlock(ASBlocks.blockUraniumOre) == inputItem.getItem()
+            if (RecipeHelpers.isUraniumOre(inputItem)
                     && machine.hasInputFluid(machine.getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE)
                     && machine.canOutputFluid(machine.getOutputTank(), ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE))
 
