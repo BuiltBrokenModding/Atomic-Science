@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagList;
  */
 public abstract class TileEntityInventoryMachine extends TileEntityMachine implements IInventory
 {
-    private ItemStack[] _inventoryArray = new ItemStack[36];
+    private ItemStack[] _inventoryArray;
 
     public ItemStack[] getInventoryArray()
     {

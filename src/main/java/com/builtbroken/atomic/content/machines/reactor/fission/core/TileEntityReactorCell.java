@@ -32,6 +32,8 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
 
     public StructureType structureType;
 
+    public boolean enabled = true; ///TODO add a spin up and down time, prevent instant enable/disable of reactors
+
     @Override
     protected void firstTick()
     {
@@ -51,7 +53,8 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         super.update(ticks);
         if (isServer())
         {
-            boolean prev_running = _running;
+            final boolean prev_running = _running;
+
             if (canOperate())
             {
                 _running = true;
@@ -130,8 +133,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     {
         //TODO check for safety (water, temp, etc)
         //TODO check if can generate neutrons (controls rods can force off)
-        //TODO check for redstone disable
-        return hasFuel() && getFuelRuntime() > 0;
+        return enabled && hasFuel() && getFuelRuntime() > 0;
     }
 
     @Override

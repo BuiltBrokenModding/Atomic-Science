@@ -8,6 +8,8 @@ import com.builtbroken.atomic.content.machines.processing.centrifuge.BlockChemCe
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.extractor.BlockChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
+import com.builtbroken.atomic.content.machines.reactor.fission.controller.BlockReactorController;
+import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.BlockReactorCell;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
 import com.builtbroken.atomic.content.machines.steam.funnel.BlockSteamFunnel;
@@ -29,6 +31,7 @@ public class ASBlocks extends ContentProxy
     public static Block blockRadioactiveGrass;
 
     public static Block blockReactorCell;
+    public static Block blockReactorController;
     public static Block blockSteamFunnel;
     public static Block blockSteamTurbine;
 
@@ -52,6 +55,9 @@ public class ASBlocks extends ContentProxy
 
         GameRegistry.registerBlock(blockReactorCell = new BlockReactorCell(), "reactor_cell");
         GameRegistry.registerTileEntity(TileEntityReactorCell.class, AtomicScience.PREFIX + "reactor_cell");
+
+        GameRegistry.registerBlock(blockReactorController = new BlockReactorController(), "reactor_controller");
+        GameRegistry.registerTileEntity(TileEntityReactorController.class, AtomicScience.PREFIX + "reactor_controller");
 
         GameRegistry.registerBlock(blockSteamFunnel = new BlockSteamFunnel(), "steam_funnel");
         GameRegistry.registerTileEntity(TileEntitySteamFunnel.class, AtomicScience.PREFIX + "steam_funnel");
