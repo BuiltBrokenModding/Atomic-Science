@@ -16,22 +16,23 @@ import org.lwjgl.opengl.GL11;
  */
 public class TESRChemCentrifuge extends TileEntitySpecialRenderer
 {
-    IModelCustom model;
+    IModelCustom model_body;
+    IModelCustom model_core;
 
-    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/chem.centrifuge.png");
-
-    final String[] movingParts = new String[]{"JROT", "KROT", "LROT", "MROT"}; //'C' is the shaft, maybe rotate? Also no clue why its named as a single letter
+    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/centrifuge.png");
 
     public TESRChemCentrifuge()
     {
-        model = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chem.centrifuge.obj"));
+        model_body = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/centrifuge_base.obj"));
+        model_core = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/centrifuge_core.obj"));
     }
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float deltaFrame)
     {
         GL11.glPushMatrix();
-        GL11.glTranslated(x + 0.5, y + 0.036, z + 0.5);
+        GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
+        GL11.glScaled(0.0625f, 0.0625f, 0.0625f);
 
         if (tile instanceof TileEntityChemCentrifuge)
         {
@@ -41,27 +42,27 @@ public class TESRChemCentrifuge extends TileEntitySpecialRenderer
             switch (facing)
             {
                 case NORTH:
-                    GL11.glRotatef(-180, 0, 1, 0);
+                    GL11.glRotatef(-90, 0, 1, 0);
                     break;
                 case SOUTH:
-                    //Good by default
-                    break;
-                case EAST:
                     GL11.glRotatef(90, 0, 1, 0);
                     break;
+                case EAST:
+                    GL11.glRotatef(180, 0, 1, 0);
+                    break;
                 case WEST:
-                    GL11.glRotatef(-90, 0, 1, 0);
+                    //GL11.glRotatef(-90, 0, 1, 0);
                     break;
             }
 
             bindTexture(texture);
 
             //Render main body
-            model.renderAllExcept(movingParts);
+            model_body.renderAll();
 
             //Render rotating parts
             GL11.glRotatef(((TileEntityChemCentrifuge) tile).rotate(deltaFrame), 0, 1, 0);
-            model.renderOnly(movingParts);
+            model_core.renderAll();
         }
 
         GL11.glPopMatrix();

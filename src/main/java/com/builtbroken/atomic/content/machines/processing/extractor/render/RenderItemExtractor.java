@@ -15,13 +15,15 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderItemExtractor implements IItemRenderer
 {
-    IModelCustom model;
+    IModelCustom model_base;
+    IModelCustom model_drum;
 
-    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/chem.extractor.png");
+    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/chemical_extractor.png");
 
     public RenderItemExtractor()
     {
-        model = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chem.extractor.obj"));
+        model_base = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chemical_extractor_base.obj"));
+        model_drum = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chemical_extractor_drum.obj"));
     }
 
     @Override
@@ -40,6 +42,7 @@ public class RenderItemExtractor implements IItemRenderer
     public void renderItem(ItemRenderType type, ItemStack item, Object... data)
     {
         GL11.glPushMatrix();
+        GL11.glScaled(0.0625f, 0.0625f, 0.0625f);
         if (type.equals(ItemRenderType.INVENTORY))
         {
             GL11.glTranslatef(-0.5f, -0.8f, -0.5f);
@@ -54,7 +57,8 @@ public class RenderItemExtractor implements IItemRenderer
             GL11.glTranslatef(0.5f, 0.2f, 0.5f);
         }
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-        model.renderAll();
+        model_base.renderAll();
+        model_drum.renderAll();
         GL11.glPopMatrix();
     }
 }

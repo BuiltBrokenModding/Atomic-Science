@@ -16,22 +16,23 @@ import org.lwjgl.opengl.GL11;
  */
 public class TESRChemExtractor extends TileEntitySpecialRenderer
 {
-    IModelCustom model;
+    IModelCustom model_base;
+    IModelCustom model_drum;
 
-    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/chem.extractor.png");
-
-    final String[] movingParts = new String[]{"MAGNET1", "MAGNET2", "MAIN_CHAMBER"};
+    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/chemical_extractor.png");
 
     public TESRChemExtractor()
     {
-        model = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chem.extractor.obj"));
+        model_base = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chemical_extractor_base.obj"));
+        model_drum = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chemical_extractor_drum.obj"));
     }
 
     @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float deltaFrame)
     {
         GL11.glPushMatrix();
-        GL11.glTranslated(x + 0.5, y + 0.036, z + 0.5);
+        GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
+        GL11.glScaled(0.0625f, 0.0625f, 0.0625f);
 
         if (tile instanceof TileEntityChemExtractor)
         {
@@ -57,13 +58,13 @@ public class TESRChemExtractor extends TileEntitySpecialRenderer
             bindTexture(texture);
 
             //Render main body
-            model.renderAllExcept(movingParts);
+            model_base.renderAll();
 
             //Render rotating parts
-            GL11.glTranslated(-0.1875,0.4,  0);
-            GL11.glRotatef(((TileEntityChemExtractor) tile).rotate(deltaFrame), 0, 0, 1);
-            GL11.glTranslated(0.1875,-0.4,  0);
-            model.renderOnly(movingParts);
+            GL11.glTranslated(-2.5, 0.5, 0);
+            float rotation = ((TileEntityChemExtractor) tile).rotate(deltaFrame);
+            GL11.glRotatef(rotation, 0, 0, 1);
+            model_drum.renderAll();
         }
 
         GL11.glPopMatrix();

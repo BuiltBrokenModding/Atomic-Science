@@ -15,13 +15,15 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderItemCentrifuge implements IItemRenderer
 {
-    IModelCustom model;
+    IModelCustom model_body;
+    IModelCustom model_core;
 
-    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/chem.centrifuge.png");
+    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/centrifuge.png");
 
     public RenderItemCentrifuge()
     {
-        model = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chem.centrifuge.obj"));
+        model_body = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/centrifuge_base.obj"));
+        model_core = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/centrifuge_core.obj"));
     }
 
     @Override
@@ -40,6 +42,7 @@ public class RenderItemCentrifuge implements IItemRenderer
     public void renderItem(ItemRenderType type, ItemStack item, Object... data)
     {
         GL11.glPushMatrix();
+        GL11.glScaled(0.0625f, 0.0625f, 0.0625f);
         if (type.equals(ItemRenderType.INVENTORY))
         {
             GL11.glTranslatef(-0.5f, -0.8f, -0.5f);
@@ -54,7 +57,8 @@ public class RenderItemCentrifuge implements IItemRenderer
             GL11.glTranslatef(0.5f, 0.2f, 0.5f);
         }
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-        model.renderAll();
+        model_body.renderAll();
+        model_core.renderAll();
         GL11.glPopMatrix();
     }
 }
