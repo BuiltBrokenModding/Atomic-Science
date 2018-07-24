@@ -61,7 +61,7 @@ public class TESRChemExtractor extends TileEntitySpecialRenderer
             model_base.renderAll();
 
             //Render rotating parts
-            GL11.glTranslated(-2.5, 0.5, 0);
+            GL11.glTranslated(-2.5, 1.5, 0);
             float rotation = ((TileEntityChemExtractor) tile).rotate(deltaFrame);
             GL11.glRotatef(rotation, 0, 0, 1);
             model_drum.renderAll();
