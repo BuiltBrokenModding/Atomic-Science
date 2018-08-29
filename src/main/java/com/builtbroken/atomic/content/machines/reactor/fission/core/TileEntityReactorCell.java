@@ -7,6 +7,7 @@ import com.builtbroken.atomic.api.reactor.IFissionReactor;
 import com.builtbroken.atomic.client.EffectRefs;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.machines.TileEntityInventoryMachine;
+import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
 import com.builtbroken.atomic.map.MapHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
@@ -80,24 +81,14 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
                 TileEntity tile = worldObj.getTileEntity(xi(), yi() - 1, zi());
                 if (tile instanceof TileEntityReactorCell)
                 {
-                    //always move lowest rod to bottom of stack (ensures dead rods exit core)
-                    if (((TileEntityReactorCell) tile).getFuelRod() != null)
+                    tryToMoveRod((TileEntityReactorCell) tile);
+                }
+                else if(tile instanceof TileEntityReactorController)
+                {
+                    tile = worldObj.getTileEntity(xi(), yi() - 2, zi());
+                    if (tile instanceof TileEntityReactorCell)
                     {
-                        int runTime = getFuelRuntime();
-                        int otherRunTime = ((TileEntityReactorCell) tile).getFuelRuntime();
-
-                        if (runTime < otherRunTime)
-                        {
-                            ItemStack stack = ((TileEntityReactorCell) tile).getFuelRodStack();
-                            ((TileEntityReactorCell) tile).setFuelRod(getFuelRodStack());
-                            setFuelRod(stack);
-                        }
-                    }
-                    //If not rod in lower core, move cell
-                    else
-                    {
-                        ((TileEntityReactorCell) tile).setFuelRod(getFuelRodStack());
-                        setFuelRod(null);
+                        tryToMoveRod((TileEntityReactorCell) tile);
                     }
                 }
             }
@@ -105,6 +96,29 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         else if (_running)
         {
             AtomicScience.sideProxy.spawnParticle(EffectRefs.REACTOR_RUNNING, xi() + 0.5, yi() + 0.5, zi() + 0.5, 0, 0, 0);
+        }
+    }
+
+    protected void tryToMoveRod(TileEntityReactorCell cell)
+    {
+        //always move lowest rod to bottom of stack (ensures dead rods exit core)
+        if (cell.getFuelRod() != null)
+        {
+            int runTime = getFuelRuntime();
+            int otherRunTime = cell.getFuelRuntime();
+
+            if (runTime < otherRunTime)
+            {
+                ItemStack stack = cell.getFuelRodStack();
+                cell.setFuelRod(getFuelRodStack());
+                setFuelRod(stack);
+            }
+        }
+        //If not rod in lower core, move cell
+        else
+        {
+            cell.setFuelRod(getFuelRodStack());
+            setFuelRod(null);
         }
     }
 
@@ -321,15 +335,15 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         Block blockAbove = worldObj.getBlock(xCoord, yCoord + 1, zCoord);
         Block blockBelow = worldObj.getBlock(xCoord, yCoord - 1, zCoord);
 
-        if (blockAbove == ASBlocks.blockReactorCell && blockBelow == ASBlocks.blockReactorCell)
+        if (canConnect(blockAbove) &&canConnect(blockBelow))
         {
             structureType = StructureType.MIDDLE;
         }
-        else if (blockBelow == ASBlocks.blockReactorCell)
+        else if (canConnect(blockBelow))
         {
             structureType = StructureType.TOP;
         }
-        else if (blockAbove == ASBlocks.blockReactorCell)
+        else if (canConnect(blockAbove))
         {
             structureType = StructureType.BOTTOM;
         }
@@ -337,6 +351,11 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         {
             structureType = StructureType.NORMAL;
         }
+    }
+
+    private boolean canConnect(Block block)
+    {
+        return block == ASBlocks.blockReactorCell || block == ASBlocks.blockReactorController;
     }
 
     public boolean isTop()
