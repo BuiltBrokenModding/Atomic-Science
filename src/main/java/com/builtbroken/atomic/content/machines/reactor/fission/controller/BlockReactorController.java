@@ -1,7 +1,6 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.controller;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
 import com.builtbroken.atomic.lib.LanguageUtility;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -12,6 +11,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -40,7 +40,7 @@ public class BlockReactorController extends BlockContainer
     @Override
     public TileEntity createNewTileEntity(World world, int meta)
     {
-        return new TileEntityReactorCell();
+        return new TileEntityReactorController();
     }
 
     @Override
@@ -86,8 +86,7 @@ public class BlockReactorController extends BlockContainer
                 }
                 else
                 {
-                    player.addChatComponentMessage(new ChatComponentText(LanguageUtility.getLocal(getUnlocalizedName() + ".cell.count")
-                            .replace("[c]", "" + ((TileEntityReactorController) tileEntity).getCellCount())));
+                    player.addChatComponentMessage(new ChatComponentTranslation(getUnlocalizedName() + ".cell.count", "" + ((TileEntityReactorController) tileEntity).getCellCount()));
                 }
             }
             return true;

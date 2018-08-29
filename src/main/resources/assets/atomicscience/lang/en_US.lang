@@ -133,4 +133,4 @@ gui.tooltip.slot.output=Output
 
 ## Info
 tile.atomicscience:reactor.controller.error.state=Controller has errored, this is likely caused by too many CPUs in core stack. Only 1 controller can be connected to a stack of cores in the y axis. If you wish to have several stacks in the Y axis separate each stack by a spacer. If you wish to maintain inventory connection use a hopper or pipe between stack layers.
-tile.atomicscience:reactor.controller.cell.count=Controller is currently managing [C] reactor cell(s)
+tile.atomicscience:reactor.controller.cell.count=Controller is currently managing %s reactor cell(s)
