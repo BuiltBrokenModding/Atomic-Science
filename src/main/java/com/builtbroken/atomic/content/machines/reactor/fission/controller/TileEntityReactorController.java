@@ -14,13 +14,15 @@ import java.util.ArrayList;
  */
 public class TileEntityReactorController extends TileEntityMachine
 {
+    //TODO implement wrapper inventory to allow removing rods from cell above machine
+
     /** Unique id of the reactor stack, used by display systems */
     public String stackID;
     /** Display name of the reactor stack, used by display systems */
     public String stackName;
 
     // Array of reactor cells in the connected stack
-    private TileEntityReactorCell[] cells;
+    private TileEntityReactorCell[] cells; //TODO switch to array list
 
     // Is the CPU in an error state, can be caused by too many CPUs in a stack
     private boolean inErrorState = false;
@@ -63,6 +65,7 @@ public class TileEntityReactorController extends TileEntityMachine
 
         ArrayList<TileEntityReactorCell> reactorCellList = new ArrayList();
 
+        //Get stack above cell
         for (int y = yCoord + 1; y < 255; y++)
         {
             TileEntity tileEntity = worldObj.getTileEntity(xi(), y, zi());
@@ -81,6 +84,7 @@ public class TileEntityReactorController extends TileEntityMachine
             }
         }
 
+        //Get stack bellow cell
         for (int y = yCoord - 1; y > 0; y--)
         {
             TileEntity tileEntity = worldObj.getTileEntity(xi(), y, zi());
@@ -99,7 +103,7 @@ public class TileEntityReactorController extends TileEntityMachine
             }
         }
 
-        cells = (TileEntityReactorCell[]) reactorCellList.toArray();
+        cells = reactorCellList.toArray(new TileEntityReactorCell[reactorCellList.size()]);
     }
 
     public boolean isInErrorState()
