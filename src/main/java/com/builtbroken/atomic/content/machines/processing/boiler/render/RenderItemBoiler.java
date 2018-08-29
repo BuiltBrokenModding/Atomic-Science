@@ -15,13 +15,15 @@ import org.lwjgl.opengl.GL11;
  */
 public class RenderItemBoiler implements IItemRenderer
 {
-    IModelCustom model;
+    IModelCustom model_base;
+    IModelCustom model_core;
 
-    ResourceLocation texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/chem.boiler.png");
+    ResourceLocation texture_on = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "machines/boiler_on.png");
 
     public RenderItemBoiler()
     {
-        model = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/chem.boiler.obj"));
+        model_base = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/boiler_base_max.obj"));
+        model_core = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "machines/boiler_cell.obj"));
     }
 
     @Override
@@ -40,21 +42,24 @@ public class RenderItemBoiler implements IItemRenderer
     public void renderItem(ItemRenderType type, ItemStack item, Object... data)
     {
         GL11.glPushMatrix();
+        GL11.glScaled(0.0625f, 0.0625f, 0.0625f);
         if (type.equals(ItemRenderType.INVENTORY))
         {
             GL11.glTranslatef(-0.5f, -0.8f, -0.5f);
-            GL11.glRotatef(-90f, 0, 1, 0);
+            GL11.glRotatef(180f, 0, 1, 0);
         }
         else if (type.equals(ItemRenderType.EQUIPPED_FIRST_PERSON))
         {
-            GL11.glTranslatef(0.5f, 0.2f, 0.5f);
+            GL11.glRotatef(45f, 0, 1, 0);
+            GL11.glTranslatef(1f, 12f, 9f);
         }
         else if (type.equals(ItemRenderType.EQUIPPED))
         {
-            GL11.glTranslatef(0.5f, 0.2f, 0.5f);
+            GL11.glTranslatef(8f, 10f, 8f);
         }
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-        model.renderAll();
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture_on);
+        model_base.renderAll();
+        model_core.renderAll();
         GL11.glPopMatrix();
     }
 }

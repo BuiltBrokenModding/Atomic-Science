@@ -50,11 +50,12 @@ public class RenderItemExtractor implements IItemRenderer
         }
         else if (type.equals(ItemRenderType.EQUIPPED_FIRST_PERSON))
         {
-            GL11.glTranslatef(0.5f, 0.2f, 0.5f);
+            GL11.glRotatef(45f, 0, 1, 0);
+            GL11.glTranslatef(1f, 12f, 9f);
         }
         else if (type.equals(ItemRenderType.EQUIPPED))
         {
-            GL11.glTranslatef(0.5f, 0.2f, 0.5f);
+            GL11.glTranslatef(8f, 10f, 8f);
         }
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
         model_base.renderAll();
