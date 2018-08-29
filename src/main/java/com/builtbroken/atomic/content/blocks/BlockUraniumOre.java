@@ -20,6 +20,5 @@ public class BlockUraniumOre extends Block
         setCreativeTab(AtomicScience.creativeTab);
         setBlockName(AtomicScience.PREFIX + "ore.uranium");
         setBlockTextureName(AtomicScience.PREFIX + "ore_uranium");
-        OreDictionary.registerOre("oreUranium", this);
     }
 }

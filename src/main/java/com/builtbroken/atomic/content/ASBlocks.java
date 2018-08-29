@@ -20,6 +20,7 @@ import com.builtbroken.atomic.content.machines.steam.generator.TileEntitySteamGe
 import com.builtbroken.atomic.proxy.ContentProxy;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -52,6 +53,7 @@ public class ASBlocks extends ContentProxy
         //GameRegistry.registerBlock(blockRadioactiveDirt = new BlockRadioactiveDirt(), "radioactive_dirt");
         //GameRegistry.registerBlock(blockRadioactiveGrass = new BlockRadioactiveGrass(), "radioactive_grass");
         GameRegistry.registerBlock(blockUraniumOre = new BlockUraniumOre(), "uranium_ore");
+        OreDictionary.registerOre("oreUranium", blockUraniumOre);
 
         GameRegistry.registerBlock(blockReactorCell = new BlockReactorCell(), "reactor_cell");
         GameRegistry.registerTileEntity(TileEntityReactorCell.class, AtomicScience.PREFIX + "reactor_cell");
