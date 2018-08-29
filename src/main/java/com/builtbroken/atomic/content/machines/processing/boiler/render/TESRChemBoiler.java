@@ -56,7 +56,7 @@ public class TESRChemBoiler extends TileEntitySpecialRenderer
                     break;
             }
 
-            bindTexture(texture_on);
+            bindTexture(((TileEntityChemBoiler) tile).processTimer > 0 ? texture_on : texture_off);
 
             //Render main body
             model_base.renderAll();
