@@ -36,27 +36,54 @@ public class TileEntityReactorController extends TileEntityMachine
     @Override
     protected void update(int ticks)
     {
-        if(isServer())
+        if (isServer())
         {
             if (cells == null || refreshStack || ticks % 20 == 0) //TODO remove tick refresh after testing
             {
                 doRefreshStack();
             }
 
-            if(ticks % 3 == 0)
+            if (ticks % 3 == 0)
             {
+                boolean enabled = shouldEnableReactors();
+
                 TileEntityReactorCell[] cells = getReactorCells();
-                if(cells != null)
+                if (cells != null)
                 {
-                    for(TileEntityReactorCell cell : cells)
+                    for (TileEntityReactorCell cell : cells)
                     {
-                        cell.enabled = enableReactors;
+                        cell.enabled = enabled;
                     }
                 }
             }
         }
     }
 
+    public void setReactorsEnabled(boolean enabled)
+    {
+        this.enableReactors = enabled;
+    }
+
+    public boolean areReactorsEnabled()
+    {
+        return enableReactors;
+    }
+
+    /**
+     * Should reactors be enabled
+     * <p>
+     * Only call once per tick as it checks redstone state
+     *
+     * @return true if enable
+     */
+    protected boolean shouldEnableReactors()
+    {
+        return enableReactors && !world().isBlockIndirectlyGettingPowered(xi(), yi(), zi());
+    }
+
+    /**
+     * Checks cells in reactor stack and builds a list to access
+     */
     protected void doRefreshStack() //TODO have reactors trigger this when placed
     {
         inErrorState = false;

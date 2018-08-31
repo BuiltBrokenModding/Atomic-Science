@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.controller;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.lib.LanguageUtility;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -9,6 +10,9 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
@@ -75,18 +79,33 @@ public class BlockReactorController extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xHit, float yHit, float zHit)
     {
+        ItemStack heldItem = player.getHeldItem();
+        if(heldItem != null
+                && heldItem.getItem() instanceof ItemBlock
+                && ((ItemBlock)heldItem.getItem()).field_150939_a == ASBlocks.blockReactorCell)
+        {
+            return false;
+        }
+
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity instanceof TileEntityReactorController)
         {
+            TileEntityReactorController controller = ((TileEntityReactorController) tileEntity);
             if (!world.isRemote)
             {
-                if (((TileEntityReactorController) tileEntity).isInErrorState())
+                if (controller.isInErrorState())
                 {
                     player.addChatComponentMessage(new ChatComponentText(LanguageUtility.getLocal(getUnlocalizedName() + ".error.state")));
                 }
+                else if(heldItem != null && heldItem.getItem() == Items.stick)
+                {
+                    controller.setReactorsEnabled(!controller.areReactorsEnabled());
+                    player.addChatComponentMessage(new ChatComponentText(controller.areReactorsEnabled() ? "Reactors are set into enabled state" : "Reactors are set into disabled state"));//TODO translate
+                    return true;
+                }
                 else
                 {
-                    player.addChatComponentMessage(new ChatComponentTranslation(getUnlocalizedName() + ".cell.count", "" + ((TileEntityReactorController) tileEntity).getCellCount()));
+                    player.addChatComponentMessage(new ChatComponentTranslation(getUnlocalizedName() + ".cell.count", "" + controller.getCellCount()));
                 }
             }
             return true;
