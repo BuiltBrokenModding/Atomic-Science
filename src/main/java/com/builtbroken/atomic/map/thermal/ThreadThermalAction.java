@@ -100,6 +100,8 @@ public class ThreadThermalAction extends ThreadDataChange
                 int heatAsPosition = 0;
 
                 double heatRateTotal = 0;
+
+                Set<HeatSpreadDirection> spreadDirections = new HashSet();
                 for (HeatSpreadDirection direction : HeatSpreadDirection.values())
                 {
                     int x = currentPos.x + direction.offsetX;
@@ -107,37 +109,36 @@ public class ThreadThermalAction extends ThreadDataChange
                     int z = currentPos.z + direction.offsetZ;
                     if (inRange(cx, cy, cz, x, y, z, range) && y >= 0 && y < 256)
                     {
+                        spreadDirections.add(direction);
                         heatRateTotal += ThermalHandler.getHeatTransferRate(map.getWorld(), x, y, z);
                     }
                 }
 
-                for (HeatSpreadDirection direction : HeatSpreadDirection.values())
+                //Only loop values we had within range
+                for (HeatSpreadDirection direction : spreadDirections)
                 {
                     final DataPos pos = DataPos.get(currentPos.x + direction.offsetX, currentPos.y + direction.offsetY, currentPos.z + direction.offsetZ);
 
-                    //Only path tiles in map and in range of source
-                    if (inRange(cx, cy, cz, pos.x, pos.y, pos.z, range) && pos.y >= 0 && pos.y < 256)
+                    if (!heatSpreadData.containsKey(pos))
                     {
-                        if (!heatSpreadData.containsKey(pos))
+                        if (direction.ordinal() < 6)
                         {
-                            if (direction.ordinal() < 6)
-                            {
-                                tempHold.add(pos);
-                            }
-                        }
-                        else
-                        {
-                            int heatAtNext = heatSpreadData.get(pos).x;
-                            double transferRate = ThermalHandler.getHeatTransferRate(map.getWorld(), pos.x, pos.y, pos.z);
-                            double percentage = transferRate / heatRateTotal;
-                            int heatMoved = getHeatToSpread(map, pos, currentPos, heatAtNext, percentage * direction.percentage, heatSpreadData);
-                            heatSpreadData.get(pos).y += heatMoved;
-                            heatAsPosition += heatMoved;
-                            pos.dispose();
+                            tempHold.add(pos);
                         }
                     }
                     else
                     {
+                        int heatAtNext = heatSpreadData.get(pos).x;
+
+                        double transferRate = ThermalHandler.getHeatTransferRate(map.getWorld(), pos.x, pos.y, pos.z);
+                        double percentage = transferRate / heatRateTotal;
+
+                        int heatMoved = getHeatToSpread(map, pos, currentPos, heatAtNext, percentage * direction.percentage, heatSpreadData);
+
+                        heatSpreadData.get(pos).y += heatMoved;
+                        heatAsPosition += heatMoved;
+
+                        //Recycle
                         pos.dispose();
                     }
                 }
@@ -157,6 +158,8 @@ public class ThreadThermalAction extends ThreadDataChange
                 //Keep track of value
                 heatSpreadData.get(currentPos).x = heatAsPosition;
             }
+
+
         }
 
         if (AtomicScience.runningAsDev)
