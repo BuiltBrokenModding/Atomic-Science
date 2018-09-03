@@ -31,18 +31,19 @@ public class ThreadThermalAction extends ThreadDataChange
         DataMap map;
         synchronized (MapHandler.THERMAL_MAP)
         {
-            map = MapHandler.THERMAL_MAP.getMap(change.dim, true);
+            map = MapHandler.THERMAL_MAP.getMap(change.dim, true); //TODO see if we need this, if yes find better solution
         }
 
         final int cx = change.xi();
         final int cy = change.yi();
         final int cz = change.zi();
 
-        HashMap<DataPos, DataPos> old_data = calculateHeatSpread(map, cx, cy, cz, change.old_value);
-        HashMap<DataPos, DataPos> new_data = calculateHeatSpread(map, cx, cy, cz, change.new_value);
+        //Collect data
+        HashMap<DataPos, DataPos> old_data = calculateHeatSpread(map, cx, cy, cz, change.old_value); //TODO pull data from heat source
+        HashMap<DataPos, DataPos> new_data = calculateHeatSpread(map, cx, cy, cz, change.new_value); //TODO store data into heat source
 
-        MapChangeSet mapChange = new MapChangeSet(map, old_data, new_data);
-        MapHandler.THERMAL_MAP.dataFromThread.add(mapChange);
+        //Queue data update
+        MapHandler.THERMAL_MAP.dataFromThread.add(new MapChangeSet(map, old_data, new_data));
     }
 
     /**
@@ -64,6 +65,11 @@ public class ThreadThermalAction extends ThreadDataChange
      */
     protected HashMap<DataPos, DataPos> calculateHeatSpread(final DataMap map, final int cx, final int cy, final int cz, final int heat)
     {
+        //TODO consider splitting over several threads
+        //TODO map fluid(water, air, lava, etc) pockets to allow convection currents
+        //TODO use fluid pockets to equalize heat levels
+
+        //Max range, hard coded until algs can be completed
         final int range = 50;
 
         //Track data, also used to prevent looping same tiles (first pos is location, second stores data)
@@ -87,29 +93,35 @@ public class ThreadThermalAction extends ThreadDataChange
                 heatSpreadData.put(pos, DataPos.get(0, 0, 0));
             }
 
-            //Temp list of  node to path next for current position
-            ArrayList<DataPos> tempHold = new ArrayList(6);
-
+            //List of node to add to path queue after each loop
+            final ArrayList<DataPos> tempHold = new ArrayList(6);
 
             //Breadth first pathfinder
             while (!pathNext.isEmpty())
             {
+                //Get next
                 final DataPos currentPos = pathNext.poll();
 
                 //Calculate heat pushed from all sides & look for new tiles to path
                 int heatAsPosition = 0;
 
+                //Total heat transfer ratio, used to convert ratio to percentages when balancing heat flow
                 double heatRateTotal = 0;
 
+                //Find directions to spread heat and calculate max heat ratio
                 Set<HeatSpreadDirection> spreadDirections = new HashSet();
                 for (HeatSpreadDirection direction : HeatSpreadDirection.values())
                 {
+                    //Check range to prevent infinite spread
                     int x = currentPos.x + direction.offsetX;
                     int y = currentPos.y + direction.offsetY;
                     int z = currentPos.z + direction.offsetZ;
-                    if (inRange(cx, cy, cz, x, y, z, range) && y >= 0 && y < 256)
+                    if (inRange(cx, cy, cz, x, y, z, range) && y >= 0 && y < 256) //TODO check delta temp, ignore high heat values to improve heat spread
                     {
+                        //Add to set
                         spreadDirections.add(direction);
+
+                        //Increase heat spread ratio
                         heatRateTotal += ThermalHandler.getHeatTransferRate(map.getWorld(), x, y, z);
                     }
                 }
@@ -117,25 +129,39 @@ public class ThreadThermalAction extends ThreadDataChange
                 //Only loop values we had within range
                 for (HeatSpreadDirection direction : spreadDirections)
                 {
-                    final DataPos pos = DataPos.get(currentPos.x + direction.offsetX, currentPos.y + direction.offsetY, currentPos.z + direction.offsetZ);
+                    final DataPos pos = DataPos.get(
+                            currentPos.x + direction.offsetX,
+                            currentPos.y + direction.offsetY,
+                            currentPos.z + direction.offsetZ);
 
+                    //If we have no path position add to queue
                     if (!heatSpreadData.containsKey(pos))
                     {
+                        //Only add if only sides, do not path corners. As it will result in low heat spread.
                         if (direction.ordinal() < 6)
                         {
                             tempHold.add(pos);
                         }
                     }
+                    //If we have data do heat movement
                     else
                     {
+                        //Get heat from direction
                         int heatAtNext = heatSpreadData.get(pos).x;
 
+                        //Calculate spread ratio from direction
                         double transferRate = ThermalHandler.getHeatTransferRate(map.getWorld(), pos.x, pos.y, pos.z);
+
+                        //Convert ratio into percentage
                         double percentage = transferRate / heatRateTotal;
 
+                        //Calculate heat to move to current position from direction
                         int heatMoved = getHeatToSpread(map, pos, currentPos, heatAtNext, percentage * direction.percentage, heatSpreadData);
 
+                        //Update direction position with heat moved
                         heatSpreadData.get(pos).y += heatMoved;
+
+                        //Increase heat at position
                         heatAsPosition += heatMoved;
 
                         //Recycle
@@ -146,22 +172,26 @@ public class ThreadThermalAction extends ThreadDataChange
                 //Only add positions from temp if there is heat to move from current
                 if (heatAsPosition > 0)
                 {
+                    //Add to path queue
                     pathNext.addAll(tempHold);
-                    tempHold.forEach(e -> heatSpreadData.put(e, DataPos.get(0, 0, 0))); //Prevents loop over tiles already in queue
+
+                    //Add to map so we don't path over again and have init data to grab
+                    tempHold.forEach(e -> heatSpreadData.put(e, DataPos.get(0, 0, 0)));
                 }
                 else
                 {
+                    //Recycle objects
                     tempHold.forEach(e -> e.dispose());
                 }
+                //Clear for next run
                 tempHold.clear();
 
                 //Keep track of value
                 heatSpreadData.get(currentPos).x = heatAsPosition;
             }
-
-
         }
 
+        //Logging
         if (AtomicScience.runningAsDev)
         {
             time = System.nanoTime() - time;
