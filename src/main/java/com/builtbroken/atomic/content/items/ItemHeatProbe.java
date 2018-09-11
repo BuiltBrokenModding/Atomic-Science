@@ -6,10 +6,12 @@ import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.jlib.data.science.units.UnitDisplay;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Simple accessor of data in the map
@@ -24,44 +26,41 @@ public class ItemHeatProbe extends Item
 
     public ItemHeatProbe()
     {
-        this.setUnlocalizedName(AtomicScience.PREFIX + "heat.probe");
-        this.setTextureName(AtomicScience.PREFIX + "heat.probe");
+        this.setRegistryName(AtomicScience.PREFIX + "heat_probe");
+        this.setTranslationKey(AtomicScience.PREFIX + "heat.probe");
         this.setCreativeTab(AtomicScience.creativeTab);
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float xHit, float yHit, float zHit)
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if (!world.isRemote)
         {
             if (player.isSneaking())
             {
-                ForgeDirection direction = ForgeDirection.getOrientation(side);
-                x += direction.offsetX;
-                y += direction.offsetY;
-                z += direction.offsetZ;
+                pos = pos.add(facing.getDirectionVec());
             }
-            double heat = MapHandler.THERMAL_MAP.getJoules(world, x, y, z);
-            double env = MapHandler.THERMAL_MAP.getEnvironmentalJoules(world, x, y, z);
-            double temp = MapHandler.THERMAL_MAP.getTemperature(world, x, y, z);
+            double heat = MapHandler.THERMAL_MAP.getJoules(world, pos);
+            double env = MapHandler.THERMAL_MAP.getEnvironmentalJoules(world, pos);
+            double temp = MapHandler.THERMAL_MAP.getTemperature(world, pos);
             //double heatDelta = temp - 300; //Difference from room temp
 
             int tempDisplay = (int) Math.floor(temp);
 
-            player.addChatComponentMessage(new ChatComponentText("Heat: " + formatTemp(heat)
+            player.sendMessage(new TextComponentString("Heat: " + formatTemp(heat)
                             + " + " + formatTemp(env)
                             + "  Temp: " + tempDisplay + "k"
                             + "  HTM: " + formatTemp(heat + env)
                             + "/"
-                            + formatTemp(ThermalHandler.energyCostToChangeStates(world, x, y, z))
+                            + formatTemp(ThermalHandler.energyCostToChangeStates(world, pos))
                     )
             );
 
-            int vap = ThermalHandler.getVaporRate(world, x, y, z);
-            player.addChatComponentMessage(new ChatComponentText("Vap: " + vap));
+            int vap = ThermalHandler.getVaporRate(world, pos);
+            player.sendMessage(new TextComponentString("Vap: " + vap));
 
         }
-        return true;
+        return EnumActionResult.SUCCESS;
 
     }
 

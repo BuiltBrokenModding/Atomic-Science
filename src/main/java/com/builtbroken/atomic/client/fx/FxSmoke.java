@@ -1,20 +1,20 @@
 package com.builtbroken.atomic.client.fx;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.particle.EntitySmokeFX;
+import net.minecraft.client.particle.ParticleSmokeNormal;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.*;
 
 @SideOnly(Side.CLIENT)
-public class FxSmoke extends EntitySmokeFX
+public class FxSmoke extends ParticleSmokeNormal
 {
     double accelerationY = 0.004D;
 
     public FxSmoke(World world, double x, double y, double z, double vx, double vy, double vz)
     {
-        super(world, x, y, z, vx, vy, vz);
+        this(world, x, y, z, vx, vy, vz, 1);
     }
 
     public FxSmoke(World world, double x, double y, double z, double vx, double vy, double vz, float scale)
@@ -45,7 +45,7 @@ public class FxSmoke extends EntitySmokeFX
 
         if (this.particleAge++ >= this.particleMaxAge)
         {
-            this.setDead();
+            this.setExpired();
         }
 
         this.setParticleTextureIndex(7 - this.particleAge * 8 / this.particleMaxAge);
@@ -55,7 +55,7 @@ public class FxSmoke extends EntitySmokeFX
             this.motionY += accelerationY;
         }
 
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.move(this.motionX, this.motionY, this.motionZ);
 
         if (this.posY == this.prevPosY)
         {

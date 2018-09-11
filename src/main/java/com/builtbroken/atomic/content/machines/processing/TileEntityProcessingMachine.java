@@ -15,7 +15,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing
 import net.minecraftforge.fluids.*;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
     boolean processing = false;
     public int processTimer = 0;
 
-    ForgeDirection _facingDirectionCache;
+    EnumFacing _facingDirectionCache;
 
     float _processingAnimationRotationPrev = 0;
     float _processingAnimationRotation = 0;
@@ -67,7 +67,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
 
     }
 
-    public void onWrench(WrenchMode type, WrenchColor color, ForgeDirection side, EntityPlayer player)
+    public void onWrench(WrenchMode type, WrenchColor color, EnumFacing side, EntityPlayer player)
     {
 
     }
@@ -437,11 +437,11 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
      *
      * @param outputTank - tank to drain
      */
-    protected void outputFluidToTiles(IFluidTank outputTank, Function<ForgeDirection, Boolean> canUseSideFunction)
+    protected void outputFluidToTiles(IFluidTank outputTank, Function<EnumFacing, Boolean> canUseSideFunction)
     {
         if (outputTank.getFluid() != null)
         {
-            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+            for (EnumFacing direction : EnumFacing.VALID_DIRECTIONS)
             {
                 if (canUseSideFunction == null || canUseSideFunction.apply(direction))
                 {
@@ -524,11 +524,11 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
     //-----------------------------------------------
 
 
-    public ForgeDirection getFacingDirection()
+    public EnumFacing getFacingDirection()
     {
         if (_facingDirectionCache == null)
         {
-            _facingDirectionCache = ForgeDirection.getOrientation(getBlockMetadata());
+            _facingDirectionCache = EnumFacing.getOrientation(getBlockMetadata());
         }
         return _facingDirectionCache;
     }

@@ -4,8 +4,6 @@ import com.builtbroken.atomic.AtomicScience;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -13,9 +11,9 @@ import org.lwjgl.opengl.GL11;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/18/2018.
  */
-public class TESRSteamGenerator extends TileEntitySpecialRenderer
+public class TESRSteamGenerator extends TileEntitySpecialRenderer<TileEntitySteamGenerator>
 {
-    IModelCustom small_model;
+    //IModelCustom small_model;
     ResourceLocation small_texture = new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_TEXTURE_DIRECTORY + "turbine/small.png");
 
     //Parts for large turbine
@@ -33,7 +31,7 @@ public class TESRSteamGenerator extends TileEntitySpecialRenderer
 
     public TESRSteamGenerator()
     {
-        small_model = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "turbine/small.obj"));
+        //small_model = AdvancedModelLoader.loadModel(new ResourceLocation(AtomicScience.DOMAIN, AtomicScience.MODEL_DIRECTORY + "turbine/small.obj"));
 
         final String[] bladesA = new String[3];
         for (int i = 0; i < bladesA.length; i++)
@@ -64,7 +62,7 @@ public class TESRSteamGenerator extends TileEntitySpecialRenderer
         smallTurbineRenderAuB = ArrayUtils.addAll(smallTurbineRenderA, smallTurbineRenderB); //TODO convert to renderOnly
     }
 
-    @Override
+    //@Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float deltaTick)
     {
         if (tile instanceof TileEntitySteamGenerator)
@@ -87,14 +85,14 @@ public class TESRSteamGenerator extends TileEntitySpecialRenderer
 
         GL11.glPushMatrix();
         GL11.glRotated(rotation, 0, 1, 0);
-        small_model.renderOnly(smallTurbineRenderA);
+        //small_model.renderOnly(smallTurbineRenderA);
         GL11.glPopMatrix();
 
         GL11.glPushMatrix();
         GL11.glRotated(-rotation, 0, 1, 0);
-        small_model.renderOnly(smallTurbineRenderB);
+        //small_model.renderOnly(smallTurbineRenderB);
         GL11.glPopMatrix();
 
-        small_model.renderAllExcept(smallTurbineRenderAuB); //TODO convert to renderOnly
+        //small_model.renderAllExcept(smallTurbineRenderAuB); //TODO convert to renderOnly
     }
 }

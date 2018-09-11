@@ -5,8 +5,16 @@ import com.builtbroken.atomic.content.machines.steam.SteamTank;
 import com.builtbroken.atomic.content.machines.steam.TileEntitySteamInput;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import javax.annotation.Nullable;
 
 /**
  * Simple tile to collect and distribute steam
@@ -14,14 +22,36 @@ import net.minecraftforge.fluids.*;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/15/2018.
  */
-public class TileEntitySteamFunnel extends TileEntitySteamInput implements IFluidHandler
+public class TileEntitySteamFunnel extends TileEntitySteamInput
 {
-    private FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
+    private FluidTank tank;
 
     public TileEntitySteamFunnel()
     {
-        tank = new SteamTank(this, FluidContainerRegistry.BUCKET_VOLUME * 10);
+        tank = new SteamTank(this, Fluid.BUCKET_VOLUME * 10);
     }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable net.minecraft.util.EnumFacing facing)
+    {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            return true;
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @Nullable
+    public <T> T getCapability(Capability<T> capability, @Nullable net.minecraft.util.EnumFacing facing)
+    {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            return (T) tank;
+        }
+        return super.getCapability(capability, facing);
+    }
+
 
     @Override
     public void firstTick()
@@ -43,20 +73,18 @@ public class TileEntitySteamFunnel extends TileEntitySteamInput implements IFlui
         if (tank.getFluid() != null && tank.getFluidAmount() > 0)
         {
             int amountToGive = tank.getFluidAmount();
-            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+            for (EnumFacing direction : EnumFacing.VALUES)
             {
-                int x = xCoord + direction.offsetX;
-                int y = yCoord + direction.offsetY;
-                int z = zCoord + direction.offsetZ;
+                BlockPos blockPos = getPos().add(direction.getDirectionVec());
 
-                TileEntity tile = worldObj.getTileEntity(x, y, z);
-                if (tile instanceof IFluidHandler)
+                TileEntity tile = world.getTileEntity(blockPos);
+                if (tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction))
                 {
-                    IFluidHandler fluidHandler = (IFluidHandler) tile;
-                    if (fluidHandler.canFill(direction.getOpposite(), tank.getFluid().getFluid()))
+                    IFluidHandler fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
+                    if (fluidHandler != null)
                     {
                         int give = amountToGive / 6;
-                        give = fluidHandler.fill(direction.getOpposite(), new FluidStack(tank.getFluid().getFluid(), give), true);
+                        give = fluidHandler.fill(new FluidStack(tank.getFluid().getFluid(), give), true);
                         amountToGive -= give;
                     }
                 }
@@ -83,58 +111,9 @@ public class TileEntitySteamFunnel extends TileEntitySteamInput implements IFlui
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
-        super.writeToNBT(nbt);
         nbt.setTag("fluid_tank", tank.writeToNBT(new NBTTagCompound()));
-    }
-
-    //-------------------------------------------------
-    //-----Fluid tank handling ------------------------
-    //-------------------------------------------------
-
-    @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
-    {
-        return tank.drain(maxDrain, doDrain);
-    }
-
-    @Override
-    public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
-    {
-        return tank.fill(resource, doFill);
-    }
-
-    @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
-    {
-        if (resource != null && tank.getFluid() != null && resource.getFluid() == tank.getFluid().getFluid())
-        {
-            return drain(from, resource.amount, doDrain);
-        }
-        return null;
-    }
-
-    @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid)
-    {
-        return fluid == ASFluids.STEAM.fluid;
-    }
-
-    @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid)
-    {
-        return true;
-    }
-
-    @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from)
-    {
-        return new FluidTankInfo[]{tank.getInfo()};
-    }
-
-    public int getFluidAmount()
-    {
-        return tank.getFluidAmount();
+        return super.writeToNBT(nbt);
     }
 }

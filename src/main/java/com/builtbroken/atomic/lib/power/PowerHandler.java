@@ -2,7 +2,7 @@ package com.builtbroken.atomic.lib.power;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Simple wrapper for power systems
@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public abstract class PowerHandler
 {
-    public boolean canHandle(ForgeDirection side, TileEntity tile)
+    public boolean canHandle(EnumFacing side, TileEntity tile)
     {
         return false;
     }
@@ -22,12 +22,12 @@ public abstract class PowerHandler
         return false;
     }
 
-    public int addPower(ForgeDirection side, TileEntity tileEntity, int power, boolean doAction)
+    public int addPower(EnumFacing side, TileEntity tileEntity, int power, boolean doAction)
     {
         return 0;
     }
 
-    public int removePower(ForgeDirection side, TileEntity tileEntity, int power, boolean doAction)
+    public int removePower(EnumFacing side, TileEntity tileEntity, int power, boolean doAction)
     {
         return 0;
     }

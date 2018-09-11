@@ -6,11 +6,10 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Basic implementation of Pos3D that contains helper methods for interacting with MC worlds
@@ -19,12 +18,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class Pos extends AbstractPos<Pos> implements IPos3D
 {
     public static final Pos zero = new Pos();
-    public static final Pos up = new Pos(ForgeDirection.UP);
-    public static final Pos down = new Pos(ForgeDirection.DOWN);
-    public static final Pos north = new Pos(ForgeDirection.NORTH);
-    public static final Pos south = new Pos(ForgeDirection.SOUTH);
-    public static final Pos east = new Pos(ForgeDirection.EAST);
-    public static final Pos west = new Pos(ForgeDirection.WEST);
+    public static final Pos up = new Pos(EnumFacing.UP);
+    public static final Pos down = new Pos(EnumFacing.DOWN);
+    public static final Pos north = new Pos(EnumFacing.NORTH);
+    public static final Pos south = new Pos(EnumFacing.SOUTH);
+    public static final Pos east = new Pos(EnumFacing.EAST);
+    public static final Pos west = new Pos(EnumFacing.WEST);
 
 
     public Pos()
@@ -49,7 +48,7 @@ public class Pos extends AbstractPos<Pos> implements IPos3D
 
     public Pos(TileEntity tile)
     {
-        this(tile.xCoord, tile.yCoord, tile.zCoord);
+        this(tile.getPos());
     }
 
     public Pos(Entity entity)
@@ -77,29 +76,24 @@ public class Pos extends AbstractPos<Pos> implements IPos3D
         this(data.readDouble(), data.readDouble(), data.readDouble());
     }
 
-    public Pos(MovingObjectPosition par1)
+    public Pos(RayTraceResult par1)
     {
-        this(par1.blockX, par1.blockY, par1.blockZ);
+        this(par1.hitVec);
     }
 
-    public Pos(ChunkCoordinates par1)
+    public Pos(BlockPos par1)
     {
-        this(par1.posX, par1.posY, par1.posZ);
-    }
-
-    public Pos(ForgeDirection dir)
-    {
-        this(dir.offsetX, dir.offsetY, dir.offsetZ);
+        this(par1.getX(), par1.getY(), par1.getZ());
     }
 
     public Pos(EnumFacing dir)
     {
-        this(dir.getFrontOffsetX(), dir.getFrontOffsetY(), dir.getFrontOffsetZ());
+        this(dir.getXOffset(), dir.getYOffset(), dir.getZOffset());
     }
 
-    public Pos(Vec3 vec)
+    public Pos(Vec3d vec)
     {
-        this(vec.xCoord, vec.yCoord, vec.zCoord);
+        this(vec.x, vec.y, vec.z);
     }
 
     @Override

@@ -1,12 +1,13 @@
 package com.builtbroken.atomic.map.data;
 
 import com.builtbroken.jlib.data.vector.IPos3D;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/12/2018.
  */
+@Deprecated
 public class DataPos implements IPos3D
 {
     private static final DataPool<DataPos> dataPosPool = new DataPool(100000);
@@ -22,19 +23,19 @@ public class DataPos implements IPos3D
         this.z = z;
     }
 
-    public static DataPos get(DataPos pos, ForgeDirection direction)
+    public static DataPos get(DataPos pos, EnumFacing direction)
     {
-        int i = pos.x + direction.offsetX;
-        int j = pos.y + direction.offsetY;
-        int k = pos.z + direction.offsetZ;
+        int i = pos.x + direction.getXOffset();
+        int j = pos.y + direction.getYOffset();
+        int k = pos.z + direction.getZOffset();
         return get(i, j, k);
     }
 
-    public static DataPos get(int x, int y, int z, ForgeDirection direction)
+    public static DataPos get(int x, int y, int z, EnumFacing direction)
     {
-        int i = x + direction.offsetX;
-        int j = y + direction.offsetY;
-        int k = z + direction.offsetZ;
+        int i = x + direction.getXOffset();
+        int j = y + direction.getYOffset();
+        int k = z + direction.getZOffset();
         return get(i, j, k);
     }
 

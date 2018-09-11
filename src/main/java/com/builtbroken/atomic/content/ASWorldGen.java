@@ -4,7 +4,7 @@ import com.builtbroken.atomic.config.ConfigOre;
 import com.builtbroken.atomic.lib.oregen.OreGenReplace;
 import com.builtbroken.atomic.lib.oregen.OreGeneratorSettings;
 import com.builtbroken.atomic.proxy.ContentProxy;
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -23,7 +23,7 @@ public class ASWorldGen extends ContentProxy
         if (ConfigOre.ENABLE_URANIUM_ORE)
         {
             GameRegistry.registerWorldGenerator(
-                    new OreGenReplace(ASBlocks.blockUraniumOre, 0,
+                    new OreGenReplace(ASBlocks.blockUraniumOre.getDefaultState(),
                             new OreGeneratorSettings(
                                     ConfigOre.URANIUM_ORE_MIN_Y,
                                     ConfigOre.URANIUM_ORE_MAX_Y,

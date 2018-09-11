@@ -20,7 +20,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing
 import net.minecraftforge.fluids.*;
 
 import java.util.List;
@@ -116,9 +116,9 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     }
 
     @Override
-    public void onWrench(WrenchMode type, WrenchColor color, ForgeDirection side, EntityPlayer player)
+    public void onWrench(WrenchMode type, WrenchColor color, EnumFacing side, EntityPlayer player)
     {
-        if (type == WrenchMode.FLUID && side != ForgeDirection.UNKNOWN)
+        if (type == WrenchMode.FLUID && side != EnumFacing.UNKNOWN)
         {
             if (color == WrenchColor.GREEN)
             {
@@ -138,7 +138,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     //-----------------------------------------------
 
     @Override
-    public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+    public int fill(EnumFacing from, FluidStack resource, boolean doFill)
     {
         if (resource != null && canFill(from, resource.getFluid()))
         {
@@ -158,7 +158,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
     {
         if (outputTankSideSettings.get(from) && getOutputTank().getFluid() != null && resource.getFluid() == getOutputTank().getFluid().getFluid())
         {
@@ -168,25 +168,25 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
     {
         return outputTankSideSettings.get(from) ? getOutputTank().drain(maxDrain, doDrain) : null;
     }
 
     @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid)
+    public boolean canFill(EnumFacing from, Fluid fluid)
     {
         return inputTankSideSettings.get(from) && getRecipeList().isComponent(this, fluid);
     }
 
     @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid)
+    public boolean canDrain(EnumFacing from, Fluid fluid)
     {
         return fluid == null || getOutputTank().getFluid() != null && getOutputTank().getFluid().getFluid() == fluid;
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from)
+    public FluidTankInfo[] getTankInfo(EnumFacing from)
     {
         return new FluidTankInfo[]{getInputTank().getInfo(), getOutputTank().getInfo()};
     }

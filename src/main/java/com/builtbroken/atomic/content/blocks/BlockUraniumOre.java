@@ -2,8 +2,8 @@ package com.builtbroken.atomic.content.blocks;
 
 import com.builtbroken.atomic.AtomicScience;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -13,12 +13,12 @@ public class BlockUraniumOre extends Block
 {
     public BlockUraniumOre()
     {
-        super(Material.rock);
+        super(Material.ROCK);
         setHardness(3f);
         setResistance(5f);
-        setStepSound(soundTypePiston);
+        setSoundType(SoundType.STONE);
         setCreativeTab(AtomicScience.creativeTab);
-        setBlockName(AtomicScience.PREFIX + "ore.uranium");
-        setBlockTextureName(AtomicScience.PREFIX + "ore_uranium");
+        setRegistryName(AtomicScience.PREFIX + "uranium_ore");
+        setTranslationKey(AtomicScience.PREFIX + "ore.uranium");
     }
 }

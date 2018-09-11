@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.api.armor;
 
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -12,14 +13,10 @@ public interface IArmorSet
 {
     /**
      * Type of armor by slot index
-     * 0 -> helmet
-     * 1 -> chestplate
-     * 2 -> leggings
-     * 3 -> boots
      *
-     * @return armor index 0-3
+     * @return enum of equipment slot
      */
-    int getArmorType(); //TODO convert to enum?
+    EntityEquipmentSlot getArmorSlot();
 
     /**
      * Checks if the armor is part of the same set

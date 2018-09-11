@@ -201,12 +201,12 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
 
     protected boolean isServer()
     {
-        return worldObj != null && !worldObj.isRemote;
+        return getWorld() != null && !getWorld().isRemote;
     }
 
     protected boolean isClient()
     {
-        return worldObj != null && worldObj.isRemote;
+        return getWorld() != null && getWorld().isRemote;
     }
 
     @Override
@@ -233,42 +233,42 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
     @Override
     public World world()
     {
-        return getWorldObj();
+        return getWorld();
     }
 
     @Override
     public double z()
     {
-        return zCoord + 0.5;
+        return zi() + 0.5;
     }
 
     @Override
     public double x()
     {
-        return xCoord + 0.5;
+        return xi() + 0.5;
     }
 
     @Override
     public double y()
     {
-        return yCoord + 0.5;
+        return yi() + 0.5;
     }
 
     @Override
     public int zi()
     {
-        return zCoord;
+        return pos.getZ();
     }
 
     @Override
     public int xi()
     {
-        return xCoord;
+        return pos.getX();
     }
 
     @Override
     public int yi()
     {
-        return yCoord;
+        return pos.getY();
     }
 }

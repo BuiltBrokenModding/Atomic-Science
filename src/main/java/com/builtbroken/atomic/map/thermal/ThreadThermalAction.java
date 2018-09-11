@@ -6,8 +6,9 @@ import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.*;
 import com.builtbroken.jlib.lang.StringHelpers;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import java.util.*;
 
@@ -86,7 +87,7 @@ public class ThreadThermalAction extends ThreadDataChange
             heatSpreadData.put(centerPos, DataPos.get(heat, 0, 0));
 
             //Add connected tiles
-            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+            for (EnumFacing direction : EnumFacing.VALUES)
             {
                 DataPos pos = DataPos.get(cx, cy, cz, direction);
                 pathNext.add(pos);
@@ -122,7 +123,7 @@ public class ThreadThermalAction extends ThreadDataChange
                         spreadDirections.add(direction);
 
                         //Increase heat spread ratio
-                        heatRateTotal += ThermalHandler.getHeatTransferRate(map.getWorld(), x, y, z);
+                        heatRateTotal += ThermalHandler.getHeatTransferRate(map.getWorld(), new BlockPos(x, y, z));
                     }
                 }
 
@@ -150,7 +151,7 @@ public class ThreadThermalAction extends ThreadDataChange
                         int heatAtNext = heatSpreadData.get(pos).x;
 
                         //Calculate spread ratio from direction
-                        double transferRate = ThermalHandler.getHeatTransferRate(map.getWorld(), pos.x, pos.y, pos.z);
+                        double transferRate = ThermalHandler.getHeatTransferRate(map.getWorld(), new BlockPos(pos.x, pos.y, pos.z));   //TODO recycle block pos
 
                         //Convert ratio into percentage
                         double percentage = transferRate / heatRateTotal;
@@ -218,7 +219,7 @@ public class ThreadThermalAction extends ThreadDataChange
      */
     protected int getHeatToSpread(DataMap map, DataPos heatSource, DataPos heatTarget, final int heatToMove, final double percentage, HashMap<DataPos, DataPos> heatSpreadData)
     {
-        if (map.blockExists(heatTarget.x, heatTarget.y, heatTarget.z))
+        if (map.blockExists(new BlockPos(heatTarget.x, heatTarget.y, heatTarget.z)))   //TODO recycle block pos
         {
             //Get heat actual movement (only move 25% of heat)
             return getHeatSpread(map.getWorld(), heatSource, heatTarget, (int) Math.floor(heatToMove * percentage), heatSpreadData);
@@ -245,7 +246,7 @@ public class ThreadThermalAction extends ThreadDataChange
         double deltaTemp = getTemperature(world, heatSource, heatSpreadData); //We assume target is zero relative to source
         if (deltaTemp > 0)
         {
-            double heatMovementRate1 = ThermalHandler.getHeatTransferRate(world, heatTarget.x, heatTarget.y, heatTarget.z) * deltaTemp;
+            double heatMovementRate1 = ThermalHandler.getHeatTransferRate(world, new BlockPos(heatTarget.x, heatTarget.y, heatTarget.z)) * deltaTemp;
             //double heatMovementRate2 = ThermalHandler.getHeatTransferRate(world, heatSource.x, heatSource.y, heatSource.z) * deltaTemp;
             //double heatMovementRate = (heatMovementRate1 + heatMovementRate2) / 2;
             return (int) Math.min(heatMovementRate1 * 20 * 60, heat);
@@ -257,7 +258,8 @@ public class ThreadThermalAction extends ThreadDataChange
     {
         if (heatSpreadData.containsKey(pos))
         {
-            return MapHandler.THERMAL_MAP.getTemperature(world, pos.x, pos.y, pos.z, heatSpreadData.get(pos).x * 1000L); //kj -> j
+            //TODO recycle block pos
+            return MapHandler.THERMAL_MAP.getTemperature(world, new BlockPos(pos.x, pos.y, pos.z), heatSpreadData.get(pos).x * 1000L); //kj -> j
         }
         return 0;
     }

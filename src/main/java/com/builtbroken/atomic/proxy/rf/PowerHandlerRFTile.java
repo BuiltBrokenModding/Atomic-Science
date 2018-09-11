@@ -5,7 +5,7 @@ import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 import com.builtbroken.atomic.lib.power.PowerHandler;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing
 
 /**
  * Handles RF API for tiles
@@ -16,13 +16,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class PowerHandlerRFTile extends PowerHandler
 {
     @Override
-    public boolean canHandle(ForgeDirection side, TileEntity tile)
+    public boolean canHandle(EnumFacing side, TileEntity tile)
     {
         return (tile instanceof IEnergyProvider || tile instanceof IEnergyReceiver) && ((IEnergyConnection) tile).canConnectEnergy(side);
     }
 
     @Override
-    public int addPower(ForgeDirection side, TileEntity tile, int power, boolean doAction)
+    public int addPower(EnumFacing side, TileEntity tile, int power, boolean doAction)
     {
         if (tile instanceof IEnergyReceiver)
         {
@@ -32,7 +32,7 @@ public class PowerHandlerRFTile extends PowerHandler
     }
 
     @Override
-    public int removePower(ForgeDirection side, TileEntity tile, int power, boolean doAction)
+    public int removePower(EnumFacing side, TileEntity tile, int power, boolean doAction)
     {
         if (tile instanceof IEnergyProvider)
         {

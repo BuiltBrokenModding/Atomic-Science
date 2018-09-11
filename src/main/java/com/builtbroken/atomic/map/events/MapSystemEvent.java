@@ -2,10 +2,11 @@ package com.builtbroken.atomic.map.events;
 
 import com.builtbroken.atomic.map.data.DataChunk;
 import com.builtbroken.atomic.map.data.DataMap;
-import cpw.mods.fml.common.eventhandler.Cancelable;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Event set fired for any change or action take on the Radiation map
@@ -44,18 +45,14 @@ public abstract class MapSystemEvent extends Event
     @Cancelable
     public static class UpdateValue extends MapSystemEvent
     {
-        public final int x;
-        public final int y;
-        public final int z;
+        public final BlockPos pos;
         public final int prev_value;
         public int new_value;
 
-        public UpdateValue(DataMap map, int x, int y, int z, int prev_value, int new_value)
+        public UpdateValue(DataMap map, BlockPos pos, int prev_value, int new_value)
         {
             super(map);
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            this.pos = pos;
             this.prev_value = prev_value;
             this.new_value = new_value;
         }

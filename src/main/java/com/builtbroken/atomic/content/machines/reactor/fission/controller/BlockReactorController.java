@@ -2,21 +2,19 @@ package com.builtbroken.atomic.content.machines.reactor.fission.controller;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASBlocks;
-import com.builtbroken.atomic.lib.LanguageUtility;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -26,19 +24,14 @@ import net.minecraft.world.World;
  */
 public class BlockReactorController extends BlockContainer
 {
-    @SideOnly(Side.CLIENT)
-    IIcon topIcon;
-    @SideOnly(Side.CLIENT)
-    IIcon bottomIcon;
-
     public BlockReactorController()
     {
-        super(Material.iron);
+        super(Material.IRON);
         setHardness(1);
         setResistance(5);
         setCreativeTab(AtomicScience.creativeTab);
-        setBlockTextureName(AtomicScience.PREFIX + "reactor/controller");
-        setBlockName(AtomicScience.PREFIX + "reactor.controller");
+        setTranslationKey(AtomicScience.PREFIX + "reactor.controller");
+        setRegistryName(AtomicScience.PREFIX +  "reactor_controller");
     }
 
     @Override
@@ -47,47 +40,22 @@ public class BlockReactorController extends BlockContainer
         return new TileEntityReactorController();
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister reg)
-    {
-        this.blockIcon = reg.registerIcon(this.getTextureName() + ".sides");
-        this.topIcon = reg.registerIcon(this.getTextureName() + ".top");
-        this.bottomIcon = reg.registerIcon(this.getTextureName() + ".bottom");
-
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta)
-    {
-        if (side == 0)
-        {
-            return topIcon;
-        }
-        else if (side == 1)
-        {
-            return bottomIcon;
-        }
-        return this.blockIcon;
-    }
-
     //-----------------------------------------------
     //--------- Triggers ---------------------------
     //----------------------------------------------
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xHit, float yHit, float zHit)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        ItemStack heldItem = player.getHeldItem();
+        ItemStack heldItem = player.getHeldItem(hand);
         if(heldItem != null
                 && heldItem.getItem() instanceof ItemBlock
-                && ((ItemBlock)heldItem.getItem()).field_150939_a == ASBlocks.blockReactorCell)
+                && ((ItemBlock)heldItem.getItem()).getBlock() == ASBlocks.blockReactorCell)
         {
             return false;
         }
 
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityReactorController)
         {
             TileEntityReactorController controller = ((TileEntityReactorController) tileEntity);
@@ -95,17 +63,17 @@ public class BlockReactorController extends BlockContainer
             {
                 if (controller.isInErrorState())
                 {
-                    player.addChatComponentMessage(new ChatComponentText(LanguageUtility.getLocal(getUnlocalizedName() + ".error.state")));
+                    player.sendMessage(new TextComponentTranslation(getTranslationKey() + ".error.state"));
                 }
-                else if(heldItem != null && heldItem.getItem() == Items.stick)
+                else if(heldItem != null && heldItem.getItem() == Items.STICK)
                 {
                     controller.setReactorsEnabled(!controller.areReactorsEnabled());
-                    player.addChatComponentMessage(new ChatComponentText(controller.areReactorsEnabled() ? "Reactors are set into enabled state" : "Reactors are set into disabled state"));//TODO translate
+                    player.sendMessage(new TextComponentString(controller.areReactorsEnabled() ? "Reactors are set into enabled state" : "Reactors are set into disabled state"));//TODO translate
                     return true;
                 }
                 else
                 {
-                    player.addChatComponentMessage(new ChatComponentTranslation(getUnlocalizedName() + ".cell.count", "" + controller.getCellCount()));
+                    player.sendMessage(new TextComponentTranslation(getTranslationKey() + ".cell.count", "" + controller.getCellCount()));
                 }
             }
             return true;
@@ -114,19 +82,9 @@ public class BlockReactorController extends BlockContainer
     }
 
     @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
     {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityReactorController)
-        {
-            ((TileEntityReactorController) tileEntity).markForRefresh();
-        }
-    }
-
-    @Override
-    public void onNeighborChange(IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ)
-    {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityReactorController)
         {
             ((TileEntityReactorController) tileEntity).markForRefresh();

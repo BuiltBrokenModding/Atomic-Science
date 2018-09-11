@@ -1,31 +1,37 @@
 package com.builtbroken.atomic;
 
 import com.builtbroken.atomic.config.ProxyConfigLoader;
-import com.builtbroken.atomic.content.*;
+import com.builtbroken.atomic.content.ASFluids;
+import com.builtbroken.atomic.content.ASIndirectEffects;
+import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.content.ASWorldGen;
 import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
-import com.builtbroken.atomic.content.recipes.ASRecipes;
 import com.builtbroken.atomic.lib.MassHandler;
-import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
+import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.proxy.ContentProxy;
 import com.builtbroken.atomic.proxy.ProxyLoader;
 import com.builtbroken.atomic.proxy.rf.ProxyRedstoneFlux;
 import com.builtbroken.atomic.proxy.te.ProxyRedstoneThermalExpansion;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,6 +44,7 @@ import java.io.File;
  * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
 @Mod(modid = AtomicScience.DOMAIN, name = "Atomic Science", version = AtomicScience.VERSION, dependencies = AtomicScience.DEPENDENCIES)
+@Mod.EventBusSubscriber
 public class AtomicScience
 {
     public static final String DOMAIN = "atomicscience";
@@ -79,6 +86,12 @@ public class AtomicScience
 
     public static File configFolder;
 
+    @SubscribeEvent
+    public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
+    {
+
+    }
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -88,15 +101,16 @@ public class AtomicScience
         creativeTab = new CreativeTabs(DOMAIN)
         {
             @Override
-            public Item getTabIconItem()
+            public ItemStack createIcon()
             {
-                return ASItems.itemArmorHazmatHelm;
+                return new ItemStack(ASItems.itemArmorHazmatHelm);
             }
         };
 
         //Register handlers
         NetworkRegistry.INSTANCE.registerGuiHandler(this, sideProxy);
-        FMLCommonHandler.instance().bus().register(new PlacementQueue());
+        MinecraftForge.EVENT_BUS.register(new PlacementQueue());
+
         MapHandler.register();
         ThermalHandler.init();
         MassHandler.init();
@@ -106,18 +120,15 @@ public class AtomicScience
 
         //Content
         proxyLoader.add(new ASFluids.Proxy()); //must run before items and blocks
-        proxyLoader.add(new ASItems());
-        proxyLoader.add(new ASBlocks());
         proxyLoader.add(new ASWorldGen());
 
         //Recipes
         proxyLoader.add(ProcessorRecipeHandler.INSTANCE);
-        proxyLoader.add(new ASRecipes());
 
         //Handlers
         proxyLoader.add(PacketSystem.INSTANCE);
         proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
-        proxyLoader.add(ProxyRedstoneThermalExpansion.class, Loader.isModLoaded("ThermalExpansion"));
+        proxyLoader.add(ProxyRedstoneThermalExpansion.class, Loader.isModLoaded("thermalexpansion"));
         proxyLoader.add(sideProxy);
 
         //Register content

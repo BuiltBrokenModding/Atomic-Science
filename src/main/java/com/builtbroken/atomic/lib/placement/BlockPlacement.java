@@ -1,7 +1,8 @@
 package com.builtbroken.atomic.lib.placement;
 
 import com.builtbroken.atomic.AtomicScience;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -12,22 +13,16 @@ import net.minecraftforge.common.DimensionManager;
 public class BlockPlacement
 {
     public int dim;
-    public int x;
-    public int y;
-    public int z;
-    public Block block;
-    public int meta;
+    public BlockPos pos;
+    public IBlockState blockState;
 
     public int placementDelay = 0;
 
-    public BlockPlacement(World world, int x, int y, int z, Block block, int meta)
+    public BlockPlacement(World world, BlockPos pos, IBlockState block)
     {
-        this.dim = world.provider.dimensionId;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.block = block;
-        this.meta = meta;
+        this.dim = world.provider.getDimension();
+        this.pos = pos;
+        this.blockState = block;
     }
 
     public BlockPlacement delay(int ticks)
@@ -59,9 +54,9 @@ public class BlockPlacement
 
                 if (world != null)
                 {
-                    if (world.setBlock(x, y, z, block, meta, 3))
+                    if (world.setBlockState(pos, blockState, 3))
                     {
-                        world.markBlockForUpdate(x, y, z);
+                        //world.markBlockForUpdate(x, y, z); TODO
                         onPlacedBlock();
                     }
                     else
@@ -100,6 +95,6 @@ public class BlockPlacement
     @Override
     public String toString()
     {
-        return "BlockPlacement[" + dim + " | " + x + ", " + y + ", " + z + " | " + block + " @ " + meta + "]";
+        return "BlockPlacement[" + dim + " | " + pos + " | " + blockState + "]";
     }
 }

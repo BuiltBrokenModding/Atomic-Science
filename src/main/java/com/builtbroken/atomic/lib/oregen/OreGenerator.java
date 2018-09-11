@@ -1,9 +1,10 @@
 package com.builtbroken.atomic.lib.oregen;
 
-import cpw.mods.fml.common.IWorldGenerator;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
 
@@ -15,9 +16,7 @@ import java.util.Random;
  */
 public abstract class OreGenerator implements IWorldGenerator
 {
-	public Block oreBlock;
-
-	public int oreMeta;
+	public IBlockState oreBlock;
 
 	/**
 	 * What harvest level does this machine need to be acquired?
@@ -30,30 +29,29 @@ public abstract class OreGenerator implements IWorldGenerator
 	 */
 	public String harvestTool;
 
-	public OreGenerator(Block block, int meta, String harvestTool, int harvestLevel)
+	public OreGenerator(IBlockState block, String harvestTool, int harvestLevel)
 	{
 		this.harvestTool = harvestTool;
 		this.harvestLevel = harvestLevel;
 		this.oreBlock = block;
-		this.oreMeta = meta;
-		block.setHarvestLevel(this.harvestTool, this.harvestLevel, meta);
+		block.getBlock().setHarvestLevel(this.harvestTool, this.harvestLevel);
 	}
 
 	public abstract void generate(World world, Random random, int varX, int varZ);
 
-	public abstract boolean isOreGeneratedInWorld(World world, IChunkProvider chunkGenerator);
+	public abstract boolean isOreGeneratedInWorld(World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider);
 
 	@Override
-	public final void generate(Random rand, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider)
 	{
 		chunkX = chunkX << 4;
 		chunkZ = chunkZ << 4;
 
 		// Checks to make sure this is the normal world
 
-		if (isOreGeneratedInWorld(world, chunkGenerator))
+		if (isOreGeneratedInWorld(world, chunkGenerator, chunkProvider))
 		{
-			generate(world, rand, chunkX, chunkZ);
+			generate(world, world.rand, chunkX, chunkZ);
 		}
 	}
 }

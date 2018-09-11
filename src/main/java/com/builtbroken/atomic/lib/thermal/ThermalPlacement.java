@@ -2,6 +2,7 @@ package com.builtbroken.atomic.lib.thermal;
 
 import com.builtbroken.atomic.lib.placement.BlockPlacement;
 import com.builtbroken.atomic.map.MapHandler;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -13,9 +14,9 @@ public class ThermalPlacement extends BlockPlacement
     ThermalData data;
     long energyCheck;
 
-    public ThermalPlacement(World world, int x, int y, int z, ThermalData data, long energyCheck)
+    public ThermalPlacement(World world, BlockPos pos, ThermalData data, long energyCheck)
     {
-        super(world, x, y, z, data.changeBlock, data.changeMeta);
+        super(world, pos, data.changeBlock);
         this.data = data;
         this.energyCheck = energyCheck;
     }
@@ -23,6 +24,6 @@ public class ThermalPlacement extends BlockPlacement
     @Override
     protected boolean canDoAction()
     {
-        return MapHandler.THERMAL_MAP.getActualJoules(world(), x, y, z) >= energyCheck;
+        return MapHandler.THERMAL_MAP.getActualJoules(world(), pos) >= energyCheck;
     }
 }

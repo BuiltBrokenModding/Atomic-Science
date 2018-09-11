@@ -23,7 +23,6 @@ public class ItemPoweredCell extends ItemFluidCell
     public ItemPoweredCell()
     {
         super(100);
-        this.setUnlocalizedName(AtomicScience.PREFIX + "cell.powered");
         this.setCreativeTab(AtomicScience.creativeTab);
     }
 
@@ -48,7 +47,7 @@ public class ItemPoweredCell extends ItemFluidCell
     @Override
     public boolean onEntityItemUpdate(EntityItem entityItem)
     {
-        ItemStack container = entityItem.getEntityItem();
+        ItemStack container = entityItem.getItem();
         FluidStack fluidStack = getFluid(container);
         if (fluidStack != null)
         {

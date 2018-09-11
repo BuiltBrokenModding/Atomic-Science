@@ -1,32 +1,29 @@
 package com.builtbroken.atomic.content.machines.processing.extractor;
 
 import com.builtbroken.atomic.AtomicScience;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.BlockContainer;
+import com.builtbroken.atomic.content.prefab.BlockAS;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/19/2018.
  */
-public class BlockChemExtractor extends BlockContainer
+public class BlockChemExtractor extends BlockAS
 {
     public BlockChemExtractor()
     {
-        super(Material.iron);
-        setHardness(1);
-        setResistance(5);
+        super(Material.IRON);
         setCreativeTab(AtomicScience.creativeTab);
-        setBlockName(AtomicScience.PREFIX + "chem.extractor");
+        setTranslationKey(AtomicScience.PREFIX + "chem.extractor");
+        setRegistryName(AtomicScience.PREFIX + "chem_extractor");
     }
 
     @Override
@@ -35,47 +32,18 @@ public class BlockChemExtractor extends BlockContainer
         return new TileEntityChemExtractor();
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister reg)
-    {
-        this.blockIcon = Blocks.iron_block.getIcon(0, 0);
-    }
-
     //-----------------------------------------------
     //--------- Triggers ---------------------------
     //----------------------------------------------
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xHit, float yHit, float zHit)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         if (!world.isRemote)
         {
-            player.openGui(AtomicScience.INSTANCE, 0, world, x, y, z);
+            player.openGui(AtomicScience.INSTANCE, 0, world, pos.getX(), pos.getY(), pos.getZ());
         }
         return true;
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack stack)
-    {
-        int rotation = MathHelper.floor_double((double) (entityLivingBase.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-        if (rotation == 0)
-        {
-            world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-        }
-        else if (rotation == 1)
-        {
-            world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-        }
-        else if (rotation == 2)
-        {
-            world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-        }
-        else if (rotation == 3)
-        {
-            world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-        }
     }
 
     //-----------------------------------------------
@@ -83,25 +51,25 @@ public class BlockChemExtractor extends BlockContainer
     //----------------------------------------------
 
     @Override
-    public boolean renderAsNormalBlock()
+    public boolean isBlockNormalCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public int getRenderType()
+    public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return -1;
+        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isNormalCube()
+    public boolean isNormalCube(IBlockState state)
     {
         return false;
     }

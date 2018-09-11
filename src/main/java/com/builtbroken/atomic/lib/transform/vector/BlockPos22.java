@@ -7,7 +7,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Pos that uses ints rather than doubles
@@ -17,39 +16,39 @@ import net.minecraftforge.common.util.ForgeDirection;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/17/2017.
  */
-public class BlockPos implements IPos3D, Comparable<BlockPos>
+public class BlockPos22 implements IPos3D, Comparable<BlockPos22>
 {
     public final int x, y, z;
 
-    public BlockPos(int x, int y, int z)
+    public BlockPos22(int x, int y, int z)
     {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public BlockPos(IPos3D pos3D)
+    public BlockPos22(IPos3D pos3D)
     {
         this.x = pos3D.xi();
         this.y = pos3D.yi();
         this.z = pos3D.zi();
     }
 
-    public BlockPos(IPos3D pos3D, ForgeDirection dir)
+    public BlockPos22(IPos3D pos3D, EnumFacing dir)
     {
         this.x = pos3D.xi() + dir.offsetX;
         this.y = pos3D.yi() + dir.offsetY;
         this.z = pos3D.zi() + dir.offsetZ;
     }
 
-    public BlockPos(IPos3D pos3D, EnumFacing dir)
+    public BlockPos22(IPos3D pos3D, EnumFacing dir)
     {
         this.x = pos3D.xi() + dir.getFrontOffsetX();
         this.y = pos3D.yi() + dir.getFrontOffsetY();
         this.z = pos3D.zi() + dir.getFrontOffsetZ();
     }
 
-    public BlockPos(NBTTagCompound tag)
+    public BlockPos22(NBTTagCompound tag)
     {
         this.x = tag.getInteger("x");
         this.y = tag.getInteger("y");
@@ -145,14 +144,14 @@ public class BlockPos implements IPos3D, Comparable<BlockPos>
         return 0;
     }
 
-    public BlockPos add(IPos3D pos)
+    public BlockPos22 add(IPos3D pos)
     {
         return add(pos.xi(), pos.yi(), pos.zi());
     }
 
-    public BlockPos add(int x, int y, int z)
+    public BlockPos22 add(int x, int y, int z)
     {
-        return new BlockPos(this.x + x, this.y + y, this.z + z);
+        return new BlockPos22(this.x + x, this.y + y, this.z + z);
     }
 
     public boolean canSeeSky(World world)
@@ -221,7 +220,7 @@ public class BlockPos implements IPos3D, Comparable<BlockPos>
     }
 
     @Override
-    public int compareTo(BlockPos that)
+    public int compareTo(BlockPos22 that)
     {
         return compare(that);
     }

@@ -3,7 +3,8 @@ package com.builtbroken.atomic.map.data;
 import com.builtbroken.atomic.map.MapSystem;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
@@ -41,25 +42,25 @@ public class DataMap
     ///-------- Input/Output
     ///----------------------------------------------------------------
 
-    public int getData(int x, int y, int z)
+    public int getData(BlockPos pos)
     {
-        DataChunk chunk = getChunkFromPosition(x, z, false);
+        DataChunk chunk = getChunkFromPosition(pos.getX(), pos.getZ(), false);
         if (chunk != null)
         {
-            return chunk.getValue(x & 15, y, z & 15);
+            return chunk.getValue(pos.getX() & 15, pos.getY(), pos.getZ() & 15);
         }
         return 0;
     }
 
-    public boolean setData(int x, int y, int z, int amount)
+    public boolean setData(BlockPos pos, int amount)
     {
-        DataChunk chunk = getChunkFromPosition(x, z, amount > 0);
+        DataChunk chunk = getChunkFromPosition(pos.getX(), pos.getZ(), amount > 0);
         if (chunk != null)
         {
-            final int prev_value = getData(x, y, z);
+            final int prev_value = getData(pos);
 
             //Fire change event for modification and to trigger exposure map update
-            MapSystemEvent.UpdateValue event = new MapSystemEvent.UpdateValue(this, x, y, z, prev_value, amount);
+            MapSystemEvent.UpdateValue event = new MapSystemEvent.UpdateValue(this, pos, prev_value, amount);
             if (MinecraftForge.EVENT_BUS.post(event))
             {
                 return false;
@@ -67,7 +68,7 @@ public class DataMap
             amount = event.new_value;
 
             //set value
-            boolean hasChanged = chunk.setValue(x & 15, y, z & 15, amount);
+            boolean hasChanged = chunk.setValue(pos.getX() & 15, pos.getY(), pos.getZ() & 15, amount);
 
             //if changed mark chunk so it saves
             if (hasChanged)
@@ -75,10 +76,10 @@ public class DataMap
                 World world = DimensionManager.getWorld(dim);
                 if (world != null)
                 {
-                    Chunk worldChunk = world.getChunkFromBlockCoords(x, z);
+                    Chunk worldChunk = world.getChunk(pos);
                     if (worldChunk != null)
                     {
-                        worldChunk.setChunkModified();
+                        worldChunk.setModified(true);
                     }
                 }
             }
@@ -91,15 +92,13 @@ public class DataMap
      * Checks that we are inside the map and that
      * the location is loaded into memory.
      *
-     * @param x - location
-     * @param y - location
-     * @param z - location
+     * @param pos - location
      * @return true if block position exists
      */
-    public boolean blockExists(int x, int y, int z)
+    public boolean blockExists(BlockPos pos)
     {
         World world = getWorld();
-        if (world != null && world.blockExists(x, y, z))
+        if (world != null && world.isBlockLoaded(pos))
         {
             return true;
         }
@@ -158,7 +157,7 @@ public class DataMap
                 it.remove();
             }
             //Chunk is loaded, so we can re-add data
-            else if (world.getChunkProvider().chunkExists(chunk.xPosition, chunk.zPosition))
+            else if (world.getChunkProvider().getLoadedChunk(chunk.xPosition, chunk.zPosition) != null)
             {
                 chunksCurrentlyLoaded.put(entry.getKey(), chunk);
                 it.remove();
@@ -215,7 +214,7 @@ public class DataMap
     public void loadChunk(Chunk chunk, NBTTagCompound data)
     {
         //Get chunk
-        DataChunk radiationChunk = getChunk(chunk.xPosition, chunk.zPosition, true);
+        DataChunk radiationChunk = getChunk(chunk.x, chunk.z, true);
 
         //Load
         radiationChunk.load(data);
@@ -282,11 +281,11 @@ public class DataMap
      */
     protected long index(Chunk chunk)
     {
-        return index(chunk.xPosition, chunk.zPosition);
+        return index(chunk.x, chunk.z);
     }
 
     protected long index(int chunkX, int chunkZ)
     {
-        return ChunkCoordIntPair.chunkXZ2Int(chunkX, chunkZ);
+        return ChunkPos.asLong(chunkX, chunkZ);
     }
 }

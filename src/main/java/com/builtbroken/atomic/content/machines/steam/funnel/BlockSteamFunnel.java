@@ -1,16 +1,16 @@
 package com.builtbroken.atomic.content.machines.steam.funnel;
 
 import com.builtbroken.atomic.AtomicScience;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 /**
@@ -21,30 +21,27 @@ import net.minecraft.world.World;
  */
 public class BlockSteamFunnel extends BlockContainer
 {
-    @SideOnly(Side.CLIENT)
-    private IIcon ventIcon;
-
     public BlockSteamFunnel()
     {
-        super(Material.iron);
+        super(Material.IRON);
         setHardness(1);
         setResistance(5);
         setCreativeTab(AtomicScience.creativeTab);
-        setBlockName(AtomicScience.PREFIX + "steam.funnel");
-        setBlockTextureName(AtomicScience.PREFIX + "funnel");
+        setTranslationKey(AtomicScience.PREFIX + "steam.funnel");
+        setRegistryName(AtomicScience.PREFIX + "steam_funnel");
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xHit, float yHit, float zHit)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        if (player.getHeldItem() != null && player.getHeldItem().getItem() == Items.stick)
+        if (player.getHeldItem(hand).getItem() == Items.STICK)
         {
             if (!world.isRemote)
             {
-                TileEntity tile = world.getTileEntity(x, y, z);
+                TileEntity tile = world.getTileEntity(pos);
                 if (tile instanceof TileEntitySteamFunnel)
                 {
-                    player.addChatComponentMessage(new ChatComponentText("Steam: "
+                    player.sendMessage(new TextComponentString("Steam: "
                             + ((TileEntitySteamFunnel) tile).getFluidAmount()
                             + "mb + "
                             + ((TileEntitySteamFunnel) tile).getSteamGeneration() + "mb"));
@@ -56,38 +53,13 @@ public class BlockSteamFunnel extends BlockContainer
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta)
-    {
-        if (side == 0)
-        {
-            return ventIcon;
-        }
-        return blockIcon;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister reg)
-    {
-        this.blockIcon = reg.registerIcon(this.getTextureName() + "/body");
-        this.ventIcon = reg.registerIcon(this.getTextureName() + "/vent");
-    }
-
-    @Override
     public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
     {
         return new TileEntitySteamFunnel();
     }
 
     @Override
-    public int getRenderType()
-    {
-        return ISBRSteamFunnel.ID;
-    }
-
-    @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }

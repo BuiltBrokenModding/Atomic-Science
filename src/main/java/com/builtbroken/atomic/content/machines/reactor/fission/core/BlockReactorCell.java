@@ -1,18 +1,18 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.core;
 
 import com.builtbroken.atomic.AtomicScience;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -24,11 +24,12 @@ public class BlockReactorCell extends BlockContainer
 {
     public BlockReactorCell()
     {
-        super(Material.iron);
+        super(Material.IRON);
         setHardness(1);
         setResistance(5);
         setCreativeTab(AtomicScience.creativeTab);
-        setBlockName(AtomicScience.PREFIX + "reactor.cell");
+        setTranslationKey(AtomicScience.PREFIX + "reactor.cell");
+        setRegistryName(AtomicScience.PREFIX + "reactor_cell");
     }
 
     @Override
@@ -37,32 +38,25 @@ public class BlockReactorCell extends BlockContainer
         return new TileEntityReactorCell();
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister reg)
-    {
-        this.blockIcon = Blocks.iron_block.getIcon(0, 0);
-    }
-
     //-----------------------------------------------
     //--------- Triggers ---------------------------
     //----------------------------------------------
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xHit, float yHit, float zHit)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityReactorCell)
         {
             TileEntityReactorCell reactorCell = ((TileEntityReactorCell) tileEntity);
-            ItemStack heldItem = player.getHeldItem();
+            ItemStack heldItem = player.getHeldItem(hand);
             if (heldItem != null)
             {
-                if(heldItem.getItem() == Items.stick)
+                if(heldItem.getItem() == Items.STICK)
                 {
                     if (!world.isRemote)
                     {
-                        player.addChatComponentMessage(new ChatComponentText("Fuel: " + reactorCell.getFuelRuntime()));
+                        player.sendStatusMessage(new TextComponentString("Fuel: " + reactorCell.getFuelRuntime()), true);
                     }
                     return true;
                 }
@@ -73,7 +67,7 @@ public class BlockReactorCell extends BlockContainer
                         ItemStack copy = heldItem.splitStack(1);
                         reactorCell.setInventorySlotContents(0, copy);
 
-                        if (heldItem.stackSize <= 0)
+                        if (heldItem.getCount() <= 0)
                         {
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
                         }
@@ -101,19 +95,9 @@ public class BlockReactorCell extends BlockContainer
     }
 
     @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+    public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
     {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityReactorCell)
-        {
-            ((TileEntityReactorCell) tileEntity).updateStructureType();
-        }
-    }
-
-    @Override
-    public void onNeighborChange(IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ)
-    {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof TileEntityReactorCell)
         {
             ((TileEntityReactorCell) tileEntity).updateStructureType();
@@ -125,25 +109,26 @@ public class BlockReactorCell extends BlockContainer
     //----------------------------------------------
 
     @Override
-    public boolean renderAsNormalBlock()
+    public boolean  isBlockNormalCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public int getRenderType()
+    public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return -1;
+        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
+
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isNormalCube()
+    public boolean isNormalCube(IBlockState state)
     {
         return false;
     }

@@ -1,23 +1,19 @@
 package com.builtbroken.atomic.content.machines.steam.generator;
 
 import com.builtbroken.atomic.AtomicScience;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -33,24 +29,25 @@ public class BlockSteamGenerator extends BlockContainer
 
     public BlockSteamGenerator()
     {
-        super(Material.iron);
+        super(Material.IRON);
         setHardness(1);
         setResistance(5);
         setCreativeTab(AtomicScience.creativeTab);
-        setBlockName(AtomicScience.PREFIX + "steam.generator");
+        setTranslationKey(AtomicScience.PREFIX + "steam.generator");
+        setRegistryName(AtomicScience.PREFIX + "steam_turbine");
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float xHit, float yHit, float zHit)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        if (player.getHeldItem() != null && player.getHeldItem().getItem() == Items.stick)
+        if (player.getHeldItem(hand).getItem() == Items.STICK)
         {
             if (!world.isRemote)
             {
-                TileEntity tile = world.getTileEntity(x, y, z);
+                TileEntity tile = world.getTileEntity(pos);
                 if (tile instanceof TileEntitySteamGenerator)
                 {
-                    player.addChatComponentMessage(new ChatComponentText("Steam: "
+                    player.sendMessage(new TextComponentString("Steam: "
                             + ((TileEntitySteamGenerator) tile).getSteamGeneration()
                             + "mb Power: "
                             + ((TileEntitySteamGenerator) tile).getPowerToOutput() + "watts"));
@@ -59,37 +56,6 @@ public class BlockSteamGenerator extends BlockContainer
             return true;
         }
         return false;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta)
-    {
-        if (side == 0 || side == 1)
-        {
-            return Blocks.gold_block.getIcon(0, 0);
-        }
-        return Blocks.anvil.getIcon(0, 0);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister reg)
-    {
-        //We pull icons from other blocks
-    }
-
-    @Override
-    public void getSubBlocks(Item item, CreativeTabs tab, List list)
-    {
-        list.add(new ItemStack(item, 1, 0));
-        if (rfFactory != null)
-        {
-            list.add(new ItemStack(item, 1, 1));
-        }
-        if (euFactory != null)
-        {
-            list.add(new ItemStack(item, 1, 2));
-        }
     }
 
     @Override
@@ -111,25 +77,25 @@ public class BlockSteamGenerator extends BlockContainer
     //----------------------------------------------
 
     @Override
-    public boolean renderAsNormalBlock()
+    public boolean isBlockNormalCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public int getRenderType()
+    public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return -1;
+        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public boolean isOpaqueCube()
+    public boolean isOpaqueCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isNormalCube()
+    public boolean isNormalCube(IBlockState state)
     {
         return false;
     }

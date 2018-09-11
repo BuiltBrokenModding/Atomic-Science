@@ -2,7 +2,9 @@ package com.builtbroken.atomic.lib;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -18,37 +20,36 @@ public class MassHandler
 
     public static void init()
     {
-        blockToMass.put(Blocks.iron_block, 7870f);
-        materialToMass.put(Material.iron, 7870f);
+        blockToMass.put(Blocks.IRON_BLOCK, 7870f);
+        materialToMass.put(Material.IRON, 7870f);
 
-        blockToMass.put(Blocks.air, 1.225f);
-        materialToMass.put(Material.air, 1.225f);
+        blockToMass.put(Blocks.AIR, 1.225f);
+        materialToMass.put(Material.AIR, 1.225f);
 
-        blockToMass.put(Blocks.stone, 1120f);
-        materialToMass.put(Material.rock, 1120f);
+        blockToMass.put(Blocks.STONE, 1120f);
+        materialToMass.put(Material.ROCK, 1120f);
 
-        materialToMass.put(Material.water, 1000f);
+        materialToMass.put(Material.WATER, 1000f);
     }
 
     /**
      * Gets the mass of the object in the world
      *
      * @param world - location
-     * @param x     - location
-     * @param y     - location
-     * @param z     - location
+     * @param pos   - location
      * @return mass in kilograms
      */
-    public static float getMass(World world, int x, int y, int z)
+    public static float getMass(World world, BlockPos pos)
     {
-        Block block = world.getBlock(x, y, z);
+        IBlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock(); //TODO add IBLockState support
         if (blockToMass.containsKey(block))
         {
             return blockToMass.get(block);
         }
-        else if (materialToMass.containsKey(block.getMaterial()))
+        else if (materialToMass.containsKey(block.getMaterial(blockState)))
         {
-            return materialToMass.get(block.getMaterial());
+            return materialToMass.get(block.getMaterial(blockState));
         }
         //https://www.simetric.co.uk/si_materials.htm
         return 1000;

@@ -14,7 +14,7 @@ public class OreGeneratorSettings
     public int amountPerChunk;
     public int amountPerBranch;
 
-    public Block replaceBlock = Blocks.stone;
+    public Block replaceBlock = Blocks.STONE;
 
     public OreGeneratorSettings(int min, int max, int amountPerBranch, int amountPerChunk)
     {

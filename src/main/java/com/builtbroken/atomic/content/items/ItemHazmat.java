@@ -6,6 +6,7 @@ import com.builtbroken.atomic.api.armor.IAntiPoisonArmor;
 import com.builtbroken.atomic.api.effect.IIndirectEffectInstance;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
@@ -28,12 +29,12 @@ public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
     public static int damagePerTick = 1;
     public static int damagePerAttack = 100; //TODO take damage faster from attacks
 
-    public ItemHazmat(int slot, String type)
+    public ItemHazmat(EntityEquipmentSlot slot, String type)
     {
         super(hazmatArmorMaterial, 0, slot);
         this.setCreativeTab(AtomicScience.creativeTab);
-        this.setUnlocalizedName(AtomicScience.PREFIX + "hazmat." + type);
-        this.setTextureName(ARMOR_TEXTURE_FOLDER + "hazmat_" + type);
+        this.setTranslationKey(AtomicScience.PREFIX + "hazmat." + type);
+        this.setRegistryName(AtomicScience.PREFIX + "hazmat_" + type);
         this.setMaxDamage(200000);
     }
 
@@ -42,7 +43,7 @@ public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
     ///------------------------------------------------------------------------------------
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
     {
         return ARMOR_MODEL_TEXTURE;
     }
@@ -64,9 +65,9 @@ public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
     protected boolean hasFullSetOfArmor(EntityLivingBase entity)
     {
         ItemStack itemStack = null;
-        for (int i = 1; i < 5; i++)
+        for (int i = 2; i < 6; i++)
         {
-            final ItemStack slotStack = entity.getEquipmentInSlot(i);
+            final ItemStack slotStack = entity.getItemStackFromSlot(EntityEquipmentSlot.values()[i]);
             if (slotStack != null)
             {
                 //Init compare stack
@@ -105,8 +106,7 @@ public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
         }
     }
 
-    @Override
-    public int getArmorType()
+    public EntityEquipmentSlot getArmorSlot()
     {
         return this.armorType;
     }

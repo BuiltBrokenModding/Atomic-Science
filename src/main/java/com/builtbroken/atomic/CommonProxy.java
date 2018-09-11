@@ -2,14 +2,15 @@ package com.builtbroken.atomic;
 
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.proxy.ContentProxy;
-import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 public abstract class CommonProxy extends ContentProxy implements IGuiHandler
@@ -30,7 +31,7 @@ public abstract class CommonProxy extends ContentProxy implements IGuiHandler
         {
             return getServerGuiElement(y, player, world.getEntityByID(x));
         }
-        return getServerGuiElement(ID, player, world.getTileEntity(x, y, z));
+        return getServerGuiElement(ID, player, world.getTileEntity(new BlockPos(x, y, z)));
     }
 
     public Object getServerGuiElement(int ID, EntityPlayer player, int slot)
@@ -72,7 +73,7 @@ public abstract class CommonProxy extends ContentProxy implements IGuiHandler
         {
             return getClientGuiElement(y, player, world.getEntityByID(x));
         }
-        return getClientGuiElement(ID, player, world.getTileEntity(x, y, z));
+        return getClientGuiElement(ID, player, world.getTileEntity(new BlockPos(x, y, z)));
     }
 
     public Object getClientGuiElement(int ID, EntityPlayer player, int slot)

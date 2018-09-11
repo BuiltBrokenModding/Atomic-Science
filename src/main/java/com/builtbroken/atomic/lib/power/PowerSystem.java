@@ -2,8 +2,9 @@ package com.builtbroken.atomic.lib.power;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class PowerSystem
 {
     private static final List<PowerHandler> powerHandlers = new ArrayList();
 
-    public static int addPower(ForgeDirection sideAccessed, TileEntity tileEntity, int power, boolean doAction)
+    public static int addPower(EnumFacing sideAccessed, TileEntity tileEntity, int power, boolean doAction)
     {
         PowerHandler handler = getHandler(sideAccessed, tileEntity);
         if (handler != null)
@@ -35,7 +36,7 @@ public class PowerSystem
      * @param tileEntity   - tile to access
      * @return true if the tile is supported for the side
      */
-    public static boolean canSupport(ForgeDirection sideToAccess, TileEntity tileEntity)
+    public static boolean canSupport(EnumFacing sideToAccess, TileEntity tileEntity)
     {
         return getHandler(sideToAccess, tileEntity) != null;
     }
@@ -47,7 +48,7 @@ public class PowerSystem
      * @param tileEntity   - tile to access
      * @return power handler or null
      */
-    public static PowerHandler getHandler(ForgeDirection sideToAccess, TileEntity tileEntity)
+    public static PowerHandler getHandler(EnumFacing sideToAccess, TileEntity tileEntity)
     {
         for (PowerHandler handler : powerHandlers)
         {
@@ -78,23 +79,19 @@ public class PowerSystem
      * Called to output power
      *
      * @param world         - source of power
-     * @param x             - source of power
-     * @param y             - source of power
-     * @param z             - source of power
+     * @param pos           - position of the source of power
      * @param direction     - direction from source to output (added to location and reversed for access side)
      * @param powerToOutput - power to give
      * @param doAction      - true to do action, false to simulate
      * @return power added to tile
      */
-    public static int outputPower(World world, int x, int y, int z, ForgeDirection direction, int powerToOutput, boolean doAction)
+    public static int outputPower(World world, BlockPos pos, EnumFacing direction, int powerToOutput, boolean doAction)
     {
         if (powerToOutput > 0)
         {
-            x += direction.offsetX;
-            y += direction.offsetY;
-            z += direction.offsetZ;
+            pos = pos.add(direction.getDirectionVec());
 
-            TileEntity tile = world.getTileEntity(x, y, z);
+            TileEntity tile = world.getTileEntity(pos);
             if (tile != null)
             {
                 return addPower(direction.getOpposite(), tile, powerToOutput, doAction);

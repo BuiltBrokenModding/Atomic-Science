@@ -1,99 +1,30 @@
 package com.builtbroken.atomic.content.machines;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/8/2018.
  */
-public abstract class TileEntityInventoryMachine extends TileEntityMachine implements IInventory
+public abstract class TileEntityInventoryMachine<I extends IItemHandlerModifiable> extends TileEntityMachine
 {
-    private ItemStack[] _inventoryArray;
+    public static final String NBT_INVENTORY = "inventory";
 
-    public ItemStack[] getInventoryArray()
+    private I inventory;
+
+    public I getInventory()
     {
-        if (_inventoryArray == null)
+        if(inventory == null)
         {
-            _inventoryArray = new ItemStack[getSizeInventory()];
+            inventory = createInventory();
         }
-        return _inventoryArray;
+        return inventory;
     }
 
-    @Override
-    public ItemStack getStackInSlot(int slot)
-    {
-        return getInventoryArray()[slot];
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int amount)
-    {
-        if (getInventoryArray()[slot] != null)
-        {
-            ItemStack itemstack;
-
-            if (getInventoryArray()[slot].stackSize <= amount)
-            {
-                itemstack = getInventoryArray()[slot];
-                getInventoryArray()[slot] = null;
-                this.markDirty();
-                return itemstack;
-            }
-            else
-            {
-                itemstack = getInventoryArray()[slot].splitStack(amount);
-
-                if (getInventoryArray()[slot].stackSize == 0)
-                {
-                    getInventoryArray()[slot] = null;
-                }
-
-                this.markDirty();
-                return itemstack;
-            }
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int slot)
-    {
-        if (getInventoryArray()[slot] != null)
-        {
-            ItemStack itemstack = getInventoryArray()[slot];
-            getInventoryArray()[slot] = null;
-            return itemstack;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack stack)
-    {
-        ItemStack prev = getStackInSlot(slot);
-
-        getInventoryArray()[slot] = stack;
-
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit())
-        {
-            stack.stackSize = this.getInventoryStackLimit();
-        }
-
-        if (!ItemStack.areItemStacksEqual(prev, stack) || !ItemStack.areItemStackTagsEqual(prev, stack))
-        {
-            onSlotStackChanged(prev, stack, slot);
-        }
-    }
+    protected abstract I createInventory();
 
     protected void onSlotStackChanged(ItemStack prev, ItemStack stack, int slot)
     {
@@ -101,83 +32,48 @@ public abstract class TileEntityInventoryMachine extends TileEntityMachine imple
     }
 
     @Override
-    public String getInventoryName()
-    {
-        return "container.reactor.cell";
-    }
-
-    @Override
-    public boolean hasCustomInventoryName()
-    {
-        return false;
-    }
-
-    @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        NBTTagList nbttaglist = nbt.getTagList("Items", 10);
-        _inventoryArray = null;
 
-        for (int index = 0; index < nbttaglist.tagCount(); ++index)
+
+        //Clear inventory
+        for (int slotIndex = 0; slotIndex < getInventory().getSlots(); ++slotIndex)
         {
-            NBTTagCompound save = nbttaglist.getCompoundTagAt(index);
+            getInventory().setStackInSlot(slotIndex, ItemStack.EMPTY);
+        }
+
+        NBTTagList nbttaglist = nbt.getTagList(NBT_INVENTORY, 10);
+        for (int i = 0; i < nbttaglist.tagCount(); ++i)
+        {
+            NBTTagCompound save = nbttaglist.getCompoundTagAt(i);
             int slotIndex = save.getByte("Slot") & 255;
 
-            if (slotIndex >= 0 && slotIndex < getInventoryArray().length)
+            if (slotIndex >= 0 && slotIndex < getInventory().getSlots())
             {
-                getInventoryArray()[slotIndex] = ItemStack.loadItemStackFromNBT(save);
+                getInventory().setStackInSlot(slotIndex, new ItemStack(save));
             }
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
-        super.writeToNBT(nbt);
         NBTTagList nbttaglist = new NBTTagList();
-
-        for (int slotIndex = 0; slotIndex < getInventoryArray().length; ++slotIndex)
+        for (int slotIndex = 0; slotIndex < getInventory().getSlots(); ++slotIndex)
         {
-            if (getInventoryArray()[slotIndex] != null)
+            ItemStack stack = getInventory().getStackInSlot(slotIndex);
+            if (!stack.isEmpty())
             {
                 NBTTagCompound save = new NBTTagCompound();
                 save.setByte("Slot", (byte) slotIndex);
-                getInventoryArray()[slotIndex].writeToNBT(save);
+                stack.writeToNBT(save);
                 nbttaglist.appendTag(save);
             }
         }
+        nbt.setTag(NBT_INVENTORY, nbttaglist);
 
-        nbt.setTag("Items", nbttaglist);
+        return  super.writeToNBT(nbt);
     }
 
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
-    {
-        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : player.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64.0D;
-    }
-
-    @Override
-    public void openInventory()
-    {
-
-    }
-
-    @Override
-    public void closeInventory()
-    {
-
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
-    {
-        return false;
-    }
 }

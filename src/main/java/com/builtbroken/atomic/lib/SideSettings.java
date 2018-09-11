@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.lib;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -19,7 +19,7 @@ public class SideSettings
         }
     }
 
-    public void set(ForgeDirection side, boolean b)
+    public void set(EnumFacing side, boolean b)
     {
         set(side.ordinal(), b);
     }
@@ -29,7 +29,7 @@ public class SideSettings
         sides[side] = b;
     }
 
-    public boolean get(ForgeDirection side)
+    public boolean get(EnumFacing side)
     {
         return get(side.ordinal());
     }
@@ -44,7 +44,7 @@ public class SideSettings
         set(side, !get(side));
     }
 
-    public void toggle(ForgeDirection side)
+    public void toggle(EnumFacing side)
     {
         toggle(side.ordinal());
     }

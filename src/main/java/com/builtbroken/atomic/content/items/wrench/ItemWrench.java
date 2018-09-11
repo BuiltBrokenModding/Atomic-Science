@@ -3,19 +3,22 @@ package com.builtbroken.atomic.content.items.wrench;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.lib.LanguageUtility;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -29,15 +32,10 @@ public class ItemWrench extends Item
     public static final String NBT_COLOR = "toolColor";
     public static final String NBT_MODE = "toolMode";
 
-    @SideOnly(Side.CLIENT)
-    private IIcon[] coloredTexture;
-    @SideOnly(Side.CLIENT)
-    private IIcon[] texture;
-
     public ItemWrench()
     {
-        this.setUnlocalizedName(AtomicScience.PREFIX + "wrench");
-        this.setTextureName(AtomicScience.PREFIX + "wrench/wrench");
+        this.setTranslationKey(AtomicScience.PREFIX + "wrench");
+        this.setRegistryName(AtomicScience.PREFIX + "wrench");
         this.setCreativeTab(AtomicScience.creativeTab);
     }
 
@@ -46,18 +44,19 @@ public class ItemWrench extends Item
     //===============================================
 
     @Override
-    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
     {
         if (!world.isRemote)
         {
-            TileEntity tile = world.getTileEntity(x, y, z);
+            ItemStack stack = player.getHeldItem(hand);
+
+            TileEntity tile = world.getTileEntity(pos);
             if (tile instanceof TileEntityProcessingMachine)
             {
-                ((TileEntityProcessingMachine) tile).onWrench(getMode(stack), getColor(stack), ForgeDirection.getOrientation(side), player);
+                ((TileEntityProcessingMachine) tile).onWrench(getMode(stack), getColor(stack), side, player);
             }
-            return true;
         }
-        return false;
+        return EnumActionResult.SUCCESS;
     }
 
     /**
@@ -87,26 +86,26 @@ public class ItemWrench extends Item
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List lines, boolean held)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> lines, ITooltipFlag flagIn)
     {
-        lines.add(LanguageUtility.getLocal(getUnlocalizedName() + ".mode." + getMode(stack).name().toLowerCase() + ".info"));
-        lines.add(LanguageUtility.getLocal(getUnlocalizedName() + ".color." + getColor(stack).name().toLowerCase() + ".info"));
+        lines.add(LanguageUtility.getLocal(getTranslationKey() + ".mode." + getMode(stack).name().toLowerCase() + ".info"));
+        lines.add(LanguageUtility.getLocal(getTranslationKey() + ".color." + getColor(stack).name().toLowerCase() + ".info"));
         if (GuiScreen.isShiftKeyDown())
         {
-            lines.add(LanguageUtility.getLocal(getUnlocalizedName() + ".info"));
-            lines.add(LanguageUtility.getLocal(getUnlocalizedName() + ".ctrl.info"));
-            lines.add(LanguageUtility.getLocal(getUnlocalizedName() + ".wheel.info"));
+            lines.add(LanguageUtility.getLocal(getTranslationKey() + ".info"));
+            lines.add(LanguageUtility.getLocal(getTranslationKey() + ".ctrl.info"));
+            lines.add(LanguageUtility.getLocal(getTranslationKey() + ".wheel.info"));
         }
         else
         {
-            lines.add(LanguageUtility.getLocal(getUnlocalizedName() + ".more.info"));
+            lines.add(LanguageUtility.getLocal(getTranslationKey() + ".more.info"));
         }
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public String getTranslationKey(ItemStack stack)
     {
-        return getUnlocalizedName() + "." + getMode(stack).name().toLowerCase() + "." + getColor(stack).name().toLowerCase();
+        return getTranslationKey() + "." + getMode(stack).name().toLowerCase() + "." + getColor(stack).name().toLowerCase();
     }
 
     //===============================================
@@ -157,58 +156,5 @@ public class ItemWrench extends Item
             stack.setTagCompound(new NBTTagCompound());
         }
         stack.getTagCompound().setInteger(NBT_COLOR, color.ordinal());
-    }
-
-    //===============================================
-    //=======Render Stuff
-    //===============================================
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister reg)
-    {
-        coloredTexture = new IIcon[WrenchMode.values().length];
-        texture = new IIcon[WrenchMode.values().length];
-        for (WrenchMode mode : WrenchMode.values())
-        {
-            coloredTexture[mode.ordinal()] = reg.registerIcon(this.getIconString() + "." + mode.name().toLowerCase() + ".color");
-            texture[mode.ordinal()] = reg.registerIcon(this.getIconString() + "." + mode.name().toLowerCase());
-        }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public boolean requiresMultipleRenderPasses()
-    {
-        return true;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(ItemStack stack, int pass)
-    {
-        if (pass == 0)
-        {
-            return texture[getMode(stack).ordinal()];
-        }
-        return coloredTexture[getMode(stack).ordinal()];
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getRenderPasses(int metadata)
-    {
-        return 2;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack stack, int pass)
-    {
-        if (pass == 0)
-        {
-            return super.getColorFromItemStack(stack, pass);
-        }
-        return getColor(stack).getColorInt();
     }
 }

@@ -2,6 +2,7 @@ package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.map.data.DataMap;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -78,7 +79,7 @@ public class MapSystem
     {
         if (world != null && world.provider != null)
         {
-            return getMap(world.provider.dimensionId, init);
+            return getMap(world.provider.getDimension(), init);
         }
         return null;
     }
@@ -88,17 +89,15 @@ public class MapSystem
      * Gets the data value at the position
      *
      * @param world - location
-     * @param x     - location
-     * @param y     - location
-     * @param z     - location
+     * @param pos - location
      * @return radioactive material amount
      */
-    public int getData(World world, int x, int y, int z)
+    public int getData(World world, BlockPos pos)
     {
         DataMap map = getMap(world, false);
         if (map != null)
         {
-            return map.getData(x, y, z);
+            return map.getData(pos);
         }
         return 0;
     }
@@ -107,17 +106,15 @@ public class MapSystem
      * Gets the data value at the position
      *
      * @param dim - world id
-     * @param x   - location
-     * @param y   - location
-     * @param z   - location
+     * @param pos - location
      * @return radioactive material amount
      */
-    public int getData(int dim, int x, int y, int z)
+    public int getData(int dim, BlockPos pos)
     {
         DataMap map = getMap(dim, false);
         if (map != null)
         {
-            return map.getData(x, y, z);
+            return map.getData(pos);
         }
         return 0;
     }
@@ -126,18 +123,16 @@ public class MapSystem
      * Called to set the data value of the position
      *
      * @param world  - location
-     * @param x      - location
-     * @param y      - location
-     * @param z      - location
+     * @param pos - location
      * @param amount - data
      * @return true if the value was set
      */
-    public boolean setData(World world, int x, int y, int z, int amount)
+    public boolean setData(World world, BlockPos pos, int amount)
     {
         DataMap map = getMap(world, amount > 0);
         if (map != null)
         {
-            return map.setData(x, y, z, amount);
+            return map.setData(pos, amount);
         }
         return true;
     }
@@ -146,18 +141,16 @@ public class MapSystem
      * Called to set the data value of the position
      *
      * @param dim    - world id
-     * @param x      - location
-     * @param y      - location
-     * @param z      - location
+     * @param pos - location
      * @param amount - data
      * @return true if the value was set
      */
-    public boolean setData(int dim, int x, int y, int z, int amount)
+    public boolean setData(int dim, BlockPos pos, int amount)
     {
         DataMap map = getMap(dim, amount > 0);
         if (map != null)
         {
-            return map.setData(x, y, z, amount);
+            return map.setData(pos, amount);
         }
         return true;
     }
@@ -205,7 +198,7 @@ public class MapSystem
             if (map != null)
             {
                 NBTTagCompound tag = save.getCompoundTag(saveKey);
-                if (!tag.hasNoTags())
+                if (!tag.isEmpty())
                 {
                     map.loadChunk(chunk, tag);
                 }
@@ -220,7 +213,7 @@ public class MapSystem
         {
             NBTTagCompound tag = new NBTTagCompound();
             map.saveChunk(chunk, tag);
-            if (!tag.hasNoTags())
+            if (!tag.isEmpty())
             {
                 save.setTag(saveKey, tag);
             }

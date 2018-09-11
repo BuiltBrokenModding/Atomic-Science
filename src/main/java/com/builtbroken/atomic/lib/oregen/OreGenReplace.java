@@ -1,13 +1,15 @@
 package com.builtbroken.atomic.lib.oregen;
 
-import com.builtbroken.atomic.lib.transform.vector.Pos;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.ChunkProviderEnd;
-import net.minecraft.world.gen.ChunkProviderGenerate;
-import net.minecraft.world.gen.ChunkProviderHell;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.gen.ChunkGeneratorEnd;
+import net.minecraft.world.gen.ChunkGeneratorHell;
+import net.minecraft.world.gen.ChunkGeneratorOverworld;
+import net.minecraft.world.gen.IChunkGenerator;
 
 import java.util.*;
 
@@ -28,14 +30,13 @@ public class OreGenReplace extends OreGenerator
 
     /**
      * @param block        -block to place
-     * @param meta         - meta of block to place
      * @param settings     - controls spawn conditions
      * @param harvestLevel
      * @param harvestTool
      */
-    public OreGenReplace(Block block, int meta, OreGeneratorSettings settings, String harvestTool, int harvestLevel)
+    public OreGenReplace(IBlockState block, OreGeneratorSettings settings, String harvestTool, int harvestLevel)
     {
-        super(block, meta, harvestTool, harvestLevel);
+        super(block, harvestTool, harvestLevel);
         this.settings = settings;
     }
 
@@ -71,15 +72,15 @@ public class OreGenReplace extends OreGenerator
     {
         int blocksPlaced = 0;
         //Positions already pathed
-        List<Pos> pathed = new ArrayList();
+        List<BlockPos> pathed = new ArrayList();
         //Positions to path next
-        Queue<Pos> toPath = new LinkedList();
+        Queue<BlockPos> toPath = new LinkedList();
 
         //First location to path
-        toPath.add(new Pos(varX, varY, varZ));
+        toPath.add(new BlockPos(varX, varY, varZ));
 
-        List<ForgeDirection> directions = new ArrayList();
-        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+        List<EnumFacing> directions = new ArrayList();
+        for (EnumFacing dir : EnumFacing.VALUES)
         {
             directions.add(dir);
         }
@@ -87,14 +88,15 @@ public class OreGenReplace extends OreGenerator
         //Breadth first search
         while (!toPath.isEmpty() && blocksPlaced < settings.amountPerBranch)
         {
-            Pos next = toPath.poll();
+            BlockPos next = toPath.poll();
             pathed.add(next);
 
             //Place block
-            Block block = next.getBlock(world);
+            IBlockState blockState = world.getBlockState(next);
+            Block block = blockState.getBlock();
             if (settings.replaceBlock == null || block == settings.replaceBlock)
             {
-                if (next.setBlock(world, oreBlock, oreMeta, 2))
+                if (world.setBlockState(next, oreBlock, 2))
                 {
                     blocksPlaced += 1;
                 }
@@ -102,19 +104,20 @@ public class OreGenReplace extends OreGenerator
 
             //Find new locations to place blocks
             Collections.shuffle(directions);
-            for (ForgeDirection direction : directions)
+            for (EnumFacing direction : directions)
             {
-                Pos pos = next.add(direction);
+                BlockPos pos = next.add(direction.getDirectionVec());
                 if (!pathed.contains(pos) && world.rand.nextBoolean())
                 {
-                    if (pos.isInsideMap() && world.blockExists(pos.xi(), pos.yi(), pos.zi()))
+                    if (pos.getY() >= 0 && pos.getY() < world.getHeight() && world.isBlockLoaded(pos))
                     {
-                        boolean insideX = pos.xi() >= chunkCornerX && pos.xi() < (chunkCornerX + 16);
-                        boolean insideZ = pos.zi() >= chunkCornerZ && pos.zi() < (chunkCornerZ + 16);
-                        boolean insideY = pos.yi() >= settings.minGenerateLevel && pos.yi() <= settings.maxGenerateLevel;
+                        boolean insideX = pos.getX() >= chunkCornerX && pos.getX() < (chunkCornerX + 16);
+                        boolean insideZ = pos.getZ() >= chunkCornerZ && pos.getZ() < (chunkCornerZ + 16);
+                        boolean insideY = pos.getY() >= settings.minGenerateLevel && pos.getY() <= settings.maxGenerateLevel;
                         if (insideX && insideZ && insideY)
                         {
-                            block = pos.getBlock(world);
+                            blockState = world.getBlockState(next);
+                            block = blockState.getBlock();
                             if (settings.replaceBlock == null || block == settings.replaceBlock)
                             {
                                 toPath.add(pos);
@@ -133,16 +136,16 @@ public class OreGenReplace extends OreGenerator
     }
 
     @Override
-    public boolean isOreGeneratedInWorld(World world, IChunkProvider chunkGenerator)
+    public boolean isOreGeneratedInWorld(World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider)
     {
-        if (this.ignoreSurface && chunkGenerator instanceof ChunkProviderGenerate)
+        if (this.ignoreSurface && chunkGenerator instanceof ChunkGeneratorOverworld)
         {
             return false;
         }
-        if (this.ignoreNether && chunkGenerator instanceof ChunkProviderHell)
+        if (this.ignoreNether && chunkGenerator instanceof ChunkGeneratorHell)
         {
             return false;
         }
-        return !(this.ignoreEnd && chunkGenerator instanceof ChunkProviderEnd);
+        return !(this.ignoreEnd && chunkGenerator instanceof ChunkGeneratorEnd);
     }
 }

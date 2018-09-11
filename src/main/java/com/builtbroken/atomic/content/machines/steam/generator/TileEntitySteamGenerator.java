@@ -3,10 +3,10 @@ package com.builtbroken.atomic.content.machines.steam.generator;
 import com.builtbroken.atomic.config.ConfigPower;
 import com.builtbroken.atomic.content.machines.steam.TileEntitySteamInput;
 import com.builtbroken.atomic.lib.power.PowerSystem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Simple tile to convert steam flow rate into power
@@ -38,7 +38,7 @@ public class TileEntitySteamGenerator extends TileEntitySteamInput
                 _clientPrevRotation -= 360f;
             }
         }
-        PowerSystem.outputPower(worldObj, xCoord, yCoord, zCoord, ForgeDirection.UP, getPowerToOutput(), true);
+        PowerSystem.outputPower(world, getPos(), EnumFacing.UP, getPowerToOutput(), true);
     }
 
     public float within180(float rotation)
@@ -78,8 +78,8 @@ public class TileEntitySteamGenerator extends TileEntitySteamInput
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
-        super.writeToNBT(nbt);
+        return super.writeToNBT(nbt);
     }
 }

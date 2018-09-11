@@ -5,8 +5,6 @@ import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import com.builtbroken.atomic.config.ConfigNetwork;
 import com.builtbroken.atomic.lib.MassHandler;
-import com.builtbroken.atomic.network.netty.PacketSystem;
-import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.MapSystem;
@@ -15,12 +13,15 @@ import com.builtbroken.atomic.map.data.DataMap;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.MapChangeSet;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
+import com.builtbroken.atomic.network.netty.PacketSystem;
+import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
 import com.builtbroken.jlib.lang.StringHelpers;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -182,19 +183,17 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * Energy in joules
      *
      * @param world
-     * @param x
-     * @param y
-     * @param z
+     * @param pos - location
      * @return
      */
-    public long getJoules(World world, int x, int y, int z)
+    public long getJoules(World world, BlockPos pos)
     {
-        return getData(world, x, y, z) * 1000L; //Map stores heat in kilo-joules
+        return getData(world, pos) * 1000L; //Map stores heat in kilo-joules
     }
 
-    public long getActualJoules(World world, int x, int y, int z)
+    public long getActualJoules(World world, BlockPos pos)
     {
-        return getJoules(world, x, y, z) + getEnvironmentalJoules(world, x, y, z);
+        return getJoules(world, pos) + getEnvironmentalJoules(world, pos);
     }
 
     /**
@@ -204,14 +203,12 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * the heat + environmental values.
      *
      * @param world - map to pull data from
-     * @param x     - location
-     * @param y     - location
-     * @param z     - location
+     * @param pos - location
      * @return temperature in Kelvin
      */
-    public double getTemperature(World world, int x, int y, int z)
+    public double getTemperature(World world, BlockPos pos)
     {
-        return getTemperature(world, x, y, z, getActualJoules(world, x, y, z));
+        return getTemperature(world, pos, getActualJoules(world, pos));
     }
 
     /**
@@ -221,58 +218,48 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * the heat + environmental values.
      *
      * @param world  - map to pull data from
-     * @param x      - location
-     * @param y      - location
-     * @param z      - location
+     * @param pos - location
      * @param joules - heat energy
      * @return temperature in Kelvin
      */
-    public double getTemperature(World world, int x, int y, int z, double joules)
+    public double getTemperature(World world, BlockPos pos, double joules)
     {
-        return joules / (MassHandler.getMass(world, x, y, z) * ThermalHandler.getSpecificHeat(world, x, y, z) * 1000);
+        return joules / (MassHandler.getMass(world, pos) * ThermalHandler.getSpecificHeat(world, pos) * 1000);
     }
 
     /**
      * Gets the different in temperature between two locations
      *
      * @param world - map to pull data from
-     * @param x     - location
-     * @param y     - location
-     * @param z     - location
-     * @param i     - location 2
-     * @param j     - location 2
-     * @param k     - location 2
+     * @param pos - location
+     * @param pos2 - location2
      * @return temperature in Kelvin
      */
-    public double getTemperatureDelta(World world, int x, int y, int z, int i, int j, int k)
+    public double getTemperatureDelta(World world, BlockPos pos, BlockPos pos2)
     {
-        return getTemperature(world, x, y, z) - getTemperature(world, i, j, k);
+        return getTemperature(world, pos) - getTemperature(world, pos2);
     }
 
     /**
      * Gets the amount of heat energy naturally present in the block due to environmental values
      *
      * @param world - location
-     * @param x     - location
-     * @param y     - location
-     * @param z     - location
+     * @param pos - location
      * @return energy in joules
      */
-    public long getEnvironmentalJoules(World world, int x, int y, int z)
+    public long getEnvironmentalJoules(World world, BlockPos pos)
     {
-        return ((long) Math.floor(getEnvironmentalTemperature(world, x, y, z) * MassHandler.getMass(world, x, y, z) * ThermalHandler.getSpecificHeat(world, x, y, z))) * 1000L; //x1000 for kj -> j
+        return ((long) Math.floor(getEnvironmentalTemperature(world, pos) * MassHandler.getMass(world, pos) * ThermalHandler.getSpecificHeat(world, pos))) * 1000L; //x1000 for kj -> j
     }
 
     /**
      * Gets the natural resting temperature of the environment
      *
      * @param world - location
-     * @param x     - location
-     * @param y     - location
-     * @param z     - location
+     * @param pos - location
      * @return temperature in kelvin
      */
-    public double getEnvironmentalTemperature(World world, int x, int y, int z)
+    public double getEnvironmentalTemperature(World world, BlockPos pos)
     {
         return 290; //Slightly under room temp
     }
@@ -290,36 +277,36 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     {
         World world = event.world();
         DataMap map = getMap(world, false);
-        if (world != null && map != null && map.blockExists(event.x, event.y, event.z))
+        if (world != null && map != null && map.blockExists(event.pos))
         {
-            checkForThermalChange(world, event.x, event.y, event.z, event.new_value);
+            checkForThermalChange(world, event.pos, event.new_value);
         }
     }
 
     @SubscribeEvent
-    public void onBlockPlaced(PlayerInteractEvent event)
+    public void onBlockPlaced(PlayerInteractEvent.RightClickBlock event)
     {
-        if (!event.world.isRemote && event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+        if (!event.getWorld().isRemote)
         {
-            checkForThermalChange(event.world, event.x, event.y, event.z, getData(event.world, event.x, event.y, event.z));
+            checkForThermalChange(event.getWorld(), event.getPos(), getData(event.getWorld(), event.getPos()));
         }
     }
 
-    protected void checkForThermalChange(World world, int x, int y, int z, int heat)
+    protected void checkForThermalChange(World world, BlockPos pos, int heat)
     {
-        if (ThermalHandler.canChangeStates(world, x, y, z))
+        if (ThermalHandler.canChangeStates(world, pos))
         {
-            long joules = heat * 1000 + getEnvironmentalJoules(world, x, y, z); //x1000 for kj -> j
-            if (joules > ThermalHandler.energyCostToChangeStates(world, x, y, z))
+            long joules = heat * 1000 + getEnvironmentalJoules(world, pos); //x1000 for kj -> j
+            if (joules > ThermalHandler.energyCostToChangeStates(world, pos))
             {
-                ThermalHandler.changeStates(world, x, y, z);
+                ThermalHandler.changeStates(world, pos);
             }
         }
 
-        int vap = ThermalHandler.getVaporRate(world, x, y, z, heat * 1000 + getEnvironmentalJoules(world, x, y, z));
-        DataPos pos = DataPos.get(x, y, z);
+        int vap = ThermalHandler.getVaporRate(world, pos, heat * 1000 + getEnvironmentalJoules(world, pos));
+        DataPos dataPos = DataPos.get(pos.getX(), pos.getY(), pos.getZ());
 
-        final int dim = world.provider.dimensionId;
+        final int dim = world.provider.getDimension();
         if (!steamSources.containsKey(dim))
         {
             steamSources.put(dim, new HashSet());
@@ -327,19 +314,19 @@ public class ThermalMap extends MapSystem implements IThermalSystem
 
         if (vap > 0)
         {
-            if (!steamSources.get(dim).contains(pos))
+            if (!steamSources.get(dim).contains(dataPos))
             {
-                steamSources.get(dim).add(pos);
+                steamSources.get(dim).add(dataPos);
             }
             else
             {
-                pos.dispose();
+                dataPos.dispose();
             }
         }
-        if (!steamSources.get(dim).contains(pos))
+        if (!steamSources.get(dim).contains(dataPos))
         {
-            steamSources.remove(pos);
-            pos.dispose();
+            steamSources.remove(dataPos);
+            dataPos.dispose();
         }
     }
 
@@ -383,7 +370,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
         else if (event.phase == TickEvent.Phase.END)
         {
             final World world = event.world;
-            final int dim = world.provider.dimensionId;
+            final int dim = world.provider.getDimension();
 
             if (ConfigNetwork.BOILING_EFFECT && steamSources.containsKey(dim))
             {
@@ -391,10 +378,10 @@ public class ThermalMap extends MapSystem implements IThermalSystem
                 Iterator<DataPos> it = steamPositions.iterator();
                 while (it.hasNext())
                 {
-                    DataPos pos = it.next();
-                    if (world.blockExists(pos.x, pos.y, pos.z))
+                    DataPos pos = it.next(); //TODO change over to block pos
+                    if (world.isBlockLoaded(new BlockPos(pos.x, pos.y, pos.z)))
                     {
-                        int vap = ThermalHandler.getVaporRate(world, pos.x, pos.y, pos.z);
+                        int vap = ThermalHandler.getVaporRate(world, new BlockPos(pos.x, pos.y, pos.z));
                         if (vap > 0)
                         {
                             int count = Math.min(10, Math.max(1, vap / 100));

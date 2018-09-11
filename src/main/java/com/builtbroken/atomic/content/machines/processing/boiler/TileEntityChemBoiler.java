@@ -20,7 +20,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing
 import net.minecraftforge.fluids.*;
 
 import java.util.List;
@@ -122,9 +122,9 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     }
 
     @Override
-    public void onWrench(WrenchMode type, WrenchColor color, ForgeDirection side, EntityPlayer player)
+    public void onWrench(WrenchMode type, WrenchColor color, EnumFacing side, EntityPlayer player)
     {
-        if (type == WrenchMode.FLUID && side != ForgeDirection.UNKNOWN)
+        if (type == WrenchMode.FLUID && side != EnumFacing.UNKNOWN)
         {
             if (color == WrenchColor.GREEN)
             {
@@ -149,7 +149,7 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     //-----------------------------------------------
 
     @Override
-    public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+    public int fill(EnumFacing from, FluidStack resource, boolean doFill)
     {
         if (resource != null && canFill(from, resource.getFluid()))
         {
@@ -169,7 +169,7 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
     {
         if (tankMatch(getGreenTank(), resource))
         {
@@ -183,7 +183,7 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
     {
         FluidStack stack = getGreenTank().drain(maxDrain, doDrain);
         if (stack == null)
@@ -194,13 +194,13 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     }
 
     @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid)
+    public boolean canFill(EnumFacing from, Fluid fluid)
     {
         return blueTankSideSettings.get(from) && getRecipeList().isComponent(this, fluid);
     }
 
     @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid)
+    public boolean canDrain(EnumFacing from, Fluid fluid)
     {
         return fluid == null && greenTankSideSettings.get(from) && yellowTankSideSettings.get(from)
                 || greenTankSideSettings.get(from) && tankMatch(getGreenTank(), fluid)
@@ -208,7 +208,7 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from)
+    public FluidTankInfo[] getTankInfo(EnumFacing from)
     {
         return new FluidTankInfo[]{getBlueTank().getInfo(), getGreenTank().getInfo(), getYellowTank().getInfo()};
     }

@@ -15,17 +15,16 @@ public class ItemRadioactive extends Item implements IRadioactiveItem
 {
     public final int radioactiveMaterialValue;
 
-    public ItemRadioactive(String name, String texture, int radioactiveMaterialValue)
+    public ItemRadioactive(String name, int radioactiveMaterialValue)
     {
         this.radioactiveMaterialValue = radioactiveMaterialValue;
-        this.setUnlocalizedName(AtomicScience.PREFIX + name);
-        this.setTextureName(AtomicScience.PREFIX + texture);
+        this.setTranslationKey(AtomicScience.PREFIX + name);
         this.setCreativeTab(AtomicScience.creativeTab);
     }
 
     @Override
     public int getRadioactiveMaterial(ItemStack stack)
     {
-        return radioactiveMaterialValue * stack.stackSize;
+        return radioactiveMaterialValue * stack.getCount();
     }
 }

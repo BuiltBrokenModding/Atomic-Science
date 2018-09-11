@@ -12,18 +12,21 @@ import com.builtbroken.atomic.content.items.cell.CreativeTabCells;
 import com.builtbroken.atomic.content.items.cell.ItemFluidCell;
 import com.builtbroken.atomic.content.items.cell.ItemPoweredCell;
 import com.builtbroken.atomic.content.items.wrench.ItemWrench;
-import com.builtbroken.atomic.proxy.ContentProxy;
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
-public class ASItems extends ContentProxy
+@Mod.EventBusSubscriber(modid = AtomicScience.DOMAIN)
+public final class ASItems
 {
     //Armor
     public static ItemHazmat itemArmorHazmatHelm;
@@ -53,57 +56,48 @@ public class ASItems extends ContentProxy
     public static Item itemHeatProbe;
     public static ItemWrench itemWrench;
 
-    public ASItems()
-    {
-        super("items");
-    }
 
-    @Override
-    public void preInit()
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event)
     {
         //Armor
-        ItemHazmat.hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", 0, new int[]{0, 0, 0, 0}, 0);
-        GameRegistry.registerItem(itemArmorHazmatHelm = new ItemHazmat(0, "mask"), "hazmat_helm");
-        GameRegistry.registerItem(itemArmorHazmatChest = new ItemHazmat(1, "body"), "hazmat_chest");
-        GameRegistry.registerItem(itemArmorHazmatLegs = new ItemHazmat(2, "leggings"), "hazmat_legs");
-        GameRegistry.registerItem(itemArmorHazmatBoots = new ItemHazmat(3, "boots"), "hazmat_boots");
+        ItemHazmat.hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", "HAZMAT",5, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
+        event.getRegistry().register(itemArmorHazmatHelm = new ItemHazmat(EntityEquipmentSlot.HEAD, "mask"));
+        event.getRegistry().register(itemArmorHazmatChest = new ItemHazmat(EntityEquipmentSlot.CHEST, "body"));
+        event.getRegistry().register(itemArmorHazmatLegs = new ItemHazmat(EntityEquipmentSlot.LEGS, "leggings"));
+        event.getRegistry().register(itemArmorHazmatBoots = new ItemHazmat(EntityEquipmentSlot.FEET, "boots"));
 
         //Cells
-        GameRegistry.registerItem(itemFluidCell = new ItemFluidCell(FluidContainerRegistry.BUCKET_VOLUME), "fluid_cell");
-        itemFluidCell.addSupportedFluid(FluidRegistry.WATER, AtomicScience.PREFIX + "cell_water", itemFluidCell.getUnlocalizedName() + ".water");
-        itemFluidCell.addSupportedFluid(ASFluids.DEUTERIUM.fluid, AtomicScience.PREFIX + "cell_deuterium", itemFluidCell.getUnlocalizedName() + ".deuterium");
-
-        GameRegistry.registerItem(itemPoweredCell = new ItemPoweredCell(), "powered_cell");
-        itemPoweredCell.addSupportedFluid(ASFluids.ANTIMATTER.fluid, AtomicScience.PREFIX + "cell_antimatter", itemPoweredCell.getUnlocalizedName() + ".antimatter");
-        itemPoweredCell.addSupportedFluid(ASFluids.STRANGE_MATTER.fluid, AtomicScience.PREFIX + "cell_strange_matter", itemPoweredCell.getUnlocalizedName() + ".strange_matter");
+        event.getRegistry().register(itemFluidCell = (ItemFluidCell) new ItemFluidCell(Fluid.BUCKET_VOLUME).setRegistryName(AtomicScience.PREFIX + "fluid_cell"));
+        event.getRegistry().register(itemPoweredCell = (ItemPoweredCell) new ItemPoweredCell().setRegistryName(AtomicScience.PREFIX + "powered_cell"));
 
         //Machine inputs
-        GameRegistry.registerItem(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile", "cell_fissile_fuel",
+        event.getRegistry().register(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile", "cell_fissile_fuel",
                         ConfigPower.FUEL_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD
-                        , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_FUEL_ROD, ConfigThermal.HEAT_REACTOR_FUEL_ROD),
-                "fissile_fuel_cell");
-        GameRegistry.registerItem(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder", "cell_breeder_fuel",
+                        , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_FUEL_ROD, ConfigThermal.HEAT_REACTOR_FUEL_ROD)
+                .setRegistryName(AtomicScience.PREFIX + "fissile_fuel_cell"));
+        event.getRegistry().register(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder", "cell_breeder_fuel",
                         ConfigPower.BREEDER_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD
-                        , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_BREEDER_ROD, ConfigThermal.HEAT_REACTOR_BREEDER_ROD),
-                "breeder_fuel_cell");
+                        , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_BREEDER_ROD, ConfigThermal.HEAT_REACTOR_BREEDER_ROD)
+                .setRegistryName(AtomicScience.PREFIX + "breeder_fuel_cell"));
 
         //Crafting items
-        GameRegistry.registerItem(itemEmptyCell = new Item()
-                .setUnlocalizedName(AtomicScience.PREFIX + "cell.empty")
-                .setTextureName(AtomicScience.PREFIX + "cell_empty")
-                .setCreativeTab(AtomicScience.creativeTab), "cell_empty");
+        event.getRegistry().register(itemEmptyCell = new Item()
+                .setTranslationKey(AtomicScience.PREFIX + "cell.empty")
+                .setCreativeTab(AtomicScience.creativeTab)
+                .setRegistryName(AtomicScience.PREFIX + "cell_empty"));
 
-        GameRegistry.registerItem(itemYellowCake = new ItemRadioactive("cake.yellow", "yellow_cake", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "yellow_cake");
-        GameRegistry.registerItem(itemUranium235 = new ItemRadioactive("uranium.235", "uranium.235", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235), "uranium_235");
-        GameRegistry.registerItem(itemUranium238 = new ItemRadioactive("uranium.238", "uranium.238", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238), "uranium_238");
+        event.getRegistry().register(itemYellowCake = new ItemRadioactive("cake.yellow", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "yellow_cake"));
+        event.getRegistry().register(itemUranium235 = new ItemRadioactive("uranium.235",  ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235).setRegistryName(AtomicScience.PREFIX + "uranium_235"));
+        event.getRegistry().register(itemUranium238 = new ItemRadioactive("uranium.238", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238).setRegistryName(AtomicScience.PREFIX + "uranium_238"));
 
         //Waste items
-        GameRegistry.registerItem(itemProcessingWaste = new ItemRadioactive("processing.waste", "processing.waste", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "processing_waste");
-        GameRegistry.registerItem(itemToxicWaste = new ItemRadioactive("toxic.waste", "toxic.waste", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE), "toxic_waste");
+        event.getRegistry().register(itemProcessingWaste = new ItemRadioactive("processing.waste", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "processing_waste"));
+        event.getRegistry().register(itemToxicWaste = new ItemRadioactive("toxic.waste",  ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "toxic_waste"));
 
         //Tools
-        GameRegistry.registerItem(itemHeatProbe = new ItemHeatProbe(), "heat_probe");
-        GameRegistry.registerItem(itemWrench = new ItemWrench(), "wrench");
+        event.getRegistry().register(itemHeatProbe = new ItemHeatProbe());
+        event.getRegistry().register(itemWrench = new ItemWrench());
 
         if (AtomicScience.runningAsDev)
         {
