@@ -1,16 +1,17 @@
 package com.builtbroken.atomic.network.packet;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.lib.transform.vector.Location;
 import com.builtbroken.atomic.network.IPacketIDReceiver;
 import com.builtbroken.atomic.network.ex.PacketTileReadException;
-import com.builtbroken.atomic.lib.transform.vector.Location;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Packet type designed to be used with Tiles
@@ -20,9 +21,7 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class PacketTile extends PacketBase
 {
-    public int x;
-    public int y;
-    public int z;
+    public BlockPos pos;
     public int id;
 
     public String name;
@@ -33,17 +32,13 @@ public class PacketTile extends PacketBase
     }
 
     /**
-     * @param x - location
-     * @param y - location
-     * @param z - location
+     * @param pos - location
      */
-    public PacketTile(String name, int id, int x, int y, int z)
+    public PacketTile(String name, int id, BlockPos pos)
     {
         this.name = name;
         this.id = id;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.pos = pos;
     }
 
     /**
@@ -51,7 +46,7 @@ public class PacketTile extends PacketBase
      */
     public PacketTile(String name, int id, TileEntity tile)
     {
-        this(name, id, tile.xCoord, tile.yCoord, tile.zCoord);
+        this(name, id, tile.getPos());
     }
 
     @Override
@@ -63,9 +58,9 @@ public class PacketTile extends PacketBase
             ByteBufUtils.writeUTF8String(buffer, name);
         }
         buffer.writeInt(id);
-        buffer.writeInt(x);
-        buffer.writeInt(y);
-        buffer.writeInt(z);
+        buffer.writeInt(pos.getX());
+        buffer.writeInt(pos.getY());
+        buffer.writeInt(pos.getZ());
         super.encodeInto(ctx, buffer);
     }
 
@@ -77,9 +72,7 @@ public class PacketTile extends PacketBase
             name = ByteBufUtils.readUTF8String(buffer);
         }
         id = buffer.readInt();
-        x = buffer.readInt();
-        y = buffer.readInt();
-        z = buffer.readInt();
+        pos = new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt());
         super.decodeInto(ctx, buffer);
     }
 
@@ -125,9 +118,9 @@ public class PacketTile extends PacketBase
             }
             return;
         }
-        if (player.getEntityWorld().blockExists(this.x, this.y, this.z))
+        if (player.getEntityWorld().isBlockLoaded(pos))
         {
-            handle(player, player.getEntityWorld().getTileEntity(this.x, this.y, this.z));
+            handle(player, player.getEntityWorld().getTileEntity(pos));
         }
         else if (AtomicScience.runningAsDev)
         {
@@ -144,7 +137,7 @@ public class PacketTile extends PacketBase
     public void handle(EntityPlayer player, TileEntity tile)
     {
         //TODO add checksum or hash to verify the packet is sent to the correct tile
-        final Location location = new Location(player.worldObj, x, y, z);
+        final Location location = new Location(player.world, pos);
         if (tile == null)
         {
             AtomicScience.logger.error(new PacketTileReadException(location, "Null tile"));

@@ -7,13 +7,12 @@ import com.builtbroken.atomic.map.exposure.RadiationMap;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThermalMap;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
  * Core handler for registering maps and triggering events
@@ -52,16 +51,13 @@ public final class MapHandler
         AtomicScienceAPI.thermalSystem = THERMAL_MAP;
 
         MinecraftForge.EVENT_BUS.register(INSTANCE);
-        FMLCommonHandler.instance().bus().register(INSTANCE);
 
         if(ConfigRadiation.ENABLE_MAP)
         {
             MinecraftForge.EVENT_BUS.register(RADIATION_MAP);
-            FMLCommonHandler.instance().bus().register(RADIATION_MAP);
         }
 
         MinecraftForge.EVENT_BUS.register(THERMAL_MAP);
-        FMLCommonHandler.instance().bus().register(THERMAL_MAP);
     }
 
     ///----------------------------------------------------------------
@@ -71,9 +67,9 @@ public final class MapHandler
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event)
     {
-        RADIATION_MAP.onWorldUnload(event.world);
-        MATERIAL_MAP.onWorldUnload(event.world);
-        THERMAL_MAP.onWorldUnload(event.world);
+        RADIATION_MAP.onWorldUnload(event.getWorld());
+        MATERIAL_MAP.onWorldUnload(event.getWorld());
+        THERMAL_MAP.onWorldUnload(event.getWorld());
     }
 
     @SubscribeEvent
@@ -91,24 +87,24 @@ public final class MapHandler
     @SubscribeEvent
     public void onChunkUnload(ChunkEvent.Unload event) //Only called if chunk unloads separate from world unload
     {
-        RADIATION_MAP.onChunkUnload(event.world, event.getChunk());
-        MATERIAL_MAP.onChunkUnload(event.world, event.getChunk());
-        THERMAL_MAP.onChunkUnload(event.world, event.getChunk());
+        RADIATION_MAP.onChunkUnload(event.getWorld(), event.getChunk());
+        MATERIAL_MAP.onChunkUnload(event.getWorld(), event.getChunk());
+        THERMAL_MAP.onChunkUnload(event.getWorld(), event.getChunk());
     }
 
     @SubscribeEvent
     public void onChunkLoadData(ChunkDataEvent.Load event) //Called before chunk load event
     {
-        RADIATION_MAP.onChunkLoadData(event.world, event.getChunk(), event.getData());
-        MATERIAL_MAP.onChunkLoadData(event.world, event.getChunk(), event.getData());
-        THERMAL_MAP.onChunkLoadData(event.world, event.getChunk(), event.getData());
+        RADIATION_MAP.onChunkLoadData(event.getWorld(), event.getChunk(), event.getData());
+        MATERIAL_MAP.onChunkLoadData(event.getWorld(), event.getChunk(), event.getData());
+        THERMAL_MAP.onChunkLoadData(event.getWorld(), event.getChunk(), event.getData());
     }
 
     @SubscribeEvent
     public void onChunkSaveData(ChunkDataEvent.Save event) //Called on world save
     {
-        RADIATION_MAP.onChunkSaveData(event.world, event.getChunk(), event.getData());
-        MATERIAL_MAP.onChunkSaveData(event.world, event.getChunk(), event.getData());
-        THERMAL_MAP.onChunkSaveData(event.world, event.getChunk(), event.getData());
+        RADIATION_MAP.onChunkSaveData(event.getWorld(), event.getChunk(), event.getData());
+        MATERIAL_MAP.onChunkSaveData(event.getWorld(), event.getChunk(), event.getData());
+        THERMAL_MAP.onChunkSaveData(event.getWorld(), event.getChunk(), event.getData());
     }
 }

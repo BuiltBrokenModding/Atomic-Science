@@ -4,16 +4,13 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.lib.gui.tip.ISlotToolTip;
 import com.builtbroken.atomic.lib.gui.tip.ToolTip;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import org.lwjgl.input.Keyboard;
@@ -21,6 +18,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,7 +117,7 @@ public class GuiContainerBase<H> extends GuiContainer
 
     protected void drawString(String str, int x, int y, int color)
     {
-        fontRendererObj.drawString(str, x, y, color);
+        fontRenderer.drawString(str, x, y, color);
     }
 
     protected void drawString(String str, int x, int y)
@@ -144,7 +142,7 @@ public class GuiContainerBase<H> extends GuiContainer
 
     protected void drawStringCentered(String str, int x, int y, int color)
     {
-        drawString(str, x - (fontRendererObj.getStringWidth(str) / 2), y, color);
+        drawString(str, x - (fontRenderer.getStringWidth(str) / 2), y, color);
     }
 
     protected GuiTextField newField(int x, int y, int w, String msg)
@@ -154,7 +152,7 @@ public class GuiContainerBase<H> extends GuiContainer
 
     protected GuiTextField newField(int x, int y, int w, int h, String msg)
     {
-        GuiTextField x_field = new GuiTextField(this.fontRendererObj, x, y, w, h);
+        GuiTextField x_field = new GuiTextField(0, this.fontRenderer, x, y, w, h); //TODO handle id
         x_field.setText("" + msg);
         x_field.setMaxStringLength(15);
         x_field.setTextColor(16777215);
@@ -226,7 +224,7 @@ public class GuiContainerBase<H> extends GuiContainer
     }
 
     @Override
-    protected void keyTyped(char c, int id)
+    protected void keyTyped(char c, int id) throws IOException
     {
         //Key for debug render
         if (id == Keyboard.KEY_INSERT)
@@ -252,7 +250,7 @@ public class GuiContainerBase<H> extends GuiContainer
     }
 
     @Override
-    protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_)
+    protected void mouseClicked(int p_73864_1_, int p_73864_2_, int p_73864_3_) throws IOException
     {
         super.mouseClicked(p_73864_1_, p_73864_2_, p_73864_3_);
         for (GuiTextField field : fields)
@@ -293,17 +291,17 @@ public class GuiContainerBase<H> extends GuiContainer
     {
         if (slot instanceof ISlotRender)
         {
-            ((ISlotRender) slot).renderSlotOverlay(this, this.containerWidth + slot.xDisplayPosition - 1, this.containerHeight + slot.yDisplayPosition - 1);
+            ((ISlotRender) slot).renderSlotOverlay(this, this.containerWidth + slot.xPos - 1, this.containerHeight + slot.yPos - 1);
         }
         else
         {
-            drawSlot(slot.xDisplayPosition - 1, slot.yDisplayPosition - 1);
+            drawSlot(slot.xPos - 1, slot.yPos - 1);
         }
 
         if (AtomicScience.runningAsDev && renderSlotDebugIDs)
         {
-            this.drawStringCentered("" + slot.getSlotIndex(), guiLeft + slot.xDisplayPosition + 9, guiTop + slot.yDisplayPosition + 9, Color.YELLOW);
-            this.drawStringCentered("" + slot.slotNumber, guiLeft + slot.xDisplayPosition + 9, guiTop + slot.yDisplayPosition + 1, Color.RED);
+            this.drawStringCentered("" + slot.getSlotIndex(), guiLeft + slot.xPos + 9, guiTop + slot.yPos + 9, Color.YELLOW);
+            this.drawStringCentered("" + slot.slotNumber, guiLeft + slot.xPos + 9, guiTop + slot.yPos + 1, Color.RED);
         }
     }
 
@@ -563,11 +561,12 @@ public class GuiContainerBase<H> extends GuiContainer
     //TODO update and docs
     public void drawTooltip(int x, int y, List<String> tooltips)
     {
-        drawHoveringText(tooltips, x, y, fontRendererObj);
+        drawHoveringText(tooltips, x, y, fontRenderer);
     }
 
     protected void drawFluid(int x, int y, int line, int col, int width, int drawSize, FluidStack fluidStack)
     {
+        /* TODO implement
         if (fluidStack != null && fluidStack.getFluid() != null)
         {
             drawSize -= 1; //TODO why?
@@ -605,7 +604,7 @@ public class GuiContainerBase<H> extends GuiContainer
                     start = start + textureSize;
                 }
             }
-        }
+        }*/
     }
 
     /**

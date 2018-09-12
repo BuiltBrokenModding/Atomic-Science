@@ -7,7 +7,7 @@ import com.builtbroken.atomic.lib.gui.tip.ToolTip;
 import com.builtbroken.atomic.lib.gui.tip.ToolTipSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.inventory.IInventory;
+import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -18,7 +18,7 @@ public class SlotFluid extends SlotMachine implements ISlotRender, ISlotToolTip
 {
     private final String toolTip;
 
-    public SlotFluid(IInventory inventory, String toolTip, int index, int x, int y)
+    public SlotFluid(IItemHandler inventory, String toolTip, int index, int x, int y)
     {
         super(inventory, index, x, y);
         this.toolTip = toolTip;

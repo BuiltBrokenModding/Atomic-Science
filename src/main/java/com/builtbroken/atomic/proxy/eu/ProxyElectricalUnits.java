@@ -1,10 +1,7 @@
 package com.builtbroken.atomic.proxy.eu;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.content.machines.steam.generator.BlockSteamGenerator;
-import com.builtbroken.atomic.content.machines.steam.generator.TileEntitySteamGenEU;
 import com.builtbroken.atomic.proxy.ContentProxy;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Proxy for Redstone Flux API
@@ -31,8 +28,5 @@ public class ProxyElectricalUnits extends ContentProxy
     public void preInit()
     {
         AtomicScience.logger.info(this + " Loaded");
-        //PowerSystem.register(new PowerHandlerEU());
-        BlockSteamGenerator.euFactory = () -> new TileEntitySteamGenEU();
-        GameRegistry.registerTileEntity(TileEntitySteamGenEU.class, AtomicScience.PREFIX + "steam_turbine_eu");
     }
 }

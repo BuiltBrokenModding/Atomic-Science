@@ -4,7 +4,6 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.CommonProxy;
 import com.builtbroken.atomic.client.fx.FxSmoke;
 import com.builtbroken.atomic.config.ConfigClient;
-import com.builtbroken.atomic.content.ASClientReg;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.trigger.PacketMouse;
@@ -48,7 +47,6 @@ public class ClientProxy extends CommonProxy
     {
         OBJLoader.INSTANCE.addDomain(AtomicScience.DOMAIN);
         MinecraftForge.EVENT_BUS.register(this);
-        ASClientReg.register();
     }
 
     @Override

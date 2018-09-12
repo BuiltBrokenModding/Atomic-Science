@@ -6,17 +6,22 @@ import com.builtbroken.atomic.content.machines.TileEntityPowerInvMachine;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.lib.power.PowerSystem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing
-import net.minecraftforge.fluids.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 import java.util.function.Function;
@@ -196,47 +201,25 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
 
     protected void drainBattery(int slot)
     {
-        ItemStack itemStack = getStackInSlot(slot);
+        ItemStack itemStack = getInventory().getStackInSlot(slot);
         int power = PowerSystem.getEnergyStored(itemStack);
         if (power > 0)
         {
             power = PowerSystem.removePower(itemStack, power, false);
             int added = addEnergy(power, true);
             PowerSystem.removePower(itemStack, added, true);
-            setInventorySlotContents(slot, itemStack);
+            getInventory().setStackInSlot(slot, itemStack);
         }
     }
 
     public boolean hasSpaceInOutput(ItemStack insertStack, int slot)
     {
-        if (insertStack != null)
-        {
-            ItemStack stackInSlot = getStackInSlot(slot);
-            if (stackInSlot == null)
-            {
-                return true;
-            }
-            else if (stackInSlot.getItem() == insertStack.getItem() && stackInSlot.getItemDamage() == insertStack.getItemDamage())
-            {
-                return getInventoryStackLimit() - stackInSlot.stackSize >= insertStack.stackSize;
-            }
-        }
-        return false;
+        return getInventory().insertItem(slot, insertStack, true).isEmpty();
     }
 
     public void addToOutput(ItemStack insertStack, int slot)
     {
-        ItemStack stackInSlot = getStackInSlot(slot);
-        if (stackInSlot == null)
-        {
-            setInventorySlotContents(slot, insertStack);
-        }
-        else if (stackInSlot.getItem() == insertStack.getItem() && stackInSlot.getItemDamage() == insertStack.getItemDamage())
-        {
-            stackInSlot.stackSize += insertStack.stackSize;
-            stackInSlot.stackSize = Math.min(stackInSlot.stackSize, stackInSlot.getMaxStackSize());
-            stackInSlot.stackSize = Math.min(stackInSlot.stackSize, getInventoryStackLimit());
-        }
+        getInventory().insertItem(slot, insertStack, false);
     }
 
     //-----------------------------------------------
@@ -260,7 +243,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
 
     protected boolean isInputFluid(final int slot)
     {
-        return isInputFluid(getStackInSlot(slot));
+        return isInputFluid(getInventory().getStackInSlot(slot));
     }
 
     protected boolean isInputFluid(ItemStack stack)
@@ -275,20 +258,17 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
 
     protected FluidStack getFluid(final int slot)
     {
-        return getFluid(getStackInSlot(slot));
+        return getFluid(getInventory().getStackInSlot(slot));
     }
 
     protected FluidStack getFluid(ItemStack itemStack)
     {
-        if (itemStack != null)
+        if (itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
         {
-            if (itemStack.getItem() instanceof IFluidContainerItem)
+            IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+            if (handler != null)
             {
-                return ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack);
-            }
-            else if (FluidContainerRegistry.isFilledContainer(itemStack))
-            {
-                return FluidContainerRegistry.getFluidForFilledItem(itemStack);
+                return handler.drain(Integer.MAX_VALUE, false);
             }
         }
         return null;
@@ -296,18 +276,22 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
 
     protected boolean isEmptyFluidContainer(final int slot)
     {
-        return isEmptyFluidContainer(getStackInSlot(slot));
+        return isEmptyFluidContainer(getInventory().getStackInSlot(slot));
     }
 
     protected boolean isEmptyFluidContainer(ItemStack itemStack)
     {
         if (itemStack != null)
         {
-            if (itemStack.getItem() instanceof IFluidContainerItem)
+            if (itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
             {
-                return ((IFluidContainerItem) itemStack.getItem()).getFluid(itemStack) == null;
+                IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                if (handler != null)
+                {
+                    return handler.drain(1, false) == null;
+                }
             }
-            return FluidContainerRegistry.isEmptyContainer(itemStack) || itemStack.getItem() == Items.bucket;
+            return itemStack.getItem() == Items.BUCKET;
         }
         return false;
     }
@@ -317,45 +301,26 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
      */
     protected void fillTank(final int slot, final IFluidTank inputTank)
     {
-        final ItemStack itemStack = getStackInSlot(slot);
-        if (itemStack != null)
+        final ItemStack itemStack = getInventory().getStackInSlot(slot);
+        if (itemStack.isEmpty())
         {
-            if (itemStack.getItem() instanceof IFluidContainerItem)
+            if (itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
             {
-                IFluidContainerItem fluidContainerItem = (IFluidContainerItem) itemStack.getItem();
-
-                FluidStack fluidStack = fluidContainerItem.getFluid(itemStack);
-                if (fluidStack != null && getRecipeList().isComponent(this, fluidStack.getFluid()))
+                IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                if (handler != null)
                 {
-                    fluidStack = fluidContainerItem.drain(itemStack, inputTank.getCapacity() - inputTank.getFluidAmount(), false);
-                    int amount = inputTank.fill(fluidStack, true);
-                    fluidContainerItem.drain(itemStack, amount, true);
-                    setInventorySlotContents(slot, itemStack);
-                }
-            }
-            else if (FluidContainerRegistry.isFilledContainer(itemStack))
-            {
-                FluidStack stack = FluidContainerRegistry.getFluidForFilledItem(itemStack);
-                if (stack != null && getRecipeList().isComponent(this, stack.getFluid()))
-                {
-                    inputTank.fill(stack, true);
-                    decrStackSize(slot, 1);
-
-                    ItemStack container = itemStack.getItem().getContainerItem(itemStack);
-                    if (container != null)
+                    //Get fluid and check if its part of the recipe
+                    FluidStack fluidStack = handler.drain(inputTank.getCapacity() - inputTank.getFluidAmount(), false);
+                    if (fluidStack != null && getRecipeList().isComponent(this, fluidStack.getFluid()))
                     {
-                        if (getStackInSlot(slot) == null)
-                        {
-                            setInventorySlotContents(slot, container);
-                        }
-                        else
-                        {
-                            //TODO add fluid container output slot
-                            EntityItem item = new EntityItem(worldObj);
-                            item.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-                            item.setEntityItemStack(container);
-                            worldObj.spawnEntityInWorld(item);
-                        }
+                        //Fill
+                        int amount = inputTank.fill(fluidStack, true);
+
+                        //Drain based on fill
+                        handler.drain(amount, true);
+
+                        //Update inventory
+                        getInventory().setStackInSlot(slot, handler instanceof IFluidHandlerItem ? ((IFluidHandlerItem) handler).getContainer() : itemStack);
                     }
                 }
             }
@@ -371,62 +336,19 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
      */
     protected void outputFluids(final int slot, final IFluidTank outputTank)
     {
-        final ItemStack itemStack = getStackInSlot(slot);
-        if (itemStack != null && outputTank.getFluid() != null)
+        final ItemStack itemStack = getInventory().getStackInSlot(slot);
+        if (itemStack.isEmpty() && outputTank.getFluid() != null)
         {
-            if (itemStack.getItem() instanceof IFluidContainerItem)
+            if (itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
             {
-                //Copy stack (fix for containers that can stack when empty)
-                final ItemStack fluidContainer = itemStack.copy();
-                fluidContainer.stackSize = 1;
-
-                IFluidContainerItem fluidContainerItem = (IFluidContainerItem) fluidContainer.getItem();
-                FluidStack fluidStack = fluidContainerItem.getFluid(fluidContainer);
-                if (fluidStack == null || fluidStack.getFluid() == outputTank.getFluid().getFluid())
+                IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                if (handler != null)
                 {
-                    int filled = fluidContainerItem.fill(fluidContainer, outputTank.getFluid(), true);
-                    outputTank.drain(filled, true);
+                    int fill = handler.fill(outputTank.getFluid(), true);
+                    outputTank.drain(fill, true);
 
-                    if (itemStack.stackSize == 1)
-                    {
-                        setInventorySlotContents(slot, fluidContainer);
-                    }
-                    else
-                    {
-                        decrStackSize(slot, 1);
-
-                        //TODO add fluid container output slot
-                        EntityItem item = new EntityItem(worldObj);
-                        item.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-                        item.setEntityItemStack(fluidContainer);
-                        worldObj.spawnEntityInWorld(item);
-                    }
-                }
-            }
-            else if (FluidContainerRegistry.isEmptyContainer(itemStack))
-            {
-                ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(outputTank.getFluid(), itemStack);
-                if (filledContainer != null)
-                {
-                    FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(filledContainer);
-                    if (fluidStack.getFluid() == outputTank.getFluid().getFluid() && fluidStack.amount <= outputTank.getFluidAmount())
-                    {
-                        outputTank.drain(fluidStack.amount, true);
-                        decrStackSize(slot, 1);
-
-                        if (getStackInSlot(slot) == null)
-                        {
-                            setInventorySlotContents(slot, filledContainer);
-                        }
-                        else
-                        {
-                            //TODO add fluid container output slot
-                            EntityItem item = new EntityItem(worldObj);
-                            item.setPosition(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-                            item.setEntityItemStack(filledContainer);
-                            worldObj.spawnEntityInWorld(item);
-                        }
-                    }
+                    //Update inventory
+                    getInventory().setStackInSlot(slot, handler instanceof IFluidHandlerItem ? ((IFluidHandlerItem) handler).getContainer() : itemStack);
                 }
             }
         }
@@ -441,21 +363,23 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
     {
         if (outputTank.getFluid() != null)
         {
-            for (EnumFacing direction : EnumFacing.VALID_DIRECTIONS)
+            for (EnumFacing direction : EnumFacing.VALUES)
             {
                 if (canUseSideFunction == null || canUseSideFunction.apply(direction))
                 {
-                    int x = xCoord + direction.offsetX;
-                    int y = yCoord + direction.offsetY;
-                    int z = zCoord + direction.offsetZ;
+                    BlockPos pos = getPos().add(direction.getDirectionVec());
 
-                    if (worldObj.blockExists(x, y, z))
+                    if (world.isBlockLoaded(pos))
                     {
-                        TileEntity tile = worldObj.getTileEntity(x, y, z);
-                        if (tile instanceof IFluidHandler && outputTank.getFluid() != null && ((IFluidHandler) tile).canFill(direction.getOpposite(), outputTank.getFluid().getFluid()))
+                        TileEntity tile = world.getTileEntity(pos);
+                        if (tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction))
                         {
-                            int fill = ((IFluidHandler) tile).fill(direction.getOpposite(), outputTank.getFluid(), true);
-                            outputTank.drain(fill, true);
+                            IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
+                            if (handler != null)
+                            {
+                                int fill = handler.fill(outputTank.getFluid(), true);
+                                outputTank.drain(fill, true);
+                            }
                         }
                     }
                 }
@@ -528,7 +452,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
     {
         if (_facingDirectionCache == null)
         {
-            _facingDirectionCache = EnumFacing.getOrientation(getBlockMetadata());
+            _facingDirectionCache = EnumFacing.byIndex(getBlockMetadata());
         }
         return _facingDirectionCache;
     }
@@ -573,10 +497,10 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
     //-----------------------------------------------
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
-        super.writeToNBT(nbt);
         nbt.setInteger("processingProgress", processTimer);
+        return super.writeToNBT(nbt);
     }
 
     @Override

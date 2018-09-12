@@ -20,7 +20,7 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
     @Override
     public boolean matches(TileEntityChemBoiler machine)
     {
-        ItemStack stack = machine.getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
+        ItemStack stack = machine.getInventory().getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
         if (stack != null)
         {
             return RecipeHelpers.isUraniumOre(stack)
@@ -33,7 +33,7 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
     public boolean applyRecipe(TileEntityChemBoiler machine)
     {
         //Uranium Ore recipe
-        final ItemStack inputItem = machine.getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
+        final ItemStack inputItem = machine.getInventory().getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
         if (inputItem != null)
         {
             if (RecipeHelpers.isUraniumOre(inputItem)
@@ -45,7 +45,7 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
                 ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.SOLID_WASTE_URANIUM_ORE, 0);
                 if (machine.hasSpaceInOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT))
                 {
-                    machine.decrStackSize(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1);
+                    machine.getInventory().extractItem(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1, false);
                     machine.addToOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT);
 
                     machine.getBlueTank().drain(ConfigRecipe.WATER_BOIL_URANIUM_ORE, true);

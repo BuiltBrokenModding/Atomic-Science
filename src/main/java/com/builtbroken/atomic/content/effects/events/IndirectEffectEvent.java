@@ -2,7 +2,7 @@ package com.builtbroken.atomic.content.effects.events;
 
 import com.builtbroken.atomic.api.effect.IIndirectEffectSource;
 import com.builtbroken.atomic.api.effect.IIndirectEffectType;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Base type for all indirect effects (radiation)

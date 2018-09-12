@@ -10,15 +10,16 @@ import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataMap;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import com.builtbroken.atomic.map.exposure.wrapper.RadSourceEntityItem;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -228,6 +229,23 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
      * Gets the '(REM) roentgen equivalent man' at the given location
      *
      * @param world - location
+     * @param pos   - location
+     * @return rem level in mili-rads (1/1000ths of a rem)
+     */
+    public int getRadLevel(World world, BlockPos pos)
+    {
+        DataMap map = getMap(world, false);
+        if (map != null)
+        {
+            return map.getData(pos);
+        }
+        return 0;
+    }
+
+    /**
+     * Gets the '(REM) roentgen equivalent man' at the given location
+     *
+     * @param world - location
      * @param x     - location
      * @param y     - location
      * @param z     - location
@@ -254,13 +272,13 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
         float value = 0;
 
         //Top point
-        value += getRadLevel(entity.worldObj, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY + entity.height), (int) Math.floor(entity.posZ));
+        value += getRadLevel(entity.world, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY + entity.height), (int) Math.floor(entity.posZ));
 
         //Mid point
-        value += getRadLevel(entity.worldObj, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY + (entity.height / 2)), (int) Math.floor(entity.posZ));
+        value += getRadLevel(entity.world, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY + (entity.height / 2)), (int) Math.floor(entity.posZ));
 
         //Bottom point
-        value += getRadLevel(entity.worldObj, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY), (int) Math.floor(entity.posZ));
+        value += getRadLevel(entity.world, (int) Math.floor(entity.posX), (int) Math.floor(entity.posY), (int) Math.floor(entity.posZ));
 
         //Average TODO build alg to use body size (collision box)
         value /= 3f;
@@ -306,7 +324,7 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     {
         if (event.world() != null && !event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP && event.prev_value != event.new_value)
         {
-            MapHandler.THREAD_RAD_EXPOSURE.queuePosition(DataChange.get(event.dim(), event.x, event.y, event.z, event.prev_value, event.new_value));
+            MapHandler.THREAD_RAD_EXPOSURE.queuePosition(DataChange.get(event.dim(), event.pos.getX(), event.pos.getY(), event.pos.getZ(), event.prev_value, event.new_value));
         }
     }
 
@@ -351,12 +369,12 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent()
     public void itemPickUpEvent(PlayerEvent.ItemPickupEvent event)
     {
-        if (!event.player.worldObj.isRemote)
+        if (!event.player.world.isRemote)
         {
             EntityItem entityItem = event.pickedUp;
             if (entityItem != null)
             {
-                ItemStack stack = entityItem.getEntityItem();
+                ItemStack stack = entityItem.getItem();
                 if (stack != null && stack.getItem() instanceof IRadioactiveItem)
                 {
                     removeSource(entityItem);
@@ -368,10 +386,10 @@ public class RadiationMap extends MapSystem implements IRadiationExposureSystem
     @SubscribeEvent()
     public void entityJoinWorld(EntityJoinWorldEvent event)
     {
-        if (!event.world.isRemote && event.entity.isEntityAlive())
+        if (!event.getWorld().isRemote && event.getEntity().isEntityAlive())
         {
             //Add source handles checking if its an actual source
-            addSource(event.entity);
+            addSource(event.getEntity());
         }
     }
 }

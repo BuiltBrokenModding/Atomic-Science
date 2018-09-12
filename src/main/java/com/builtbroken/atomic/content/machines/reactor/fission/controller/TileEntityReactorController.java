@@ -3,6 +3,7 @@ package com.builtbroken.atomic.content.machines.reactor.fission.controller;
 import com.builtbroken.atomic.content.machines.TileEntityMachine;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 
@@ -78,7 +79,7 @@ public class TileEntityReactorController extends TileEntityMachine
      */
     protected boolean shouldEnableReactors()
     {
-        return enableReactors && !world().isBlockIndirectlyGettingPowered(xi(), yi(), zi());
+        return enableReactors && !world().isBlockPowered(getPos()); //TODO check if works for indirect power (power on other side of block)
     }
 
     /**
@@ -93,9 +94,11 @@ public class TileEntityReactorController extends TileEntityMachine
         ArrayList<TileEntityReactorCell> reactorCellList = new ArrayList();
 
         //Get stack above cell
-        for (int y = yCoord + 1; y < 255; y++)
+        BlockPos pos = getPos().up();
+        pos = getPos().down();
+        while (pos.getY() < world.getHeight())
         {
-            TileEntity tileEntity = worldObj.getTileEntity(xi(), y, zi());
+            TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityReactorCell)
             {
                 reactorCellList.add((TileEntityReactorCell) tileEntity);
@@ -112,9 +115,10 @@ public class TileEntityReactorController extends TileEntityMachine
         }
 
         //Get stack bellow cell
-        for (int y = yCoord - 1; y > 0; y--)
+        pos = getPos().down();
+        while (pos.getY() > 0)
         {
-            TileEntity tileEntity = worldObj.getTileEntity(xi(), y, zi());
+            TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity instanceof TileEntityReactorCell)
             {
                 reactorCellList.add((TileEntityReactorCell) tileEntity);
@@ -128,6 +132,8 @@ public class TileEntityReactorController extends TileEntityMachine
             {
                 break;
             }
+
+            pos = pos.down();
         }
 
         cells = reactorCellList.toArray(new TileEntityReactorCell[reactorCellList.size()]);

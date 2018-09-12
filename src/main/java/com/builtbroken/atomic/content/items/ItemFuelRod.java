@@ -28,9 +28,9 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
     /** Heat of the fuel rod when the reactor is active */
     public final int reactorHeatOutput;
 
-    public ItemFuelRod(String name, String texture, int maxFuelRuntime, int radioactiveMaterialValue, int reactorRadioactivity, int reactorHeatOutput)
+    public ItemFuelRod(String name, int maxFuelRuntime, int radioactiveMaterialValue, int reactorRadioactivity, int reactorHeatOutput)
     {
-        super(name, texture, radioactiveMaterialValue);
+        super(name, radioactiveMaterialValue);
         this.maxFuelRuntime = maxFuelRuntime;
         this.reactorRadioactivity = reactorRadioactivity;
         this.reactorHeatOutput = reactorHeatOutput;

@@ -51,7 +51,7 @@ public class RadSourcePlayer implements IRadiationSource
     @Override
     public World world()
     {
-        return player.worldObj;
+        return player.world;
     }
 
     @Override

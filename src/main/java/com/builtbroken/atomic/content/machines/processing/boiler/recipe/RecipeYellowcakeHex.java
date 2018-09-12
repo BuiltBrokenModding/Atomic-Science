@@ -19,7 +19,7 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
     @Override
     public boolean matches(TileEntityChemBoiler machine)
     {
-        ItemStack stack = machine.getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
+        ItemStack stack = machine.getInventory().getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
         if (stack != null)
         {
             return ASItems.itemYellowCake == stack.getItem()
@@ -31,7 +31,7 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
     @Override
     public boolean applyRecipe(TileEntityChemBoiler machine)
     {
-        final ItemStack inputItem = machine.getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
+        final ItemStack inputItem = machine.getInventory().getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
         if (inputItem != null)
         {
             if (ASItems.itemYellowCake == inputItem.getItem()
@@ -43,7 +43,7 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
                 ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.SOLID_WASTE_YELLOWCAKE, 0);
                 if (machine.hasSpaceInOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT))
                 {
-                    machine.decrStackSize(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1);
+                    machine.getInventory().extractItem(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1, false);
                     machine.addToOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT);
 
                     machine.getBlueTank().drain(ConfigRecipe.WATER_BOIL_YELLOWCAKE, true);

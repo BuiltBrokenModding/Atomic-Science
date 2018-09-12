@@ -3,11 +3,13 @@ package com.builtbroken.atomic.content.commands;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.map.MapHandler;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -16,19 +18,19 @@ import net.minecraft.util.ChatComponentText;
 public class CommandAS extends CommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "atomic-science";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
-        return "/" + getCommandName() + " help";
+        return "/" + getName() + " help";
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args == null || args.length == 0 || args[0].equals("help") || args[0].equals("?"))
         {
@@ -39,15 +41,15 @@ public class CommandAS extends CommandBase
             final String sub = args[0];
             if (sub.equalsIgnoreCase("rad") || sub.equalsIgnoreCase("radiation"))
             {
-                commandRadiation(sender, args);
+                commandRadiation(server, sender, args);
             }
             else if (sub.equalsIgnoreCase("exposure"))
             {
-                commandExposure(sender, args);
+                commandExposure(server,sender, args);
             }
             else if (sub.equalsIgnoreCase("mat") || sub.equalsIgnoreCase("material"))
             {
-                commandMat(sender, args);
+                commandMat(server,sender, args);
             }
             else
             {
@@ -60,16 +62,16 @@ public class CommandAS extends CommandBase
     {
         if (sender instanceof EntityPlayer)
         {
-            sender.addChatMessage(new ChatComponentText(getCommandName() + " rad -> show radiation of self"));
-            sender.addChatMessage(new ChatComponentText(getCommandName() + " rad set <value> -> set radiation of self"));
-            sender.addChatMessage(new ChatComponentText(getCommandName() + " exposure -> shows radiation of where your standing"));
+            sender.sendMessage(new TextComponentString(getName() + " rad -> show radiation of self")); //TODO translate
+            sender.sendMessage(new TextComponentString(getName()+ " rad set <value> -> set radiation of self"));
+            sender.sendMessage(new TextComponentString(getName() + " exposure -> shows radiation of where your standing"));
         }
-        sender.addChatMessage(new ChatComponentText(getCommandName() + " rad <player> -> show radiation of player"));
-        sender.addChatMessage(new ChatComponentText(getCommandName() + " rad set <player> <value> -> set radiation of player"));
-        sender.addChatMessage(new ChatComponentText(getCommandName() + " exposure <player> -> shows the radiation exposure of where the player is standing"));
+        sender.sendMessage(new TextComponentString(getName() + " rad <player> -> show radiation of player"));
+        sender.sendMessage(new TextComponentString(getName() + " rad set <player> <value> -> set radiation of player"));
+        sender.sendMessage(new TextComponentString(getName() + " exposure <player> -> shows the radiation exposure of where the player is standing"));
 
-        sender.addChatMessage(new ChatComponentText(getCommandName() + " material get <dim> <x> <y> <z> -> gets the radioactive material level of the block position"));
-        sender.addChatMessage(new ChatComponentText(getCommandName() + " material set <dim> <x> <y> <z> <value> -> sets the radioactive material level of the block position"));
+        sender.sendMessage(new TextComponentString(getName() + " material get <dim> <x> <y> <z> -> gets the radioactive material level of the block position"));
+        sender.sendMessage(new TextComponentString(getName() + " material set <dim> <x> <y> <z> <value> -> sets the radioactive material level of the block position"));
     }
 
     /**
@@ -78,11 +80,11 @@ public class CommandAS extends CommandBase
      * @param sender
      * @param args
      */
-    public void commandRadiation(ICommandSender sender, String[] args)
+    public void commandRadiation(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 1 && sender instanceof EntityPlayer)
         {
-            sender.addChatMessage(new ChatComponentText("Your radiation level is " + ASIndirectEffects.getRadiation((EntityPlayer) sender)));
+            sender.sendMessage(new TextComponentString("Your radiation level is " + ASIndirectEffects.getRadiation((EntityPlayer) sender)));
         }
         else if (args.length > 1)
         {
@@ -91,25 +93,25 @@ public class CommandAS extends CommandBase
                 if (args.length == 3 && sender instanceof EntityPlayer)
                 {
                     ASIndirectEffects.setRadiation((EntityPlayer) sender, Float.parseFloat(args[2]));
-                    sender.addChatMessage(new ChatComponentText("Your radiation level is now " + ASIndirectEffects.getRadiation((EntityPlayer) sender)));
+                    sender.sendMessage(new TextComponentString("Your radiation level is now " + ASIndirectEffects.getRadiation((EntityPlayer) sender)));
                 }
                 else if (args.length == 4)
                 {
-                    EntityPlayer player = getPlayer(sender, args[2]);
+                    EntityPlayer player = getPlayer(server, sender, args[2]);
                     ASIndirectEffects.setRadiation(player, Float.parseFloat(args[3]));
-                    player.addChatMessage(new ChatComponentText("Radiation level for '" + player.getCommandSenderName() + "' is now " + ASIndirectEffects.getRadiation(player)));
-                    player.addChatMessage(new ChatComponentText("Your radiation level is now " + ASIndirectEffects.getRadiation(player)));
+                    player.sendMessage(new TextComponentString("Radiation level for '" + player.getDisplayNameString() + "' is now " + ASIndirectEffects.getRadiation(player)));
+                    player.sendMessage(new TextComponentString("Your radiation level is now " + ASIndirectEffects.getRadiation(player)));
                 }
                 //Invalid (likely ran 'rad set' from command line)
                 else if (args.length == 3)
                 {
-                    sender.addChatMessage(new ChatComponentText(getCommandUsage(sender) + " rad set <player> <value> -> set radiation of player"));
+                    sender.sendMessage(new TextComponentString(getUsage(sender) + " rad set <player> <value> -> set radiation of player"));
                 }
             }
             else if (args.length == 2)
             {
-                EntityPlayerMP player = getPlayer(sender, args[1]);
-                player.addChatMessage(new ChatComponentText("Radiation level for '" + player.getCommandSenderName() + "' is " + ASIndirectEffects.getRadiation(player)));
+                EntityPlayerMP player = getPlayer(server, sender, args[1]);
+                player.sendMessage(new TextComponentString("Radiation level for '" + player.getDisplayNameString() + "' is " + ASIndirectEffects.getRadiation(player)));
             }
             else
             {
@@ -128,16 +130,16 @@ public class CommandAS extends CommandBase
      * @param sender
      * @param args
      */
-    public void commandExposure(ICommandSender sender, String[] args)
+    public void commandExposure(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 1 && sender instanceof EntityPlayer)
         {
-            sender.addChatMessage(new ChatComponentText("Your exposure level is " + MapHandler.RADIATION_MAP.getRemExposure((EntityPlayer) sender)));
+            sender.sendMessage(new TextComponentString("Your exposure level is " + MapHandler.RADIATION_MAP.getRemExposure((EntityPlayer) sender)));
         }
         else if (args.length == 2)
         {
-            EntityPlayerMP player = getPlayer(sender, args[1]);
-            player.addChatMessage(new ChatComponentText("Exposure level for '" + player.getCommandSenderName() + "' is " + MapHandler.RADIATION_MAP.getRemExposure(player)));
+            EntityPlayerMP player = getPlayer(server, sender, args[1]);
+            player.sendMessage(new TextComponentString("Exposure level for '" + player.getDisplayNameString() + "' is " + MapHandler.RADIATION_MAP.getRemExposure(player)));
         }
         else
         {
@@ -146,7 +148,7 @@ public class CommandAS extends CommandBase
     }
 
 
-    public void commandMat(ICommandSender sender, String[] args)
+    public void commandMat(MinecraftServer server, ICommandSender sender, String[] args) throws CommandNotFoundException
     {
         if (args.length >= 6)
         {
@@ -158,7 +160,7 @@ public class CommandAS extends CommandBase
             if (args[1].equalsIgnoreCase("get"))
             {
                 int value = MapHandler.MATERIAL_MAP.getData(dim, x, y, z);
-                sender.addChatMessage(new ChatComponentText("The block position contains '" + value + "' units of radioactive material."));
+                sender.sendMessage(new TextComponentString("The block position contains '" + value + "' units of radioactive material."));
             }
             else if (args[1].equalsIgnoreCase("set") && args.length == 7)
             {
@@ -168,7 +170,7 @@ public class CommandAS extends CommandBase
                 MapHandler.MATERIAL_MAP.setData(dim, x, y, z, value);
                 int new_value = MapHandler.MATERIAL_MAP.getData(dim, x, y, z);
 
-                sender.addChatMessage(new ChatComponentText("The block position radioactive material count changes from '" + prev_value + "' to '" + new_value + "'"));
+                sender.sendMessage(new TextComponentString("The block position radioactive material count changes from '" + prev_value + "' to '" + new_value + "'"));
             }
             else
             {

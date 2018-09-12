@@ -20,7 +20,7 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
     @Override
     public boolean matches(TileEntityChemExtractor machine)
     {
-        ItemStack stack = machine.getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
+        ItemStack stack = machine.getInventory().getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
         if (stack != null)
         {
             return RecipeHelpers.isUraniumOre(stack)
@@ -33,7 +33,7 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
     public boolean applyRecipe(TileEntityChemExtractor machine)
     {
         //Uranium Ore recipe
-        ItemStack inputItem = machine.getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
+        ItemStack inputItem = machine.getInventory().getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
         if (inputItem != null)
         {
             if (RecipeHelpers.isUraniumOre(inputItem)
@@ -44,7 +44,7 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
                 ItemStack outputStack = new ItemStack(ASItems.itemYellowCake, ConfigRecipe.YELLOW_CAKE_PER_ORE, 0);
                 if (machine.hasSpaceInOutput(outputStack, TileEntityChemExtractor.SLOT_ITEM_OUTPUT))
                 {
-                    machine.decrStackSize(TileEntityChemExtractor.SLOT_ITEM_INPUT, 1);
+                    machine.getInventory().extractItem(TileEntityChemExtractor.SLOT_ITEM_INPUT, 1, false);
                     machine.getInputTank().drain(ConfigRecipe.WATER_USED_YELLOW_CAKE, true);
                     machine.getOutputTank().fill(new FluidStack(ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE), true);
                     machine.addToOutput(outputStack, TileEntityChemExtractor.SLOT_ITEM_OUTPUT);

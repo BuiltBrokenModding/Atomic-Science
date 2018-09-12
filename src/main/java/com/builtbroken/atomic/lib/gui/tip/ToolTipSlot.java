@@ -14,7 +14,7 @@ public class ToolTipSlot extends ToolTip
 
     public ToolTipSlot(Slot tank, String string)
     {
-        super(new Rectangle(tank.xDisplayPosition, tank.yDisplayPosition, 18, 18), string, true);
+        super(new Rectangle(tank.xPos, tank.yPos, 18, 18), string, true);
         this.tank = tank;
     }
 

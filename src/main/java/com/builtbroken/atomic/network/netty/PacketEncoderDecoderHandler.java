@@ -2,14 +2,14 @@ package com.builtbroken.atomic.network.netty;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.network.IPacket;
-import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
-import com.builtbroken.atomic.network.packet.sync.PacketPlayerRadiation;
 import com.builtbroken.atomic.network.packet.PacketPlayerItem;
 import com.builtbroken.atomic.network.packet.PacketTile;
+import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
+import com.builtbroken.atomic.network.packet.sync.PacketPlayerRadiation;
 import com.builtbroken.atomic.network.packet.trigger.PacketMouse;
-import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import net.minecraftforge.fml.common.network.FMLIndexedMessageToMessageCodec;
 
 /**
  * @author tgame14

@@ -7,9 +7,8 @@ import com.builtbroken.atomic.lib.gui.tip.ToolTip;
 import com.builtbroken.atomic.lib.gui.tip.ToolTipSlot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -18,13 +17,13 @@ import java.awt.*;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/30/2018.
  */
-public class SlotMachine extends Slot implements ISlotRender, ISlotToolTip
+public class SlotMachine extends SlotItemHandler implements ISlotRender, ISlotToolTip
 {
     protected Color edgeColor = null;
 
     protected String toolTip;
 
-    public SlotMachine(IInventory inventory, int index, int x, int y)
+    public SlotMachine(IItemHandler inventory, int index, int x, int y)
     {
         super(inventory, index, x, y);
     }
@@ -39,12 +38,6 @@ public class SlotMachine extends Slot implements ISlotRender, ISlotToolTip
     {
         this.toolTip = toolTip;
         return this;
-    }
-
-    @Override
-    public boolean isItemValid(ItemStack stack)
-    {
-        return inventory.isItemValidForSlot(getSlotIndex(), stack);
     }
 
     @Override

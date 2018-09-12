@@ -2,10 +2,10 @@ package com.builtbroken.atomic.network.packet.client;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.network.IPacket;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -63,7 +63,7 @@ public class PacketSpawnParticle implements IPacket
     @Override
     public void handleClientSide(EntityPlayer player)
     {
-       if(player != null && player.worldObj.provider.dimensionId == dim)
+       if(player != null && player.world.provider.getDimension() == dim)
        {
            AtomicScience.sideProxy.spawnParticle(particle, x, y, z, vx, vy, vz);
        }

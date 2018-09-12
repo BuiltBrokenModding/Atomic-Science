@@ -2,10 +2,10 @@ package com.builtbroken.atomic.lib;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.google.common.collect.Lists;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import scala.actors.threadpool.Arrays;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class LanguageUtility
         }
 
         //Get translation
-        String translation = StatCollector.translateToLocal(key);
+        String translation = I18n.format(key);
         if (translation == null || translation.isEmpty())
         {
             if (AtomicScience.runningAsDev)
@@ -76,7 +76,7 @@ public class LanguageUtility
         }
 
         //Get translation
-        String translation = StatCollector.translateToLocal(key);
+        String translation = I18n.format(key);
         if (translation == null || translation.isEmpty())
         {
             if (AtomicScience.runningAsDev)
@@ -126,7 +126,7 @@ public class LanguageUtility
      * @param key
      * @return
      */
-    public static IChatComponent getLocalChat(String key)
+    public static ITextComponent getLocalChat(String key)
     {
         String translation = getLocalName(key);
         if (translation == null || translation.isEmpty())
@@ -135,10 +135,10 @@ public class LanguageUtility
             {
                 AtomicScience.logger.error("LanguageUtility.getLocalChat(" + key + ")", new RuntimeException());
             }
-            return new ChatComponentText("error.translation.empty");
+            return new TextComponentTranslation("error.translation.empty", key);
         }
 
-        return new ChatComponentText(translation);
+        return new TextComponentTranslation(translation);
     }
 
     /**
@@ -152,7 +152,7 @@ public class LanguageUtility
     {
         if (player != null)
         {
-            player.addChatComponentMessage(getLocalChat(key));
+            player.sendMessage(getLocalChat(key));
         }
         else if (AtomicScience.runningAsDev)
         {

@@ -1,11 +1,8 @@
 package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.config.ConfigMain;
-import com.builtbroken.atomic.content.fluid.BlockASFluid;
 import com.builtbroken.atomic.proxy.ContentProxy;
-import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -65,7 +62,7 @@ public enum ASFluids
     {
         if (fluid == null)
         {
-            fluid = new Fluid(id);
+            fluid = new Fluid(id, new ResourceLocation(AtomicScience.DOMAIN, texture_still), new ResourceLocation(AtomicScience.DOMAIN, texture_flow)); //TODO handle color
         }
         if (!id.startsWith(AtomicScience.PREFIX))
         {
@@ -74,13 +71,6 @@ public enum ASFluids
         if (!FluidRegistry.registerFluid(fluid))
         {
             fluid = FluidRegistry.getFluid(id);
-        }
-        if (makeBlock && fluid.getBlock() == null
-                && (configuration == null || configuration.getBoolean(id, "enable_block", true,
-                "Allows disabling the block for the fluid.")))
-        {
-            Block block = new BlockASFluid(this);
-            GameRegistry.registerBlock(block, "fb_" + id.replace(AtomicScience.PREFIX, ""));
         }
     }
 
@@ -98,27 +88,12 @@ public enum ASFluids
             configuration.load();
             for (ASFluids fluid : values())
             {
-                if (fluid != STEAM)
-                {
                     fluid.register(configuration);
-                }
             }
             configuration.save();
 
-            STEAM.fluid = new Fluid(STEAM.id); //Register for textures
-
+            STEAM.fluid.setGaseous(true);
             URANIUM_HEXAFLOURIDE.fluid.setGaseous(true);
-        }
-
-        @Override
-        public void init()
-        {
-            if (ConfigMain.ENABLE_STEAM)
-            {
-                //Due to a bug in mekanism we register steam late and do not allow disabling the block
-                STEAM.register(null);
-                STEAM.fluid.setGaseous(true);
-            }
         }
     }
 }

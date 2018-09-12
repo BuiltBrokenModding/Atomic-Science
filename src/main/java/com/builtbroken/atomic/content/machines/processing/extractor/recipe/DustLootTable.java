@@ -58,8 +58,8 @@ public class DustLootTable extends RecipeLootTable
         lootItems.clear();
 
         //Add vanilla dusts
-        lootItems.add(new RecipeRandomItem(defaultRareDustWeight, new ItemStack(Items.redstone)));
-        lootItems.add(new RecipeRandomItem(defaultRareDustWeight, new ItemStack(Items.glowstone_dust)));
+        lootItems.add(new RecipeRandomItem(defaultRareDustWeight, new ItemStack(Items.REDSTONE)));
+        lootItems.add(new RecipeRandomItem(defaultRareDustWeight, new ItemStack(Items.GLOWSTONE_DUST)));
 
         //Add non-ingot dust entries
         addEntries("stoneDust", 1, i -> true);
@@ -115,7 +115,7 @@ public class DustLootTable extends RecipeLootTable
     {
         //Copy stack to prevent errors
         ItemStack stack1 = dustStack.copy();
-        stack1.stackSize = 1;
+        stack1.setCount(1);
 
         //Create entry
         RecipeRandomItem recipeRandomItem = new RecipeRandomItem(weight, stack1);

@@ -2,13 +2,13 @@ package com.builtbroken.atomic.network.netty;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.network.IPacket;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 /**
  * @author tgame14
@@ -43,7 +43,7 @@ public class PacketChannelInboundHandler extends SimpleChannelInboundHandler<IPa
                     packet.handleClientSide();
                     break;
                 case SERVER:
-                    packet.handleServerSide(((NetHandlerPlayServer) netHandler).playerEntity);
+                    packet.handleServerSide(((NetHandlerPlayServer) netHandler).player);
                     break;
                 default:
                     break;

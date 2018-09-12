@@ -44,23 +44,33 @@ public class DataMap
 
     public int getData(BlockPos pos)
     {
-        DataChunk chunk = getChunkFromPosition(pos.getX(), pos.getZ(), false);
+        return getData(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public int getData(int x, int y, int z)
+    {
+        DataChunk chunk = getChunkFromPosition(x, z, false);
         if (chunk != null)
         {
-            return chunk.getValue(pos.getX() & 15, pos.getY(), pos.getZ() & 15);
+            return chunk.getValue(x & 15, y, z & 15);
         }
         return 0;
     }
 
     public boolean setData(BlockPos pos, int amount)
     {
-        DataChunk chunk = getChunkFromPosition(pos.getX(), pos.getZ(), amount > 0);
+        return setData(pos.getX(), pos.getY(), pos.getZ(), amount);
+    }
+
+    public boolean setData(int x, int y, int z, int amount)
+    {
+        DataChunk chunk = getChunkFromPosition(x, z, amount > 0);
         if (chunk != null)
         {
-            final int prev_value = getData(pos);
+            final int prev_value = getData(x, y, z);
 
             //Fire change event for modification and to trigger exposure map update
-            MapSystemEvent.UpdateValue event = new MapSystemEvent.UpdateValue(this, pos, prev_value, amount);
+            MapSystemEvent.UpdateValue event = new MapSystemEvent.UpdateValue(this, new BlockPos(x, y, z), prev_value, amount); //TODO figure out if we need the block pos
             if (MinecraftForge.EVENT_BUS.post(event))
             {
                 return false;
@@ -68,7 +78,7 @@ public class DataMap
             amount = event.new_value;
 
             //set value
-            boolean hasChanged = chunk.setValue(pos.getX() & 15, pos.getY(), pos.getZ() & 15, amount);
+            boolean hasChanged = chunk.setValue(x & 15, y, z & 15, amount);
 
             //if changed mark chunk so it saves
             if (hasChanged)
@@ -76,7 +86,7 @@ public class DataMap
                 World world = DimensionManager.getWorld(dim);
                 if (world != null)
                 {
-                    Chunk worldChunk = world.getChunk(pos);
+                    Chunk worldChunk = world.getChunk(x >> 4, z >> 4);
                     if (worldChunk != null)
                     {
                         worldChunk.setModified(true);

@@ -136,7 +136,7 @@ public class ContainerBase<H extends Object> extends Container
                 }
             }
 
-            if (slotStack.stackSize == 0)
+            if (slotStack.getCount() == 0)
             {
                 slot.putStack(null);
             }
@@ -152,6 +152,6 @@ public class ContainerBase<H extends Object> extends Container
     @Override
     public boolean canInteractWith(EntityPlayer entityplayer)
     {
-        return this.inventory.isUseableByPlayer(entityplayer);
+        return this.inventory.isUsableByPlayer(entityplayer);
     }
 }

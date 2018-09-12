@@ -1,19 +1,19 @@
 package com.builtbroken.atomic.network.netty;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.network.IPacket;
 import com.builtbroken.atomic.lib.transform.IPosWorld;
+import com.builtbroken.atomic.network.IPacket;
 import com.builtbroken.atomic.proxy.ContentProxy;
 import com.builtbroken.jlib.data.vector.IPos3D;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.FMLOutboundHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
+import net.minecraftforge.fml.common.network.FMLOutboundHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.EnumMap;
 
@@ -87,7 +87,7 @@ public class PacketSystem extends ContentProxy
 
     public void sendToAllInDimension(IPacket packet, World world)
     {
-        sendToAllInDimension(packet, world.provider.dimensionId);
+        sendToAllInDimension(packet, world.provider.getDimension());
     }
 
     /**
@@ -141,14 +141,14 @@ public class PacketSystem extends ContentProxy
 
     public void sendToAllAround(IPacket message, TileEntity tile, double range)
     {
-        sendToAllAround(message, tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord, range);
+        sendToAllAround(message, tile.getWorld(), tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), range);
     }
 
     public void sendToAllAround(IPacket message, World world, double x, double y, double z, double range)
     {
         if (world != null)
         {
-            sendToAllAround(message, new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, range));
+            sendToAllAround(message, new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, range));
         }
     }
 

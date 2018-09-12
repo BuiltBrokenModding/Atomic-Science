@@ -4,7 +4,7 @@ import com.builtbroken.atomic.api.effect.IIndirectEffectSource;
 import com.builtbroken.atomic.api.effect.IIndirectEffectType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 
 /**
  * Implementation of {@link IndirectEffectType}
@@ -32,7 +32,7 @@ public class IndirectEffectType implements IIndirectEffectType
     {
         if (target instanceof EntityPlayer)
         {
-            ((EntityPlayer) target).addChatComponentMessage(new ChatComponentText("Tag[" + id + "]"));
+            ((EntityPlayer) target).sendMessage(new TextComponentString("Tag[" + id + "]"));
         }
     }
 

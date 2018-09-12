@@ -31,6 +31,11 @@ public class TileEntitySteamFunnel extends TileEntitySteamInput
         tank = new SteamTank(this, Fluid.BUCKET_VOLUME * 10);
     }
 
+    public int getFluidAmount()
+    {
+        return tank.getFluidAmount();
+    }
+
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable net.minecraft.util.EnumFacing facing)
     {

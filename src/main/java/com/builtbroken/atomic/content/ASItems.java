@@ -72,11 +72,11 @@ public final class ASItems
         event.getRegistry().register(itemPoweredCell = (ItemPoweredCell) new ItemPoweredCell().setRegistryName(AtomicScience.PREFIX + "powered_cell"));
 
         //Machine inputs
-        event.getRegistry().register(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile", "cell_fissile_fuel",
+        event.getRegistry().register(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile",
                         ConfigPower.FUEL_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD
                         , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_FUEL_ROD, ConfigThermal.HEAT_REACTOR_FUEL_ROD)
                 .setRegistryName(AtomicScience.PREFIX + "fissile_fuel_cell"));
-        event.getRegistry().register(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder", "cell_breeder_fuel",
+        event.getRegistry().register(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder",
                         ConfigPower.BREEDER_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD
                         , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_BREEDER_ROD, ConfigThermal.HEAT_REACTOR_BREEDER_ROD)
                 .setRegistryName(AtomicScience.PREFIX + "breeder_fuel_cell"));

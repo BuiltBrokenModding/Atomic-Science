@@ -247,7 +247,7 @@ public class TestRadChunk extends TestCase
         chunk.save(saveData);
 
         //Test save
-        assertEquals("Save data should have 3 keys", 3, saveData.func_150296_c().size());
+        assertEquals("Save data should have 3 keys", 3, saveData.getKeySet().size());
         assertTrue("Failed to save any layers", saveData.hasKey(DataChunk.NBT_LAYERS));
         assertEquals("Save data should have 3 layers", 3, saveData.getTagList(DataChunk.NBT_LAYERS, 10).tagCount());
         assertTrue("Failed to save y start", saveData.hasKey(DataChunk.NBT_Y_START));

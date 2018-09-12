@@ -2,8 +2,8 @@ package com.builtbroken.atomic.content.effects.events;
 
 import com.builtbroken.atomic.api.effect.IIndirectEffectSource;
 import com.builtbroken.atomic.api.effect.IIndirectEffectType;
-import cpw.mods.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
  * Radiation event involving an entity

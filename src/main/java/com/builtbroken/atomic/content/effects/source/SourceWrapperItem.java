@@ -25,7 +25,7 @@ public class SourceWrapperItem implements IIndirectEffectSource
     @Override
     public World world()
     {
-        return holdOfTheItem.worldObj;
+        return holdOfTheItem.world;
     }
 
     @Override

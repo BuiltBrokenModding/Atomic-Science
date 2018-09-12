@@ -2,9 +2,10 @@ package com.builtbroken.atomic.content.machines.steam;
 
 import com.builtbroken.atomic.content.machines.TileEntityMachine;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
-import com.builtbroken.atomic.map.data.DataPos;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -14,7 +15,7 @@ public class TileEntitySteamInput extends TileEntityMachine
 {
     protected boolean checkSteam = true;
     protected int steam = 0;
-    protected final DataPos topMostBlock = DataPos.get(0, 0, 0);
+    protected BlockPos topMostBlock;
 
     @Override
     protected void update(int ticks)
@@ -36,32 +37,34 @@ public class TileEntitySteamInput extends TileEntityMachine
     protected void pathDown()
     {
         steam = 0;
-        topMostBlock.y = -1;
+        topMostBlock = null;
 
-        int y = yCoord - 1;
+        BlockPos pos = getPos().down();
+        IBlockState blockState;
         Block block;
         do
         {
             //Get block
-            block = worldObj.getBlock(xCoord, y, zCoord);
+            blockState = world.getBlockState(pos);
+            block = blockState.getBlock();
 
             //Check if block can produce vapor
-            if (block == Blocks.water || block == Blocks.flowing_water)
+            if (block == Blocks.WATER || block == Blocks.FLOWING_WATER)
             {
-                if (topMostBlock.y == -1)
+                if (topMostBlock == null)
                 {
-                    topMostBlock.x = xCoord;
-                    topMostBlock.y = y;
-                    topMostBlock.z = zCoord;
+                    topMostBlock = pos;
                 }
-                steam += ThermalHandler.getVaporRate(worldObj, xCoord, y, zCoord);
+                steam += ThermalHandler.getVaporRate(world, pos);
             }
             //Stop if we hit a none-air block
-            else if (!block.isAir(worldObj, xCoord, y, zCoord)) //TODO ignore blocks with small colliders
+            else if (!block.isAir(blockState, world, pos)) //TODO ignore blocks with small colliders
             {
                 break;
             }
+
+            pos = pos.down();
         }
-        while (y-- > 0);
+        while (pos.getY() > 0);
     }
 }

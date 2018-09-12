@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.lib.transform.vector;
 
+import com.builtbroken.atomic.lib.transform.IPosWorld;
 import com.builtbroken.jlib.data.vector.IPos3D;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.BlockFaceShape;
@@ -18,7 +19,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
-public class Location extends AbstractLocation<Location> implements IPos3D, Comparable<Location>
+public class Location extends AbstractLocation<Location> implements IPosWorld, Comparable<Location>
 {
     public static final Location NULL = new Location(null, 0, 0, 0);
 
@@ -47,7 +48,7 @@ public class Location extends AbstractLocation<Location> implements IPos3D, Comp
         super(tile);
     }
 
-    public Location(Location vec)
+    public Location(IPosWorld vec)
     {
         this(vec.world(), vec.x(), vec.y(), vec.z());
     }

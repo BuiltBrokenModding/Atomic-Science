@@ -1,16 +1,14 @@
 package com.builtbroken.atomic.content.items.cell;
 
 import com.builtbroken.atomic.content.ASItems;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-
-import java.util.List;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -24,7 +22,7 @@ public class CreativeTabCells extends CreativeTabs
     }
 
     @SideOnly(Side.CLIENT)
-    public void displayAllReleventItems(List list)
+    public void displayAllRelevantItems(NonNullList<ItemStack> list)
     {
         for (Fluid fluid : FluidRegistry.getRegisteredFluids().values())
         {
@@ -35,8 +33,8 @@ public class CreativeTabCells extends CreativeTabs
     }
 
     @Override
-    public Item getTabIconItem()
+    public ItemStack createIcon()
     {
-        return ASItems.itemFluidCell;
+        return new ItemStack(ASItems.itemFluidCell);
     }
 }

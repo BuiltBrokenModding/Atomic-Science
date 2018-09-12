@@ -10,11 +10,12 @@ import com.builtbroken.atomic.content.machines.TileEntityInventoryMachine;
 import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
 import com.builtbroken.atomic.map.MapHandler;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public class TileEntityReactorCell extends TileEntityInventoryMachine implements IFissionReactor, IRadiationSource, ISidedInventory
+public class TileEntityReactorCell extends TileEntityInventoryMachine implements IFissionReactor, IRadiationSource
 {
     public static final int SLOT_FUEL_ROD = 0;
     public static final int[] ACCESSIBLE_SIDES = new int[]{SLOT_FUEL_ROD};
@@ -42,6 +43,12 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         updateStructureType();
         MapHandler.RADIATION_MAP.addSource(this);
         MapHandler.THERMAL_MAP.addSource(this);
+    }
+
+    @Override
+    protected IItemHandlerModifiable createInventory()
+    {
+        return new ItemStackHandler(1);
     }
 
     //-----------------------------------------------
@@ -78,14 +85,14 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
             //Every 5 seconds, Check if we need to move rods (works like a hopper)
             if (ticks % 100 == 0 && getFuelRod() != null)
             {
-                TileEntity tile = worldObj.getTileEntity(xi(), yi() - 1, zi());
+                TileEntity tile = world.getTileEntity(getPos().down());
                 if (tile instanceof TileEntityReactorCell)
                 {
                     tryToMoveRod((TileEntityReactorCell) tile);
                 }
                 else if(tile instanceof TileEntityReactorController)
                 {
-                    tile = worldObj.getTileEntity(xi(), yi() - 2, zi());
+                    tile = world.getTileEntity(getPos().down(2));
                     if (tile instanceof TileEntityReactorCell)
                     {
                         tryToMoveRod((TileEntityReactorCell) tile);
@@ -139,7 +146,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         IFuelRodItem fuelRodItem = getFuelRod();
         if (fuelRodItem != null)
         {
-            setInventorySlotContents(0, fuelRodItem.onReactorTick(this, getFuelRodStack(), ticks, getFuelRuntime()));
+            getInventory().setStackInSlot(0, fuelRodItem.onReactorTick(this, getFuelRodStack(), ticks, getFuelRuntime()));
         }
     }
 
@@ -199,13 +206,13 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
 
     public void setFuelRod(ItemStack stack)
     {
-        setInventorySlotContents(SLOT_FUEL_ROD, stack);
+        getInventory().setStackInSlot(SLOT_FUEL_ROD, stack);
     }
 
     @Override
     public ItemStack getFuelRodStack()
     {
-        return getStackInSlot(SLOT_FUEL_ROD);
+        return getInventory().getStackInSlot(SLOT_FUEL_ROD);
     }
 
     @Override
@@ -242,37 +249,13 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         return 0;
     }
 
-    @Override
-    public int getSizeInventory()
-    {
-        return 1;
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 1;
-    }
-
-    @Override
+    //@Override TODO
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
         return slot == SLOT_FUEL_ROD && stack.getItem() instanceof IFuelRodItem;
     }
 
-    @Override
-    public int[] getAccessibleSlotsFromSide(int p_94128_1_)
-    {
-        return ACCESSIBLE_SIDES;
-    }
-
-    @Override
-    public boolean canInsertItem(int slot, ItemStack stack, int side)
-    {
-        return SLOT_FUEL_ROD == slot;
-    }
-
-    @Override
+    //@Override
     public boolean canExtractItem(int slot, ItemStack stack, int side)
     {
         if (SLOT_FUEL_ROD == slot)
@@ -332,10 +315,10 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
 
     public void updateStructureType()
     {
-        Block blockAbove = worldObj.getBlock(xCoord, yCoord + 1, zCoord);
-        Block blockBelow = worldObj.getBlock(xCoord, yCoord - 1, zCoord);
+        IBlockState blockAbove = world.getBlockState(getPos().up());
+        IBlockState blockBelow = world.getBlockState(getPos().down());
 
-        if (canConnect(blockAbove) &&canConnect(blockBelow))
+        if (canConnect(blockAbove) && canConnect(blockBelow))
         {
             structureType = StructureType.MIDDLE;
         }
@@ -353,7 +336,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         }
     }
 
-    private boolean canConnect(Block block)
+    private boolean canConnect(IBlockState block)
     {
         return block == ASBlocks.blockReactorCell || block == ASBlocks.blockReactorController;
     }

@@ -84,7 +84,7 @@ public class RecipeLootTable extends ContentProxy
     {
         //Copy stack to prevent errors
         ItemStack stack1 = stack.copy();
-        stack1.stackSize = 1;
+        stack1.setCount(1);
 
         //Create entry
         RecipeRandomItem recipeRandomItem = new RecipeRandomItem(weight, stack1);
@@ -102,7 +102,7 @@ public class RecipeLootTable extends ContentProxy
         if (itemStack != null && itemStack.getItem() != null)
         {
             //Confirm that the dust turns into an ingot
-            ItemStack smeltingResult = FurnaceRecipes.smelting().getSmeltingResult(itemStack);
+            ItemStack smeltingResult = FurnaceRecipes.instance().getSmeltingResult(itemStack);
             if (smeltingResult != null && smeltingResult.getItem() != null)
             {
                 for (int id : OreDictionary.getOreIDs(smeltingResult))
@@ -163,9 +163,9 @@ public class RecipeLootTable extends ContentProxy
         ItemStack stack = item.getStack();
         if (stack != null)
         {
-            if (stack.stackSize <= 0)
+            if (stack.getCount() <= 0)
             {
-                stack.stackSize = 1;
+                stack.setCount(1);
             }
             return stack;
         }

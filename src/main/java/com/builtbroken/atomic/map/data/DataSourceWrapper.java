@@ -26,7 +26,7 @@ public abstract class DataSourceWrapper<S extends IPosWorld> implements IPosWorl
 
     public boolean hasSourceChanged()
     {
-        return dim != source.world().provider.dimensionId
+        return dim != source.world().provider.getDimension()
                 || hasDistanceChanged();
     }
 
@@ -45,7 +45,7 @@ public abstract class DataSourceWrapper<S extends IPosWorld> implements IPosWorl
 
     public void logCurrentData()
     {
-        dim = source.world().provider.dimensionId;
+        dim = source.world().provider.getDimension();
 
         //Only want to log distance changes if it has changed enough to be noticed
         //  This is designed to prevent slow creep from going unnoticed

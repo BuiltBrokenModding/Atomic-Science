@@ -3,10 +3,10 @@ package com.builtbroken.atomic.content.effects.client;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.ClientProxy;
 import com.builtbroken.atomic.config.ConfigRadiation;
-import com.builtbroken.atomic.lib.Render2DHelper;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -24,11 +24,11 @@ public class RenderRadOverlay
     @SubscribeEvent
     public void renderOverlay(RenderGameOverlayEvent.Post event)
     {
-        int width = event.resolution.getScaledWidth();
-        int height = event.resolution.getScaledHeight();
+        int width = event.getResolution().getScaledWidth();
+        int height = event.getResolution().getScaledHeight();
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (event.type == RenderGameOverlayEvent.ElementType.ALL)
+        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
         {
             //Start
             GL11.glPushMatrix();
@@ -41,8 +41,8 @@ public class RenderRadOverlay
             int top = 5;
 
             //Get data
-            final float rad_player = interpolate(ClientProxy.PREV_RAD_PLAYER, ClientProxy.RAD_PLAYER, event.partialTicks);
-            final float rad_area = interpolate(ClientProxy.PREV_RAD_EXPOSURE, ClientProxy.RAD_EXPOSURE, event.partialTicks);
+            final float rad_player = interpolate(ClientProxy.PREV_RAD_PLAYER, ClientProxy.RAD_PLAYER, event.getPartialTicks());
+            final float rad_area = interpolate(ClientProxy.PREV_RAD_EXPOSURE, ClientProxy.RAD_EXPOSURE, event.getPartialTicks());
             final float rad_dead_min = ConfigRadiation.RADIATION_DEATH_POINT / (60 * 20); //Radiation needed to die in 1 min
 
             //Format
@@ -50,12 +50,12 @@ public class RenderRadOverlay
             String radDisplay = formatDisplay("ENV: ", rad_area * 20, "rem/s");
 
             //Render
-            Render2DHelper.renderTextWithShadow(remDisplay, left, top, interpolate(startColor, endColor, rad_player / ConfigRadiation.RADIATION_DEATH_POINT).getRGB());
-            Render2DHelper.renderTextWithShadow(radDisplay, left, top + 10, interpolate(startColor, endColor, rad_area / rad_dead_min).getRGB());
+            renderTextWithShadow(remDisplay, left, top, interpolate(startColor, endColor, rad_player / ConfigRadiation.RADIATION_DEATH_POINT).getRGB());
+            renderTextWithShadow(radDisplay, left, top + 10, interpolate(startColor, endColor, rad_area / rad_dead_min).getRGB());
 
             if (AtomicScience.runningAsDev)
             {
-                Render2DHelper.renderTextWithShadow("" + ClientProxy.RAD_REMOVE_TIMER, left + 60, top, endColor.getRGB());
+                renderTextWithShadow("" + ClientProxy.RAD_REMOVE_TIMER, left + 60, top, endColor.getRGB());
             }
 
             //Set prev
@@ -67,6 +67,27 @@ public class RenderRadOverlay
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glPopMatrix();
         }
+    }
+
+    /**
+     * Used by the overlay to render text with shadow behind the text
+     *
+     * @param text
+     * @param x
+     * @param y
+     * @param colorRGB
+     */
+    public static void renderTextWithShadow(String text, int x, int y, int colorRGB)
+    {
+        GL11.glPushMatrix();
+        FontRenderer fontrenderer = Minecraft.getMinecraft().fontRenderer;
+        fontrenderer.drawString(text, x + 1, y, 0);
+        fontrenderer.drawString(text, x - 1, y, 0);
+        fontrenderer.drawString(text, x, y + 1, 0);
+        fontrenderer.drawString(text, x, y - 1, 0);
+        fontrenderer.drawString(text, x, y, colorRGB);
+        GL11.glColor4f(1, 1, 1, 1);
+        GL11.glPopMatrix();
     }
 
     protected Color interpolate(Color color, Color color2, float per)

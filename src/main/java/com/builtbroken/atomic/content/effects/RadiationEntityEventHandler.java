@@ -6,15 +6,15 @@ import com.builtbroken.atomic.content.effects.source.SourceWrapperPosition;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.sync.PacketPlayerRadiation;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.MobEffects;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Handles evens and tracking radiation on the entities
@@ -34,9 +34,9 @@ public class RadiationEntityEventHandler
     @SubscribeEvent
     public void onEntityUpdate(LivingEvent.LivingUpdateEvent event)
     {
-        if (!event.entity.worldObj.isRemote)
+        if (!event.getEntity().getEntityWorld().isRemote)
         {
-            EntityLivingBase entity = event.entityLiving;
+            EntityLivingBase entity = event.getEntityLiving();
 
             if (entity.isEntityAlive())
             {
@@ -60,11 +60,11 @@ public class RadiationEntityEventHandler
                         if (rad > ConfigRadiation.RADIATION_SICKNESS_POINT) ///TODO get per entity
                         {
                             float chance = (rad - ConfigRadiation.RADIATION_SICKNESS_POINT) / (ConfigRadiation.RADIATION_DEATH_POINT - ConfigRadiation.RADIATION_SICKNESS_POINT);
-                            if (chance > entity.worldObj.rand.nextFloat())
+                            if (chance > entity.getEntityWorld().rand.nextFloat())
                             {
-                                if (entity.getActivePotionEffect(Potion.hunger) == null || entity.getActivePotionEffect(Potion.hunger).getDuration() < 10)
+                                if (entity.getActivePotionEffect(MobEffects.HUNGER) == null || entity.getActivePotionEffect(MobEffects.HUNGER).getDuration() < 10)
                                 {
-                                    entity.addPotionEffect(new PotionEffect(Potion.hunger.id, 100));
+                                    entity.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 100));
                                 }
                             }
 
@@ -72,27 +72,27 @@ public class RadiationEntityEventHandler
                             if (rad > ConfigRadiation.RADIATION_WEAKNESS_POINT) ///TODO get per entity
                             {
                                 chance = (rad - ConfigRadiation.RADIATION_WEAKNESS_POINT) / (ConfigRadiation.RADIATION_DEATH_POINT - ConfigRadiation.RADIATION_WEAKNESS_POINT);
-                                if (chance > entity.worldObj.rand.nextFloat())
+                                if (chance > entity.getEntityWorld().rand.nextFloat())
                                 {
-                                    if (entity.getActivePotionEffect(Potion.weakness) == null || entity.getActivePotionEffect(Potion.weakness).getDuration() < 10)
+                                    if (entity.getActivePotionEffect(MobEffects.WEAKNESS) == null || entity.getActivePotionEffect(MobEffects.WEAKNESS).getDuration() < 10)
                                     {
-                                        entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 100));
+                                        entity.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 100));
                                     }
                                 }
 
-                                if (chance > entity.worldObj.rand.nextFloat())
+                                if (chance > entity.getEntityWorld().rand.nextFloat())
                                 {
-                                    if (entity.getActivePotionEffect(Potion.digSlowdown) == null || entity.getActivePotionEffect(Potion.digSlowdown).getDuration() < 10)
+                                    if (entity.getActivePotionEffect(MobEffects.MINING_FATIGUE) == null || entity.getActivePotionEffect(MobEffects.MINING_FATIGUE).getDuration() < 10)
                                     {
-                                        entity.addPotionEffect(new PotionEffect(Potion.digSlowdown.id, 100));
+                                        entity.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 100));
                                     }
                                 }
 
-                                if (chance > entity.worldObj.rand.nextFloat())
+                                if (chance > entity.getEntityWorld().rand.nextFloat())
                                 {
-                                    if (entity.getActivePotionEffect(Potion.moveSlowdown) == null || entity.getActivePotionEffect(Potion.moveSlowdown).getDuration() < 10)
+                                    if (entity.getActivePotionEffect(MobEffects.SLOWNESS) == null || entity.getActivePotionEffect(MobEffects.SLOWNESS).getDuration() < 10)
                                     {
-                                        entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100));
+                                        entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 100));
                                     }
                                 }
 
@@ -100,11 +100,11 @@ public class RadiationEntityEventHandler
                                 if (rad > ConfigRadiation.RADIATION_CONFUSION_POINT) ///TODO get per entity
                                 {
                                     chance = (rad - ConfigRadiation.RADIATION_CONFUSION_POINT) / (ConfigRadiation.RADIATION_DEATH_POINT - ConfigRadiation.RADIATION_CONFUSION_POINT);
-                                    if (chance > entity.worldObj.rand.nextFloat())
+                                    if (chance > entity.getEntityWorld().rand.nextFloat())
                                     {
-                                        if (entity.getActivePotionEffect(Potion.confusion) == null || entity.getActivePotionEffect(Potion.confusion).getDuration() < 10)
+                                        if (entity.getActivePotionEffect(MobEffects.BLINDNESS) == null || entity.getActivePotionEffect(MobEffects.BLINDNESS).getDuration() < 10)
                                         {
-                                            entity.addPotionEffect(new PotionEffect(Potion.confusion.id, 100));
+                                            entity.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 100));
                                         }
                                     }
                                 }
@@ -134,7 +134,7 @@ public class RadiationEntityEventHandler
         if (remExposure > 0)
         {
             SourceWrapperPosition sourceWrapperPosition = new SourceWrapperPosition(
-                    entity.worldObj,
+                    entity.world,
                     entity.posX,
                     entity.posY,
                     entity.posZ
@@ -229,14 +229,14 @@ public class RadiationEntityEventHandler
     @SubscribeEvent
     public void onEntityDeath(LivingDeathEvent event)
     {
-        if (!event.entity.worldObj.isRemote)
+        if (!event.getEntity().getEntityWorld().isRemote)
         {
             //Clear data client side for respawn
-            if (event.entity instanceof EntityPlayerMP)
+            if (event.getEntity() instanceof EntityPlayerMP)
             {
-                float remExposure = MapHandler.RADIATION_MAP.getRemExposure(event.entity);
+                float remExposure = MapHandler.RADIATION_MAP.getRemExposure(event.getEntity());
                 System.out.println(remExposure);
-                PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(0, 0, 0), (EntityPlayerMP) event.entity);
+                PacketSystem.INSTANCE.sendToPlayer(new PacketPlayerRadiation(0, 0, 0), (EntityPlayerMP) event.getEntity());
             }
         }
     }

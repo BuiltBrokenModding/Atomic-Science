@@ -7,6 +7,8 @@ import com.builtbroken.atomic.map.data.*;
 import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -124,7 +126,7 @@ public class ThreadRadExposure extends ThreadDataChange
                         }
 
                         //Prevents crashes loading map areas from thread
-                        if (map.blockExists(x, y, z))
+                        if (map.blockExists(new BlockPos(x, y, z))) //TODO see if we need block pos
                         {
                             //Save
                             map.setData(x, y, z, Math.max(0, current_value));
@@ -350,32 +352,34 @@ public class ThreadRadExposure extends ThreadDataChange
         //TODO add JSON data to allow users to customize values
 
         //Decay power per block
-        Block block = world.getBlock(xi, yi, zi);
+        BlockPos pos = new BlockPos(xi, yi, zi);
+        IBlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock();
 
-        if (!block.isAir(world, xi, yi, zi))
+        if (!block.isAir(blockState, world, pos))
         {
-            if (block.getMaterial().isSolid())
+            if (blockState.getMaterial().isSolid())
             {
-                if (block.isOpaqueCube())
+                if (blockState.isOpaqueCube())
                 {
-                    if (block.getMaterial() == Material.rock)
+                    if (blockState.getMaterial() == Material.ROCK)
                     {
                         return ConfigRadiation.RADIATION_DECAY_STONE;
                     }
-                    else if (block.getMaterial() == Material.ground
-                            || block.getMaterial() == Material.grass
-                            || block.getMaterial() == Material.sand
-                            || block.getMaterial() == Material.clay)
+                    else if (blockState.getMaterial() == Material.GROUND
+                            || blockState.getMaterial() == Material.GRASS
+                            || blockState.getMaterial() == Material.SAND
+                            || blockState.getMaterial() == Material.CLAY)
                     {
                         return ConfigRadiation.RADIATION_DECAY_STONE / 2;
                     }
-                    else if (block.getMaterial() == Material.ice
-                            || block.getMaterial() == Material.packedIce
-                            || block.getMaterial() == Material.craftedSnow)
+                    else if (blockState.getMaterial() == Material.ICE
+                            ||blockState.getMaterial() == Material.PACKED_ICE
+                            || blockState.getMaterial() == Material.CRAFTED_SNOW)
                     {
                         return ConfigRadiation.RADIATION_DECAY_STONE / 3;
                     }
-                    else if (block.getMaterial() == Material.iron)
+                    else if (blockState.getMaterial() == Material.IRON)
                     {
                         return ConfigRadiation.RADIATION_DECAY_METAL;
                     }
@@ -389,7 +393,7 @@ public class ThreadRadExposure extends ThreadDataChange
                     return ConfigRadiation.RADIATION_DECAY_PER_BLOCK / 2;
                 }
             }
-            else if (block.getMaterial().isLiquid())
+            else if (blockState.getMaterial().isLiquid())
             {
                 return ConfigRadiation.RADIATION_DECAY_PER_FLUID;
             }

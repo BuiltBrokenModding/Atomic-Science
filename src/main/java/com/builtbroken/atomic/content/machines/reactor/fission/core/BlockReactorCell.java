@@ -62,10 +62,10 @@ public class BlockReactorCell extends BlockContainer
                 }
                 else if (reactorCell.isItemValidForSlot(0, heldItem))
                 {
-                    if (!world.isRemote && reactorCell.getStackInSlot(0) == null)
+                    if (!world.isRemote && reactorCell.getInventory().getStackInSlot(0) == null)
                     {
                         ItemStack copy = heldItem.splitStack(1);
-                        reactorCell.setInventorySlotContents(0, copy);
+                        reactorCell.getInventory().setStackInSlot(0, copy);
 
                         if (heldItem.getCount() <= 0)
                         {
@@ -82,10 +82,10 @@ public class BlockReactorCell extends BlockContainer
             }
             else
             {
-                if (!world.isRemote && reactorCell.getStackInSlot(0) != null)
+                if (!world.isRemote && reactorCell.getInventory().getStackInSlot(0) != null)
                 {
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, reactorCell.getStackInSlot(0));
-                    reactorCell.setInventorySlotContents(0, null);
+                    player.inventory.setInventorySlotContents(player.inventory.currentItem, reactorCell.getInventory().getStackInSlot(0));
+                    reactorCell.getInventory().setStackInSlot(0, null);
                     player.inventoryContainer.detectAndSendChanges();
                 }
                 return true;

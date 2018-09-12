@@ -25,7 +25,7 @@ public class RadSourceEntityItem implements IRadiationSource
     @Override
     public int getRadioactiveMaterial()
     {
-        return RadItemHandler.getRadiationForItem(entityItem.getEntityItem());
+        return RadItemHandler.getRadiationForItem(entityItem.getItem());
     }
 
     @Override
@@ -37,7 +37,7 @@ public class RadSourceEntityItem implements IRadiationSource
     @Override
     public World world()
     {
-        return entityItem.worldObj;
+        return entityItem.world;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class RadSourceEntityItem implements IRadiationSource
     {
         if (ConfigRadiation.ENABLE_ENTITY_ITEMS)
         {
-            if (entityItem.getEntityItem() != null && entityItem.getEntityItem().getItem() instanceof IRadioactiveItem)
+            if (entityItem.getItem() != null && entityItem.getItem().getItem() instanceof IRadioactiveItem) //TODO change over to capability
             {
                 return new RadSourceEntityItem(entityItem);
             }

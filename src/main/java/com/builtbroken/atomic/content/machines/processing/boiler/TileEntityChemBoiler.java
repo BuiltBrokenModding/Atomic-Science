@@ -13,15 +13,17 @@ import com.builtbroken.atomic.lib.SideSettings;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
-import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing
-import net.minecraftforge.fluids.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
 
@@ -29,7 +31,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/22/2018.
  */
-public class TileEntityChemBoiler extends TileEntityProcessingMachine implements IFluidHandler, IGuiTile, ISidedInventory
+public class TileEntityChemBoiler extends TileEntityProcessingMachine implements IGuiTile
 {
     public static final int SLOT_FLUID_INPUT = 0;
     public static final int SLOT_ITEM_INPUT = 1;
@@ -56,9 +58,15 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
 
     public TileEntityChemBoiler()
     {
-        blueTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
-        greenTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
-        yellowTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME * 10);
+        blueTank = new FluidTank(Fluid.BUCKET_VOLUME * 10);
+        greenTank = new FluidTank(Fluid.BUCKET_VOLUME * 10);
+        yellowTank = new FluidTank(Fluid.BUCKET_VOLUME * 10);
+    }
+
+    @Override
+    protected IItemHandlerModifiable createInventory()
+    {
+        return new ItemStackHandler(INVENTORY_SIZE); //TODO add custom implementation for valid slots
     }
 
     @Override
@@ -66,18 +74,18 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     {
         if (isServer())
         {
-            PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(worldObj.provider.dimensionId,
+            PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(world.provider.getDimension(),
                     xi() + 0.5, yi() + 0.5, zi() + 0.5,
                     0, 0, 0,
                     EffectRefs.BOILER_COMPLETE);
-            PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, worldObj, this, 30);
+            PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, this, 30);
         }
     }
 
     @Override
     protected void doEffects(int ticks)
     {
-        if (worldObj.rand.nextFloat() > 0.3)
+        if (world.rand.nextFloat() > 0.3)
         {
             AtomicScience.sideProxy.spawnParticle(EffectRefs.BOILER_RUNNING, xi() + 0.5, yi() + 0.5, zi() + 0.5, 0, 0, 0);
         }
@@ -124,106 +132,37 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     @Override
     public void onWrench(WrenchMode type, WrenchColor color, EnumFacing side, EntityPlayer player)
     {
-        if (type == WrenchMode.FLUID && side != EnumFacing.UNKNOWN)
+        if (type == WrenchMode.FLUID && side != null)
         {
             if (color == WrenchColor.GREEN)
             {
                 greenTankSideSettings.toggle(side);
-                player.addChatComponentMessage(new ChatComponentText(greenTankSideSettings.get(side) ? "Green tank set to output on side" : "Green tank set to ignore side"));
+                player.sendMessage(new TextComponentString(greenTankSideSettings.get(side) ? "Green tank set to output on side" : "Green tank set to ignore side"));
             }
             else if (color == WrenchColor.YELLOW)
             {
                 yellowTankSideSettings.toggle(side);
-                player.addChatComponentMessage(new ChatComponentText(yellowTankSideSettings.get(side) ? "Yellow tank set to output on side" : "Yellow tank set to ignore side"));
+                player.sendMessage(new TextComponentString(yellowTankSideSettings.get(side) ? "Yellow tank set to output on side" : "Yellow tank set to ignore side"));
             }
             else if (color == WrenchColor.BLUE)
             {
                 blueTankSideSettings.toggle(side);
-                player.addChatComponentMessage(new ChatComponentText(blueTankSideSettings.get(side) ? "Blue tank set to input on side" : "Blue tank set to ignore side"));
+                player.sendMessage(new TextComponentString(blueTankSideSettings.get(side) ? "Blue tank set to input on side" : "Blue tank set to ignore side"));
             }
         }
     }
 
-    //-----------------------------------------------
-    //--------Fluid Tank Handling -------------------
-    //-----------------------------------------------
-
-    @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill)
-    {
-        if (resource != null && canFill(from, resource.getFluid()))
-        {
-            Fluid fluid = getBlueTank().getFluid() != null ? getBlueTank().getFluid().getFluid() : null;
-            int amount = getBlueTank().getFluidAmount();
-
-            int fill = getBlueTank().fill(resource, doFill);
-
-            if (doFill && getBlueTank().getFluid() != null && (tankMatch(getBlueTank(), fluid) || getBlueTank().getFluidAmount() != amount))
-            {
-                checkRecipe();
-            }
-
-            return fill;
-        }
-        return 0;
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
-    {
-        if (tankMatch(getGreenTank(), resource))
-        {
-            return getGreenTank().drain(resource.amount, doDrain);
-        }
-        else if (tankMatch(getYellowTank(), resource))
-        {
-            return getYellowTank().drain(resource.amount, doDrain);
-        }
-        return null;
-    }
-
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
-    {
-        FluidStack stack = getGreenTank().drain(maxDrain, doDrain);
-        if (stack == null)
-        {
-            return getYellowTank().drain(maxDrain, doDrain);
-        }
-        return stack;
-    }
-
-    @Override
-    public boolean canFill(EnumFacing from, Fluid fluid)
-    {
-        return blueTankSideSettings.get(from) && getRecipeList().isComponent(this, fluid);
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid)
-    {
-        return fluid == null && greenTankSideSettings.get(from) && yellowTankSideSettings.get(from)
-                || greenTankSideSettings.get(from) && tankMatch(getGreenTank(), fluid)
-                || yellowTankSideSettings.get(from) && tankMatch(getYellowTank(), fluid);
-    }
-
-    @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from)
-    {
-        return new FluidTankInfo[]{getBlueTank().getInfo(), getGreenTank().getInfo(), getYellowTank().getInfo()};
-    }
-
-    public FluidTank getBlueTank()
+    public FluidTank getBlueTank() //TODO convert to map
     {
         return blueTank;
     }
 
-    public FluidTank getGreenTank()
+    public FluidTank getGreenTank() //TODO convert to map
     {
         return greenTank;
     }
 
-    public FluidTank getYellowTank()
+    public FluidTank getYellowTank() //TODO convert to map
     {
         return yellowTank;
     }
@@ -277,9 +216,8 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     //-----------------------------------------------
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
-        super.writeToNBT(nbt);
         nbt.setTag("wasteTank", getGreenTank().writeToNBT(new NBTTagCompound()));
         nbt.setTag("inputTank", getBlueTank().writeToNBT(new NBTTagCompound()));
         nbt.setTag("hexTank", getYellowTank().writeToNBT(new NBTTagCompound()));
@@ -287,6 +225,8 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
         nbt.setTag("wasteTankSides", greenTankSideSettings.save(new NBTTagCompound()));
         nbt.setTag("hexTankSides", yellowTankSideSettings.save(new NBTTagCompound()));
         nbt.setTag("waterTankSides", blueTankSideSettings.save(new NBTTagCompound()));
+
+        return super.writeToNBT(nbt);
     }
 
     @Override
@@ -305,32 +245,19 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine implements
     //-----------------------------------------------
     //--------Inventory Code ------------------------
     //-----------------------------------------------
-
-    @Override
-    public int getSizeInventory()
-    {
-        return INVENTORY_SIZE;
-    }
-
-    @Override
-    public int[] getAccessibleSlotsFromSide(int side)
-    {
-        return ACCESSIBLE_SLOTS;
-    }
-
-    @Override
+    //@Override
     public boolean canInsertItem(int slot, ItemStack stack, int side)
     {
         return slot == SLOT_ITEM_INPUT;
     }
 
-    @Override
+    //@Override
     public boolean canExtractItem(int slot, ItemStack stack, int side)
     {
         return slot == SLOT_ITEM_OUTPUT;
     }
 
-    @Override
+    //@Override
     public boolean isItemValidForSlot(int slot, ItemStack stack)
     {
         if (slot == SLOT_FLUID_INPUT)

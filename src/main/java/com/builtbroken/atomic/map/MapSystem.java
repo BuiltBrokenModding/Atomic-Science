@@ -89,7 +89,7 @@ public class MapSystem
      * Gets the data value at the position
      *
      * @param world - location
-     * @param pos - location
+     * @param pos   - location
      * @return radioactive material amount
      */
     public int getData(World world, BlockPos pos)
@@ -98,6 +98,25 @@ public class MapSystem
         if (map != null)
         {
             return map.getData(pos);
+        }
+        return 0;
+    }
+
+    /**
+     * Gets the data value at the position
+     *
+     * @param world - location
+     * @param x     - location
+     * @param y     - location
+     * @param z     - location
+     * @return radioactive material amount
+     */
+    public int getData(World world, int x, int y, int z)
+    {
+        DataMap map = getMap(world, false);
+        if (map != null)
+        {
+            return map.getData(x, y, z);
         }
         return 0;
     }
@@ -120,10 +139,49 @@ public class MapSystem
     }
 
     /**
+     * Gets the data value at the position
+     *
+     * @param dim - world id
+     * @param x   - location
+     * @param y   - location
+     * @param z   - location
+     * @return radioactive material amount
+     */
+    public int getData(int dim, int x, int y, int z)
+    {
+        DataMap map = getMap(dim, false);
+        if (map != null)
+        {
+            return map.getData(x, y, z);
+        }
+        return 0;
+    }
+
+    /**
+     * Called to set the data value of the position
+     *
+     * @param dim    - world id
+     * @param x      - location
+     * @param y      - location
+     * @param z      - location
+     * @param amount - data
+     * @return true if the value was set
+     */
+    public boolean setData(int dim, int x, int y, int z, int amount)
+    {
+        DataMap map = getMap(dim, amount > 0);
+        if (map != null)
+        {
+            return map.setData(x, y, z, amount);
+        }
+        return true;
+    }
+
+    /**
      * Called to set the data value of the position
      *
      * @param world  - location
-     * @param pos - location
+     * @param pos    - location
      * @param amount - data
      * @return true if the value was set
      */
@@ -141,7 +199,7 @@ public class MapSystem
      * Called to set the data value of the position
      *
      * @param dim    - world id
-     * @param pos - location
+     * @param pos    - location
      * @param amount - data
      * @return true if the value was set
      */

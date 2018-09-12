@@ -1,9 +1,10 @@
 package com.builtbroken.atomic.lib.placement;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -16,14 +17,14 @@ public class PlacementQueue
 {
     private static final ConcurrentLinkedQueue<BlockPlacement> queue = new ConcurrentLinkedQueue();
 
-    public static void queue(World world, int x, int y, int z, Block block, int meta)
+    public static void queue(World world, BlockPos pos, IBlockState state)
     {
-        queue(new BlockPlacement(world, x, y, z, block, meta));
+        queue(new BlockPlacement(world, pos, state));
     }
 
     public static void queue(BlockPlacement placement)
     {
-        if (placement != null && placement.block != null)
+        if (placement != null && placement.blockState != null)
         {
             queue.add(placement);
         }

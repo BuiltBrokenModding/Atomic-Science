@@ -11,6 +11,7 @@ import com.builtbroken.atomic.content.effects.RadiationEntityEventHandler;
 import com.builtbroken.atomic.content.effects.type.IETRadiation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
@@ -170,9 +171,9 @@ public class ASIndirectEffects
     public static boolean isProtected(EntityLivingBase entity, IIndirectEffectInstance indirectEffectInstance)
     {
         //Loop armor 1-4
-        for (int i = 1; i < 5; i++)
+        for (int i = 2; i < 6; i++)
         {
-            final ItemStack stack = entity.getEquipmentInSlot(i);
+            final ItemStack stack = entity.getItemStackFromSlot(EntityEquipmentSlot.values()[i]);
 
             //Armor set is checked by the armor itself. In theory this means the first item should return true for a full set.
             if (stack != null && stack.getItem() instanceof IAntiPoisonArmor
@@ -192,9 +193,9 @@ public class ASIndirectEffects
      */
     public static void onProtected(EntityLivingBase entity, IIndirectEffectInstance indirectEffectInstance)
     {
-        for (int i = 1; i < 5; i++)
+        for (int i = 2; i < 6; i++)
         {
-            final ItemStack stack = entity.getEquipmentInSlot(i);
+            final ItemStack stack = entity.getItemStackFromSlot(EntityEquipmentSlot.values()[i]);
 
             //Armor set is checked by the armor itself. In theory this means the first item should return true for a full set.
             if (stack != null && stack.getItem() instanceof IAntiPoisonArmor)

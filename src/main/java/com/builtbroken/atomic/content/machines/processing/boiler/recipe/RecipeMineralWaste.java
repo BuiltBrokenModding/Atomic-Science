@@ -31,7 +31,7 @@ public class RecipeMineralWaste extends ProcessingRecipe<TileEntityChemBoiler>
             ItemStack outputStack = new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.LIQUID_WASTE_SOLID_WASTE, 0);
             if (machine.hasSpaceInOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT))
             {
-                machine.decrStackSize(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1);
+                machine.getInventory().extractItem(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1, false);
                 machine.addToOutput(outputStack, TileEntityChemBoiler.SLOT_ITEM_OUTPUT);
 
                 machine.getBlueTank().drain(ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL, true);

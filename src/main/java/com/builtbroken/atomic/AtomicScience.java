@@ -14,10 +14,7 @@ import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
 import com.builtbroken.atomic.network.netty.PacketSystem;
-import com.builtbroken.atomic.proxy.ContentProxy;
 import com.builtbroken.atomic.proxy.ProxyLoader;
-import com.builtbroken.atomic.proxy.rf.ProxyRedstoneFlux;
-import com.builtbroken.atomic.proxy.te.ProxyRedstoneThermalExpansion;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
@@ -26,7 +23,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -127,8 +123,8 @@ public class AtomicScience
 
         //Handlers
         proxyLoader.add(PacketSystem.INSTANCE);
-        proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
-        proxyLoader.add(ProxyRedstoneThermalExpansion.class, Loader.isModLoaded("thermalexpansion"));
+        //proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
+        //proxyLoader.add(ProxyRedstoneThermalExpansion.class, Loader.isModLoaded("thermalexpansion"));
         proxyLoader.add(sideProxy);
 
         //Register content

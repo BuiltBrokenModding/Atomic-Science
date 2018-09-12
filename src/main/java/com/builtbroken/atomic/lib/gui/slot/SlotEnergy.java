@@ -8,8 +8,8 @@ import com.builtbroken.atomic.lib.gui.tip.ToolTipSlot;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -20,12 +20,12 @@ public class SlotEnergy extends SlotMachine implements ISlotRender, ISlotToolTip
 {
     String toolTip;
 
-    public SlotEnergy(IInventory inventory, int index, int x, int y)
+    public SlotEnergy(IItemHandler inventory, int index, int x, int y)
     {
         super(inventory, index, x, y);
     }
 
-    public SlotEnergy(IInventory inventory, int index, int x, int y, String toolTip)
+    public SlotEnergy(IItemHandler inventory, int index, int x, int y, String toolTip)
     {
         super(inventory, index, x, y);
         this.toolTip = toolTip;

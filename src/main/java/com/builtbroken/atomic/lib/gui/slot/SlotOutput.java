@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.lib.gui.slot;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
  */
 public class SlotOutput extends SlotMachine
 {
-    public SlotOutput(IInventory inventory, int index, int x, int y)
+    public SlotOutput(IItemHandler inventory, int index, int x, int y)
     {
         super(inventory, index, x, y);
     }

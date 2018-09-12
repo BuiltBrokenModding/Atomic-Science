@@ -15,14 +15,14 @@ public class RecipeWasteExtracting extends ProcessingRecipe<TileEntityChemExtrac
     @Override
     public boolean matches(TileEntityChemExtractor machine)
     {
-        ItemStack stack = machine.getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
+        ItemStack stack = machine.getInventory().getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
         return stack != null && ASItems.itemProcessingWaste == stack.getItem();
     }
 
     @Override
     public boolean applyRecipe(TileEntityChemExtractor machine)
     {
-        ItemStack inputItem = machine.getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
+        ItemStack inputItem = machine.getInventory().getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
         if (inputItem != null && ASItems.itemProcessingWaste == inputItem.getItem())
         {
             ItemStack outputStack;
@@ -42,7 +42,7 @@ public class RecipeWasteExtracting extends ProcessingRecipe<TileEntityChemExtrac
 
             if (machine.hasSpaceInOutput(outputStack, TileEntityChemExtractor.SLOT_ITEM_OUTPUT))
             {
-                machine.decrStackSize(TileEntityChemExtractor.SLOT_ITEM_INPUT, 1);
+                machine.getInventory().extractItem(TileEntityChemExtractor.SLOT_ITEM_INPUT, 1, false);
                 machine.addToOutput(outputStack, TileEntityChemExtractor.SLOT_ITEM_OUTPUT);
             }
             return true;

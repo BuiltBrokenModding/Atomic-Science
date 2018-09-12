@@ -18,16 +18,16 @@ public class ContainerExtractor extends ContainerBase<TileEntityChemExtractor>
     public ContainerExtractor(EntityPlayer player, TileEntityChemExtractor tile)
     {
         super(player, tile);
-        addSlotToContainer(new SlotFluid(tile, "gui.tooltip.slot.tank.input.blue", TileEntityChemExtractor.SLOT_FLUID_INPUT, 25, 52).setColor(WrenchColor.BLUE.getColor()));
-        addSlotToContainer(new SlotFluid(tile, "gui.tooltip.slot.tank.output.green", TileEntityChemExtractor.SLOT_FLUID_OUTPUT, 136, 52).setColor(WrenchColor.GREEN.getColor()));
+        addSlotToContainer(new SlotFluid(tile.getInventory(), "gui.tooltip.slot.tank.input.blue", TileEntityChemExtractor.SLOT_FLUID_INPUT, 25, 52).setColor(WrenchColor.BLUE.getColor()));
+        addSlotToContainer(new SlotFluid(tile.getInventory(), "gui.tooltip.slot.tank.output.green", TileEntityChemExtractor.SLOT_FLUID_OUTPUT, 136, 52).setColor(WrenchColor.GREEN.getColor()));
 
-        addSlotToContainer(new SlotOutput(tile, TileEntityChemExtractor.SLOT_ITEM_OUTPUT, 100, 30)
+        addSlotToContainer(new SlotOutput(tile.getInventory(), TileEntityChemExtractor.SLOT_ITEM_OUTPUT, 100, 30)
                 .setColor(WrenchColor.ORANGE.getColor()).setToolTip("gui.tooltip.slot.output"));
 
         int x = 50;
-        addSlotToContainer(new SlotMachine(tile, TileEntityChemExtractor.SLOT_ITEM_INPUT, x, 30)
+        addSlotToContainer(new SlotMachine(tile.getInventory(), TileEntityChemExtractor.SLOT_ITEM_INPUT, x, 30)
                 .setColor(WrenchColor.RED.getColor()).setToolTip("gui.tooltip.slot.input"));
-        addSlotToContainer(new SlotEnergy(tile, TileEntityChemExtractor.SLOT_BATTERY, x, 52, "gui.tooltip.slot.energy.input").setColor(WrenchColor.PURPLE.getColor()));
+        addSlotToContainer(new SlotEnergy(tile.getInventory(), TileEntityChemExtractor.SLOT_BATTERY, x, 52, "gui.tooltip.slot.energy.input").setColor(WrenchColor.PURPLE.getColor()));
         addPlayerInventory(player);
     }
 }
