@@ -80,24 +80,28 @@ item.atomicscience:wrench.rotation.yellow.name=Yellow Rotation Adjuster
 item.atomicscience:wrench.rotation.red.name=Red Rotation Adjuster
 item.atomicscience:wrench.rotation.blue.name=Blue Rotation Adjuster
 item.atomicscience:wrench.rotation.purple.name=Purple Rotation Adjuster
+item.atomicscience:wrench.rotation.orange.name=Orange Rotation Adjuster
 
 item.atomicscience:wrench.item.green.name=Green Item Adjuster
 item.atomicscience:wrench.item.yellow.name=Yellow Item Adjuster
 item.atomicscience:wrench.item.red.name=Red Item Adjuster
 item.atomicscience:wrench.item.blue.name=Blue Item Adjuster
 item.atomicscience:wrench.item.purple.name=Purple Item Adjuster
+item.atomicscience:wrench.item.orange.name=Orange Item Adjuster
 
 item.atomicscience:wrench.fluid.green.name=Green Fluid Adjuster
 item.atomicscience:wrench.fluid.yellow.name=Yellow Fluid Adjuster
 item.atomicscience:wrench.fluid.red.name=Red Fluid Adjuster
 item.atomicscience:wrench.fluid.blue.name=Blue Fluid Adjuster
-item.atomicscience:wrench.fluid.purple.name=Purple FluidAdjuster
+item.atomicscience:wrench.fluid.purple.name=Purple Fluid Adjuster
+item.atomicscience:wrench.fluid.orange.name=Orange Fluid Adjuster
 
 item.atomicscience:wrench.redstone.green.name=Green Redstone Adjuster
 item.atomicscience:wrench.redstone.yellow.name=Yellow Redstone Adjuster
 item.atomicscience:wrench.redstone.red.name=Red Redstone Adjuster
 item.atomicscience:wrench.redstone.blue.name=Blue Redstone Adjuster
 item.atomicscience:wrench.redstone.purple.name=Purple Redstone Adjuster
+item.atomicscience:wrench.redstone.orange.name=Orange Redstone Adjuster
 
 ## Wrench Info
 item.atomicscience:wrench.mode.rotation.info=Mode: §bRotation
