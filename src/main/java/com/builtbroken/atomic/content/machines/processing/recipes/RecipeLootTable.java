@@ -103,7 +103,7 @@ public class RecipeLootTable extends ContentProxy
         {
             //Confirm that the dust turns into an ingot
             ItemStack smeltingResult = FurnaceRecipes.instance().getSmeltingResult(itemStack);
-            if (smeltingResult != null && smeltingResult.getItem() != null)
+            if (!smeltingResult.isEmpty() && smeltingResult.getItem() != null)
             {
                 for (int id : OreDictionary.getOreIDs(smeltingResult))
                 {
