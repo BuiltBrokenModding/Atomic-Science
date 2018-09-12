@@ -62,7 +62,14 @@ public enum ASFluids
     {
         if (fluid == null)
         {
-            fluid = new Fluid(id, new ResourceLocation(AtomicScience.DOMAIN, texture_still), new ResourceLocation(AtomicScience.DOMAIN, texture_flow)); //TODO handle color
+            if (texture_still != null)
+            {
+                fluid = new Fluid(id, new ResourceLocation(AtomicScience.DOMAIN, texture_still), new ResourceLocation(AtomicScience.DOMAIN, texture_flow)); //TODO handle color
+            }
+            else
+            {
+                fluid = new Fluid(id, FluidRegistry.WATER.getStill(), FluidRegistry.WATER.getFlowing());
+            }
         }
         if (!id.startsWith(AtomicScience.PREFIX))
         {
@@ -88,7 +95,7 @@ public enum ASFluids
             configuration.load();
             for (ASFluids fluid : values())
             {
-                    fluid.register(configuration);
+                fluid.register(configuration);
             }
             configuration.save();
 
