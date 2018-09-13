@@ -14,6 +14,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -31,8 +33,6 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     private boolean _running = false;
     private boolean _renderFuel = false;
     private float _renderFuelLevel = 0f;
-
-    public StructureType structureType;
 
     public boolean enabled = true; ///TODO add a spin up and down time, prevent instant enable/disable of reactors
 
@@ -273,11 +273,6 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     //--------Rendering props -----------------------
     //-----------------------------------------------
 
-    public boolean shouldRenderFuel()
-    {
-        return _renderFuel;
-    }
-
     public float getFuelRenderLevel()
     {
         if (isServer())
@@ -320,47 +315,44 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
 
         if (canConnect(blockAbove) && canConnect(blockBelow))
         {
-            structureType = StructureType.MIDDLE;
+            setStructureType(ReactorStructureType.MIDDLE);
         }
         else if (canConnect(blockBelow))
         {
-            structureType = StructureType.TOP;
+            setStructureType(ReactorStructureType.TOP);
         }
         else if (canConnect(blockAbove))
         {
-            structureType = StructureType.BOTTOM;
+            setStructureType(ReactorStructureType.BOTTOM);
         }
         else
         {
-            structureType = StructureType.NORMAL;
+            setStructureType(ReactorStructureType.NORMAL);
         }
     }
 
+    public void setStructureType(ReactorStructureType structureType)
+    {
+        IBlockState blockState = world.getBlockState(getPos());
+        if(blockState.getProperties().containsKey(BlockReactorCell.REACTOR_STRUCTURE_TYPE))
+        {
+            ReactorStructureType type = blockState.getValue(BlockReactorCell.REACTOR_STRUCTURE_TYPE);
+            if(type != structureType)
+            {
+                world.setBlockState(pos, blockState.withProperty(BlockReactorCell.REACTOR_STRUCTURE_TYPE, structureType));
+            }
+        }
+    }
+
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
+    {
+        return oldState.getBlock() != newSate.getBlock();
+    }
+
+
     private boolean canConnect(IBlockState block)
     {
-        return block == ASBlocks.blockReactorCell || block == ASBlocks.blockReactorController;
-    }
-
-    public boolean isTop()
-    {
-        return structureType == StructureType.TOP;
-    }
-
-    public boolean isMiddle()
-    {
-        return structureType == StructureType.MIDDLE;
-    }
-
-    public boolean isBottom()
-    {
-        return structureType == StructureType.BOTTOM;
-    }
-
-    public static enum StructureType
-    {
-        NORMAL,
-        TOP,
-        MIDDLE,
-        BOTTOM;
+        return block.getBlock() == ASBlocks.blockReactorCell || block.getBlock() == ASBlocks.blockReactorController;
     }
 }

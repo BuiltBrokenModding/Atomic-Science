@@ -1,13 +1,16 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.core;
 
 import com.builtbroken.atomic.AtomicScience;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -15,6 +18,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -22,11 +27,14 @@ import net.minecraft.world.World;
  */
 public class BlockReactorCell extends BlockContainer
 {
+    public static final PropertyReactorState REACTOR_STRUCTURE_TYPE = new PropertyReactorState();
+
     public BlockReactorCell()
     {
         super(Material.IRON);
         setHardness(1);
         setResistance(5);
+        setDefaultState(getDefaultState().withProperty(REACTOR_STRUCTURE_TYPE, ReactorStructureType.NORMAL));
         setCreativeTab(AtomicScience.creativeTab);
         setTranslationKey(AtomicScience.PREFIX + "reactor.cell");
         setRegistryName(AtomicScience.PREFIX + "reactor_cell");
@@ -104,6 +112,36 @@ public class BlockReactorCell extends BlockContainer
         }
     }
 
+    @Override
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
+    {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity instanceof TileEntityReactorCell)
+        {
+            ((TileEntityReactorCell) tileEntity).updateStructureType();
+        }
+    }
+
+    //-------------------------------------------------
+
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, REACTOR_STRUCTURE_TYPE);
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return getDefaultState().withProperty(REACTOR_STRUCTURE_TYPE, ReactorStructureType.get(meta));
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state)
+    {
+        return state.getValue(REACTOR_STRUCTURE_TYPE).ordinal();
+    }
+
     //-----------------------------------------------
     //-------- Properties ---------------------------
     //----------------------------------------------
@@ -120,6 +158,12 @@ public class BlockReactorCell extends BlockContainer
         return EnumBlockRenderType.MODEL;
     }
 
+    @Override
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getRenderLayer()
+    {
+        return BlockRenderLayer.CUTOUT;
+    }
 
     @Override
     public boolean isOpaqueCube(IBlockState state)
