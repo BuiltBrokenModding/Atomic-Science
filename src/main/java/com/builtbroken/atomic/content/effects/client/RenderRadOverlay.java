@@ -32,9 +32,8 @@ public class RenderRadOverlay
         {
             //Start
             GL11.glPushMatrix();
-            GL11.glTranslatef(0, 0, 0.0F);
+            //GL11.glTranslatef(0, 0, 0.0F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glDisable(GL11.GL_BLEND);
 
             //Position TODO config TODO fire event
             int left = 5;
@@ -63,7 +62,6 @@ public class RenderRadOverlay
             ClientProxy.PREV_RAD_EXPOSURE = rad_area;
 
             //End
-            GL11.glEnable(GL11.GL_BLEND);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glPopMatrix();
         }
