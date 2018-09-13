@@ -58,7 +58,7 @@ public class BlockReactorCell extends BlockContainer
         {
             TileEntityReactorCell reactorCell = ((TileEntityReactorCell) tileEntity);
             ItemStack heldItem = player.getHeldItem(hand);
-            if (heldItem != null)
+            if (!heldItem.isEmpty())
             {
                 if(heldItem.getItem() == Items.STICK)
                 {
@@ -70,30 +70,30 @@ public class BlockReactorCell extends BlockContainer
                 }
                 else if (reactorCell.isItemValidForSlot(0, heldItem))
                 {
-                    if (!world.isRemote && reactorCell.getInventory().getStackInSlot(0) == null)
+                    if (!world.isRemote && reactorCell.getInventory().getStackInSlot(0).isEmpty())
                     {
                         ItemStack copy = heldItem.splitStack(1);
-                        reactorCell.getInventory().setStackInSlot(0, copy);
+                        reactorCell.getInventory().setStackInSlot(0, copy); //TODO rework to use insert
 
                         if (heldItem.getCount() <= 0)
                         {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                            player.setHeldItem(hand, ItemStack.EMPTY); //TODO rework
                         }
                         else
                         {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, heldItem);
+                            player.setHeldItem(hand, heldItem); //TODO rework
                         }
                         player.inventoryContainer.detectAndSendChanges();
                     }
                     return true;
                 }
             }
-            else
+            else if(player.isSneaking())
             {
-                if (!world.isRemote && reactorCell.getInventory().getStackInSlot(0) != null)
+                if (!world.isRemote && !reactorCell.getInventory().getStackInSlot(0).isEmpty())
                 {
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, reactorCell.getInventory().getStackInSlot(0));
-                    reactorCell.getInventory().setStackInSlot(0, null);
+                    player.setHeldItem(hand, reactorCell.getInventory().getStackInSlot(0));
+                    reactorCell.getInventory().setStackInSlot(0, ItemStack.EMPTY);
                     player.inventoryContainer.detectAndSendChanges();
                 }
                 return true;
