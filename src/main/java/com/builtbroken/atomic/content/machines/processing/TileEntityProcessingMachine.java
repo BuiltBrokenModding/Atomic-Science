@@ -302,11 +302,11 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
     protected void fillTank(final int slot, final IFluidTank inputTank)
     {
         final ItemStack itemStack = getInventory().getStackInSlot(slot);
-        if (itemStack.isEmpty())
+        if (!itemStack.isEmpty())
         {
-            if (itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+            if (itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))
             {
-                IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
                 if (handler != null)
                 {
                     //Get fluid and check if its part of the recipe
@@ -334,14 +334,15 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
      * @param slot       - slot with container
      * @param outputTank - tank to drain
      */
+
     protected void outputFluids(final int slot, final IFluidTank outputTank)
     {
         final ItemStack itemStack = getInventory().getStackInSlot(slot);
         if (itemStack.isEmpty() && outputTank.getFluid() != null)
         {
-            if (itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+            if (itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))
             {
-                IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
                 if (handler != null)
                 {
                     int fill = handler.fill(outputTank.getFluid(), true);

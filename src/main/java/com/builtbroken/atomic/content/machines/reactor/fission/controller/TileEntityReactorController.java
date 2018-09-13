@@ -111,6 +111,8 @@ public class TileEntityReactorController extends TileEntityMachine
             {
                 break;
             }
+
+            pos = pos.up();
         }
 
         //Get stack bellow cell

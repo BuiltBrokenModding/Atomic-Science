@@ -148,7 +148,7 @@ public class RecipeLootTable extends ContentProxy
         {
             if (!iterator.hasNext())
             {
-                return null;
+                return ItemStack.EMPTY;
             }
 
             item = iterator.next();
@@ -169,6 +169,6 @@ public class RecipeLootTable extends ContentProxy
             }
             return stack;
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 }

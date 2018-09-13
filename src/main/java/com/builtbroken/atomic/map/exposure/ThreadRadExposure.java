@@ -30,7 +30,7 @@ public class ThreadRadExposure extends ThreadDataChange
     }
 
     @Override
-    protected void updateLocation(DataChange change)
+    protected boolean updateLocation(DataChange change)
     {
         //Get radiation exposure map
         DataMap map;
@@ -41,22 +41,28 @@ public class ThreadRadExposure extends ThreadDataChange
 
         long time = System.nanoTime();
 
-        HashMap<DataPos, DataPos> old_data = updateValue(map, change.xi(), change.yi(), change.zi(), change.old_value);
-        HashMap<DataPos, DataPos> new_data = updateValue(map, change.xi(), change.yi(), change.zi(), change.new_value);
-        if (shouldRun)
+        final World world = map.getWorld();
+        if(world != null) //TODO check if world is loaded
         {
-            new MapChangeSet(map, old_data, new_data).pop(); //TODO move to main thread to run
-        }
+            HashMap<DataPos, DataPos> old_data = updateValue(map, world, change.xi(), change.yi(), change.zi(), change.old_value);
+            HashMap<DataPos, DataPos> new_data = updateValue(map, world, change.xi(), change.yi(), change.zi(), change.new_value);
+            if (shouldRun)
+            {
+                new MapChangeSet(map, old_data, new_data).pop(); //TODO move to main thread to run
+            }
 
-        if (AtomicScience.runningAsDev)
-        {
-            time = System.nanoTime() - time;
-            AtomicScience.logger.info(String.format("ThreadRadExposure: %sx %sy %sz | %so %sn | took %s",
-                    change.x, change.y, change.z,
-                    change.old_value, change.new_value,
-                    StringHelpers.formatNanoTime(time)
-            ));
+            if (AtomicScience.runningAsDev)
+            {
+                time = System.nanoTime() - time;
+                AtomicScience.logger.info(String.format("ThreadRadExposure: %sx %sy %sz | %so %sn | took %s",
+                        change.x, change.y, change.z,
+                        change.old_value, change.new_value,
+                        StringHelpers.formatNanoTime(time)
+                ));
+            }
+            return true;
         }
+        return false;
     }
 
     /**
@@ -211,11 +217,10 @@ public class ThreadRadExposure extends ThreadDataChange
      * @param cz    - change location
      * @return map of position to edit
      */
-    protected HashMap<DataPos, DataPos> updateValue(DataMap map, int cx, int cy, int cz, int value)
+    protected HashMap<DataPos, DataPos> updateValue(DataMap map, World world, int cx, int cy, int cz, int value)
     {
         if (value > 0)
         {
-            final World world = map.getWorld();
             //Track data, also used to prevent editing same tiles (first pos is location, second stores data)
             final HashMap<DataPos, DataPos> radiationData = new HashMap();
 

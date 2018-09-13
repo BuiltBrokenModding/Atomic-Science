@@ -21,7 +21,7 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
     public boolean matches(TileEntityChemExtractor machine)
     {
         ItemStack stack = machine.getInventory().getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
-        if (stack != null)
+        if (!stack.isEmpty())
         {
             return RecipeHelpers.isUraniumOre(stack)
                     && machine.hasInputFluid(machine.getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE);  //TODO move recipe to object
@@ -34,7 +34,7 @@ public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
     {
         //Uranium Ore recipe
         ItemStack inputItem = machine.getInventory().getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
-        if (inputItem != null)
+        if (!inputItem.isEmpty())
         {
             if (RecipeHelpers.isUraniumOre(inputItem)
                     && machine.hasInputFluid(machine.getInputTank(), FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE)

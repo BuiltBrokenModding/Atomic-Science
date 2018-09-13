@@ -2,9 +2,9 @@ package com.builtbroken.atomic.lib.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  * Prefab for GUI containers to use
@@ -12,12 +12,10 @@ import net.minecraft.item.ItemStack;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert)
  */
-public class ContainerBase<H extends Object> extends Container
+public class ContainerBase<H extends TileEntity> extends Container
 {
     protected int slotCount = 0;
 
-    /** Inventory for this container, can be null */
-    public final IInventory inventory;
     /** Player accessing this GUI, can be null in rare cases */
     public final EntityPlayer player;
     /** Object hosting the container, can be null in rare cases */
@@ -27,16 +25,6 @@ public class ContainerBase<H extends Object> extends Container
     {
         //Assign host
         host = node;
-
-        //handle inventory
-        if (node instanceof IInventory)
-        {
-            inventory = (IInventory) node;
-        }
-        else
-        {
-            throw new RuntimeException("ContainerBase >> GUI host  '" + node + "' failed to provide an inventory for the container to use");
-        }
 
         //Handle player
         this.player = player;
@@ -63,9 +51,9 @@ public class ContainerBase<H extends Object> extends Container
 
     public void addPlayerInventory(EntityPlayer player, int x, int y)
     {
-        if (this.inventory instanceof IPlayerUsing)
+        if (this.host instanceof IPlayerUsing)
         {
-            ((IPlayerUsing) this.inventory).addPlayerUsingGui(player);
+            ((IPlayerUsing) this.host).addPlayerUsingGui(player);
         }
 
         //Inventory
@@ -88,10 +76,10 @@ public class ContainerBase<H extends Object> extends Container
      * Called to transfer a stack from one inventory to the other eg. when shift clicking.
      */
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slot_id)
+    public ItemStack transferStackInSlot(EntityPlayer player, int slot_id) //TODO recode
     {
         ItemStack itemstack = null;
-        Slot slot = (Slot) this.inventorySlots.get(slot_id);
+        Slot slot = this.inventorySlots.get(slot_id);
 
         if (slot != null && slot.getHasStack())
         {
@@ -104,33 +92,6 @@ public class ContainerBase<H extends Object> extends Container
                  * The item is inside the block inventory, trying to move an item out.
                  */
                 if (!mergeItemStack(slotStack, this.slotCount, this.inventorySlots.size(), true))
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                /**
-                 * We are outside the block inventory, trying to move an item in.
-                 *
-                 * Only merge the inventory if it is valid for the specific slot!
-                 */
-                boolean foundValid = false;
-
-                for (int i = 0; i < slotCount; i++)
-                {
-                    if (inventory.isItemValidForSlot(i, slotStack))
-                    {
-                        if (!mergeItemStack(slotStack, i, i + 1, false))
-                        {
-                            return null;
-                        }
-
-                        foundValid = true;
-                    }
-                }
-
-                if (!foundValid)
                 {
                     return null;
                 }
@@ -152,6 +113,6 @@ public class ContainerBase<H extends Object> extends Container
     @Override
     public boolean canInteractWith(EntityPlayer entityplayer)
     {
-        return this.inventory.isUsableByPlayer(entityplayer);
+        return entityplayer.getDistance(host.getPos().getX(), host.getPos().getY(), host.getPos().getZ()) < 64;
     }
 }

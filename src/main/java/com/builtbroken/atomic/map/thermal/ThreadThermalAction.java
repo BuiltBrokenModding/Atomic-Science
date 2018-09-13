@@ -26,7 +26,7 @@ public class ThreadThermalAction extends ThreadDataChange
     }
 
     @Override
-    protected void updateLocation(DataChange change)
+    protected boolean updateLocation(DataChange change)
     {
         //Get radiation exposure map
         DataMap map;
@@ -39,12 +39,20 @@ public class ThreadThermalAction extends ThreadDataChange
         final int cy = change.yi();
         final int cz = change.zi();
 
-        //Collect data
-        HashMap<DataPos, DataPos> old_data = calculateHeatSpread(map, cx, cy, cz, change.old_value); //TODO pull data from heat source
-        HashMap<DataPos, DataPos> new_data = calculateHeatSpread(map, cx, cy, cz, change.new_value); //TODO store data into heat source
+        final World world = map.getWorld();
+        if(world != null)
+        {
 
-        //Queue data update
-        MapHandler.THERMAL_MAP.dataFromThread.add(new MapChangeSet(map, old_data, new_data));
+            //Collect data
+            HashMap<DataPos, DataPos> old_data = calculateHeatSpread(map, cx, cy, cz, change.old_value); //TODO pull data from heat source
+            HashMap<DataPos, DataPos> new_data = calculateHeatSpread(map, cx, cy, cz, change.new_value); //TODO store data into heat source
+
+            //Queue data update
+            MapHandler.THERMAL_MAP.dataFromThread.add(new MapChangeSet(map, old_data, new_data));
+
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -20,7 +20,7 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
     public boolean matches(TileEntityChemBoiler machine)
     {
         ItemStack stack = machine.getInventory().getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
-        if (stack != null)
+        if (!stack.isEmpty())
         {
             return ASItems.itemYellowCake == stack.getItem()
                     && machine.hasInputFluid(machine.getBlueTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE);
@@ -32,7 +32,7 @@ public class RecipeYellowcakeHex extends ProcessingRecipe<TileEntityChemBoiler>
     public boolean applyRecipe(TileEntityChemBoiler machine)
     {
         final ItemStack inputItem = machine.getInventory().getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
-        if (inputItem != null)
+        if (!inputItem.isEmpty())
         {
             if (ASItems.itemYellowCake == inputItem.getItem()
                     && machine.hasInputFluid(machine.getBlueTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE)

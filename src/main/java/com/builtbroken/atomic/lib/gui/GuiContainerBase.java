@@ -221,6 +221,11 @@ public class GuiContainerBase<H> extends GuiContainer
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         RenderHelper.enableStandardItemLighting();
         ///============================================================
+
+        if (getSlotUnderMouse() != null && !getSlotUnderMouse().getStack().isEmpty())
+        {
+            renderToolTip(getSlotUnderMouse().getStack(), mouseX, mouseY);
+        }
     }
 
     @Override
@@ -262,6 +267,8 @@ public class GuiContainerBase<H> extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY)
     {
+        drawDefaultBackground();
+
         this.containerWidth = (this.width - this.xSize) / 2;
         this.containerHeight = (this.height - this.ySize) / 2;
 

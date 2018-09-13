@@ -125,7 +125,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         else
         {
             cell.setFuelRod(getFuelRodStack());
-            setFuelRod(null);
+            setFuelRod(ItemStack.EMPTY);
         }
     }
 
@@ -201,7 +201,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     public IFuelRodItem getFuelRod()
     {
         ItemStack stack = getFuelRodStack();
-        return stack != null && stack.getItem() instanceof IFuelRodItem ? (IFuelRodItem) stack.getItem() : null;
+        return !stack.isEmpty() && stack.getItem() instanceof IFuelRodItem ? (IFuelRodItem) stack.getItem() : null;
     }
 
     public void setFuelRod(ItemStack stack)

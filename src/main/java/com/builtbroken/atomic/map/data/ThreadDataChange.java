@@ -64,9 +64,21 @@ public abstract class ThreadDataChange extends Thread
                     DataChange change = changeQueue.poll();
                     if (change != null)
                     {
-                        updateLocation(change);
+                        //If return true, then clear object
+                        if(updateLocation(change))
+                        {
+                            change.dispose();
+                        }
+                        //False add back to queue, as we are not done
+                        else
+                        {
+                            changeQueue.add(change);
+                        }
                     }
-                    change.dispose();
+                    else
+                    {
+                        change.dispose();
+                    }
                 }
 
                 //Nothing left to do, then sleep for 100ms before checking on updates
@@ -174,7 +186,7 @@ public abstract class ThreadDataChange extends Thread
      *
      * @param change
      */
-    protected abstract void updateLocation(DataChange change);
+    protected abstract boolean updateLocation(DataChange change);
 
     public void kill()
     {

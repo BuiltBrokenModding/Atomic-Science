@@ -21,7 +21,7 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
     public boolean matches(TileEntityChemBoiler machine)
     {
         ItemStack stack = machine.getInventory().getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
-        if (stack != null)
+        if (!stack.isEmpty())
         {
             return RecipeHelpers.isUraniumOre(stack)
                     && machine.hasInputFluid(machine.getBlueTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE);
@@ -34,7 +34,7 @@ public class RecipeUraniumHex extends ProcessingRecipe<TileEntityChemBoiler>
     {
         //Uranium Ore recipe
         final ItemStack inputItem = machine.getInventory().getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT);
-        if (inputItem != null)
+        if (!inputItem.isEmpty())
         {
             if (RecipeHelpers.isUraniumOre(inputItem)
                     && machine.hasInputFluid(machine.getBlueTank(), FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_URANIUM_ORE)
