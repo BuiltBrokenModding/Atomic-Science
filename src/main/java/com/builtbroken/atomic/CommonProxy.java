@@ -37,7 +37,7 @@ public abstract class CommonProxy extends ContentProxy implements IGuiHandler
     public Object getServerGuiElement(int ID, EntityPlayer player, int slot)
     {
         ItemStack stack = player.inventory.getStackInSlot(slot);
-        if (stack != null && stack.getItem() instanceof IGuiTile)
+        if (!stack.isEmpty() && stack.getItem() instanceof IGuiTile)
         {
             return ((IGuiTile) stack.getItem()).getServerGuiElement(ID, player);
         }
@@ -67,7 +67,7 @@ public abstract class CommonProxy extends ContentProxy implements IGuiHandler
     {
         if (ID == 10002)
         {
-            return getServerGuiElement(y, player, world.getEntityByID(x));
+            return getClientGuiElement(y, player, x);
         }
         else if (ID == 10001)
         {
@@ -79,7 +79,7 @@ public abstract class CommonProxy extends ContentProxy implements IGuiHandler
     public Object getClientGuiElement(int ID, EntityPlayer player, int slot)
     {
         ItemStack stack = player.inventory.getStackInSlot(slot);
-        if (stack != null && stack.getItem() instanceof IGuiTile)
+        if (!stack.isEmpty() && stack.getItem() instanceof IGuiTile)
         {
             return ((IGuiTile) stack.getItem()).getClientGuiElement(ID, player);
         }
