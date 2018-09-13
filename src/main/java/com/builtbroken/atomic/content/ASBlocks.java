@@ -46,7 +46,6 @@ public final class ASBlocks
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
         event.getRegistry().register(blockUraniumOre = new BlockUraniumOre());
-        OreDictionary.registerOre("oreUranium", blockUraniumOre);
 
         event.getRegistry().register(blockReactorCell = new BlockReactorCell());
         GameRegistry.registerTileEntity(TileEntityReactorCell.class, new ResourceLocation(AtomicScience.PREFIX + "reactor_cell"));

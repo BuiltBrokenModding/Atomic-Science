@@ -22,6 +22,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
 /**
@@ -121,6 +122,7 @@ public final class ASItems
         blockSteamTurbine = addItemBlock(event.getRegistry(), ASBlocks.blockSteamTurbine);
 
         blockUraniumOre = addItemBlock(event.getRegistry(), ASBlocks.blockUraniumOre);
+        OreDictionary.registerOre("oreUranium", blockUraniumOre);
 
         blockChemExtractor = addItemBlock(event.getRegistry(), ASBlocks.blockChemExtractor);
         blockChemBoiler = addItemBlock(event.getRegistry(), ASBlocks.blockChemBoiler);
