@@ -11,6 +11,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public abstract class TileEntityMachine extends TileEntity implements IPacketIDReceiver, IPosWorld, IPlayerUsing
+public abstract class TileEntityMachine extends TileEntity implements IPacketIDReceiver, IPosWorld, IPlayerUsing, ITickable
 {
     public static final int DESC_PACKET_ID = -1;
     public static final int GUI_PACKET_ID = -2;
@@ -36,7 +37,7 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
     //--------- Update methods ----------------------
     //-----------------------------------------------
 
-    public final void updateEntity()
+    public final void update()
     {
         if (_ticks == 0)
         {
