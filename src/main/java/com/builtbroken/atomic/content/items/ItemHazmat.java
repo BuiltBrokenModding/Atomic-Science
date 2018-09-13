@@ -20,8 +20,6 @@ public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
 {
     /** Prefix for model textures */
     public static final String ARMOR_MODEL_TEXTURE = AtomicScience.PREFIX + AtomicScience.MODEL_TEXTURE_DIRECTORY + "armor/hazmat.png";
-    /** Prefix for item textures */
-    public static final String ARMOR_TEXTURE_FOLDER = AtomicScience.PREFIX + "armor/";
 
     /** Armor material */
     public static ItemArmor.ArmorMaterial hazmatArmorMaterial;

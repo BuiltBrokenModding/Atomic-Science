@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "atomicscience:items/cell_empty",
+    "layer1": "atomicscience:items/cell_fluid_mask"
+  }
+}
