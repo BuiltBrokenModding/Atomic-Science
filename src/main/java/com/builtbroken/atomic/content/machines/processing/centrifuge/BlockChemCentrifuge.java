@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.content.machines.processing.centrifuge;
 
 import com.builtbroken.atomic.AtomicScience;
-import net.minecraft.block.BlockContainer;
+import com.builtbroken.atomic.content.prefab.BlockAS;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +16,7 @@ import net.minecraft.world.World;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/23/2018.
  */
-public class BlockChemCentrifuge extends BlockContainer
+public class BlockChemCentrifuge extends BlockAS
 {
     public BlockChemCentrifuge()
     {
@@ -61,7 +61,7 @@ public class BlockChemCentrifuge extends BlockContainer
     @Override
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+        return EnumBlockRenderType.MODEL;
     }
 
     @Override

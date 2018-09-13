@@ -1,0 +1,18 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "atomicscience:reactor_cell",
+    "textures": {
+      "0": "atomicscience:blocks/reactor_cell",
+      "particle": "atomicscience:blocks/reactor_cell"
+    }
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ]
+  }
+}

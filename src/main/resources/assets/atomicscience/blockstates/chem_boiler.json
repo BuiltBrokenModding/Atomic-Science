@@ -1,0 +1,34 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "atomicscience:boiler",
+    "textures": {
+      "0": "atomicscience:blocks/boiler_on",
+      "particle": "atomicscience:blocks/boiler_on"
+    }
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ],
+    "rotation": {
+      "up": {},
+      "down": {},
+      "north": {
+        "y": 270
+      },
+      "south": {
+        "y": 90
+      },
+      "east": {
+
+      },
+      "west": {
+        "y": 180
+      }
+    }
+  }
+}

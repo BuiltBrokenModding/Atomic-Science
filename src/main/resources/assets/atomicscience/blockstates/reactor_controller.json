@@ -1,0 +1,22 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "cube_all",
+    "textures": {
+      "up": "atomicscience:blocks/reactor/controller.top",
+      "down": "atomicscience:blocks/reactor/controller.bottom",
+      "east": "atomicscience:blocks/reactor/controller.sides",
+      "west": "atomicscience:blocks/reactor/controller.sides",
+      "north": "atomicscience:blocks/reactor/controller.sides",
+      "south": "atomicscience:blocks/reactor/controller.sides"
+    }
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ]
+  }
+}

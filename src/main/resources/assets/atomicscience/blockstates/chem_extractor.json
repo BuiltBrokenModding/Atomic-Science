@@ -1,0 +1,33 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "atomicscience:chemical_extractor",
+    "textures": {
+      "0": "atomicscience:blocks/chemical_extractor",
+      "particle": "atomicscience:blocks/chemical_extractor"
+    }
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ],
+    "rotation": {
+      "up": {},
+      "down": {},
+      "north": {
+      },
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      }
+    }
+  }
+}

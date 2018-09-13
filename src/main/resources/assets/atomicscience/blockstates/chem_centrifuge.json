@@ -1,0 +1,33 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "atomicscience:centrifuge",
+    "textures": {
+      "0": "atomicscience:blocks/centrifuge",
+      "particle": "atomicscience:blocks/centrifuge"
+    }
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ],
+    "rotation": {
+      "up": {},
+      "down": {},
+      "north": {
+      },
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      }
+    }
+  }
+}

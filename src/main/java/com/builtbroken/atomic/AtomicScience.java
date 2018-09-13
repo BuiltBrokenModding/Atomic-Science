@@ -58,13 +58,9 @@ public class AtomicScience
     public static final String GUI_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "gui/";
     public static final String MODEL_TEXTURE_DIRECTORY = TEXTURE_DIRECTORY + "models/";
 
-    public static final String MODEL_DIRECTORY = "models/";
-
     public static final int TICKS_SECOND = 20;
     public static final int TICKS_MIN = TICKS_SECOND * 60;
     public static final int TICKS_HOUR = TICKS_MIN * 60;
-
-    public final String ENERGY_HANDLER_INTERFACE = "cofh.api.energy.IEnergyReceiver";
 
     @Mod.Instance(DOMAIN)
     public static AtomicScience INSTANCE;
@@ -123,8 +119,6 @@ public class AtomicScience
 
         //Handlers
         proxyLoader.add(PacketSystem.INSTANCE);
-        //proxyLoader.add(ProxyRedstoneFlux.class, ContentProxy.doesClassExist(ENERGY_HANDLER_INTERFACE));
-        //proxyLoader.add(ProxyRedstoneThermalExpansion.class, Loader.isModLoaded("thermalexpansion"));
         proxyLoader.add(sideProxy);
 
         //Register content
