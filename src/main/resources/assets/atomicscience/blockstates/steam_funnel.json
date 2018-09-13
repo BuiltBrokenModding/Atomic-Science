@@ -1,0 +1,19 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "atomicscience:steam_funnel",
+    "textures": {
+      "0": "atomicscience:blocks/funnel/body",
+      "1": "atomicscience:blocks/funnel/vent",
+      "particle": "atomicscience:blocks/funnel/body"
+    }
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ]
+  }
+}
