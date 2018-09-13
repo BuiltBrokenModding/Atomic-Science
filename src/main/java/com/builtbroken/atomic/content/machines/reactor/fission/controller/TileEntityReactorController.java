@@ -95,7 +95,6 @@ public class TileEntityReactorController extends TileEntityMachine
 
         //Get stack above cell
         BlockPos pos = getPos().up();
-        pos = getPos().down();
         while (pos.getY() < world.getHeight())
         {
             TileEntity tileEntity = world.getTileEntity(pos);
