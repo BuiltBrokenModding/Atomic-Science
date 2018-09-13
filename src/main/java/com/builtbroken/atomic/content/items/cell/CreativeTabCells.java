@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -26,9 +25,7 @@ public class CreativeTabCells extends CreativeTabs
     {
         for (Fluid fluid : FluidRegistry.getRegisteredFluids().values())
         {
-            ItemStack stack = new ItemStack(ASItems.itemFluidCell, 1, 0);
-            ASItems.itemFluidCell.fill(stack, new FluidStack(fluid, ASItems.itemFluidCell.getCapacity(stack)), true);
-            list.add(stack);
+            list.add(ASItems.itemFluidCell.getContainerForFluid(fluid));
         }
     }
 

@@ -4,21 +4,15 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.effects.client.RenderRadOverlay;
-import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
-import com.builtbroken.atomic.content.machines.processing.boiler.render.TESRChemBoiler;
-import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
-import com.builtbroken.atomic.content.machines.processing.centrifuge.render.TESRChemCentrifuge;
-import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
-import com.builtbroken.atomic.content.machines.processing.extractor.render.TESRChemExtractor;
-import com.builtbroken.atomic.content.machines.steam.generator.TESRSteamGenerator;
-import com.builtbroken.atomic.content.machines.steam.generator.TileEntitySteamGenerator;
+import com.builtbroken.atomic.content.items.cell.BucketModelLoader;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -40,12 +34,12 @@ public class ASClientReg
         MinecraftForge.EVENT_BUS.register(new ASClientReg());
         MinecraftForge.EVENT_BUS.register(RenderRadOverlay.INSTANCE);
 
-        //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorCell.class, new TESRReactorCell());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySteamGenerator.class, new TESRSteamGenerator());
+        //TODO ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorCell.class, new TESRReactorCell());
+        //TODO ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySteamGenerator.class, new TESRSteamGenerator());
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemExtractor.class, new TESRChemExtractor());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemBoiler.class, new TESRChemBoiler());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemCentrifuge.class, new TESRChemCentrifuge());
+        //TODO ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemExtractor.class, new TESRChemExtractor());
+        //TODO ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemBoiler.class, new TESRChemBoiler());
+        //TODO ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemCentrifuge.class, new TESRChemCentrifuge());
 
         //Armor
         newItemModel(ASItems.itemArmorHazmatHelm);
@@ -54,9 +48,6 @@ public class ASClientReg
         newItemModel(ASItems.itemArmorHazmatBoots);
 
         //Cells
-        newItemModel(ASItems.itemFluidCell);
-        newItemModel(ASItems.itemPoweredCell);
-
         newItemModel(ASItems.itemFissileFuelCell);
         newItemModel(ASItems.itemBreederFuelCell);
 
@@ -89,6 +80,17 @@ public class ASClientReg
         newBlockModel(ASBlocks.blockChemExtractor);
         newBlockModel(ASBlocks.blockChemBoiler);
         newBlockModel(ASBlocks.blockChemCentrifuge);
+
+        //Register custom cell model
+        ModelLoaderRegistry.registerLoader(new BucketModelLoader(AtomicScience.DOMAIN));
+
+        final ModelResourceLocation location = new ModelResourceLocation(AtomicScience.DOMAIN + ":cell_fluid", "inventory");
+        ModelLoader.setCustomMeshDefinition(ASItems.itemFluidCell, stack -> location);
+        ModelBakery.registerItemVariants(ASItems.itemFluidCell, location);
+
+        final ModelResourceLocation location2 = new ModelResourceLocation(AtomicScience.DOMAIN + ":cell_powered", "inventory");
+        ModelLoader.setCustomMeshDefinition(ASItems.itemPoweredCell, stack -> location2);
+        ModelBakery.registerItemVariants(ASItems.itemPoweredCell, location2);
     }
 
     protected static void newBlockModel(Block block)

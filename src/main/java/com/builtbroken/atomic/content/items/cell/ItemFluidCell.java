@@ -11,6 +11,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -43,11 +46,25 @@ public class ItemFluidCell extends Item
     }
 
     @Override
+    public net.minecraftforge.common.capabilities.ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt)
+    {
+        return new FluidHandlerItemStack(stack, fluidCapacity)
+        {
+            @Override
+            public boolean canFillFluidType(FluidStack fluid)
+            {
+                return canSupportFluid(container, fluid);
+            }
+        };
+    }
+
+
+    @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> lines, ITooltipFlag flagIn)
     {
         FluidStack fluidStack = getFluid(stack);
-        if(fluidStack != null)
+        if (fluidStack != null)
         {
             lines.add("Fluid: " + fluidStack.getLocalizedName());
             lines.add("Amount: " + fluidStack.amount);
@@ -62,7 +79,7 @@ public class ItemFluidCell extends Item
     public String getTranslationKey(ItemStack stack)
     {
         FluidStack fluidStack = getFluid(stack);
-        if(fluidStack != null && supportedFluidToLocalization.containsKey(fluidStack.getFluid()))
+        if (fluidStack != null && supportedFluidToLocalization.containsKey(fluidStack.getFluid()))
         {
             return supportedFluidToLocalization.get(fluidStack.getFluid());
         }
@@ -72,7 +89,7 @@ public class ItemFluidCell extends Item
     @Override
     public int getItemStackLimit(ItemStack stack)
     {
-        return isEmpty(stack) ? Items.BUCKET.getItemStackLimit(stack) : 1;
+        return !hasContainerItem(stack) ? Items.BUCKET.getItemStackLimit(stack) : 1;
     }
 
     @SideOnly(Side.CLIENT)
@@ -92,7 +109,12 @@ public class ItemFluidCell extends Item
     public ItemStack getContainerForFluid(Fluid fluid)
     {
         ItemStack stack = new ItemStack(this);
-        fill(stack, new FluidStack(fluid, getCapacity(stack)), true);
+        IFluidHandlerItem handlerItem = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+        if (handlerItem != null)
+        {
+            handlerItem.fill(new FluidStack(fluid, handlerItem.getTankProperties()[0].getCapacity()), true);
+            return handlerItem.getContainer();
+        }
         return stack;
     }
 
@@ -106,51 +128,16 @@ public class ItemFluidCell extends Item
         return getFluid(stack) != null;
     }
 
-    //----------------------------------------------------------------
-    //----------Fluid stuff
-    //----------------------------------------------------------------
-
-    /**
-     * Helper method to check if the bucket is empty
-     *
-     * @param container - bucket
-     * @return true if it is empty
-     */
-    public boolean isEmpty(ItemStack container)
+    public FluidStack getFluid(ItemStack stack)
     {
-        return getFluid(container) == null;
-    }
-
-    /**
-     * Helper method to check if the bucket is full
-     *
-     * @param container - bucket
-     * @return true if it is full
-     */
-    public boolean isFull(ItemStack container)
-    {
-        FluidStack stack = getFluid(container);
-        if (stack != null)
+        IFluidHandlerItem handlerItem = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
+        if (handlerItem != null)
         {
-            return stack.amount == getCapacity(container);
+            return handlerItem.drain(Integer.MAX_VALUE, false);
         }
-        return false;
+        return null;
     }
 
-    public int getCapacity(ItemStack container)
-    {
-        return fluidCapacity;
-    }
-
-    /* IFluidContainerItem */
-    public FluidStack getFluid(ItemStack container)
-    {
-        if (container.getTagCompound() == null || !container.getTagCompound().hasKey("Fluid"))
-        {
-            return null;
-        }
-        return FluidStack.loadFluidStackFromNBT(container.getTagCompound().getCompoundTag("Fluid"));
-    }
 
     /**
      * Simple check method that will ensure the resource is not null. As well
@@ -163,114 +150,5 @@ public class ItemFluidCell extends Item
     public boolean canSupportFluid(ItemStack container, FluidStack resource)
     {
         return resource != null;// && supportedFluidToTexturePath.containsKey(resource.getFluid());
-    }
-
-    public int fill(ItemStack container, FluidStack resource, boolean doFill)
-    {
-        if (canSupportFluid(container, resource))
-        {
-            if (!doFill)
-            {
-                if (container.getTagCompound() == null || !container.getTagCompound().hasKey("Fluid"))
-                {
-                    return Math.min(getCapacity(container), resource.amount);
-                }
-
-                FluidStack stack = FluidStack.loadFluidStackFromNBT(container.getTagCompound().getCompoundTag("Fluid"));
-
-                if (stack == null)
-                {
-                    return Math.min(getCapacity(container), resource.amount);
-                }
-
-                if (!stack.isFluidEqual(resource))
-                {
-                    return 0;
-                }
-
-                return Math.min(getCapacity(container) - stack.amount, resource.amount);
-            }
-
-            if (container.getTagCompound() == null)
-            {
-                container.setTagCompound(new NBTTagCompound());
-            }
-
-            if (!container.getTagCompound().hasKey("Fluid"))
-            {
-                NBTTagCompound fluidTag = resource.writeToNBT(new NBTTagCompound());
-
-                if (getCapacity(container) < resource.amount)
-                {
-                    fluidTag.setInteger("Amount", getCapacity(container));
-                    container.getTagCompound().setTag("Fluid", fluidTag);
-                    return getCapacity(container);
-                }
-
-                container.getTagCompound().setTag("Fluid", fluidTag);
-                return resource.amount;
-            }
-            else
-            {
-
-                NBTTagCompound fluidTag = container.getTagCompound().getCompoundTag("Fluid");
-                FluidStack stack = FluidStack.loadFluidStackFromNBT(fluidTag);
-
-                if (!stack.isFluidEqual(resource))
-                {
-                    return 0;
-                }
-
-                int filled = getCapacity(container) - stack.amount;
-                if (resource.amount < filled)
-                {
-                    stack.amount += resource.amount;
-                    filled = resource.amount;
-                }
-                else
-                {
-                    stack.amount = getCapacity(container);
-                }
-
-                container.getTagCompound().setTag("Fluid", stack.writeToNBT(fluidTag));
-                return filled;
-            }
-        }
-        return 0;
-    }
-
-    public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain)
-    {
-        if (container.getTagCompound() == null || !container.getTagCompound().hasKey("Fluid"))
-        {
-            return null;
-        }
-
-        FluidStack stack = FluidStack.loadFluidStackFromNBT(container.getTagCompound().getCompoundTag("Fluid"));
-        if (stack == null)
-        {
-            return null;
-        }
-
-        int currentAmount = stack.amount;
-        stack.amount = Math.min(stack.amount, maxDrain);
-        if (doDrain)
-        {
-            if (currentAmount == stack.amount)
-            {
-                container.getTagCompound().removeTag("Fluid");
-
-                if (container.getTagCompound().isEmpty())
-                {
-                    container.setTagCompound(null);
-                }
-                return stack;
-            }
-
-            NBTTagCompound fluidTag = container.getTagCompound().getCompoundTag("Fluid");
-            fluidTag.setInteger("Amount", currentAmount - stack.amount);
-            container.getTagCompound().setTag("Fluid", fluidTag);
-        }
-        return stack;
     }
 }
