@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench, a free, modern block model editor by JannisX11",
 	"textures": {
-		"0": "boiler/boiler_on",
-		"particle": "boiler/boiler_on"
+		"0": "atomicscience:blocks/boiler_on",
+		"particle": "atomicscience:blocks/boiler_on"
 	},
 	"elements": [
 		{

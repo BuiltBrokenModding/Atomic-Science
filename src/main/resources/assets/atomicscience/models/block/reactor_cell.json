@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "reactor_cell/reactor_cell",
-		"particle": "reactor_cell/reactor_cell"
+		"0": "atomicscience:blocks/reactor_cell",
+		"particle": "atomicscience:blocks/reactor_cell"
 	},
 	"elements": [
 		{

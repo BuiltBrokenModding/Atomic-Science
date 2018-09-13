@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "turbine_small/turbine_small",
-		"particle": "turbine_small/turbine_small"
+		"0": "atomicscience:blocks/turbine_small",
+		"particle": "atomicscience:blocks/turbine_small"
 	},
 	"elements": [
 		{

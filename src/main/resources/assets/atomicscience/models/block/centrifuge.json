@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "centrifuge/centrifuge",
-		"particle": "centrifuge/centrifuge"
+		"0": "atomicscience:blocks/centrifuge",
+		"particle": "atomicscience:blocks/centrifuge"
 	},
 	"elements": [
 		{
