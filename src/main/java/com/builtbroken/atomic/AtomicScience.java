@@ -15,6 +15,7 @@ import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.proxy.ProxyLoader;
+import com.builtbroken.atomic.proxy.eu.ProxyElectricalUnits;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
@@ -24,6 +25,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -129,6 +131,11 @@ public class AtomicScience
         //Handlers
         proxyLoader.add(PacketSystem.INSTANCE);
         proxyLoader.add(sideProxy);
+
+        if(Loader.isModLoaded("ic2"))
+        {
+            proxyLoader.add(new ProxyElectricalUnits());
+        }
 
         //Register content
         ASIndirectEffects.register();

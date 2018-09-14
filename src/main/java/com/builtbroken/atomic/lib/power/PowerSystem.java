@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Handles power interaction between tiles
@@ -18,6 +19,11 @@ import java.util.List;
 public class PowerSystem
 {
     private static final List<PowerHandler> powerHandlers = new ArrayList();
+
+    static
+    {
+        powerHandlers.add(new PowerHandlerFE());
+    }
 
     public static int addPower(EnumFacing sideAccessed, TileEntity tileEntity, int power, boolean doAction)
     {
@@ -138,5 +144,10 @@ public class PowerSystem
             return handler.removePower(itemStack, amount, false);
         }
         return 0;
+    }
+
+    public static void forEach(Consumer<PowerHandler> action)
+    {
+        powerHandlers.forEach(action);
     }
 }

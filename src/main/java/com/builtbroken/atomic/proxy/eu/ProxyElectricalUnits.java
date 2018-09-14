@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.proxy.eu;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.lib.power.PowerSystem;
 import com.builtbroken.atomic.proxy.ContentProxy;
 
 /**
@@ -28,5 +29,6 @@ public class ProxyElectricalUnits extends ContentProxy
     public void preInit()
     {
         AtomicScience.logger.info(this + " Loaded");
+        PowerSystem.register(PowerHandlerEU.INSTANCE);
     }
 }

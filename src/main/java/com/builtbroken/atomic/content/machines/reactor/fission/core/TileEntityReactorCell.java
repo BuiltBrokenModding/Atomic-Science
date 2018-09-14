@@ -175,7 +175,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
             {
                 if(getFuelRod() != null)
                 {
-                    MapHandler.RADIATION_MAP.addSource(this);
+                    MapHandler.RADIATION_MAP.addSource(this); //TODO change this to not use inventory event
                     MapHandler.THERMAL_MAP.addSource(this);
                 }
                 else

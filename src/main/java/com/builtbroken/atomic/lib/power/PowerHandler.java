@@ -12,39 +12,113 @@ import net.minecraft.util.EnumFacing;
  */
 public abstract class PowerHandler
 {
+    /**
+     * Can the system handle the tile
+     *
+     * @param side
+     * @param tile
+     * @return
+     */
     public boolean canHandle(EnumFacing side, TileEntity tile)
     {
         return false;
     }
 
+    /**
+     * Can the system handle the item
+     *
+     * @param stack
+     * @return
+     */
     public boolean canHandle(ItemStack stack)
     {
         return false;
     }
 
-    public int addPower(EnumFacing side, TileEntity tileEntity, int power, boolean doAction)
+    /**
+     * Called to add power to the tile
+     *
+     * @param side
+     * @param tile
+     * @param power
+     * @param doAction
+     * @return power added
+     */
+    public int addPower(EnumFacing side, TileEntity tile, int power, boolean doAction)
     {
         return 0;
     }
 
-    public int removePower(EnumFacing side, TileEntity tileEntity, int power, boolean doAction)
+    /**
+     * Called to remove power from the system
+     *
+     * @param side
+     * @param tile
+     * @param power
+     * @param doAction
+     * @return power removed
+     */
+    public int removePower(EnumFacing side, TileEntity tile, int power, boolean doAction)
     {
         return 0;
     }
 
 
+    /**
+     * Called to add power to the stack
+     *
+     * @param stack
+     * @param power
+     * @param doAction
+     * @return power added
+     */
     public int addPower(ItemStack stack, int power, boolean doAction)
     {
         return 0;
     }
 
+    /**
+     * Called to remove power from the stack
+     *
+     * @param stack
+     * @param power
+     * @param doAction
+     * @return power removed
+     */
     public int removePower(ItemStack stack, int power, boolean doAction)
     {
         return 0;
     }
 
-    public int getPowerStored(ItemStack itemStack)
+    /**
+     * Get power stored in the item
+     *
+     * @param stack
+     * @return
+     */
+    public int getPowerStored(ItemStack stack)
     {
         return 0;
+    }
+
+    /**
+     * Get max power stored in the item
+     *
+     * @param stack
+     * @return
+     */
+    public int getMaxPowerStorage(ItemStack stack)
+    {
+        return 0;
+    }
+
+    public void onTileInvalidate(TileEntity tile)
+    {
+
+    }
+
+    public void onTileValidate(TileEntity tile)
+    {
+
     }
 }
