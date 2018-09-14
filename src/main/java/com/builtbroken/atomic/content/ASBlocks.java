@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.blocks.BlockUraniumOre;
+import com.builtbroken.atomic.content.fluid.BlockSimpleFluid;
 import com.builtbroken.atomic.content.machines.processing.boiler.BlockChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.BlockChemCentrifuge;
@@ -66,5 +67,22 @@ public final class ASBlocks
 
         event.getRegistry().register(blockChemCentrifuge = new BlockChemCentrifuge());
         GameRegistry.registerTileEntity(TileEntityChemCentrifuge.class, new ResourceLocation(AtomicScience.PREFIX + "chem_centrifuge"));
+
+        for(ASFluids value : ASFluids.values())
+        {
+            if(value.makeBlock && value.fluid.getBlock() == null)
+            {
+                event.getRegistry().register(createFluidBlock(value));
+            }
+        }
     }
+
+    static Block createFluidBlock(ASFluids fluid)
+    {
+        //TODO allow switching block type
+        BlockSimpleFluid blockSimpleFluid = new BlockSimpleFluid(fluid.fluid, fluid.name().toLowerCase());
+        blockSimpleFluid.setRegistryName(AtomicScience.PREFIX + fluid.name().toLowerCase());
+        return blockSimpleFluid;
+    }
+
 }

@@ -17,13 +17,14 @@ import java.io.File;
  */
 public enum ASFluids
 {
-    ANTIMATTER("antimatter", false),
-    STRANGE_MATTER("strange_matter", false),
-    DEUTERIUM("deuterium", false),
-    STEAM("steam", "steam", true),
+    //NOTE: do not change enum names, this will change registry values for fluid blocks
+    ANTIMATTER(AtomicScience.PREFIX + "antimatter", "plasma", false), //TODO get texture
+    STRANGE_MATTER(AtomicScience.PREFIX + "strange_matter", "plasma", false), //TODO get texture
+    DEUTERIUM(AtomicScience.PREFIX + "deuterium", "tritium", false), //TODO get texture, add gas block https://en.wikipedia.org/wiki/Deuterium
+    STEAM("steam", "steam", true), //TODO make custom gas block
 
     //Waste fluid from reactor (yellow color as it has oxidized due to heat + water)
-    REACTOR_WASTE("toxic_waste", "toxic/reactor/still", "toxic/reactor/flow", true),
+    REACTOR_WASTE(AtomicScience.PREFIX + "reactor_waste", "toxic/reactor/still", "toxic/reactor/flow", true),
     //Waste sludge from chemical extractor (trace minerals)
     LIQUID_MINERAL_WASTE(AtomicScience.PREFIX + "mineral_waste", "toxic/mineral/still", "toxic/mineral/flow", true),
     //Waste water from boiler (trace minerals)
@@ -31,7 +32,7 @@ public enum ASFluids
     //Waste water from cleaning items (contains trace radioactive dust)
     CONTAMINATED_WATER(AtomicScience.PREFIX + "contaminated_water", "water/contaminated/still", "water/contaminated/flow", true),
     //Gas version of uranium
-    URANIUM_HEXAFLOURIDE(AtomicScience.PREFIX + "uranium_hexafluoride", "uranium.hexafluoride", true);
+    URANIUM_HEXAFLOURIDE(AtomicScience.PREFIX + "uranium_hexafluoride", "uranium.hexafluoride", false); //TODO make custom gas block
 
     public final String id;
     public final String texture_still;
@@ -64,7 +65,7 @@ public enum ASFluids
         {
             if (texture_still != null)
             {
-                fluid = new Fluid(id, new ResourceLocation(AtomicScience.DOMAIN, texture_still), new ResourceLocation(AtomicScience.DOMAIN, texture_flow)); //TODO handle color
+                fluid = new Fluid(id, new ResourceLocation(AtomicScience.DOMAIN, "blocks/fluids/" + texture_still), new ResourceLocation(AtomicScience.DOMAIN, "blocks/fluids/" + texture_flow)); //TODO handle color
             }
             else
             {
@@ -100,6 +101,7 @@ public enum ASFluids
             configuration.save();
 
             STEAM.fluid.setGaseous(true);
+            DEUTERIUM.fluid.setGaseous(true);
             URANIUM_HEXAFLOURIDE.fluid.setGaseous(true);
         }
     }

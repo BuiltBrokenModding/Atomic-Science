@@ -1,0 +1,71 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "forge:fluid"
+  },
+  "variants": {
+    "atomicscience:antimatter": [
+      {
+        "custom": {
+          "fluid": "atomicscience:antimatter"
+        }
+      }
+    ],
+    "atomicscience:strange_matter": [
+      {
+        "custom": {
+          "fluid": "atomicscience:strange_matter"
+        }
+      }
+    ],
+    "atomicscience:deuterium": [
+      {
+        "custom": {
+          "fluid": "atomicscience:deuterium"
+        }
+      }
+    ],
+    "steam": [
+      {
+        "custom": {
+          "fluid": "steam"
+        }
+      }
+    ],
+    "atomicscience:reactor_waste": [
+      {
+        "custom": {
+          "fluid": "atomicscience:reactor_waste"
+        }
+      }
+    ],
+    "atomicscience:mineral_waste": [
+      {
+        "custom": {
+          "fluid": "atomicscience:mineral_waste"
+        }
+      }
+    ],
+    "atomicscience:contaminated_mineral_water": [
+      {
+        "custom": {
+          "fluid": "atomicscience:contaminated_mineral_water"
+        }
+      }
+    ],
+    "atomicscience:contaminated_water": [
+      {
+        "custom": {
+          "fluid": "atomicscience:contaminated_water"
+        }
+      }
+    ],
+    "atomicscience:uranium_hexafluoride": [
+      {
+        "custom": {
+          "fluid": "atomicscience:uranium_hexafluoride"
+        }
+      }
+    ]
+  }
+}
