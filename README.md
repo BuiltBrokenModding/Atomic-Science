@@ -30,4 +30,9 @@ The mod itself featured roughly the same content with some minor differences. So
 
 ## Credits
 * Calclavia - former author
+* Morton - assets
+* Sakur42 - assets
+* Graugger - assets
+* Dmod - buildscripts
+* Tgame14 - code
 * Everyone else - will fill in list as I go
