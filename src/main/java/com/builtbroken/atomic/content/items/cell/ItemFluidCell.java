@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -30,7 +31,7 @@ import java.util.List;
 public class ItemFluidCell extends Item
 {
     /** Map of supported fluids to there texture path */
-    public HashMap<Fluid, String> supportedFluidToTexturePath = new HashMap();
+    public HashMap<Fluid, ResourceLocation> supportedFluidToTexturePath = new HashMap();
 
     /** Map of supported fluids to localization */
     public HashMap<Fluid, String> supportedFluidToLocalization = new HashMap();
@@ -43,6 +44,12 @@ public class ItemFluidCell extends Item
         this.fluidCapacity = fluidCapacity;
         this.setTranslationKey(AtomicScience.PREFIX + "cell.fluid");
         this.setCreativeTab(AtomicScience.creativeTab);
+    }
+
+    public void addSupportedFluid(Fluid fluid, String texture, String name)
+    {
+        supportedFluidToTexturePath.put(fluid, new ResourceLocation(texture));
+        supportedFluidToLocalization.put(fluid, name);
     }
 
     @Override

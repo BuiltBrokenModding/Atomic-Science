@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.items.cell;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.content.ASItems;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -16,6 +17,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -52,15 +54,17 @@ public class ModelFluidBucket implements IModel
     public static final IModel MODEL = new ModelFluidBucket();
 
     protected final Fluid fluid;
+    protected final Item item;
 
     public ModelFluidBucket()
     {
-        this(null);
+        this(null, null);
     }
 
-    public ModelFluidBucket(Fluid fluid)
+    public ModelFluidBucket(Fluid fluid, Item item)
     {
         this.fluid = fluid;
+        this.item = item;
     }
 
     @Override
@@ -74,15 +78,19 @@ public class ModelFluidBucket implements IModel
     {
         ImmutableSet.Builder<ResourceLocation> builder = ImmutableSet.builder();
 
+        //Add main textures
         builder.add(fluid_mask_texture);
-        builder.add(base_texture);
+        builder.add(base_texture); //TODO add powered cell
+
+        //Add unique fluid cell textures
+        builder.addAll(ASItems.itemFluidCell.supportedFluidToTexturePath.values());
+        builder.addAll(ASItems.itemPoweredCell.supportedFluidToTexturePath.values());
 
         return builder.build();
     }
 
     @Override
     public IBakedModel bake(IModelState state, VertexFormat format, java.util.function.Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
-
     {
         ImmutableMap<TransformType, TRSRTransformation> transformMap = PerspectiveMapWrapper.getTransforms(state);
 
@@ -107,24 +115,43 @@ public class ModelFluidBucket implements IModel
         }
 
         TRSRTransformation transform = state.apply(java.util.Optional.empty()).orElse(TRSRTransformation.identity());
-        TextureAtlasSprite fluidSprite = null;
         ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
 
+
+        TextureAtlasSprite fluidSprite = null;
         if (fluid != null)
         {
-            fluidSprite = bakedTextureGetter.apply(fluid.getStill());
+            if(item instanceof ItemFluidCell && ((ItemFluidCell) item).supportedFluidToTexturePath.containsKey(fluid))
+            {
+                ResourceLocation texture = ((ItemFluidCell) item).supportedFluidToTexturePath.get(fluid);
+                fluidSprite = bakedTextureGetter.apply(texture);
+
+                IBakedModel modelFluid = (new ItemLayerModel(ImmutableList.of(texture))).bake(state, format, bakedTextureGetter);
+                builder.addAll(modelFluid.getQuads(null, null, 0));
+            }
+            else
+            {
+                // build base (insidest)
+                IBakedModel modelCell = (new ItemLayerModel(ImmutableList.of(base_texture))).bake(state, format, bakedTextureGetter);
+                builder.addAll(modelCell.getQuads(null, null, 0));
+
+                //Build fluid texture
+                fluidSprite = bakedTextureGetter.apply(fluid.getStill());
+                if (fluidSprite != null)
+                {
+                    TextureAtlasSprite liquid = bakedTextureGetter.apply(fluid_mask_texture);
+                    // build liquid layer (inside)
+                    builder.addAll(ItemTextureQuadConverter.convertTexture(format, transform, liquid, fluidSprite, NORTH_Z_FLUID, EnumFacing.NORTH, fluid.getColor()));
+                    builder.addAll(ItemTextureQuadConverter.convertTexture(format, transform, liquid, fluidSprite, SOUTH_Z_FLUID, EnumFacing.SOUTH, fluid.getColor())); //seems to be darker
+                }
+            }
         }
-
-        // build base (insidest)
-        IBakedModel model = (new ItemLayerModel(ImmutableList.of(base_texture))).bake(state, format, bakedTextureGetter);
-        builder.addAll(model.getQuads(null, null, 0));
-
-        if (fluidSprite != null)
+        //No fluid state
+        else
         {
-            TextureAtlasSprite liquid = bakedTextureGetter.apply(fluid_mask_texture);
-            // build liquid layer (inside)
-            builder.addAll(ItemTextureQuadConverter.convertTexture(format, transform, liquid, fluidSprite, NORTH_Z_FLUID, EnumFacing.NORTH, fluid.getColor()));
-            builder.addAll(ItemTextureQuadConverter.convertTexture(format, transform, liquid, fluidSprite, SOUTH_Z_FLUID, EnumFacing.SOUTH, fluid.getColor())); //seems to be darker
+            // build base (insidest)
+            IBakedModel modelCell = (new ItemLayerModel(ImmutableList.of(base_texture))).bake(state, format, bakedTextureGetter); //TODO get custom texture for empty
+            builder.addAll(modelCell.getQuads(null, null, 0));
         }
 
         return new BakedFluidBucket(this, builder.build(), fluidSprite, format, Maps.immutableEnumMap(transformMap), Maps.newHashMap());
@@ -162,8 +189,12 @@ public class ModelFluidBucket implements IModel
         {
             fluid = this.fluid;
         }
+
+        String itemName = customData.get("item");
+        Item item = Item.REGISTRY.getObject(new ResourceLocation(itemName));
+
         // create new model with correct liquid
-        return new ModelFluidBucket(fluid);
+        return new ModelFluidBucket(fluid, item);
     }
 
     private static final class BakedDynBucketOverrideHandler extends ItemOverrideList
@@ -201,7 +232,7 @@ public class ModelFluidBucket implements IModel
             //Populate cached value if it doesn't exist
             if (!model.cache.containsKey(key))
             {
-                IModel parent = model.parent.process(ImmutableMap.of("fluid", fluidName));
+                IModel parent = model.parent.process(ImmutableMap.of("fluid", fluidName, "item", stack.getItem().getRegistryName().toString()));
                 Function<ResourceLocation, TextureAtlasSprite> textureGetter;
                 textureGetter = new Function<ResourceLocation, TextureAtlasSprite>()
                 {
@@ -266,21 +297,25 @@ public class ModelFluidBucket implements IModel
             return ImmutableList.of();
         }
 
+        @Override
         public boolean isAmbientOcclusion()
         {
             return true;
         }
 
+        @Override
         public boolean isGui3d()
         {
             return false;
         }
 
+        @Override
         public boolean isBuiltInRenderer()
         {
             return false;
         }
 
+        @Override
         public TextureAtlasSprite getParticleTexture()
         {
             return particle;

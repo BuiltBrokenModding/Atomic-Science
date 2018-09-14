@@ -20,6 +20,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -85,7 +86,14 @@ public final class ASItems
 
         //Cells
         event.getRegistry().register(itemFluidCell = (ItemFluidCell) new ItemFluidCell(Fluid.BUCKET_VOLUME).setRegistryName(AtomicScience.PREFIX + "fluid_cell"));
+        itemFluidCell.addSupportedFluid(FluidRegistry.WATER, AtomicScience.PREFIX + "items/cell_water", itemFluidCell.getTranslationKey() + ".water");
+        itemFluidCell.addSupportedFluid(ASFluids.DEUTERIUM.fluid, AtomicScience.PREFIX + "items/cell_deuterium", itemFluidCell.getTranslationKey() + ".deuterium");
+
+
         event.getRegistry().register(itemPoweredCell = (ItemPoweredCell) new ItemPoweredCell().setRegistryName(AtomicScience.PREFIX + "powered_cell"));
+        itemPoweredCell.addSupportedFluid(ASFluids.ANTIMATTER.fluid, AtomicScience.PREFIX + "items/cell_antimatter", itemPoweredCell.getTranslationKey() + ".antimatter");
+        itemPoweredCell.addSupportedFluid(ASFluids.STRANGE_MATTER.fluid, AtomicScience.PREFIX + "items/cell_strange_matter", itemPoweredCell.getTranslationKey() + ".strange_matter");
+
 
         //Machine inputs
         event.getRegistry().register(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile",
