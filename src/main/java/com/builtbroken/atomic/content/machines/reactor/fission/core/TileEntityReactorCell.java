@@ -48,7 +48,15 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     @Override
     protected IItemHandlerModifiable createInventory()
     {
-        return new ItemStackHandler(1);
+        return new ItemStackHandler(1)
+        {
+            @Override
+            protected void onContentsChanged(int slot)
+            {
+                TileEntityReactorCell.this.onSlotStackChanged(slot);
+            }
+        };
+
     }
 
     //-----------------------------------------------
@@ -157,15 +165,25 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         return enabled && hasFuel() && getFuelRuntime() > 0;
     }
 
-    @Override
-    protected void onSlotStackChanged(ItemStack prev, ItemStack stack, int slot)
+    protected void onSlotStackChanged(int slot)
     {
-        super.onSlotStackChanged(prev, stack, slot);
+        this.markDirty();
         if (isServer())
         {
             syncClientNextTick();
-            MapHandler.RADIATION_MAP.addSource(this);
-            MapHandler.THERMAL_MAP.addSource(this);
+            if(slot == 0)
+            {
+                if(getFuelRod() != null)
+                {
+                    MapHandler.RADIATION_MAP.addSource(this);
+                    MapHandler.THERMAL_MAP.addSource(this);
+                }
+                else
+                {
+                    MapHandler.RADIATION_MAP.removeSource(this);
+                    MapHandler.THERMAL_MAP.removeSource(this);
+                }
+            }
         }
     }
 

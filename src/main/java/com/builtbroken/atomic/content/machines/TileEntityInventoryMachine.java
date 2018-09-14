@@ -26,6 +26,7 @@ public abstract class TileEntityInventoryMachine<I extends IItemHandlerModifiabl
 
     protected abstract I createInventory();
 
+    @Deprecated //Doesn't get called
     protected void onSlotStackChanged(ItemStack prev, ItemStack stack, int slot)
     {
         this.markDirty();
