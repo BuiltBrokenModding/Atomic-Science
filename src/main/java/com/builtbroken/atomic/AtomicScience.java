@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -78,6 +79,14 @@ public class AtomicScience
 
     public static File configFolder;
 
+    public AtomicScience()
+    {
+        if (runningAsDev)
+        {
+            FluidRegistry.enableUniversalBucket();
+        }
+    }
+
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event)
     {
@@ -126,6 +135,15 @@ public class AtomicScience
 
         //Proxy
         proxyLoader.preInit();
+
+        //Used to compare rendering
+        if (runningAsDev)
+        {
+            for (ASFluids value : ASFluids.values())
+            {
+                FluidRegistry.addBucketForFluid(value.fluid);
+            }
+        }
     }
 
     @Mod.EventHandler
