@@ -83,7 +83,7 @@ public class TileEntitySteamFunnel extends TileEntitySteamInput
                 BlockPos blockPos = getPos().add(direction.getDirectionVec());
 
                 TileEntity tile = world.getTileEntity(blockPos);
-                if (tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction))
+                if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction))
                 {
                     IFluidHandler fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
                     if (fluidHandler != null)
