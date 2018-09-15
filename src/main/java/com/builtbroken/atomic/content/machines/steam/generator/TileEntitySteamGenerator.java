@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.content.machines.steam.generator;
 
-import com.builtbroken.atomic.config.ConfigPower;
+import com.builtbroken.atomic.config.thermal.ConfigSteam;
 import com.builtbroken.atomic.config.mods.ConfigIC2;
 import com.builtbroken.atomic.content.machines.steam.TileEntitySteamInput;
 import com.builtbroken.atomic.lib.power.PowerSystem;
@@ -91,7 +91,7 @@ public class TileEntitySteamGenerator extends TileEntitySteamInput implements IE
 
     public int getPowerToOutput()
     {
-        return getSteamGeneration() * ConfigPower.STEAM_TO_UE_POWER;
+        return getSteamGeneration() * ConfigSteam.STEAM_TO_ENERGY;
     }
 
     //<editor-fold desc="save">

@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.config;
+package com.builtbroken.atomic.config.thermal;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.proxy.ContentProxy;

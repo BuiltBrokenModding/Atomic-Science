@@ -1,9 +1,9 @@
 package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.config.ConfigPower;
 import com.builtbroken.atomic.config.ConfigRadiation;
-import com.builtbroken.atomic.config.ConfigThermal;
+import com.builtbroken.atomic.config.content.ConfigReactor;
+import com.builtbroken.atomic.config.thermal.ConfigThermal;
 import com.builtbroken.atomic.content.items.ItemFuelRod;
 import com.builtbroken.atomic.content.items.ItemHazmat;
 import com.builtbroken.atomic.content.items.ItemHeatProbe;
@@ -97,11 +97,11 @@ public final class ASItems
 
         //Machine inputs
         event.getRegistry().register(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile",
-                ConfigPower.FUEL_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD
+                ConfigReactor.FUEL_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD
                 , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_FUEL_ROD, ConfigThermal.HEAT_REACTOR_FUEL_ROD)
                 .setRegistryName(AtomicScience.PREFIX + "fissile_fuel_cell"));
         event.getRegistry().register(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder",
-                ConfigPower.BREEDER_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD
+                ConfigReactor.BREEDER_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD
                 , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_BREEDER_ROD, ConfigThermal.HEAT_REACTOR_BREEDER_ROD)
                 .setRegistryName(AtomicScience.PREFIX + "breeder_fuel_cell"));
 

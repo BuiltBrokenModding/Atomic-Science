@@ -1,0 +1,9 @@
+[{
+  "modid": "atomicscience",
+  "name": "Atomic Science",
+  "description": "Atomic science is a tech mod focused on nuclear physics. Featuring a mixture of reactors, processing systems, and useful machines. The main goal of the mod is to create a realistic system while building enjoyable gameplay.",
+  "mcversion": "1.12.2",
+  "url": "https://minecraft.curseforge.com/projects/atomic-science",
+  "authorList": ["DarkCow aka DarkGuardsman"],
+  "credits": "Calclavia - Orginal Author; Full credit list: https://github.com/BuiltBrokenModding/Atomic-Science/blob/1.12/README.md"
+}]

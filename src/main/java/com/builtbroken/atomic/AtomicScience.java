@@ -1,6 +1,5 @@
 package com.builtbroken.atomic;
 
-import com.builtbroken.atomic.config.ProxyConfigLoader;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
@@ -119,7 +118,6 @@ public class AtomicScience
         MassHandler.init();
 
         proxyLoader = new ProxyLoader("AS");
-        proxyLoader.add(new ProxyConfigLoader());
 
         //Content
         proxyLoader.add(new ASFluids.Proxy()); //must run before items and blocks

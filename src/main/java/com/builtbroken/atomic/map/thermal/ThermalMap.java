@@ -3,7 +3,7 @@ package com.builtbroken.atomic.map.thermal;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
-import com.builtbroken.atomic.config.ConfigNetwork;
+import com.builtbroken.atomic.config.server.ConfigNetwork;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;

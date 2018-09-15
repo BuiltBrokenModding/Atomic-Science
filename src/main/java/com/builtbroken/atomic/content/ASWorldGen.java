@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.content;
 
-import com.builtbroken.atomic.config.ConfigOre;
+import com.builtbroken.atomic.config.content.ConfigOre;
 import com.builtbroken.atomic.lib.oregen.OreGenReplace;
 import com.builtbroken.atomic.lib.oregen.OreGeneratorSettings;
 import com.builtbroken.atomic.proxy.ContentProxy;
