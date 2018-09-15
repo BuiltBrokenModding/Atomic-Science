@@ -138,7 +138,7 @@ public class RecipeLootTable extends ContentProxy
 
         //loop over all items
         Iterator<RecipeRandomItem> iterator = lootItems.iterator();
-        RecipeRandomItem item;
+        RecipeRandomItem itemEntry = null;
 
         //This works by slowly decaying the random value until we go negative
         //      In order for this to work the loot table needs to be sorted
@@ -151,23 +151,27 @@ public class RecipeLootTable extends ContentProxy
                 return ItemStack.EMPTY;
             }
 
-            item = iterator.next();
-            if (item.weight > 0)
+            RecipeRandomItem next = iterator.next();
+            if (next.weight > 0)
             {
-                randomWeight -= item.weight;
+                randomWeight -= next.weight;
+                itemEntry = next;
             }
         }
         while (randomWeight >= 0);
 
-        //Convert the entry to an itemstack
-        ItemStack stack = item.getStack();
-        if (stack != null)
+        if(itemEntry != null)
         {
-            if (stack.getCount() <= 0)
+            //Convert the entry to an itemstack
+            ItemStack stack = itemEntry.getStack();
+            if (stack != null && !stack.isEmpty())
             {
-                stack.setCount(1);
+                if (stack.getCount() <= 0)
+                {
+                    stack.setCount(1);
+                }
+                return stack;
             }
-            return stack;
         }
         return ItemStack.EMPTY;
     }
