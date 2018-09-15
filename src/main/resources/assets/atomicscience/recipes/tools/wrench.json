@@ -1,0 +1,27 @@
+{
+  "result": {
+    "item": "atomicscience:wrench",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "ICI",
+    "GIG",
+    "GIG"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSteel"
+    },
+    "G": {
+      "item": "minecraft:wool",
+      "data": 0
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "circuitBasic"
+    }
+  }
+}

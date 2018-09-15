@@ -1,0 +1,43 @@
+{
+  "result": {
+    "item": "atomicscience:fluid_cell",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "ca",
+    "ab"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "a": {
+      "item": "minecraft:gold_ingot",
+      "data": 0
+    },
+    "c": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    },
+    "b": {
+      "item": "minecraft:redstone_block",
+      "data": 0
+    }
+  },
+  "conditions": [
+    {
+      "type": "forge:or",
+      "values": [
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "false",
+          "value": "circuitAdvanced"
+        },
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "false",
+          "value": "battery"
+        }
+      ]
+    }
+  ]
+}

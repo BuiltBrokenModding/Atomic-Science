@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "atomicscience:hazmat_boots",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "CCC",
+    "ILI",
+    "CHC"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotLead"
+    },
+    "C": {
+      "item": "minecraft:wool",
+      "data": 0
+    },
+    "L": {
+      "item": "minecraft:leather_boots",
+      "data": 0
+    },
+    "H": {
+      "type": "forge:ore_dict",
+      "ore": "circuitBasic"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "result": {
+    "item": "atomicscience:steam_funnel",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "IPI",
+    "PHP",
+    "IPI"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "minecraft:hopper",
+      "data": 0
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    },
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "rodIron"
+    }
+  }
+}

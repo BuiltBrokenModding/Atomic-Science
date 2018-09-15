@@ -1,0 +1,43 @@
+{
+  "result": {
+    "item": "atomicscience:fluid_cell",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "ca",
+    "ab"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "circuitAdvanced"
+    },
+    "c": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    },
+    "b": {
+      "type": "forge:ore_dict",
+      "ore": "battery"
+    }
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "circuitAdvanced"
+        },
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "battery"
+        }
+      ]
+    }
+  ]
+}

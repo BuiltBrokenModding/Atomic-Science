@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "atomicscience:fluid_cell",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "cs",
+    "sc"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "type": "forge:ore_dict",
+      "ore": "slimeball"
+    },
+    "c": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    }
+  }
+}

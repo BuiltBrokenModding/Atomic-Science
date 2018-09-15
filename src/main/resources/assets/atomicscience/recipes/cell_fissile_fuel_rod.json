@@ -1,0 +1,23 @@
+{
+  "result": {
+    "item": "atomicscience:fissile_fuel_cell",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "PPP",
+    "PTP",
+    "PPP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "atomicscience:uranium_235",
+      "data": 0
+    },
+    "T": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    }
+  }
+}

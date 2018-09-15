@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "atomicscience:chem_centrifuge",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "ICI",
+    "TMT",
+    "TPT"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSteel"
+    },
+    "T": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    },
+    "M": {
+      "type": "forge:ore_dict",
+      "ore": "motor"
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "circuitAdvanced"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "atomicscience:chem_extractor",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "IPI",
+    "MCM",
+    "IPI"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSteel"
+    },
+    "M": {
+      "type": "forge:ore_dict",
+      "ore": "motor"
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "circuitElite"
+    }
+  }
+}

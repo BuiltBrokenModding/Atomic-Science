@@ -1,0 +1,31 @@
+{
+  "result": {
+    "item": "atomicscience:reactor_cell",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "PCP",
+    "MTM",
+    "PCP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    },
+    "M": {
+      "type": "forge:ore_dict",
+      "ore": "motor"
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "circuitAdvanced"
+    }
+  }
+}

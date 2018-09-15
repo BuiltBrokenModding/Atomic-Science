@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "atomicscience:hazmat_body",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "CCC",
+    "ILI",
+    "THT"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotLead"
+    },
+    "C": {
+      "item": "minecraft:wool",
+      "data": 0
+    },
+    "L": {
+      "item": "minecraft:leather_chestplate",
+      "data": 0
+    },
+    "T": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    },
+    "H": {
+      "type": "forge:ore_dict",
+      "ore": "circuitBasic"
+    }
+  }
+}
