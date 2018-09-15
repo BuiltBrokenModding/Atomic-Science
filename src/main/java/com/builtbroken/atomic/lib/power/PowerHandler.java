@@ -72,7 +72,7 @@ public abstract class PowerHandler
      * @param doAction
      * @return power added
      */
-    public int addPower(ItemStack stack, int power, boolean doAction)
+    public int chargeItem(ItemStack stack, int power, boolean doAction)
     {
         return 0;
     }
@@ -85,7 +85,7 @@ public abstract class PowerHandler
      * @param doAction
      * @return power removed
      */
-    public int removePower(ItemStack stack, int power, boolean doAction)
+    public int dischargeItem(ItemStack stack, int power, boolean doAction)
     {
         return 0;
     }
@@ -96,7 +96,7 @@ public abstract class PowerHandler
      * @param stack
      * @return
      */
-    public int getPowerStored(ItemStack stack)
+    public int getItemPower(ItemStack stack)
     {
         return 0;
     }
@@ -107,7 +107,7 @@ public abstract class PowerHandler
      * @param stack
      * @return
      */
-    public int getMaxPowerStorage(ItemStack stack)
+    public int getItemMaxPower(ItemStack stack)
     {
         return 0;
     }

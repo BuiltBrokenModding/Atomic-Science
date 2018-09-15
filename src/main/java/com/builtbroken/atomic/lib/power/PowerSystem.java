@@ -70,6 +70,12 @@ public class PowerSystem
         return null;
     }
 
+    /**
+     * Gets the power handler for the item
+     *
+     * @param stack - item
+     * @return power handler or null
+     */
     public static PowerHandler getHandler(ItemStack stack)
     {
         if (stack != null && stack.getItem() != null)
@@ -85,6 +91,15 @@ public class PowerSystem
         return null;
     }
 
+    /**
+     * Called to output power
+     *
+     * @param sideAccessed - side accessed on target tile
+     * @param tileEntity   - target tile
+     * @param power        - energy to add
+     * @param doAction     - true to do action, false to simulate
+     * @return power added to tile
+     */
     public static int addPower(EnumFacing sideAccessed, TileEntity tileEntity, int power, boolean doAction)
     {
         if (power > 0)
@@ -93,25 +108,6 @@ public class PowerSystem
             if (handler != null)
             {
                 return handler.addPower(sideAccessed, tileEntity, power, doAction);
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * Removes power from an item
-     *
-     * @param itemStack - power item, can be null
-     * @return power removed (UE)
-     */
-    public static int removePower(ItemStack itemStack, int amount, boolean doAction)
-    {
-        if (amount > 0)
-        {
-            PowerHandler handler = getHandler(itemStack);
-            if (handler != null)
-            {
-                return handler.removePower(itemStack, amount, false);
             }
         }
         return 0;
@@ -157,17 +153,71 @@ public class PowerSystem
     }
 
     /**
+     * Removes power from an item
+     *
+     * @param itemStack - power item, can be null
+     * @return power removed (FE)
+     */
+    public static int dischargeItem(ItemStack itemStack, int amount, boolean doAction)
+    {
+        if (amount > 0)
+        {
+            PowerHandler handler = getHandler(itemStack);
+            if (handler != null)
+            {
+                return handler.dischargeItem(itemStack, amount, doAction);
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Adds power to an item
+     *
+     * @param itemStack - power item, can be null
+     * @return power added (FE)
+     */
+    public static int chargeItem(ItemStack itemStack, int amount, boolean doAction)
+    {
+        if (amount > 0)
+        {
+            PowerHandler handler = getHandler(itemStack);
+            if (handler != null)
+            {
+                return handler.chargeItem(itemStack, amount, doAction);
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Checks to see how much energy is stored
      *
      * @param itemStack - power item, can be null
-     * @return power in item (UE)
+     * @return power in item (FE)
      */
     public static int getEnergyStored(ItemStack itemStack)
     {
         PowerHandler handler = getHandler(itemStack);
         if (handler != null)
         {
-            return handler.getPowerStored(itemStack);
+            return handler.getItemPower(itemStack);
+        }
+        return 0;
+    }
+
+    /**
+     * Checks to see how much energy is stored
+     *
+     * @param itemStack - power item, can be null
+     * @return power in item (FE)
+     */
+    public static int getMaxEnergyStored(ItemStack itemStack)
+    {
+        PowerHandler handler = getHandler(itemStack);
+        if (handler != null)
+        {
+            return handler.getItemMaxPower(itemStack);
         }
         return 0;
     }

@@ -56,13 +56,13 @@ public class PowerHandlerFE extends PowerHandler
     }
 
     @Override
-    public int addPower(ItemStack stack, int power, boolean doAction)
+    public int chargeItem(ItemStack stack, int power, boolean doAction)
     {
         return 0;
     }
 
     @Override
-    public int removePower(ItemStack stack, int power, boolean doAction)
+    public int dischargeItem(ItemStack stack, int power, boolean doAction)
     {
         if (stack.hasCapability(CapabilityEnergy.ENERGY, null))
         {
@@ -76,7 +76,7 @@ public class PowerHandlerFE extends PowerHandler
     }
 
     @Override
-    public int getPowerStored(ItemStack stack)
+    public int getItemPower(ItemStack stack)
     {
         if (stack.hasCapability(CapabilityEnergy.ENERGY, null))
         {
@@ -89,7 +89,7 @@ public class PowerHandlerFE extends PowerHandler
         return 0;
     }
 
-    public int getMaxPowerStorage(ItemStack stack)
+    public int getItemMaxPower(ItemStack stack)
     {
         if (stack.hasCapability(CapabilityEnergy.ENERGY, null))
         {

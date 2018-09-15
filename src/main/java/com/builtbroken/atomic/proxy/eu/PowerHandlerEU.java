@@ -15,6 +15,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 
 /**
+ * Handles IC2 power
+ *
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/17/2018.
  */
@@ -36,6 +38,7 @@ public class PowerHandlerEU extends PowerHandler
         return ConfigIC2.ENABLE_IC2 && tile instanceof IEnergySink && ((IEnergySink) tile).acceptsEnergyFrom(null, side);
     }
 
+    //TODO add remove power method
 
     @Override
     @Optional.Method(modid = "ic2")
@@ -48,7 +51,7 @@ public class PowerHandlerEU extends PowerHandler
             int demand_fe = (int) Math.floor(demand_eu * ConfigIC2.FE_PER_EU);
 
             //If simulating return demand
-            if(!doAction)
+            if (!doAction)
             {
                 return demand_fe;
             }
@@ -60,7 +63,7 @@ public class PowerHandlerEU extends PowerHandler
                 //Convert to IC2 powerInFE
                 double inject_eu = inject_fe / ConfigIC2.FE_PER_EU;
 
-                //Inject energy
+                //Inject energy, get left over energy
                 double remain_eu = ((IEnergySink) tile).injectEnergy(side, inject_eu, 1);
 
                 //Remove energy from storage
@@ -75,7 +78,7 @@ public class PowerHandlerEU extends PowerHandler
 
     @Override
     @Optional.Method(modid = "ic2")
-    public int addPower(ItemStack stack, int insert_fe, boolean doAction)
+    public int chargeItem(ItemStack stack, int insert_fe, boolean doAction)
     {
         if (canHandle(stack))
         {
@@ -95,7 +98,7 @@ public class PowerHandlerEU extends PowerHandler
 
     @Override
     @Optional.Method(modid = "ic2")
-    public int removePower(ItemStack stack, int remove_fe, boolean doAction)
+    public int dischargeItem(ItemStack stack, int remove_fe, boolean doAction)
     {
         if (canHandle(stack))
         {
@@ -107,6 +110,28 @@ public class PowerHandlerEU extends PowerHandler
 
             //Convert to FE
             return (int) Math.ceil(remove_eu * ConfigIC2.FE_PER_EU);
+        }
+        return 0;
+    }
+
+    @Override
+    @Optional.Method(modid = "ic2")
+    public int getItemPower(ItemStack stack)
+    {
+        if (canHandle(stack))
+        {
+            return (int) Math.floor(ElectricItem.manager.getCharge(stack) * ConfigIC2.FE_PER_EU);
+        }
+        return 0;
+    }
+
+    @Override
+    @Optional.Method(modid = "ic2")
+    public int getItemMaxPower(ItemStack stack)
+    {
+        if (canHandle(stack))
+        {
+            return (int) Math.floor(ElectricItem.manager.getMaxCharge(stack) * ConfigIC2.FE_PER_EU);
         }
         return 0;
     }

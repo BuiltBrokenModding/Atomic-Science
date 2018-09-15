@@ -205,9 +205,9 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
         int power = PowerSystem.getEnergyStored(itemStack);
         if (power > 0)
         {
-            power = PowerSystem.removePower(itemStack, power, false);
+            power = PowerSystem.dischargeItem(itemStack, power, false);
             int added = addEnergy(power, true);
-            PowerSystem.removePower(itemStack, added, true);
+            PowerSystem.dischargeItem(itemStack, added, true);
             getInventory().setStackInSlot(slot, itemStack);
         }
     }
