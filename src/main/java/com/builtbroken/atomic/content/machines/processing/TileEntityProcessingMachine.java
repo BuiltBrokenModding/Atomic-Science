@@ -264,9 +264,9 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
 
     public FluidStack getFluid(ItemStack itemStack)
     {
-        if (itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+        if (itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))
         {
-            IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+            IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
             if (handler != null)
             {
                 return handler.drain(Integer.MAX_VALUE, false);
@@ -339,7 +339,7 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
     protected void outputFluids(final int slot, final IFluidTank outputTank)
     {
         final ItemStack itemStack = getInventory().getStackInSlot(slot);
-        if (itemStack.isEmpty() && outputTank.getFluid() != null)
+        if (!itemStack.isEmpty() && outputTank.getFluid() != null)
         {
             if (itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))
             {
