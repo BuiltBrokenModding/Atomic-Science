@@ -86,7 +86,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        if (facing != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) //TODO if facing is null return group container
         {
             return fluidSideWrappers[facing.ordinal()].hasTank();
         }
