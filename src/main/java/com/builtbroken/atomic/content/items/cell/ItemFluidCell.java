@@ -103,6 +103,7 @@ public class ItemFluidCell extends Item
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
     {
+        super.getSubItems(tab, list);
         if (tab == getCreativeTab())
         {
             for (Fluid fluid : supportedFluidToTexturePath.keySet())
