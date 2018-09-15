@@ -53,7 +53,8 @@ public class TileEntitySteamGenerator extends TileEntitySteamInput implements IE
                 _clientPrevRotation -= 360f;
             }
         }
-        PowerSystem.outputPower(world, getPos(), EnumFacing.UP, getPowerToOutput(), true);
+        PowerSystem.outputPower(this, EnumFacing.UP, getPowerToOutput(), true);
+        //TODO allow stacking of turbines with 50% (configurable) reduction in power output
     }
 
     //<editor-fold desc="caps">

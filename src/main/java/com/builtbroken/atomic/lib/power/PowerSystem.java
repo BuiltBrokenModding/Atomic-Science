@@ -22,17 +22,21 @@ public class PowerSystem
 
     static
     {
-        powerHandlers.add(new PowerHandlerFE());
+        register(new PowerHandlerFE());
     }
 
-    public static int addPower(EnumFacing sideAccessed, TileEntity tileEntity, int power, boolean doAction)
+
+    /**
+     * Called to register a new power handler
+     *
+     * @param powerHandler
+     */
+    public static void register(PowerHandler powerHandler)
     {
-        PowerHandler handler = getHandler(sideAccessed, tileEntity);
-        if (handler != null)
+        if (powerHandler != null)
         {
-            return handler.addPower(sideAccessed, tileEntity, power, doAction);
+            powerHandlers.add(powerHandler);
         }
-        return 0;
     }
 
     /**
@@ -81,10 +85,56 @@ public class PowerSystem
         return null;
     }
 
+    public static int addPower(EnumFacing sideAccessed, TileEntity tileEntity, int power, boolean doAction)
+    {
+        if (power > 0)
+        {
+            PowerHandler handler = getHandler(sideAccessed, tileEntity);
+            if (handler != null)
+            {
+                return handler.addPower(sideAccessed, tileEntity, power, doAction);
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Removes power from an item
+     *
+     * @param itemStack - power item, can be null
+     * @return power removed (UE)
+     */
+    public static int removePower(ItemStack itemStack, int amount, boolean doAction)
+    {
+        if (amount > 0)
+        {
+            PowerHandler handler = getHandler(itemStack);
+            if (handler != null)
+            {
+                return handler.removePower(itemStack, amount, false);
+            }
+        }
+        return 0;
+    }
+
     /**
      * Called to output power
      *
-     * @param world         - source of power
+     * @param tile          - source of power
+     * @param direction     - direction from source to output (added to location and reversed for access side)
+     * @param powerToOutput - power to give
+     * @param doAction      - true to do action, false to simulate
+     * @return power added to tile
+     */
+    public static int outputPower(TileEntity tile, EnumFacing direction, int powerToOutput, boolean doAction)
+    {
+        return outputPower(tile.getWorld(), tile.getPos(), direction, powerToOutput, doAction);
+    }
+
+    /**
+     * Called to output power
+     *
+     * @param world         - world to output power inside
      * @param pos           - position of the source of power
      * @param direction     - direction from source to output (added to location and reversed for access side)
      * @param powerToOutput - power to give
@@ -106,14 +156,6 @@ public class PowerSystem
         return 0;
     }
 
-    public static void register(PowerHandler powerHandler)
-    {
-        if (powerHandler != null)
-        {
-            powerHandlers.add(powerHandler);
-        }
-    }
-
     /**
      * Checks to see how much energy is stored
      *
@@ -126,22 +168,6 @@ public class PowerSystem
         if (handler != null)
         {
             return handler.getPowerStored(itemStack);
-        }
-        return 0;
-    }
-
-    /**
-     * Removes power from an item
-     *
-     * @param itemStack - power item, can be null
-     * @return power removed (UE)
-     */
-    public static int removePower(ItemStack itemStack, int amount, boolean doAction)
-    {
-        PowerHandler handler = getHandler(itemStack);
-        if (handler != null)
-        {
-            return handler.removePower(itemStack, amount, false);
         }
         return 0;
     }

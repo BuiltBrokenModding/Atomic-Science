@@ -12,8 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Optional;
 
 /**
@@ -24,106 +22,93 @@ public class PowerHandlerEU extends PowerHandler
 {
     public static final PowerHandlerEU INSTANCE = new PowerHandlerEU();
 
-    //@Override
-    @Optional.Method(modid = "ic2")
-    public boolean outputPower(TileEntity target, TileEntity source, IEnergyStorage energyStorage, EnumFacing enumFacing)
-    {
-        if (source.hasCapability(CapabilityEnergy.ENERGY, enumFacing.getOpposite()))
-        {
-            if (target instanceof IEnergySink && ((IEnergySink) target).acceptsEnergyFrom(null, enumFacing))
-            {
-                //Get demand and convert to FE power
-                double demand = ((IEnergySink) target).getDemandedEnergy();
-                int request = (int) Math.floor(demand * ConfigIC2.FE_PER_EU);
-
-                //Check how much power we can remove
-                int give = energyStorage.extractEnergy(request, true);
-                if (give > 0)
-                {
-                    //Convert give to IC2
-                    double inject = give / ConfigIC2.FE_PER_EU;
-
-                    //Inject energy
-                    double leftOver = ((IEnergySink) target).injectEnergy(enumFacing, inject, 1);
-
-                    //Remove energy from storage
-                    inject -= leftOver;
-                    int remove = (int) Math.ceil(inject * ConfigIC2.FE_PER_EU);
-                    energyStorage.extractEnergy(remove, false);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //@Override
-    @Optional.Method(modid = "ic2")
-    protected boolean handleBatteryCharge(IEnergyStorage energyStorage, int limit, ItemStack stack)
-    {
-        if (stack.getItem() instanceof IElectricItem)
-        {
-            int tier = ((IElectricItem) stack.getItem()).getTier(stack);
-
-            //Get energy to offer
-            int offer = energyStorage.extractEnergy(limit, true);
-
-            if (offer > 0)
-            {
-                //Convert to IC2 power
-                double insert = offer / ConfigIC2.FE_PER_EU;
-
-                //Give energy
-                double taken = ElectricItem.manager.charge(stack, insert, tier, false, false);
-
-                //Drain energy from storage
-                int energy = (int) Math.ceil(taken * ConfigIC2.FE_PER_EU);
-                energyStorage.extractEnergy(energy, false);
-            }
-
-            return true;
-
-        }
-        return false;
-    }
-
-    //@Override
-    @Optional.Method(modid = "ic2")
-    protected boolean handleBatteryDischarge(IEnergyStorage energyStorage, int limit, ItemStack stack)
-    {
-        if (stack.getItem() instanceof IElectricItem)
-        {
-            int tier = ((IElectricItem) stack.getItem()).getTier(stack);
-
-            //Calculate max drain from battery
-            double drain = limit / ConfigIC2.FE_PER_EU;
-            drain = ElectricItem.manager.discharge(stack, drain, tier, false, true, true);
-
-            //Calculate max insert into tile
-            int input = (int) Math.floor(drain * ConfigIC2.FE_PER_EU);
-            input = energyStorage.receiveEnergy(input, true);
-
-            if (input > 0)
-            {
-                //Drain battery
-                drain = input / ConfigIC2.FE_PER_EU;
-                drain = ElectricItem.manager.discharge(stack, drain, tier, false, true, false);
-
-                //Insert into tile
-                input = (int) Math.floor(drain * ConfigIC2.FE_PER_EU);
-                energyStorage.receiveEnergy(input, false);
-            }
-
-            return true;
-        }
-        return false;
-    }
-
     @Override
     @Optional.Method(modid = "ic2")
     public boolean canHandle(ItemStack stack)
     {
-        return stack.getItem() instanceof IElectricItem;
+        return ConfigIC2.ENABLE_IC2 && stack.getItem() instanceof IElectricItem;
+    }
+
+    @Override
+    @Optional.Method(modid = "ic2")
+    public boolean canHandle(EnumFacing side, TileEntity tile)
+    {
+        return ConfigIC2.ENABLE_IC2 && tile instanceof IEnergySink && ((IEnergySink) tile).acceptsEnergyFrom(null, side);
+    }
+
+
+    @Override
+    @Optional.Method(modid = "ic2")
+    public int addPower(EnumFacing side, TileEntity tile, int powerInFE, boolean doAction)
+    {
+        if (canHandle(side, tile))
+        {
+            //Get requested powerInFE of the target machine
+            double demand_eu = ((IEnergySink) tile).getDemandedEnergy();
+            int demand_fe = (int) Math.floor(demand_eu * ConfigIC2.FE_PER_EU);
+
+            //If simulating return demand
+            if(!doAction)
+            {
+                return demand_fe;
+            }
+
+            //Check how much powerInFE we can remove
+            int inject_fe = Math.min(demand_fe, powerInFE);
+            if (inject_fe > 0)
+            {
+                //Convert to IC2 powerInFE
+                double inject_eu = inject_fe / ConfigIC2.FE_PER_EU;
+
+                //Inject energy
+                double remain_eu = ((IEnergySink) tile).injectEnergy(side, inject_eu, 1);
+
+                //Remove energy from storage
+                inject_eu -= remain_eu;
+
+                //Convert back to FE
+                return (int) Math.ceil(inject_eu * ConfigIC2.FE_PER_EU);
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    @Optional.Method(modid = "ic2")
+    public int addPower(ItemStack stack, int insert_fe, boolean doAction)
+    {
+        if (canHandle(stack))
+        {
+            int tier = ((IElectricItem) stack.getItem()).getTier(stack);
+
+            //Convert to IC2 power
+            double insert_eu = insert_fe / ConfigIC2.FE_PER_EU;
+
+            //Give energy
+            double taken_eu = ElectricItem.manager.charge(stack, insert_eu, tier, false, !doAction);
+
+            //Convert to FE
+            return (int) Math.ceil(taken_eu * ConfigIC2.FE_PER_EU);
+        }
+        return 0;
+    }
+
+    @Override
+    @Optional.Method(modid = "ic2")
+    public int removePower(ItemStack stack, int remove_fe, boolean doAction)
+    {
+        if (canHandle(stack))
+        {
+            int tier = ((IElectricItem) stack.getItem()).getTier(stack);
+
+            //Calculate max remove_eu from battery
+            double remove_eu = remove_fe / ConfigIC2.FE_PER_EU;
+            remove_eu = ElectricItem.manager.discharge(stack, remove_eu, tier, false, true, !doAction);
+
+            //Convert to FE
+            return (int) Math.ceil(remove_eu * ConfigIC2.FE_PER_EU);
+        }
+        return 0;
     }
 
     @Override
