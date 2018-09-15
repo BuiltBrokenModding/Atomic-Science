@@ -23,5 +23,22 @@
       "type": "forge:ore_dict",
       "ore": "rodIron"
     }
-  }
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "rodIron"
+        },
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "plateIron"
+        }
+      ]
+    }
+  ]
 }

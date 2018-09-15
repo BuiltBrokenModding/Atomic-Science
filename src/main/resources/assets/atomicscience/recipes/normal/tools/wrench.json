@@ -23,5 +23,22 @@
       "type": "forge:ore_dict",
       "ore": "circuitBasic"
     }
-  }
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "circuitBasic"
+        },
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "ingotSteel"
+        }
+      ]
+    }
+  ]
 }

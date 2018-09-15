@@ -1,0 +1,49 @@
+{
+  "result": {
+    "item": "atomicscience:steam_turbine",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "IPI",
+    "PMP",
+    "IPI"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "type": "forge:ore_dict",
+      "ore": "motor"
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    },
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "rodIron"
+    }
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "rodIron"
+        },
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "motor"
+        },
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "plateIron"
+        }
+      ]
+    }
+  ]
+}
