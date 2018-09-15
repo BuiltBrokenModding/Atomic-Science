@@ -3,7 +3,14 @@ package com.builtbroken.atomic.content.machines;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -13,18 +20,62 @@ public abstract class TileEntityInventoryMachine<I extends IItemHandlerModifiabl
 {
     public static final String NBT_INVENTORY = "inventory";
 
-    private I inventory;
+    private IItemHandlerModifiable inventory;
+    private I inventoryWrapper;
 
-    public I getInventory()
+    public IItemHandlerModifiable getInventory()
     {
-        if(inventory == null)
+        if (inventory == null)
         {
-            inventory = createInventory();
+            inventory = createInternalInventory();
         }
         return inventory;
     }
 
+    protected IItemHandlerModifiable createInternalInventory()
+    {
+        return new ItemStackHandler(inventorySize());
+    }
+
+    /**
+     * Creates an inventory
+     *
+     * @return
+     */
+    @Nonnull
     protected abstract I createInventory();
+
+    protected abstract int inventorySize();
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+    {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        {
+            return canInventoryConnect(facing);
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @Nullable
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+    {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        {
+            if (inventoryWrapper == null)
+            {
+                inventoryWrapper = createInventory();
+            }
+            return (T) inventoryWrapper;
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    protected boolean canInventoryConnect(EnumFacing side)
+    {
+        return true;
+    }
 
     @Deprecated //Doesn't get called
     protected void onSlotStackChanged(ItemStack prev, ItemStack stack, int slot)
@@ -74,7 +125,7 @@ public abstract class TileEntityInventoryMachine<I extends IItemHandlerModifiabl
         }
         nbt.setTag(NBT_INVENTORY, nbttaglist);
 
-        return  super.writeToNBT(nbt);
+        return super.writeToNBT(nbt);
     }
 
 }

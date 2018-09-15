@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -46,9 +47,9 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     }
 
     @Override
-    protected IItemHandlerModifiable createInventory()
+    protected IItemHandlerModifiable createInternalInventory()
     {
-        return new ItemStackHandler(1)
+        return new ItemStackHandler(inventorySize())
         {
             @Override
             protected void onContentsChanged(int slot)
@@ -57,6 +58,19 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
             }
         };
 
+    }
+
+    @Nonnull
+    @Override
+    protected IItemHandlerModifiable createInventory()
+    {
+        return getInventory();
+    }
+
+    @Override
+    protected int inventorySize()
+    {
+        return 1;
     }
 
     //-----------------------------------------------

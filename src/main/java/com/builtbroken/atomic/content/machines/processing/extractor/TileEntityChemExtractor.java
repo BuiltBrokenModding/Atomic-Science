@@ -10,6 +10,7 @@ import com.builtbroken.atomic.content.machines.processing.extractor.gui.Containe
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.GuiExtractor;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.lib.SideSettings;
+import com.builtbroken.atomic.lib.fluid.FluidSideWrapper;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
@@ -19,19 +20,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/19/2018.
  */
-public class TileEntityChemExtractor extends TileEntityProcessingMachine implements IGuiTile
+public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHandlerModifiable> implements IGuiTile
 {
     public static final int SLOT_FLUID_INPUT = 0;
     public static final int SLOT_ITEM_INPUT = 1;
@@ -53,17 +56,54 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
     private final SideSettings inputTankSideSettings = new SideSettings(true);
     private final SideSettings outputTankSideSettings = new SideSettings(false);
 
+    private final FluidSideWrapper[] fluidSideWrappers = new FluidSideWrapper[6];
+
     public TileEntityChemExtractor()
     {
         inputTank = new FluidTank(Fluid.BUCKET_VOLUME * 10);
         outputTank = new FluidTank(Fluid.BUCKET_VOLUME * 10);
+
+        for(EnumFacing side : EnumFacing.values())
+        {
+            fluidSideWrappers[side.ordinal()] = new FluidSideWrapper(side);
+            fluidSideWrappers[side.ordinal()].add(inputTankSideSettings, inputTank, false);  //TODO switch to map of all tanks for easier access
+            fluidSideWrappers[side.ordinal()].add(outputTankSideSettings, outputTank, true);
+        }
     }
 
     @Override
     protected IItemHandlerModifiable createInventory()
     {
-        return new ItemStackHandler(INVENTORY_SIZE); //TODO add custom implementation for valid slots
+        return new InvChemExtractor(this);
     }
+
+    @Override
+    protected int inventorySize()
+    {
+        return INVENTORY_SIZE;
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+    {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            return fluidSideWrappers[facing.ordinal()].hasTank();
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @Nullable
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+    {
+        if (facing != null && capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            return (T) fluidSideWrappers[facing.ordinal()];
+        }
+        return super.getCapability(capability, facing);
+    }
+
 
     @Override
     protected void onProcessed()
@@ -220,37 +260,4 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine impleme
         inputTankSideSettings.load(nbt.getCompoundTag("inputTankSides"));
     }
 
-    //-----------------------------------------------
-    //--------Inventory Code ------------------------
-    //-----------------------------------------------
-
-    //@Override
-    public boolean canInsertItem(int slot, ItemStack stack, int side)
-    {
-        return slot == SLOT_ITEM_INPUT;
-    }
-
-    //@Override
-    public boolean canExtractItem(int slot, ItemStack stack, int side)
-    {
-        return slot == SLOT_ITEM_OUTPUT;
-    }
-
-    //@Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
-    {
-        if (slot == SLOT_FLUID_INPUT)
-        {
-            return isInputFluid(stack);
-        }
-        else if (slot == SLOT_FLUID_OUTPUT)
-        {
-            return isEmptyFluidContainer(stack);
-        }
-        else if (slot == SLOT_ITEM_INPUT)
-        {
-            return getRecipeList().isComponent(this, stack);
-        }
-        return false;
-    }
 }

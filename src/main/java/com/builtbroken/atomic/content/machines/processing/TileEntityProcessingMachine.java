@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.List;
 import java.util.function.Function;
@@ -30,7 +31,7 @@ import java.util.function.Function;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/22/2018.
  */
-public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMachine
+public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiable> extends TileEntityPowerInvMachine<I>
 {
     boolean processing = false;
     public int processTimer = 0;
@@ -226,12 +227,12 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
     //--------Fluid Handling ------------------------
     //-----------------------------------------------
 
-    protected boolean containsFluid(final int slot)
+    public boolean containsFluid(final int slot)
     {
         return getFluid(slot) != null;
     }
 
-    protected boolean containsFluid(final int slot, Fluid fluid)
+    public boolean containsFluid(final int slot, Fluid fluid)
     {
         FluidStack fluidStack = getFluid(slot);
         if (fluidStack != null)
@@ -241,12 +242,12 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
         return false;
     }
 
-    protected boolean isInputFluid(final int slot)
+    public boolean isInputFluid(final int slot)
     {
         return isInputFluid(getInventory().getStackInSlot(slot));
     }
 
-    protected boolean isInputFluid(ItemStack stack)
+    public boolean isInputFluid(ItemStack stack)
     {
         FluidStack fluidStack = getFluid(stack);
         if (fluidStack != null)
@@ -256,12 +257,12 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
         return false;
     }
 
-    protected FluidStack getFluid(final int slot)
+    public FluidStack getFluid(final int slot)
     {
         return getFluid(getInventory().getStackInSlot(slot));
     }
 
-    protected FluidStack getFluid(ItemStack itemStack)
+    public FluidStack getFluid(ItemStack itemStack)
     {
         if (itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
         {
@@ -274,12 +275,12 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
         return null;
     }
 
-    protected boolean isEmptyFluidContainer(final int slot)
+    public boolean isEmptyFluidContainer(final int slot)
     {
         return isEmptyFluidContainer(getInventory().getStackInSlot(slot));
     }
 
-    protected boolean isEmptyFluidContainer(ItemStack itemStack)
+    public boolean isEmptyFluidContainer(ItemStack itemStack)
     {
         if (itemStack != null)
         {
@@ -373,7 +374,7 @@ public abstract class TileEntityProcessingMachine extends TileEntityPowerInvMach
                     if (world.isBlockLoaded(pos))
                     {
                         TileEntity tile = world.getTileEntity(pos);
-                        if (tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction))
+                        if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction))
                         {
                             IFluidHandler handler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
                             if (handler != null)
