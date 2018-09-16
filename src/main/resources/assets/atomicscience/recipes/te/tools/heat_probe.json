@@ -1,13 +1,13 @@
 {
   "result": {
-    "item": "atomicscience:hazmat_mask",
+    "item": "atomicscience:heat_probe",
     "data": 0,
     "count": 1
   },
   "pattern": [
-    "CCC",
-    "ILI",
-    "GHG"
+    "ICI",
+    "IGI",
+    "WBW"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {
@@ -16,11 +16,7 @@
       "items": [
         {
           "type": "forge:ore_dict",
-          "ore": "ingotLead"
-        },
-        {
-          "type": "forge:ore_dict",
-          "ore": "ingotTin"
+          "ore": "ingotSteel"
         },
         {
           "type": "forge:ore_dict",
@@ -28,19 +24,19 @@
         }
       ]
     },
-    "C": {
-      "item": "minecraft:wool",
-      "data": 0
+    "W": {
+      "type": "forge:ore_dict",
+      "ore": "gearElectrum"
     },
-    "L": {
-      "item": "minecraft:leather_helmet",
+    "B": {
+      "item": "minecraft:gold_nugget",
       "data": 0
     },
     "G": {
       "item": "minecraft:glass_pane",
       "data": 0
     },
-    "H": {
+    "C": {
       "item": "thermalfoundation:material",
       "data": 515
     }

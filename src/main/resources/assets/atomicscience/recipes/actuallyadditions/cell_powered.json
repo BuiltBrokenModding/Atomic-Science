@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "atomicscience:powered_cell",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "ca",
+    "ab"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "circuitAdvanced"
+    },
+    "c": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    },
+    "b": {
+      "item": "actuallyadditions:item_battery",
+      "data": 0
+    }
+  },
+  "conditions": [
+    {
+      "type": "atomicscience:actuallyadditions",
+      "condition": "true"
+    }
+  ]
+}

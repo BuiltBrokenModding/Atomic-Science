@@ -46,7 +46,7 @@
       "type": "forge:and",
       "values": [
         {
-          "type": "atomicscience:te",
+          "type": "atomicscience:tf",
           "condition": "false"
         },
         {

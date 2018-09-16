@@ -41,24 +41,14 @@
       "data": 0
     },
     "H": {
-      "item": "minecraft:repeater",
-      "data": 0
+      "item": "thermalfoundation:material",
+      "data": 515
     }
   },
   "conditions": [
     {
-      "type": "forge:and",
-      "values": [
-        {
-          "type": "atomicscience:te",
-          "condition": "false"
-        },
-        {
-          "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "circuitBasic"
-        }
-      ]
+      "type": "atomicscience:tf",
+      "condition": "true"
     }
   ]
 }

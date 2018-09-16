@@ -10,7 +10,8 @@ public enum Mods
 {
     IC2("ic2"),
     THERMAL_FOUNDATION("thermalfoundation"),
-    THERMAL_EXPANSION("thermalexpansion");
+    THERMAL_EXPANSION("thermalexpansion"),
+    ACTUALLY_ADDITIONS("actuallyadditions");
 
     public final String id;
 

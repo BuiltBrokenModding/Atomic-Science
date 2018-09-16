@@ -27,12 +27,5 @@
       "item": "minecraft:glass",
       "data": 0
     }
-  },
-  "conditions": [
-    {
-      "type": "atomicscience:ore_value",
-      "condition": "true",
-      "value": "ingotTin"
-    }
-  ]
+  }
 }

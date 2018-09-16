@@ -3,7 +3,8 @@
     "ore_value": "com.builtbroken.atomic.lib.recipe.ConditionOreValue",
     "ic2": "com.builtbroken.atomic.lib.recipe.ConditionalIc2Recipes",
     "te": "com.builtbroken.atomic.lib.recipe.ConditionalTERecipes",
-    "tf": "com.builtbroken.atomic.lib.recipe.ConditionalTFRecipes"
+    "tf": "com.builtbroken.atomic.lib.recipe.ConditionalTFRecipes",
+    "actuallyadditions": "com.builtbroken.atomic.lib.recipe.ConditionalActuallyAdditionsRecipes"
   },
   "ingredients": {
     "first_match": "com.builtbroken.atomic.lib.recipe.IngredientFirstMatch"
