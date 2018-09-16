@@ -46,10 +46,6 @@
         {
           "type": "forge:ore_dict",
           "ore": "circuitBasic"
-        },
-        {
-          "item": "minecraft:repeater",
-          "data": 0
         }
       ]
     }

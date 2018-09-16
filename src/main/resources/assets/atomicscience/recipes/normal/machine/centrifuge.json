@@ -31,32 +31,5 @@
       "type": "forge:ore_dict",
       "ore": "circuitAdvanced"
     }
-  },
-  "conditions": [
-    {
-      "type": "forge:and",
-      "values": [
-        {
-          "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "ingotSteel"
-        },
-        {
-          "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "motor"
-        },
-        {
-          "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "plateIron"
-        },
-        {
-          "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "circuitAdvanced"
-        }
-      ]
-    }
-  ]
+  }
 }

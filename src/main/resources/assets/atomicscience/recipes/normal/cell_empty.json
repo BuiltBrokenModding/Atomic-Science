@@ -12,8 +12,16 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "t": {
-      "type": "forge:ore_dict",
-      "ore": "ingotTin"
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotTin"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
     },
     "g": {
       "item": "minecraft:glass",

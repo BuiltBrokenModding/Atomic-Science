@@ -20,30 +20,21 @@
       "ore": "plateIron"
     },
     "I": {
-      "type": "forge:ore_dict",
-      "ore": "rodIron"
-    }
-  },
-  "conditions": [
-    {
-      "type": "forge:and",
-      "values": [
+      "type": "atomicscience:first_match",
+      "items": [
         {
-          "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "rodIron"
+          "type": "forge:ore_dict",
+          "ore": "rodIron"
         },
         {
-          "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "motor"
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
         },
         {
-          "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "plateIron"
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
         }
       ]
     }
-  ]
+  }
 }

@@ -19,8 +19,14 @@
       "data": 0
     },
     "b": {
-      "type": "forge:ore_dict",
-      "ore": "battery"
+      "item": "ic2:re_battery",
+      "data": 0
     }
-  }
+  },
+  "conditions": [
+    {
+      "type": "atomicscience:ic2",
+      "condition": "true"
+    }
+  ]
 }

@@ -1,19 +1,31 @@
 {
   "result": {
-    "item": "atomicscience:wrench",
+    "item": "atomicscience:steam_turbine",
     "data": 0,
     "count": 1
   },
   "pattern": [
-    "ICI",
-    "GIG",
-    "GIG"
+    "IPI",
+    "PMP",
+    "IPI"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {
+    "M": {
+      "item": "ic2:crafting",
+      "data": 6
+    },
+    "P": {
+      "type": "forge:ore_dict",
+      "ore": "plateIron"
+    },
     "I": {
       "type": "atomicscience:first_match",
       "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "rodIron"
+        },
         {
           "type": "forge:ore_dict",
           "ore": "ingotSteel"
@@ -23,14 +35,6 @@
           "ore": "ingotIron"
         }
       ]
-    },
-    "G": {
-      "item": "minecraft:wool",
-      "data": 0
-    },
-    "C": {
-      "type": "forge:ore_dict",
-      "ore": "circuitBasic"
     }
   }
 }

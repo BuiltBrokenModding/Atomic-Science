@@ -20,8 +20,8 @@
       "data": 0
     },
     "M": {
-      "type": "forge:ore_dict",
-      "ore": "motor"
+      "item": "ic2:crafting",
+      "data": 6
     },
     "P": {
       "type": "forge:ore_dict",

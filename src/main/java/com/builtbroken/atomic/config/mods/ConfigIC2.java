@@ -11,6 +11,10 @@ import net.minecraftforge.common.config.Config;
 @Config.LangKey("config.atomicscience:mods.ic2.title")
 public class ConfigIC2
 {
+    @Config.Name("enable_recipes")
+    @Config.Comment("Enable recipes that offer alternatives using IC2 items")
+    public static boolean ENABLE_RECIPES = true;
+
     @Config.Name("fe_per_eu")
     @Config.Comment("How much (FE) Forge energy to exchange for (EU) IC2 energy")
     @Config.RangeInt(min = 0)

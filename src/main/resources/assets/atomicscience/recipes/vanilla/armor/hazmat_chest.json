@@ -1,13 +1,13 @@
 {
   "result": {
-    "item": "atomicscience:hazmat_boots",
+    "item": "atomicscience:hazmat_body",
     "data": 0,
     "count": 1
   },
   "pattern": [
     "CCC",
     "ILI",
-    "CHC"
+    "THT"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {
@@ -33,17 +33,32 @@
       "data": 0
     },
     "L": {
-      "item": "minecraft:leather_boots",
+      "item": "minecraft:leather_chestplate",
+      "data": 0
+    },
+    "T": {
+      "item": "atomicscience:cell_empty",
       "data": 0
     },
     "H": {
-      "type": "atomicscience:first_match",
-      "items": [
+      "item": "minecraft:repeater",
+      "data": 0
+    }
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
         {
-          "type": "forge:ore_dict",
-          "ore": "circuitBasic"
+          "type": "atomicscience:te",
+          "condition": "false"
+        },
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "circuitBasic"
         }
       ]
     }
-  }
+  ]
 }

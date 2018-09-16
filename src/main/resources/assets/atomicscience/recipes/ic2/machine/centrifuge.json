@@ -1,27 +1,27 @@
 {
   "result": {
-    "item": "atomicscience:chem_boiler",
+    "item": "atomicscience:chem_centrifuge",
     "data": 0,
     "count": 1
   },
   "pattern": [
-    "PCP",
-    "TFT",
-    "PMP"
+    "ICI",
+    "TMT",
+    "TPT"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {
-    "F": {
-      "item": "minecraft:furnace",
-      "data": 0
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSteel"
     },
     "T": {
       "item": "atomicscience:cell_empty",
       "data": 0
     },
     "M": {
-      "type": "forge:ore_dict",
-      "ore": "motor"
+      "item": "ic2:crafting",
+      "data": 6
     },
     "P": {
       "type": "forge:ore_dict",

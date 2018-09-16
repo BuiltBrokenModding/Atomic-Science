@@ -1,6 +1,6 @@
 {
   "result": {
-    "item": "atomicscience:fluid_cell",
+    "item": "atomicscience:powered_cell",
     "data": 0,
     "count": 1
   },
@@ -11,8 +11,8 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "a": {
-      "item": "minecraft:gold_ingot",
-      "data": 0
+      "type": "forge:ore_dict",
+      "ore": "ingotGold"
     },
     "c": {
       "item": "atomicscience:cell_empty",
@@ -25,8 +25,12 @@
   },
   "conditions": [
     {
-      "type": "forge:or",
+      "type": "forge:and",
       "values": [
+        {
+          "type": "atomicscience:tf",
+          "condition": "false"
+        },
         {
           "type": "atomicscience:ore_value",
           "condition": "false",

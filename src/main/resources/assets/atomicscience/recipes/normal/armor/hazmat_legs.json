@@ -37,17 +37,8 @@
       "data": 0
     },
     "H": {
-      "type": "atomicscience:first_match",
-      "items": [
-        {
-          "type": "forge:ore_dict",
-          "ore": "circuitBasic"
-        },
-        {
-          "item": "minecraft:repeater",
-          "data": 0
-        }
-      ]
+      "type": "forge:ore_dict",
+      "ore": "circuitBasic"
     }
   }
 }
