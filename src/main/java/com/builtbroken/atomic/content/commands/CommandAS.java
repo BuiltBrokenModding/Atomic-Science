@@ -8,8 +8,11 @@ import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -45,11 +48,47 @@ public class CommandAS extends CommandBase
             }
             else if (sub.equalsIgnoreCase("exposure"))
             {
-                commandExposure(server,sender, args);
+                commandExposure(server, sender, args);
             }
             else if (sub.equalsIgnoreCase("mat") || sub.equalsIgnoreCase("material"))
             {
-                commandMat(server,sender, args);
+                commandMat(server, sender, args);
+            }
+            else if (sub.equalsIgnoreCase("item-data"))
+            {
+                if (sender instanceof EntityPlayer)
+                {
+                    ItemStack held = ((EntityPlayer) sender).getHeldItem(EnumHand.MAIN_HAND);
+                    sender.sendMessage(new TextComponentString("Item:" + held.getDisplayName()));
+
+                    if (!held.isEmpty())
+                    {
+                        sender.sendMessage(new TextComponentString("--Dam:" + held.getItemDamage()));
+                        sender.sendMessage(new TextComponentString("--Reg:" + held.getItem().getRegistryName()));
+                        if (held.getTagCompound() != null && !held.getTagCompound().isEmpty())
+                        {
+                            sender.sendMessage(new TextComponentString("--NBT:" + held.getTagCompound().getSize()));
+                            sender.sendMessage(new TextComponentString(held.getTagCompound().toString()));
+
+                        }
+
+                        int[] ids = OreDictionary.getOreIDs(held);
+                        if (ids.length > 0)
+                        {
+                            sender.sendMessage(new TextComponentString("--Ore:" + ids.length));
+                            int i = 0;
+                            for (int id : ids)
+                            {
+                                sender.sendMessage(new TextComponentString("---[" + (i++) + "]:" + id + "  " + OreDictionary.getOreName(id)));
+                            }
+                        }
+                    }
+
+                }
+                else
+                {
+                    throw new CommandNotFoundException();
+                }
             }
             else
             {
@@ -63,7 +102,7 @@ public class CommandAS extends CommandBase
         if (sender instanceof EntityPlayer)
         {
             sender.sendMessage(new TextComponentString(getName() + " rad -> show radiation of self")); //TODO translate
-            sender.sendMessage(new TextComponentString(getName()+ " rad set <value> -> set radiation of self"));
+            sender.sendMessage(new TextComponentString(getName() + " rad set <value> -> set radiation of self"));
             sender.sendMessage(new TextComponentString(getName() + " exposure -> shows radiation of where your standing"));
         }
         sender.sendMessage(new TextComponentString(getName() + " rad <player> -> show radiation of player"));
