@@ -15,6 +15,8 @@ import com.builtbroken.atomic.content.machines.processing.extractor.recipe.Recip
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.proxy.ProxyLoader;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -68,6 +70,13 @@ public final class ProcessorRecipeHandler extends ProxyLoader
                 new FluidStack(FluidRegistry.WATER, ConfigRecipe.WATER_BOIL_YELLOWCAKE),
                 new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid,  ConfigRecipe.CON_WATER_YELLOWCAKE),
                 new FluidStack(ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.HEX_OUT_YELLOWCAKE)));
+
+        //Slime
+        chemBoilerProcessingRecipe.add(new RecipeChemBoiler(new ItemStack(Blocks.CACTUS),
+                new ItemStack(Items.SLIME_BALL),
+                new FluidStack(FluidRegistry.WATER, 100),
+                null,
+                null));
 
         //Centrifuge
         chemCentrifugeProcessingRecipe.add(new RecipeConWater());
