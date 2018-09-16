@@ -31,7 +31,7 @@ import java.util.function.Function;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/22/2018.
  */
-public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiable> extends TileEntityPowerInvMachine<I>
+public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiable, H extends TileEntityProcessingMachine, R extends ProcessingRecipe<H>> extends TileEntityPowerInvMachine<I>
 {
     boolean processing = false;
     public int processTimer = 0;
@@ -136,10 +136,10 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
      */
     protected void doProcess()
     {
-        ProcessingRecipe recipe = getRecipeList().getMatchingRecipe(this);
+        R recipe = (R) getRecipeList().getMatchingRecipe((H) this);
         if (recipe != null)
         {
-            if (recipe.applyRecipe(this))
+            if (recipe.applyRecipe((H) this))
             {
                 onProcessed();
             }
@@ -174,7 +174,7 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
      */
     protected boolean canProcess()
     {
-        return getRecipeList().getMatchingRecipe(this) != null; //TODO store recipe
+        return getRecipeList().getMatchingRecipe((H) this) != null; //TODO store recipe
     }
 
     /**
@@ -182,7 +182,7 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
      *
      * @return
      */
-    protected abstract ProcessingRecipeList getRecipeList();
+    protected abstract ProcessingRecipeList<H, R> getRecipeList();
 
     /**
      * Called after the process has run
@@ -252,7 +252,7 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
         FluidStack fluidStack = getFluid(stack);
         if (fluidStack != null)
         {
-            return getRecipeList().isComponent(this, fluidStack.getFluid());
+            return getRecipeList().isComponent((H) this, fluidStack.getFluid());
         }
         return false;
     }
@@ -312,7 +312,7 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
                 {
                     //Get fluid and check if its part of the recipe
                     FluidStack fluidStack = handler.drain(inputTank.getCapacity() - inputTank.getFluidAmount(), false);
-                    if (fluidStack != null && getRecipeList().isComponent(this, fluidStack.getFluid()))
+                    if (fluidStack != null && getRecipeList().isComponent((H) this, fluidStack.getFluid()))
                     {
                         //Fill
                         int amount = inputTank.fill(fluidStack, true);

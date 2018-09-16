@@ -12,6 +12,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "t": {
+      "type": "atomicscience:first_match",
       "items": [
         {
           "type": "forge:ore_dict",

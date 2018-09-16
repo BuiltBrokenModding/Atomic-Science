@@ -1,6 +1,11 @@
 package com.builtbroken.atomic.proxy.jei;
 
-import mezz.jei.api.IJeiHelpers;
+import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
+import com.builtbroken.atomic.content.machines.processing.boiler.gui.GuiChemBoiler;
+import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeChemBoiler;
+import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
+import com.builtbroken.atomic.proxy.jei.boiler.RecipeCategoryBoiler;
+import com.builtbroken.atomic.proxy.jei.boiler.RecipeWrapperBoiler;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
@@ -13,17 +18,21 @@ import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 @JEIPlugin
 public class JeiProxy implements IModPlugin
 {
-    public static IJeiHelpers jeiHelper;
-
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry)
     {
-
+        registry.addRecipeCategories(new RecipeCategoryBoiler(registry.getJeiHelpers()));
     }
 
     @Override
     public void register(IModRegistry registry)
     {
-        jeiHelper = registry.getJeiHelpers();
+        registry.addRecipes(
+                ProcessorRecipeHandler.INSTANCE.chemBoilerProcessingRecipe.recipes,
+                RecipeCategoryBoiler.ID);
+
+
+        registry.handleRecipes(RecipeChemBoiler.class, recipe -> new RecipeWrapperBoiler(recipe),RecipeCategoryBoiler.ID);
+        registry.addRecipeClickArea(GuiChemBoiler.class, 73, 30, 22, 15, RecipeCategoryBoiler.ID);
     }
 }

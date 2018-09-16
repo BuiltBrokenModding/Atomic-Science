@@ -11,16 +11,16 @@ import java.util.ArrayList;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/25/2018.
  */
-public class ProcessingRecipeList<H extends TileEntityProcessingMachine> extends ProxyLoader
+public class ProcessingRecipeList<H extends TileEntityProcessingMachine, R extends ProcessingRecipe<H>> extends ProxyLoader
 {
-    private final ArrayList<ProcessingRecipe<H>> recipes = new ArrayList();
+    public final ArrayList<R> recipes = new ArrayList();
 
     public ProcessingRecipeList(String name)
     {
         super(name);
     }
 
-    public void add(ProcessingRecipe<H> recipe)
+    public void add(R recipe)
     {
         if (recipe != null)
         {
@@ -30,7 +30,7 @@ public class ProcessingRecipeList<H extends TileEntityProcessingMachine> extends
 
     public ProcessingRecipe<H> getMatchingRecipe(H machine)
     {
-        for (ProcessingRecipe recipe : recipes)
+        for (R recipe : recipes)
         {
             if (recipe.matches(machine))
             {

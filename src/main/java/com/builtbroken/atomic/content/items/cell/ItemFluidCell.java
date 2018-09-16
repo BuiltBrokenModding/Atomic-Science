@@ -136,6 +136,16 @@ public class ItemFluidCell extends Item
         return getFluid(stack) != null;
     }
 
+    @Override
+    public ItemStack getContainerItem(ItemStack itemStack)
+    {
+        if (!hasContainerItem(itemStack))
+        {
+            return ItemStack.EMPTY;
+        }
+        return new ItemStack(this);
+    }
+
     public FluidStack getFluid(ItemStack stack)
     {
         IFluidHandlerItem handlerItem = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);

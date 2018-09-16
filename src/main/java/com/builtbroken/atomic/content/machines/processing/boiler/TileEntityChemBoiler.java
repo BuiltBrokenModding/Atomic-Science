@@ -8,6 +8,7 @@ import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.boiler.gui.ContainerChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.gui.GuiChemBoiler;
+import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.lib.SideSettings;
 import com.builtbroken.atomic.lib.fluid.FluidSideWrapper;
@@ -34,7 +35,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/22/2018.
  */
-public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandlerModifiable> implements IGuiTile
+public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandlerModifiable, TileEntityChemBoiler, RecipeChemBoiler> implements IGuiTile
 {
     public static final int SLOT_FLUID_INPUT = 0;
     public static final int SLOT_ITEM_INPUT = 1;

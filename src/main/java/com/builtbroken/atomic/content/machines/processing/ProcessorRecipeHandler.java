@@ -1,9 +1,10 @@
 package com.builtbroken.atomic.content.machines.processing;
 
+import com.builtbroken.atomic.config.ConfigRecipe;
+import com.builtbroken.atomic.content.ASFluids;
+import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
-import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeMineralWaste;
-import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeUraniumHex;
-import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeYellowcakeHex;
+import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.recipe.RecipeConWater;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.recipe.RecipeUraniumPellet;
@@ -11,8 +12,11 @@ import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityCh
 import com.builtbroken.atomic.content.machines.processing.extractor.recipe.DustLootTable;
 import com.builtbroken.atomic.content.machines.processing.extractor.recipe.RecipeWasteExtracting;
 import com.builtbroken.atomic.content.machines.processing.extractor.recipe.RecipeYellowcake;
+import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.proxy.ProxyLoader;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -20,30 +24,39 @@ import com.builtbroken.atomic.proxy.ProxyLoader;
  */
 public final class ProcessorRecipeHandler extends ProxyLoader
 {
-    public final ProcessingRecipeList<TileEntityChemExtractor> chemExtractorProcessingRecipe;
-    public final ProcessingRecipeList<TileEntityChemBoiler> chemBoilerProcessingRecipe;
-    public final ProcessingRecipeList<TileEntityChemCentrifuge> chemCentrifugeProcessingRecipe;
+    public final ProcessingRecipeList<TileEntityChemExtractor, ProcessingRecipe<TileEntityChemExtractor>> chemExtractorProcessingRecipe;
+    public final ProcessingRecipeList<TileEntityChemBoiler, RecipeChemBoiler> chemBoilerProcessingRecipe;
+    public final ProcessingRecipeList<TileEntityChemCentrifuge, ProcessingRecipe<TileEntityChemCentrifuge>> chemCentrifugeProcessingRecipe;
 
     public static final ProcessorRecipeHandler INSTANCE = new ProcessorRecipeHandler();
 
     private ProcessorRecipeHandler()
     {
         super("processing.machines");
-
-        //Extractor
-        add(chemExtractorProcessingRecipe = new ProcessingRecipeList("chem.extractor.recipes"));
         add(DustLootTable.INSTANCE);
+        add(chemExtractorProcessingRecipe = new ProcessingRecipeList("chem.extractor.recipes"));
+        add(chemBoilerProcessingRecipe = new ProcessingRecipeList("chem.boiler.recipes"));
+        add(chemCentrifugeProcessingRecipe = new ProcessingRecipeList("chem.centrifuge.recipes"));
+    }
+
+    @Override
+    public void init()
+    {
+        //Extractor
         chemExtractorProcessingRecipe.add(new RecipeWasteExtracting());
         chemExtractorProcessingRecipe.add(new RecipeYellowcake());
 
         //Boiler
-        add(chemBoilerProcessingRecipe = new ProcessingRecipeList("chem.boiler.recipes"));
-        chemBoilerProcessingRecipe.add(new RecipeMineralWaste());
-        chemBoilerProcessingRecipe.add(new RecipeUraniumHex());
-        chemBoilerProcessingRecipe.add(new RecipeYellowcakeHex());
+        chemBoilerProcessingRecipe.add(new RecipeChemBoiler(ItemStack.EMPTY,
+                new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.LIQUID_WASTE_SOLID_WASTE, 0),
+                new FluidStack(ASFluids.LIQUID_MINERAL_WASTE.fluid,
+                        ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL),
+                new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid,
+                        ConfigRecipe.LIQUID_WASTE_CONSUMED_PER_BOIL * ConfigRecipe.LIQUID_WASTE_PRODUCED_TO_WATER), null));
+        //chemBoilerProcessingRecipe.add(new RecipeUraniumHex());
+        //chemBoilerProcessingRecipe.add(new RecipeYellowcakeHex());
 
         //Centrifuge
-        add(chemCentrifugeProcessingRecipe = new ProcessingRecipeList("chem.centrifuge.recipes"));
         chemCentrifugeProcessingRecipe.add(new RecipeConWater());
         chemCentrifugeProcessingRecipe.add(new RecipeUraniumPellet());
     }
