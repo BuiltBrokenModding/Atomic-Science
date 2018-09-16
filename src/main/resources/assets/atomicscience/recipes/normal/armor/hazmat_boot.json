@@ -12,8 +12,21 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "I": {
-      "type": "forge:ore_dict",
-      "ore": "ingotLead"
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotLead"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotTin"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
     },
     "C": {
       "item": "minecraft:wool",
@@ -24,25 +37,17 @@
       "data": 0
     },
     "H": {
-      "type": "forge:ore_dict",
-      "ore": "circuitBasic"
-    }
-  },
-  "conditions": [
-    {
-      "type": "forge:and",
-      "values": [
+      "type": "atomicscience:first_match",
+      "items": [
         {
-          "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "ingotLead"
+          "type": "forge:ore_dict",
+          "ore": "circuitBasic"
         },
         {
-          "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "circuitBasic"
+          "item": "minecraft:repeater",
+          "data": 0
         }
       ]
     }
-  ]
+  }
 }

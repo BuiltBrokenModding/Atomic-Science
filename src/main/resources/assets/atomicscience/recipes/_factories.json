@@ -1,5 +1,8 @@
 {
   "conditions": {
     "ore_value": "com.builtbroken.atomic.lib.recipe.ConditionOreValue"
+  },
+  "ingredients": {
+    "first_match": "com.builtbroken.atomic.lib.recipe.IngredientFirstMatch"
   }
 }
