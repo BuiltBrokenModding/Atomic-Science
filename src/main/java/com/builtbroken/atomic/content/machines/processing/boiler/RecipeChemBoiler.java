@@ -1,10 +1,10 @@
-package com.builtbroken.atomic.content.machines.processing.boiler.recipe;
+package com.builtbroken.atomic.content.machines.processing.boiler;
 
-import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -12,14 +12,14 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public class RecipeChemBoiler extends ProcessingRecipe<TileEntityChemBoiler>
 {
-    public final ItemStack input;
+    public final Object input;
     public final ItemStack output;
 
     public final FluidStack inputTankBlue;
     public final FluidStack outputTankGreen;
     public final FluidStack outputTankYellow;
 
-    public RecipeChemBoiler(ItemStack input, ItemStack output, FluidStack inputTankBlue, FluidStack outputTankGreen, FluidStack outputTankYellow)
+    public RecipeChemBoiler(Object input, ItemStack output, FluidStack inputTankBlue, FluidStack outputTankGreen, FluidStack outputTankYellow)
     {
         this.input = input;
         this.output = output;
@@ -36,18 +36,42 @@ public class RecipeChemBoiler extends ProcessingRecipe<TileEntityChemBoiler>
 
     private boolean hasInput(TileEntityChemBoiler machine)
     {
-        if (!input.isEmpty())
+        return matchesInput(machine.getInventory().getStackInSlot(TileEntityChemBoiler.SLOT_ITEM_INPUT));
+    }
+
+    private boolean matchesInput(ItemStack stack)
+    {
+        if (!stack.isEmpty())
         {
-            return !machine.getInventory().extractItem(TileEntityChemBoiler.SLOT_ITEM_INPUT, 1, true).isEmpty();
+            if (input instanceof String)
+            {
+                int[] ids = OreDictionary.getOreIDs(stack);
+                for (int id : ids)
+                {
+                    if (OreDictionary.getOreName(id).equals((String) input))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else if (input instanceof ItemStack)
+            {
+                ItemStack inputStack = ((ItemStack) input);
+                if (!inputStack.isEmpty())
+                {
+                    return doStacksMatch(inputStack, stack);
+                }
+                return true;
+            }
         }
-        return true;
+        return stack.isEmpty() && (input == null || input instanceof ItemStack && ((ItemStack) input).isEmpty());
     }
 
     private boolean canOutput(TileEntityChemBoiler machine)
     {
-        if (!output.isEmpty())
+        if (output instanceof ItemStack)
         {
-            return machine.getInventory().insertItem(TileEntityChemBoiler.SLOT_ITEM_OUTPUT, output, true).isEmpty();
+            return ((ItemStack) output).isEmpty() || machine.getInventory().insertItem(TileEntityChemBoiler.SLOT_ITEM_OUTPUT, (ItemStack) output, true).isEmpty();
         }
         return true;
     }
@@ -126,8 +150,13 @@ public class RecipeChemBoiler extends ProcessingRecipe<TileEntityChemBoiler>
     {
         if (input != null)
         {
-            return ItemStack.areItemsEqual(input, stack) && ItemStack.areItemStackTagsEqual(input, stack);
+            return matchesInput(stack);
         }
         return false;
+    }
+
+    private boolean doStacksMatch(ItemStack a, ItemStack b)
+    {
+        return ItemStack.areItemsEqual(a, b) && ItemStack.areItemStackTagsEqual(a, b);
     }
 }

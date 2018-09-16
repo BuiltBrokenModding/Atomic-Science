@@ -9,6 +9,7 @@ import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -79,11 +80,11 @@ public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler
             @Override
             public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip)
             {
-                ListIterator<String> it =  tooltip.listIterator();
-                while(it.hasNext())
+                ListIterator<String> it = tooltip.listIterator();
+                while (it.hasNext())
                 {
                     String next = it.next();
-                    if(next.contains("Atomic"))
+                    if (next.contains("Atomic"))
                     {
                         it.previous();
                         it.add(ingredient.amount + " mB");
@@ -95,7 +96,14 @@ public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler
 
         if (recipeWrapper.recipe.input != null)
         {
-            guiItemStacks.set(0, recipeWrapper.recipe.input);
+            if (recipeWrapper.recipe.input instanceof ItemStack)
+            {
+                guiItemStacks.set(0, (ItemStack) recipeWrapper.recipe.input);
+            }
+            else if (recipeWrapper.recipe.input instanceof String)
+            {
+                guiItemStacks.set(0, OreDictionary.getOres((String) recipeWrapper.recipe.input));
+            }
         }
         if (recipeWrapper.recipe.output != null)
         {

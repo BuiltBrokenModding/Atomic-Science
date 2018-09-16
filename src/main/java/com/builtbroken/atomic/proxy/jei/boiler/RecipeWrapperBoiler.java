@@ -1,10 +1,12 @@
 package com.builtbroken.atomic.proxy.jei.boiler;
 
-import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeChemBoiler;
+import com.builtbroken.atomic.content.machines.processing.boiler.RecipeChemBoiler;
 import com.google.common.collect.Lists;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -16,14 +18,22 @@ public class RecipeWrapperBoiler implements IRecipeWrapper  //TODO rework boiler
 
     public RecipeWrapperBoiler(RecipeChemBoiler recipe)
     {
-        this.recipe = recipe;    }
+        this.recipe = recipe;
+    }
 
     @Override
     public void getIngredients(IIngredients ingredients)
     {
         if (recipe.input != null)
         {
-            ingredients.setInput(VanillaTypes.ITEM, recipe.input);
+            if (recipe.input instanceof ItemStack)
+            {
+                ingredients.setInput(VanillaTypes.ITEM, (ItemStack) recipe.input);
+            }
+            else if (recipe.input instanceof String)
+            {
+                ingredients.setInputs(VanillaTypes.ITEM, OreDictionary.getOres((String) recipe.input));
+            }
         }
         if (recipe.output != null)
         {

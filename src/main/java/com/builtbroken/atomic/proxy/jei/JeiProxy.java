@@ -2,8 +2,7 @@ package com.builtbroken.atomic.proxy.jei;
 
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.machines.processing.boiler.gui.GuiChemBoiler;
-import com.builtbroken.atomic.content.machines.processing.boiler.recipe.RecipeChemBoiler;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
+import com.builtbroken.atomic.content.machines.processing.boiler.RecipeChemBoiler;
 import com.builtbroken.atomic.proxy.jei.boiler.RecipeCategoryBoiler;
 import com.builtbroken.atomic.proxy.jei.boiler.RecipeWrapperBoiler;
 import mezz.jei.api.IModPlugin;
