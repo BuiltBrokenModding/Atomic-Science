@@ -264,7 +264,7 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
 
     public FluidStack getFluid(ItemStack itemStack)
     {
-        if (itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))
+        if (!itemStack.isEmpty() && itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null))
         {
             IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null);
             if (handler != null)
