@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.machines.processing.boiler;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.EffectRefs;
+import com.builtbroken.atomic.config.content.ConfigPowerUsage;
 import com.builtbroken.atomic.content.items.wrench.WrenchColor;
 import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
@@ -47,7 +48,6 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandl
     public static final int INVENTORY_SIZE = 6;
 
     public static int PROCESSING_TIME = 100;
-    public static int ENERGY_PER_TICK = 100;
 
     private final FluidTank blueTank;
     private final FluidTank greenTank;
@@ -65,12 +65,22 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandl
         greenTank = new FluidTank(Fluid.BUCKET_VOLUME * 10);
         yellowTank = new FluidTank(Fluid.BUCKET_VOLUME * 10);
 
-        for(EnumFacing side : EnumFacing.values())
+        for (EnumFacing side : EnumFacing.values())
         {
             fluidSideWrappers[side.ordinal()] = new FluidSideWrapper(side);
             fluidSideWrappers[side.ordinal()].add(blueTankSideSettings, blueTank, false);  //TODO switch to map of all tanks for easier access
             fluidSideWrappers[side.ordinal()].add(greenTankSideSettings, greenTank, true);
             fluidSideWrappers[side.ordinal()].add(yellowTankSideSettings, yellowTank, true);
+        }
+    }
+
+    @Override
+    public void update(int ticks)
+    {
+        super.update(ticks);
+        if (isServer())
+        {
+            drainBattery(SLOT_BATTERY);
         }
     }
 
@@ -88,7 +98,7 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandl
             @Override
             public int getSlotLimit(int slot)
             {
-                if(slot == SLOT_FLUID_INPUT || slot == SLOT_HEX_FLUID || slot == SLOT_WASTE_FLUID || slot == SLOT_BATTERY)
+                if (slot == SLOT_FLUID_INPUT || slot == SLOT_HEX_FLUID || slot == SLOT_WASTE_FLUID || slot == SLOT_BATTERY)
                 {
                     return 1;
                 }
@@ -150,7 +160,6 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandl
     protected void preProcess(int ticks)
     {
         fillTank(SLOT_FLUID_INPUT, getBlueTank());
-        drainBattery(SLOT_BATTERY);
     }
 
     @Override
@@ -229,7 +238,7 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandl
     @Override
     public int getEnergyUsage()
     {
-        return ENERGY_PER_TICK;
+        return ConfigPowerUsage.POWER_USAGE_BOILER;
     }
 
     //-----------------------------------------------

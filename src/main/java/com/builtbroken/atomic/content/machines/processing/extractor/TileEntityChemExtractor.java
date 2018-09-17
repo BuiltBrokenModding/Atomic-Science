@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.machines.processing.extractor;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.EffectRefs;
+import com.builtbroken.atomic.config.content.ConfigPowerUsage;
 import com.builtbroken.atomic.content.items.wrench.WrenchColor;
 import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
@@ -50,7 +51,6 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
     public static final int[] ACCESSIBLE_SLOTS = new int[]{SLOT_ITEM_INPUT, SLOT_ITEM_OUTPUT};
 
     public static int PROCESSING_TIME = 100;
-    public static int ENERGY_PER_TICK = 100;
 
     public ItemStack nextRandomOutput = ItemStack.EMPTY;
 
@@ -72,6 +72,16 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
             fluidSideWrappers[side.ordinal()] = new FluidSideWrapper(side);
             fluidSideWrappers[side.ordinal()].add(inputTankSideSettings, inputTank, false);  //TODO switch to map of all tanks for easier access
             fluidSideWrappers[side.ordinal()].add(outputTankSideSettings, outputTank, true);
+        }
+    }
+
+    @Override
+    public void update(int ticks)
+    {
+        super.update(ticks);
+        if (isServer())
+        {
+            drainBattery(SLOT_BATTERY);
         }
     }
 
@@ -152,7 +162,6 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
     protected void preProcess(int ticks)
     {
         fillTank(SLOT_FLUID_INPUT, getInputTank());
-        drainBattery(SLOT_BATTERY);
     }
 
     @Override
@@ -219,7 +228,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
     @Override
     public int getEnergyUsage()
     {
-        return ENERGY_PER_TICK;
+        return ConfigPowerUsage.POWER_USAGE_EXTRACTOR;
     }
 
     //-----------------------------------------------

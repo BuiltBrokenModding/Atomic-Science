@@ -3,9 +3,8 @@ package com.builtbroken.atomic.content.machines.processing;
 import com.builtbroken.atomic.content.items.wrench.WrenchColor;
 import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.TileEntityPowerInvMachine;
-import com.builtbroken.atomic.content.recipes.RecipeProcessing;
 import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
-import com.builtbroken.atomic.lib.power.PowerSystem;
+import com.builtbroken.atomic.content.recipes.RecipeProcessing;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -45,16 +44,21 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
     public void update(int ticks)
     {
         super.update(ticks);
-        if (isServer())
+
+        //Check if has energy in order to run
+        if (checkEnergyExtract())
         {
-            preProcess(ticks);
-            process(ticks);
-            postProcess(ticks);
-        }
-        else if (processTimer > 0)
-        {
-            doAnimation(ticks);
-            doEffects(ticks);
+            if (isServer())
+            {
+                preProcess(ticks);
+                process(ticks);
+                postProcess(ticks);
+            }
+            else if (processTimer > 0)
+            {
+                doAnimation(ticks);
+                doEffects(ticks);
+            }
         }
     }
 
@@ -103,6 +107,7 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
     {
         if (processing)
         {
+            extractEnergy();
             if (processTimer++ >= getProcessingTime())
             {
                 processTimer = 0;
@@ -199,19 +204,6 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
     //-----------------------------------------------
     //--------Inventory handling ---------------------------
     //-----------------------------------------------
-
-    protected void drainBattery(int slot)
-    {
-        ItemStack itemStack = getInventory().getStackInSlot(slot);
-        int power = PowerSystem.getEnergyStored(itemStack);
-        if (power > 0)
-        {
-            power = PowerSystem.dischargeItem(itemStack, power, false);
-            int added = addEnergy(power, true);
-            PowerSystem.dischargeItem(itemStack, added, true);
-            getInventory().setStackInSlot(slot, itemStack);
-        }
-    }
 
     public boolean hasSpaceInOutput(ItemStack insertStack, int slot)
     {

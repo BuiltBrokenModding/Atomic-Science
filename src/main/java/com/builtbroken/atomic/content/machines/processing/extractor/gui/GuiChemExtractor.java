@@ -59,5 +59,7 @@ public class GuiChemExtractor extends GuiContainerBase<TileEntityChemExtractor>
 
         drawFluidTank(8, 20, host.getInputTank(), Color.blue);
         drawFluidTank(155, 20, host.getOutputTank(), Color.green);
+
+        drawElectricity(34, 15, host.getEnergyStored() / (float) host.getMaxEnergyStored());
     }
 }

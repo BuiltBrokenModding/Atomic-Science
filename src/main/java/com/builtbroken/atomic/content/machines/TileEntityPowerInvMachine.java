@@ -1,9 +1,18 @@
 package com.builtbroken.atomic.content.machines;
 
+import com.builtbroken.atomic.config.content.ConfigPowerUsage;
+import com.builtbroken.atomic.lib.power.Battery;
+import com.builtbroken.atomic.lib.power.PowerSystem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -14,67 +23,168 @@ import java.util.List;
  */
 public abstract class TileEntityPowerInvMachine<I extends IItemHandlerModifiable> extends TileEntityInventoryMachine<I>
 {
-    private int energyStored;
+    public static final String NBT_ENERGY = "energy";
+
+    private Battery energyStorage;
 
     /**
-     * Adds energy to the machine
-     *
-     * @param energy   - energy to add in UE
-     * @param doAction - true to do action, false to simulate
-     * @return energy added
+     * Gets energy usage of the machine
+     * @return
      */
-    public int addEnergy(int energy, boolean doAction)
+    public abstract int getEnergyUsage();
+
+    /**
+     * Energy storage
+     * @return
+     */
+    public Battery getEnergyStorage()
     {
-        int room = getMaxEnergyStored() - getEnergyStored();
-        if (room >= energy)
+        if (energyStorage == null)
         {
-            if (doAction)
-            {
-                energyStored += energy;
-            }
-            return energy;
+            energyStorage = createEnergyStorage();
         }
-        else
-        {
-            if (doAction)
-            {
-                energyStored += room;
-            }
-            return room;
-        }
+        return energyStorage;
     }
 
+    /**
+     * Creates energy storage
+     * @return
+     */
+    protected Battery createEnergyStorage()
+    {
+        return new Battery(getMaxEnergyStored())
+        {
+            @Override
+            protected void onEnergyChanged(int prev, int current)
+            {
+                syncClientNextTick(); //TODO sync less often, maybe sync (hasEnergy) instead
+            }
+        };
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+    {
+        if (capability == CapabilityEnergy.ENERGY)
+        {
+            return ConfigPowerUsage.ENABLE_POWER_USAGE;
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @Nullable
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+    {
+        if (capability == CapabilityEnergy.ENERGY && ConfigPowerUsage.ENABLE_POWER_USAGE)
+        {
+            return (T) getEnergyStorage();
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    /**
+     * Checks if there is enough energy to run usage cycle
+     * @return
+     */
     protected boolean checkEnergyExtract()
     {
-        return getEnergyStored() >= getEnergyUsage();
+        return !ConfigPowerUsage.ENABLE_POWER_USAGE || getEnergyStored() >= getEnergyUsage();
     }
 
+    /**
+     * Extracts usage energy
+     */
     protected void extractEnergy()
     {
-        energyStored = Math.max(0, energyStored - getEnergyUsage());
+        if (ConfigPowerUsage.ENABLE_POWER_USAGE)
+        {
+            getEnergyStorage().extractEnergy(getEnergyUsage(), false);
+        }
     }
 
+    /**
+     * Gets energy stored
+     * @return
+     */
     public int getEnergyStored()
     {
-        return energyStored;
+        return !ConfigPowerUsage.ENABLE_POWER_USAGE ? getMaxEnergyStored() : getEnergyStorage().getEnergyStored();
     }
 
+    /**
+     * Gets max energy storage
+     * @return
+     */
     public int getMaxEnergyStored()
     {
         return getEnergyUsage() * 10;
     }
 
-    public abstract int getEnergyUsage();
+    /**
+     * Drains energy items in slot into energy storage
+     * @param slot
+     */
+    protected void drainBattery(int slot)
+    {
+        if (ConfigPowerUsage.ENABLE_POWER_USAGE)
+        {
+            ItemStack itemStack = getInventory().getStackInSlot(slot);
+
+            //If item has power
+            int power = PowerSystem.getEnergyStored(itemStack);
+            if (power > 0)
+            {
+                //Check power pull
+                power = PowerSystem.dischargeItem(itemStack, power, false);
+
+                //Add power
+                int added = getEnergyStorage().receiveEnergy(power, false);
+
+                //Remove power
+                PowerSystem.dischargeItem(itemStack, added, true);
+
+                //Trigger slot update
+                getInventory().setStackInSlot(slot, itemStack);
+            }
+        }
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt)
+    {
+        super.readFromNBT(nbt);
+        getEnergyStorage().setEnergy(nbt.getInteger(NBT_ENERGY));
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt)
+    {
+        nbt.setInteger(NBT_ENERGY, getEnergyStorage().getEnergyStored());
+        return super.writeToNBT(nbt);
+    }
+
+    @Override
+    protected void writeDescPacket(List<Object> dataList, EntityPlayer player)
+    {
+        dataList.add(getEnergyStored());
+    }
+
+    @Override
+    protected void readDescPacket(ByteBuf buf, EntityPlayer player)
+    {
+        getEnergyStorage().setEnergy(buf.readInt());
+    }
 
     @Override
     protected void writeGuiPacket(List<Object> dataList, EntityPlayer player)
     {
-       dataList.add(energyStored);
+        dataList.add(getEnergyStored());
     }
 
     @Override
     protected void readGuiPacket(ByteBuf buf, EntityPlayer player)
     {
-        energyStored = buf.readInt();
+        getEnergyStorage().setEnergy(buf.readInt());
     }
 }
