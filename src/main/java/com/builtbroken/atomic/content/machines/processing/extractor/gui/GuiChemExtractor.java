@@ -14,12 +14,12 @@ import java.awt.*;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/20/2018.
  */
-public class GuiExtractor extends GuiContainerBase<TileEntityChemExtractor>
+public class GuiChemExtractor extends GuiContainerBase<TileEntityChemExtractor>
 {
     public final Rectangle AREA_BLUE_TANK = new Rectangle(8, 20, meterWidth, meterHeight);
     public final Rectangle AREA_GREEN_TANK = new Rectangle(155, 20, meterWidth, meterHeight);
 
-    public GuiExtractor(EntityPlayer player, TileEntityChemExtractor host)
+    public GuiChemExtractor(EntityPlayer player, TileEntityChemExtractor host)
     {
         super(new ContainerExtractor(player, host), host);
     }

@@ -1,6 +1,6 @@
-package com.builtbroken.atomic.proxy.jei.extractor;
+package com.builtbroken.atomic.proxy.jei.centrifuge;
 
-import com.builtbroken.atomic.content.recipes.chem.RecipeChemExtractor;
+import com.builtbroken.atomic.content.recipes.chem.RecipeChemCentrifuge;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -12,11 +12,11 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 9/16/2018.
  */
-public class RecipeWrapperExtractor implements IRecipeWrapper
+public class RecipeWrapperCentrifuge implements IRecipeWrapper
 {
-    public final RecipeChemExtractor recipe;
+    public final RecipeChemCentrifuge recipe;
 
-    public RecipeWrapperExtractor(RecipeChemExtractor recipe)
+    public RecipeWrapperCentrifuge(RecipeChemCentrifuge recipe)
     {
         this.recipe = recipe;
     }
@@ -34,6 +34,7 @@ public class RecipeWrapperExtractor implements IRecipeWrapper
         {
             ingredients.setOutputs(VanillaTypes.ITEM, outputs);
         }
+
         if (recipe.inputTank != null)
         {
             ingredients.setInput(VanillaTypes.FLUID, recipe.inputTank);

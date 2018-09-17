@@ -7,7 +7,7 @@ import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.ContainerExtractor;
-import com.builtbroken.atomic.content.machines.processing.extractor.gui.GuiExtractor;
+import com.builtbroken.atomic.content.machines.processing.extractor.gui.GuiChemExtractor;
 import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.content.recipes.chem.RecipeChemExtractor;
 import com.builtbroken.atomic.lib.SideSettings;
@@ -50,6 +50,8 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
 
     public static int PROCESSING_TIME = 100;
     public static int ENERGY_PER_TICK = 100;
+
+    public ItemStack nextRandomOutput = ItemStack.EMPTY;
 
     private final FluidTank inputTank;
     private final FluidTank outputTank;
@@ -215,7 +217,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player)
     {
-        return new GuiExtractor(player, this);
+        return new GuiChemExtractor(player, this);
     }
 
     @Override

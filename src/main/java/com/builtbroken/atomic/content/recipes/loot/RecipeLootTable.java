@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.processing.recipes;
+package com.builtbroken.atomic.content.recipes.loot;
 
 import com.builtbroken.atomic.proxy.ContentProxy;
 import net.minecraft.item.ItemStack;
@@ -163,7 +163,7 @@ public class RecipeLootTable extends ContentProxy
         if(itemEntry != null)
         {
             //Convert the entry to an itemstack
-            ItemStack stack = itemEntry.getStack();
+            ItemStack stack = itemEntry.getRandomStack();
             if (stack != null && !stack.isEmpty())
             {
                 if (stack.getCount() <= 0)

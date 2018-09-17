@@ -2,17 +2,26 @@ package com.builtbroken.atomic.content.machines.processing.extractor.recipe;
 
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
-import com.builtbroken.atomic.content.recipes.RecipeProcessing;
+import com.builtbroken.atomic.content.recipes.chem.RecipeChemExtractor;
 import com.builtbroken.atomic.content.recipes.loot.DustLootTable;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.items.IItemHandlerModifiable;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/24/2018.
  */
-public class RecipeWasteExtracting extends RecipeProcessing<TileEntityChemExtractor>
+public class RecipeWasteExtracting extends RecipeChemExtractor
 {
+    public RecipeWasteExtracting()
+    {
+        super(new ItemStack(ASItems.itemProcessingWaste), null, null, null);
+    }
+
     @Override
     public boolean matches(TileEntityChemExtractor machine)
     {
@@ -21,55 +30,46 @@ public class RecipeWasteExtracting extends RecipeProcessing<TileEntityChemExtrac
     }
 
     @Override
-    public boolean applyRecipe(TileEntityChemExtractor machine)
+    @Nullable
+    public List<ItemStack> getPossibleOutputs()
     {
-        ItemStack inputItem = machine.getInventory().getStackInSlot(TileEntityChemExtractor.SLOT_ITEM_INPUT);
-        if (!inputItem.isEmpty() && ASItems.itemProcessingWaste == inputItem.getItem())
-        {
-            ItemStack outputStack;
+        List<ItemStack> list = new ArrayList();
+        list.add(new ItemStack(ASItems.itemToxicWaste, 1, 0));
+        list.addAll(DustLootTable.INSTANCE.getPossibleItems());
+        return list;
+    }
 
-            if (Math.random() > 0.2) //TODO switch over to progress bar/tank so output always contains toxic waste dust
+
+    @Override
+    @Nullable
+    public ItemStack getOutput(@Nullable TileEntityChemExtractor machine)
+    {
+        if (machine != null)
+        {
+            if (machine.nextRandomOutput.isEmpty())
             {
-                outputStack = new ItemStack(ASItems.itemToxicWaste, 1, 0);
-            }
-            else
-            {
-                outputStack = getRandomDust();
-                if(outputStack.isEmpty())
+                if (Math.random() > 0.2) //TODO switch over to progress bar/tank so output always contains toxic waste dust
                 {
-                    outputStack = new ItemStack(ASItems.itemToxicWaste, 1, 0);
+                    machine.nextRandomOutput = new ItemStack(ASItems.itemToxicWaste, 1, 0);
+                }
+                else
+                {
+                    machine.nextRandomOutput = DustLootTable.INSTANCE.getRandomItemStack();
+                    if (machine.nextRandomOutput.isEmpty())
+                    {
+                        machine.nextRandomOutput = new ItemStack(ASItems.itemToxicWaste, 1, 0);
+                    }
                 }
             }
-
-            if (machine.hasSpaceInOutput(outputStack, TileEntityChemExtractor.SLOT_ITEM_OUTPUT))
-            {
-                machine.getInventory().extractItem(TileEntityChemExtractor.SLOT_ITEM_INPUT, 1, false);
-                machine.addToOutput(outputStack, TileEntityChemExtractor.SLOT_ITEM_OUTPUT);
-            }
-            return true;
+            return machine.nextRandomOutput;
         }
-        return false;
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean isComponent(TileEntityChemExtractor machine, Fluid fluid)
+    protected void doRecipe(TileEntityChemExtractor machine, IItemHandlerModifiable inventory)
     {
-        return false;
-    }
-
-    @Override
-    public boolean isComponent(TileEntityChemExtractor machine, ItemStack stack)
-    {
-        return stack.getItem() == ASItems.itemProcessingWaste;
-    }
-
-    /**
-     * Gets a random dust from the loot table
-     *
-     * @return random entry from the table, or null if ran out of entries to loop (rare)
-     */
-    public static ItemStack getRandomDust()
-    {
-        return DustLootTable.INSTANCE.getRandomItemStack();
+        super.doRecipe(machine, inventory);
+        machine.nextRandomOutput = ItemStack.EMPTY;
     }
 }

@@ -14,6 +14,6 @@ public class TooltipCallbackFluid implements ITooltipCallback<FluidStack>
     @Override
     public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip)
     {
-        tooltip.add(ingredient.amount + " mB"); 
+        tooltip.add(ingredient.amount + " mB");
     }
 }

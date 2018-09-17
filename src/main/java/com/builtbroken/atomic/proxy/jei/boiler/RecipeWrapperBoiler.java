@@ -6,7 +6,8 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -24,26 +25,22 @@ public class RecipeWrapperBoiler implements IRecipeWrapper
     @Override
     public void getIngredients(IIngredients ingredients)
     {
-        if (recipe.input != null)
+        List<ItemStack> inputs = recipe.getPossibleInputs();
+        if (inputs != null)
         {
-            if (recipe.input instanceof ItemStack)
-            {
-                ingredients.setInput(VanillaTypes.ITEM, (ItemStack) recipe.input);
-            }
-            else if (recipe.input instanceof String)
-            {
-                ingredients.setInputs(VanillaTypes.ITEM, OreDictionary.getOres((String) recipe.input));
-            }
+            ingredients.setInputs(VanillaTypes.ITEM, inputs);
         }
-        if (recipe.output != null)
+        List<ItemStack> outputs = recipe.getPossibleOutputs();
+        if (outputs != null)
         {
-            ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
+            ingredients.setOutputs(VanillaTypes.ITEM, outputs);
         }
         if (recipe.inputTankBlue != null)
         {
             ingredients.setInput(VanillaTypes.FLUID, recipe.inputTankBlue);
         }
-        if (recipe.outputTankGreen != null && recipe.outputTankYellow != null)
+
+        if (recipe.outputTankGreen != null && recipe.outputTankYellow != null) //TODO add method to get fluid outputs
         {
             ingredients.setOutputs(VanillaTypes.FLUID, Lists.newArrayList(recipe.outputTankGreen, recipe.outputTankYellow));
         }

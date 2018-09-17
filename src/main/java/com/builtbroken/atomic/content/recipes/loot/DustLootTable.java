@@ -1,8 +1,6 @@
-package com.builtbroken.atomic.content.machines.processing.extractor.recipe;
+package com.builtbroken.atomic.content.recipes.loot;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.content.machines.processing.recipes.RecipeLootTable;
-import com.builtbroken.atomic.content.machines.processing.recipes.RecipeRandomItem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -28,6 +26,8 @@ public class DustLootTable extends RecipeLootTable
     private final HashMap<String, List<RecipeRandomItem>> dustEntries = new HashMap();
     private final HashMap<String, Integer> dustWeights = new HashMap();
 
+    private final List<ItemStack> possibleItemsCache = new ArrayList();
+
     private DustLootTable()
     {
         super("chem.extractor.loot.table.dust");
@@ -49,6 +49,11 @@ public class DustLootTable extends RecipeLootTable
         dustWeights.put("dustLumium", -1);
         dustWeights.put("dustMithril", -1);
         dustWeights.put("dustSignalm", -1);
+    }
+
+    public List<ItemStack> getPossibleItems()
+    {
+        return possibleItemsCache;
     }
 
     @Override
@@ -80,6 +85,25 @@ public class DustLootTable extends RecipeLootTable
 
         //Sort lower weights to front of list
         Collections.sort(lootItems, Comparator.comparingInt(o -> -o.weight));
+
+        buildPossibleItemCache();
+    }
+
+    protected void buildPossibleItemCache()
+    {
+        possibleItemsCache.clear();
+        dustEntries.forEach((type, list) -> list.forEach(randomItem -> randomItem.getPossibleStacks().forEach(stack -> possibleItemsCache.add(stack))));
+
+        Iterator<ItemStack> it = possibleItemsCache.iterator();
+        while (it.hasNext())
+        {
+            ItemStack next = it.next();
+            if (next == null || next.isEmpty() || next.getItem() == null)
+            {
+                it.remove();
+            }
+        }
+        //TODO remove duplicate items
     }
 
     @Override
@@ -128,5 +152,4 @@ public class DustLootTable extends RecipeLootTable
         }
         dustEntries.get(ore_name).add(recipeRandomItem);
     }
-
 }

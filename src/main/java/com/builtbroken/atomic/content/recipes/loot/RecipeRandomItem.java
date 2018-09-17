@@ -1,6 +1,9 @@
-package com.builtbroken.atomic.content.machines.processing.recipes;
+package com.builtbroken.atomic.content.recipes.loot;
 
+import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -17,8 +20,13 @@ public class RecipeRandomItem
         this.stack = stack;
     }
 
-    public ItemStack getStack()
+    public ItemStack getRandomStack()
     {
         return stack.copy();
+    }
+
+    public List<ItemStack> getPossibleStacks()
+    {
+        return Lists.newArrayList(stack);
     }
 }

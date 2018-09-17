@@ -5,12 +5,11 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
-import com.builtbroken.atomic.content.machines.processing.centrifuge.recipe.RecipeConWater;
-import com.builtbroken.atomic.content.machines.processing.centrifuge.recipe.RecipeUraniumPellet;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
+import com.builtbroken.atomic.content.machines.processing.extractor.recipe.RecipeWasteExtracting;
 import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
-import com.builtbroken.atomic.content.recipes.RecipeProcessing;
 import com.builtbroken.atomic.content.recipes.chem.RecipeChemBoiler;
+import com.builtbroken.atomic.content.recipes.chem.RecipeChemCentrifuge;
 import com.builtbroken.atomic.content.recipes.chem.RecipeChemExtractor;
 import com.builtbroken.atomic.content.recipes.loot.DustLootTable;
 import com.builtbroken.atomic.proxy.ProxyLoader;
@@ -28,7 +27,7 @@ public final class ProcessorRecipeHandler extends ProxyLoader
 {
     public final ProcessingRecipeList<TileEntityChemExtractor, RecipeChemExtractor> chemExtractorProcessingRecipe;
     public final ProcessingRecipeList<TileEntityChemBoiler, RecipeChemBoiler> chemBoilerProcessingRecipe;
-    public final ProcessingRecipeList<TileEntityChemCentrifuge, RecipeProcessing<TileEntityChemCentrifuge>> chemCentrifugeProcessingRecipe;
+    public final ProcessingRecipeList<TileEntityChemCentrifuge, RecipeChemCentrifuge> chemCentrifugeProcessingRecipe;
 
     public static final ProcessorRecipeHandler INSTANCE = new ProcessorRecipeHandler();
 
@@ -44,8 +43,9 @@ public final class ProcessorRecipeHandler extends ProxyLoader
     @Override
     public void init()
     {
+        super.init();
         //Extractor
-        //chemExtractorProcessingRecipe.add(new RecipeWasteExtracting());
+        chemExtractorProcessingRecipe.add(new RecipeWasteExtracting());
         chemExtractorProcessingRecipe.add(new RecipeChemExtractor("oreUranium",
                 new ItemStack(ASItems.itemYellowCake, ConfigRecipe.YELLOW_CAKE_PER_ORE, 0),
                 new FluidStack(FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE),
@@ -81,7 +81,14 @@ public final class ProcessorRecipeHandler extends ProxyLoader
                 null));
 
         //Centrifuge
-        chemCentrifugeProcessingRecipe.add(new RecipeConWater());
-        chemCentrifugeProcessingRecipe.add(new RecipeUraniumPellet());
+        chemCentrifugeProcessingRecipe.add(new RecipeChemCentrifuge(
+            new ItemStack(ASItems.itemProcessingWaste, ConfigRecipe.SOLID_WASTE_PER_CENTRIFUGE, 0),
+            new FluidStack(ASFluids.CONTAMINATED_MINERAL_WATER.fluid, ConfigRecipe.MINERAL_WASTE_WATER_PER_CENTRIFUGE),
+            new FluidStack(FluidRegistry.WATER, ConfigRecipe.MINERAL_WASTE_WATER_PER_CENTRIFUGE * ConfigRecipe.MINERAL_WASTE_WATER_PER_WATER)));
+
+        chemCentrifugeProcessingRecipe.add(new RecipeChemCentrifuge(
+                new ItemStack(ASItems.itemUranium235, 1, 0),
+                new FluidStack(ASFluids.URANIUM_HEXAFLOURIDE.fluid, ConfigRecipe.URANIUM_HEX_PER_CENTRIFUGE),
+                null));
     }
 }

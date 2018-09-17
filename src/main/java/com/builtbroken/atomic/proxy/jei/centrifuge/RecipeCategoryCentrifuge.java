@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.proxy.jei.boiler;
+package com.builtbroken.atomic.proxy.jei.centrifuge;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASBlocks;
@@ -19,18 +19,18 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 9/16/2018.
  */
-public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler>
+public class RecipeCategoryCentrifuge implements IRecipeCategory<RecipeWrapperCentrifuge>
 {
-    public static final String ID = AtomicScience.PREFIX + "chem.boiler";
+    public static final String ID = AtomicScience.PREFIX + "chem.centrifuge";
     public static final ResourceLocation backgroundTexture = new ResourceLocation(AtomicScience.DOMAIN, "textures/gui/jei.png");
 
     IDrawable icon;
     IDrawable background;
 
-    public RecipeCategoryBoiler(IJeiHelpers helpers)
+    public RecipeCategoryCentrifuge(IJeiHelpers helpers)
     {
-        icon = helpers.getGuiHelper().createDrawableIngredient(new ItemStack(ASBlocks.blockChemBoiler));
-        background = helpers.getGuiHelper().createDrawable(backgroundTexture, 0, 0, 117, 18);
+        icon = helpers.getGuiHelper().createDrawableIngredient(new ItemStack(ASBlocks.blockChemCentrifuge));
+        background = helpers.getGuiHelper().createDrawable(backgroundTexture, 0, 0, 98, 18);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler
     @Override
     public String getTitle()
     {
-        return ASBlocks.blockChemBoiler.getLocalizedName();
+        return ASBlocks.blockChemCentrifuge.getLocalizedName();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, RecipeWrapperBoiler recipeWrapper, IIngredients ingredients)
+    public void setRecipe(IRecipeLayout recipeLayout, RecipeWrapperCentrifuge recipeWrapper, IIngredients ingredients)
     {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
@@ -89,17 +89,13 @@ public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler
             guiItemStacks.set(1, outputs);
         }
 
-        if (recipeWrapper.recipe.inputTankBlue != null)
+        if (recipeWrapper.recipe.inputTank != null)
         {
-            guiFluidStacks.set(0, recipeWrapper.recipe.inputTankBlue);
+            guiFluidStacks.set(0, recipeWrapper.recipe.inputTank);
         }
-        if (recipeWrapper.recipe.outputTankGreen != null)
+        if (recipeWrapper.recipe.outputTank != null)
         {
-            guiFluidStacks.set(1, recipeWrapper.recipe.outputTankGreen);
-        }
-        if (recipeWrapper.recipe.outputTankYellow != null)
-        {
-            guiFluidStacks.set(2, recipeWrapper.recipe.outputTankYellow);
+            guiFluidStacks.set(1, recipeWrapper.recipe.outputTank);
         }
     }
 }

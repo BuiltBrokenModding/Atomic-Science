@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.content.recipes.chem;
 
-import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -10,14 +10,14 @@ import net.minecraftforge.items.IItemHandlerModifiable;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/25/2018.
  */
-public class RecipeChemExtractor extends RecipeChemMachine<TileEntityChemExtractor>
+public class RecipeChemCentrifuge extends RecipeChemMachine<TileEntityChemCentrifuge>
 {
     public final FluidStack inputTank;
     public final FluidStack outputTank;
 
-    public RecipeChemExtractor(Object input, ItemStack output, FluidStack inputTank, FluidStack outputTank)
+    public RecipeChemCentrifuge(ItemStack output, FluidStack inputTank, FluidStack outputTank)
     {
-        super(input, output);
+        super(null, output);
         this.inputTank = inputTank;
         this.outputTank = outputTank;
     }
@@ -25,22 +25,22 @@ public class RecipeChemExtractor extends RecipeChemMachine<TileEntityChemExtract
     @Override
     protected int getInputSlot()
     {
-        return TileEntityChemExtractor.SLOT_ITEM_INPUT;
+        return -1;
     }
 
     @Override
     protected int getOutputSlot()
     {
-        return TileEntityChemExtractor.SLOT_ITEM_OUTPUT;
+        return TileEntityChemCentrifuge.SLOT_ITEM_OUTPUT;
     }
 
     @Override
-    public boolean matches(TileEntityChemExtractor machine)
+    public boolean matches(TileEntityChemCentrifuge machine)
     {
         return super.matches(machine) && hasInputFluid(machine) && canOutputFluid(machine);
     }
 
-    protected boolean hasInputFluid(TileEntityChemExtractor machine)
+    protected boolean hasInputFluid(TileEntityChemCentrifuge machine)
     {
         if (inputTank != null)
         {
@@ -49,7 +49,7 @@ public class RecipeChemExtractor extends RecipeChemMachine<TileEntityChemExtract
         return true;
     }
 
-    protected boolean canOutputFluid(TileEntityChemExtractor machine)
+    protected boolean canOutputFluid(TileEntityChemCentrifuge machine)
     {
         if (outputTank != null)
         {
@@ -59,7 +59,7 @@ public class RecipeChemExtractor extends RecipeChemMachine<TileEntityChemExtract
     }
 
     @Override
-    protected void doRecipe(TileEntityChemExtractor machine, IItemHandlerModifiable inventory)
+    protected void doRecipe(TileEntityChemCentrifuge machine, IItemHandlerModifiable inventory)
     {
         super.doRecipe(machine, inventory);
 
@@ -75,7 +75,7 @@ public class RecipeChemExtractor extends RecipeChemMachine<TileEntityChemExtract
     }
 
     @Override
-    public boolean isComponent(TileEntityChemExtractor machine, Fluid fluid)
+    public boolean isComponent(TileEntityChemCentrifuge machine, Fluid fluid)
     {
         if (inputTank != null)
         {

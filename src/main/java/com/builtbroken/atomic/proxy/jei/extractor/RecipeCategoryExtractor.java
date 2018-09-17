@@ -2,34 +2,35 @@ package com.builtbroken.atomic.proxy.jei.extractor;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASBlocks;
+import com.builtbroken.atomic.proxy.jei.TooltipCallbackFluid;
 import mezz.jei.api.IJeiHelpers;
-import mezz.jei.api.gui.*;
+import mezz.jei.api.gui.IDrawable;
+import mezz.jei.api.gui.IGuiFluidStackGroup;
+import mezz.jei.api.gui.IGuiItemStackGroup;
+import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 9/16/2018.
  */
-public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler>
+public class RecipeCategoryExtractor implements IRecipeCategory<RecipeWrapperExtractor>
 {
-    public static final String ID = AtomicScience.PREFIX + "chem.boiler";
+    public static final String ID = AtomicScience.PREFIX + "chem.extractor";
     public static final ResourceLocation backgroundTexture = new ResourceLocation(AtomicScience.DOMAIN, "textures/gui/jei.png");
 
     IDrawable icon;
     IDrawable background;
 
-    public RecipeCategoryBoiler(IJeiHelpers helpers)
+    public RecipeCategoryExtractor(IJeiHelpers helpers)
     {
-        icon = helpers.getGuiHelper().createDrawableIngredient(new ItemStack(ASBlocks.blockChemBoiler));
-        background = helpers.getGuiHelper().createDrawable(backgroundTexture, 0, 0, 117, 18);
+        icon = helpers.getGuiHelper().createDrawableIngredient(new ItemStack(ASBlocks.blockChemExtractor));
+        background = helpers.getGuiHelper().createDrawable(backgroundTexture, 0, 0, 98, 18);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler
     @Override
     public String getTitle()
     {
-        return ASBlocks.blockChemBoiler.getLocalizedName();
+        return ASBlocks.blockChemExtractor.getLocalizedName();
     }
 
     @Override
@@ -63,7 +64,7 @@ public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, RecipeWrapperBoiler recipeWrapper, IIngredients ingredients)
+    public void setRecipe(IRecipeLayout recipeLayout, RecipeWrapperExtractor recipeWrapper, IIngredients ingredients)
     {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
@@ -73,53 +74,28 @@ public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler
 
         guiFluidStacks.init(0, true, 1, 1);
         guiFluidStacks.init(1, false, 81, 1);
-        guiFluidStacks.init(2, false, 100, 1);
 
-        guiFluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>()
-        {
-            @Override
-            public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip)
-            {
-                ListIterator<String> it = tooltip.listIterator();
-                while (it.hasNext())
-                {
-                    String next = it.next();
-                    if (next.contains("Atomic"))
-                    {
-                        it.previous();
-                        it.add(ingredient.amount + " mB");
-                        break;
-                    }
-                }
-            }
-        });
+        guiFluidStacks.addTooltipCallback(new TooltipCallbackFluid());
 
-        if (recipeWrapper.recipe.input != null)
+
+        List<ItemStack> inputs = recipeWrapper.recipe.getPossibleInputs();
+        if (inputs != null)
         {
-            if (recipeWrapper.recipe.input instanceof ItemStack)
-            {
-                guiItemStacks.set(0, (ItemStack) recipeWrapper.recipe.input);
-            }
-            else if (recipeWrapper.recipe.input instanceof String)
-            {
-                guiItemStacks.set(0, OreDictionary.getOres((String) recipeWrapper.recipe.input));
-            }
+            guiItemStacks.set(0,  inputs);
         }
-        if (recipeWrapper.recipe.output != null)
+        List<ItemStack> outputs = recipeWrapper.recipe.getPossibleOutputs();
+        if (outputs != null)
         {
-            guiItemStacks.set(1, recipeWrapper.recipe.output);
+            guiItemStacks.set(1, outputs);
         }
-        if (recipeWrapper.recipe.inputTankBlue != null)
+
+        if (recipeWrapper.recipe.inputTank != null)
         {
-            guiFluidStacks.set(0, recipeWrapper.recipe.inputTankBlue);
+            guiFluidStacks.set(0, recipeWrapper.recipe.inputTank);
         }
-        if (recipeWrapper.recipe.outputTankGreen != null)
+        if (recipeWrapper.recipe.outputTank != null)
         {
-            guiFluidStacks.set(1, recipeWrapper.recipe.outputTankGreen);
-        }
-        if (recipeWrapper.recipe.outputTankYellow != null)
-        {
-            guiFluidStacks.set(2, recipeWrapper.recipe.outputTankYellow);
+            guiFluidStacks.set(1, recipeWrapper.recipe.outputTank);
         }
     }
 }
