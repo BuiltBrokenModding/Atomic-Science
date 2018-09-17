@@ -114,7 +114,20 @@ public abstract class RecipeChemMachine<H extends TileEntityProcessingMachine> e
 
     protected boolean hasInput(H machine)
     {
-        return getInputSlot() < 0 || matches(getInput(machine), machine.getInventory().getStackInSlot(getInputSlot()));
+        //No slot, no need for input
+        if(getInputSlot() < 0)
+        {
+            return true;
+        }
+        //Empty input, no need for input
+        Object input = getInput(machine);
+        if(input == null || input instanceof ItemStack && ((ItemStack) input).isEmpty())
+        {
+            return true;
+        }
+
+        //Match normal
+        return matches(getInput(machine), machine.getInventory().getStackInSlot(getInputSlot()));
     }
 
     protected boolean canOutput(H machine)

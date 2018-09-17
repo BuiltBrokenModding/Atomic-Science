@@ -89,6 +89,6 @@ public abstract class RecipeProcessing<H extends TileEntityProcessingMachine> //
                 return true;
             }
         }
-        return stack.isEmpty() && (input == null || input instanceof ItemStack && ((ItemStack) input).isEmpty());
+        return false;
     }
 }
