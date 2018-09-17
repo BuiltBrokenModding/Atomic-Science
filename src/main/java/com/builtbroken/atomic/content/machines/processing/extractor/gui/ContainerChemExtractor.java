@@ -1,10 +1,11 @@
-package com.builtbroken.atomic.content.machines.processing.centrifuge.gui;
+package com.builtbroken.atomic.content.machines.processing.extractor.gui;
 
 import com.builtbroken.atomic.content.items.wrench.WrenchColor;
-import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
+import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
 import com.builtbroken.atomic.lib.gui.ContainerBase;
 import com.builtbroken.atomic.lib.gui.slot.SlotEnergy;
 import com.builtbroken.atomic.lib.gui.slot.SlotFluid;
+import com.builtbroken.atomic.lib.gui.slot.SlotMachine;
 import com.builtbroken.atomic.lib.gui.slot.SlotOutput;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -12,31 +13,33 @@ import net.minecraft.item.ItemStack;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
- * Created by Dark(DarkGuardsman, Robert) on 5/23/2018.
+ * Created by Dark(DarkGuardsman, Robert) on 5/20/2018.
  */
-public class ContainerChemCentrifuge extends ContainerBase<TileEntityChemCentrifuge>
+public class ContainerChemExtractor extends ContainerBase<TileEntityChemExtractor>
 {
-    public ContainerChemCentrifuge(EntityPlayer player, TileEntityChemCentrifuge tile)
+    public ContainerChemExtractor(EntityPlayer player, TileEntityChemExtractor tile)
     {
         super(player, tile);
-        addSlotToContainer(new SlotFluid(tile.getInventory(), "gui.tooltip.slot.tank.input.blue", TileEntityChemCentrifuge.SLOT_FLUID_INPUT, 25, 52).setColor(WrenchColor.BLUE.getColor()));
-
-        addSlotToContainer(new SlotOutput(tile.getInventory(), TileEntityChemCentrifuge.SLOT_ITEM_OUTPUT, 100, 30)
-                .setColor(WrenchColor.ORANGE.getColor()).setToolTip("gui.tooltip.slot.output"));
-
         int x = 50;
-        addSlotToContainer(new SlotEnergy(tile.getInventory(), TileEntityChemCentrifuge.SLOT_BATTERY, x, 52, "gui.tooltip.slot.energy.input").setColor(WrenchColor.PURPLE.getColor()));
+        addSlotToContainer(new SlotFluid(tile.getInventory(), "gui.tooltip.slot.tank.input.blue", TileEntityChemExtractor.SLOT_FLUID_INPUT, 25, 52).setColor(WrenchColor.BLUE.getColor()));
 
-        addSlotToContainer(new SlotFluid(tile.getInventory(), "gui.tooltip.slot.tank.output.green", TileEntityChemCentrifuge.SLOT_FLUID_OUTPUT, 136, 52).setColor(WrenchColor.GREEN.getColor()));
+        addSlotToContainer(new SlotMachine(tile.getInventory(), TileEntityChemExtractor.SLOT_ITEM_INPUT, x, 30)
+                .setColor(WrenchColor.RED.getColor()).setToolTip("gui.tooltip.slot.input"));
+        addSlotToContainer(new SlotOutput(tile.getInventory(), TileEntityChemExtractor.SLOT_ITEM_OUTPUT, 100, 30)
+                .setColor(WrenchColor.ORANGE.getColor()).setToolTip("gui.tooltip.slot.output"));
+        addSlotToContainer(new SlotEnergy(tile.getInventory(), TileEntityChemExtractor.SLOT_BATTERY, x, 52, "gui.tooltip.slot.energy.input").setColor(WrenchColor.PURPLE.getColor()));
+
+        addSlotToContainer(new SlotFluid(tile.getInventory(), "gui.tooltip.slot.tank.output.green", TileEntityChemExtractor.SLOT_FLUID_OUTPUT, 136, 52).setColor(WrenchColor.GREEN.getColor()));
 
         addPlayerInventory(player);
     }
+
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
     {
         final int invStart = 0;
-        final int invEnd = TileEntityChemCentrifuge.INVENTORY_SIZE;
+        final int invEnd = TileEntityChemExtractor.INVENTORY_SIZE;
 
         final int playerStart = invEnd;
         final int playerHotbar = invEnd + 27;
@@ -63,16 +66,23 @@ public class ContainerChemCentrifuge extends ContainerBase<TileEntityChemCentrif
             //Move item from player inventory to machine
             else if (index >= playerStart)
             {
-                if (host.isInputFluid(itemstack1))
+                if (host.getRecipeList().isComponent(host, itemstack1))
                 {
-                    if (!this.mergeItemStack(itemstack1, TileEntityChemCentrifuge.SLOT_FLUID_INPUT, TileEntityChemCentrifuge.SLOT_FLUID_INPUT + 1, false))
+                    if (!this.mergeItemStack(itemstack1, TileEntityChemExtractor.SLOT_ITEM_INPUT, TileEntityChemExtractor.SLOT_ITEM_INPUT + 1, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if (host.isInputFluid(itemstack1))
+                {
+                    if (!this.mergeItemStack(itemstack1, TileEntityChemExtractor.SLOT_FLUID_INPUT, TileEntityChemExtractor.SLOT_FLUID_INPUT + 1, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
                 else if (host.isEmptyFluidContainer(itemstack1))
                 {
-                    if (!this.mergeItemStack(itemstack1, TileEntityChemCentrifuge.SLOT_FLUID_OUTPUT, TileEntityChemCentrifuge.SLOT_FLUID_OUTPUT + 1, false))
+                    if (!this.mergeItemStack(itemstack1, TileEntityChemExtractor.SLOT_FLUID_OUTPUT, TileEntityChemExtractor.SLOT_FLUID_OUTPUT + 1, false))
                     {
                         return ItemStack.EMPTY;
                     }

@@ -6,7 +6,7 @@ import com.builtbroken.atomic.content.items.wrench.WrenchColor;
 import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
-import com.builtbroken.atomic.content.machines.processing.extractor.gui.ContainerExtractor;
+import com.builtbroken.atomic.content.machines.processing.extractor.gui.ContainerChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.GuiChemExtractor;
 import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.content.recipes.chem.RecipeChemExtractor;
@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -78,6 +79,23 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
     protected IItemHandlerModifiable createInventory()
     {
         return new InvChemExtractor(this);
+    }
+
+    @Override
+    protected IItemHandlerModifiable createInternalInventory()
+    {
+        return new ItemStackHandler(inventorySize())
+        {
+            @Override
+            public int getSlotLimit(int slot)
+            {
+                if(slot == SLOT_FLUID_INPUT || slot == SLOT_FLUID_OUTPUT || slot == SLOT_BATTERY)
+                {
+                    return 1;
+                }
+                return super.getSlotLimit(slot);
+            }
+        };
     }
 
     @Override
@@ -151,7 +169,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
     }
 
     @Override
-    protected ProcessingRecipeList getRecipeList()
+    public ProcessingRecipeList getRecipeList()
     {
         return ProcessorRecipeHandler.INSTANCE.chemExtractorProcessingRecipe;
     }
@@ -211,7 +229,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player)
     {
-        return new ContainerExtractor(player, this);
+        return new ContainerChemExtractor(player, this);
     }
 
     @Override

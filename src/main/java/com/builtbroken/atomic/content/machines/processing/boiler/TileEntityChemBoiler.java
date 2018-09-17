@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -44,10 +45,6 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandl
     public static final int SLOT_WASTE_FLUID = 4;
     public static final int SLOT_HEX_FLUID = 5;
     public static final int INVENTORY_SIZE = 6;
-
-    public static final int[] INPUT_SLOTS = new int[]{SLOT_ITEM_INPUT};
-    public static final int[] OUTPUT_SLOTS = new int[]{SLOT_ITEM_OUTPUT};
-    public static final int[] ACCESSIBLE_SLOTS = new int[]{SLOT_ITEM_INPUT, SLOT_ITEM_OUTPUT};
 
     public static int PROCESSING_TIME = 100;
     public static int ENERGY_PER_TICK = 100;
@@ -81,6 +78,23 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandl
     protected IItemHandlerModifiable createInventory()
     {
         return new InvChemBoiler(this);
+    }
+
+    @Override
+    protected IItemHandlerModifiable createInternalInventory()
+    {
+        return new ItemStackHandler(inventorySize())
+        {
+            @Override
+            public int getSlotLimit(int slot)
+            {
+                if(slot == SLOT_FLUID_INPUT || slot == SLOT_HEX_FLUID || slot == SLOT_WASTE_FLUID || slot == SLOT_BATTERY)
+                {
+                    return 1;
+                }
+                return super.getSlotLimit(slot);
+            }
+        };
     }
 
     @Override
@@ -155,7 +169,7 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandl
     }
 
     @Override
-    protected ProcessingRecipeList getRecipeList()
+    public ProcessingRecipeList getRecipeList()
     {
         return ProcessorRecipeHandler.INSTANCE.chemBoilerProcessingRecipe;
     }
@@ -281,27 +295,5 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandl
         greenTankSideSettings.load(nbt.getCompoundTag("wasteTankSides"));
         yellowTankSideSettings.load(nbt.getCompoundTag("hexTankSides"));
         blueTankSideSettings.load(nbt.getCompoundTag("waterTankSides"));
-    }
-
-    //-----------------------------------------------
-    //--------Inventory Code ------------------------
-    //-----------------------------------------------
-    //@Override
-    public boolean canInsertItem(int slot, ItemStack stack, int side)
-    {
-        return slot == SLOT_ITEM_INPUT;
-    }
-
-    //@Override
-    public boolean canExtractItem(int slot, ItemStack stack, int side)
-    {
-        return slot == SLOT_ITEM_OUTPUT;
-    }
-
-    //@Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
-    {
-
-        return false;
     }
 }

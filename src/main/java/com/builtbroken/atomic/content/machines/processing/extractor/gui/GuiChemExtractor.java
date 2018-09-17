@@ -21,7 +21,7 @@ public class GuiChemExtractor extends GuiContainerBase<TileEntityChemExtractor>
 
     public GuiChemExtractor(EntityPlayer player, TileEntityChemExtractor host)
     {
-        super(new ContainerExtractor(player, host), host);
+        super(new ContainerChemExtractor(player, host), host);
     }
 
     @Override
