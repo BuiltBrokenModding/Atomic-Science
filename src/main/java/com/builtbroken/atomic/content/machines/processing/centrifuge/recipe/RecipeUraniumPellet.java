@@ -4,7 +4,7 @@ import com.builtbroken.atomic.config.ConfigRecipe;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
+import com.builtbroken.atomic.content.recipes.RecipeProcessing;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 
@@ -12,7 +12,7 @@ import net.minecraftforge.fluids.Fluid;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/25/2018.
  */
-public class RecipeUraniumPellet extends ProcessingRecipe<TileEntityChemCentrifuge>
+public class RecipeUraniumPellet extends RecipeProcessing<TileEntityChemCentrifuge>
 {
     @Override
     public boolean matches(TileEntityChemCentrifuge machine)

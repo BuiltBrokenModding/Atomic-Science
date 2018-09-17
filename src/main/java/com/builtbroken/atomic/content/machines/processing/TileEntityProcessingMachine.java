@@ -3,8 +3,8 @@ package com.builtbroken.atomic.content.machines.processing;
 import com.builtbroken.atomic.content.items.wrench.WrenchColor;
 import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.TileEntityPowerInvMachine;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
+import com.builtbroken.atomic.content.recipes.RecipeProcessing;
+import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,7 +31,7 @@ import java.util.function.Function;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/22/2018.
  */
-public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiable, H extends TileEntityProcessingMachine, R extends ProcessingRecipe<H>> extends TileEntityPowerInvMachine<I>
+public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiable, H extends TileEntityProcessingMachine, R extends RecipeProcessing<H>> extends TileEntityPowerInvMachine<I>
 {
     boolean processing = false;
     public int processTimer = 0;

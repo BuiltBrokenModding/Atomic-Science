@@ -1,5 +1,6 @@
-package com.builtbroken.atomic.content.machines.processing.boiler;
+package com.builtbroken.atomic.content.machines.processing.recipes;
 
+import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;

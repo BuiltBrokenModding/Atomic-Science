@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.processing.recipes;
+package com.builtbroken.atomic.content.recipes;
 
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.proxy.ProxyLoader;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/25/2018.
  */
-public class ProcessingRecipeList<H extends TileEntityProcessingMachine, R extends ProcessingRecipe<H>> extends ProxyLoader
+public class ProcessingRecipeList<H extends TileEntityProcessingMachine, R extends RecipeProcessing<H>> extends ProxyLoader
 {
     public final ArrayList<R> recipes = new ArrayList();
 
@@ -28,7 +28,7 @@ public class ProcessingRecipeList<H extends TileEntityProcessingMachine, R exten
         }
     }
 
-    public ProcessingRecipe<H> getMatchingRecipe(H machine)
+    public RecipeProcessing<H> getMatchingRecipe(H machine)
     {
         for (R recipe : recipes)
         {

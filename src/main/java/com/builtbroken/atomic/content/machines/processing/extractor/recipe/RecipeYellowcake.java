@@ -4,7 +4,7 @@ import com.builtbroken.atomic.config.ConfigRecipe;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
+import com.builtbroken.atomic.content.recipes.RecipeProcessing;
 import com.builtbroken.atomic.content.recipes.RecipeHelpers;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
@@ -15,7 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/25/2018.
  */
-public class RecipeYellowcake extends ProcessingRecipe<TileEntityChemExtractor>
+public class RecipeYellowcake extends RecipeProcessing<TileEntityChemExtractor>
 {
     @Override
     public boolean matches(TileEntityChemExtractor machine)

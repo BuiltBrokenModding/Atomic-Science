@@ -4,16 +4,15 @@ import com.builtbroken.atomic.config.ConfigRecipe;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
-import com.builtbroken.atomic.content.machines.processing.boiler.RecipeChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.TileEntityChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.recipe.RecipeConWater;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.recipe.RecipeUraniumPellet;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
-import com.builtbroken.atomic.content.machines.processing.extractor.recipe.DustLootTable;
-import com.builtbroken.atomic.content.machines.processing.extractor.recipe.RecipeWasteExtracting;
-import com.builtbroken.atomic.content.machines.processing.extractor.recipe.RecipeYellowcake;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
+import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
+import com.builtbroken.atomic.content.recipes.RecipeProcessing;
+import com.builtbroken.atomic.content.recipes.chem.RecipeChemBoiler;
+import com.builtbroken.atomic.content.recipes.chem.RecipeChemExtractor;
+import com.builtbroken.atomic.content.recipes.loot.DustLootTable;
 import com.builtbroken.atomic.proxy.ProxyLoader;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -27,9 +26,9 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public final class ProcessorRecipeHandler extends ProxyLoader
 {
-    public final ProcessingRecipeList<TileEntityChemExtractor, ProcessingRecipe<TileEntityChemExtractor>> chemExtractorProcessingRecipe;
+    public final ProcessingRecipeList<TileEntityChemExtractor, RecipeChemExtractor> chemExtractorProcessingRecipe;
     public final ProcessingRecipeList<TileEntityChemBoiler, RecipeChemBoiler> chemBoilerProcessingRecipe;
-    public final ProcessingRecipeList<TileEntityChemCentrifuge, ProcessingRecipe<TileEntityChemCentrifuge>> chemCentrifugeProcessingRecipe;
+    public final ProcessingRecipeList<TileEntityChemCentrifuge, RecipeProcessing<TileEntityChemCentrifuge>> chemCentrifugeProcessingRecipe;
 
     public static final ProcessorRecipeHandler INSTANCE = new ProcessorRecipeHandler();
 
@@ -46,8 +45,11 @@ public final class ProcessorRecipeHandler extends ProxyLoader
     public void init()
     {
         //Extractor
-        chemExtractorProcessingRecipe.add(new RecipeWasteExtracting());
-        chemExtractorProcessingRecipe.add(new RecipeYellowcake());
+        //chemExtractorProcessingRecipe.add(new RecipeWasteExtracting());
+        chemExtractorProcessingRecipe.add(new RecipeChemExtractor("oreUranium",
+                new ItemStack(ASItems.itemYellowCake, ConfigRecipe.YELLOW_CAKE_PER_ORE, 0),
+                new FluidStack(FluidRegistry.WATER, ConfigRecipe.WATER_USED_YELLOW_CAKE),
+                new FluidStack(ASFluids.LIQUID_MINERAL_WASTE.fluid, ConfigRecipe.LIQUID_WASTE_PRODUCED_YELLOW_CAKE)));
 
         //Recipe sludge -> mineral water + waste
         chemBoilerProcessingRecipe.add(new RecipeChemBoiler(ItemStack.EMPTY,

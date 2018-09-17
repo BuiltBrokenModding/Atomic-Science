@@ -1,18 +1,18 @@
-package com.builtbroken.atomic.proxy.jei.boiler;
+package com.builtbroken.atomic.proxy.jei.extractor;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASBlocks;
-import com.builtbroken.atomic.proxy.jei.TooltipCallbackFluid;
 import mezz.jei.api.IJeiHelpers;
-import mezz.jei.api.gui.IDrawable;
-import mezz.jei.api.gui.IGuiFluidStackGroup;
-import mezz.jei.api.gui.IGuiItemStackGroup;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.*;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -75,7 +75,24 @@ public class RecipeCategoryBoiler implements IRecipeCategory<RecipeWrapperBoiler
         guiFluidStacks.init(1, false, 81, 1);
         guiFluidStacks.init(2, false, 100, 1);
 
-        guiFluidStacks.addTooltipCallback(new TooltipCallbackFluid());
+        guiFluidStacks.addTooltipCallback(new ITooltipCallback<FluidStack>()
+        {
+            @Override
+            public void onTooltip(int slotIndex, boolean input, FluidStack ingredient, List<String> tooltip)
+            {
+                ListIterator<String> it = tooltip.listIterator();
+                while (it.hasNext())
+                {
+                    String next = it.next();
+                    if (next.contains("Atomic"))
+                    {
+                        it.previous();
+                        it.add(ingredient.amount + " mB");
+                        break;
+                    }
+                }
+            }
+        });
 
         if (recipeWrapper.recipe.input != null)
         {

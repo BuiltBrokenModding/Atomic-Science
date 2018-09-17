@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.proxy.jei.boiler;
+package com.builtbroken.atomic.proxy.jei.extractor;
 
 import com.builtbroken.atomic.content.recipes.chem.RecipeChemBoiler;
 import com.google.common.collect.Lists;
@@ -12,7 +12,7 @@ import net.minecraftforge.oredict.OreDictionary;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 9/16/2018.
  */
-public class RecipeWrapperBoiler implements IRecipeWrapper
+public class RecipeWrapperBoiler implements IRecipeWrapper  //TODO rework boiler recipe to use a common class to pull data from
 {
     public final RecipeChemBoiler recipe;
 

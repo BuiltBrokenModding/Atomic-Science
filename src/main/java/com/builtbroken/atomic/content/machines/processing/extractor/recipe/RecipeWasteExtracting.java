@@ -2,7 +2,8 @@ package com.builtbroken.atomic.content.machines.processing.extractor.recipe;
 
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.processing.extractor.TileEntityChemExtractor;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
+import com.builtbroken.atomic.content.recipes.RecipeProcessing;
+import com.builtbroken.atomic.content.recipes.loot.DustLootTable;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 
@@ -10,7 +11,7 @@ import net.minecraftforge.fluids.Fluid;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/24/2018.
  */
-public class RecipeWasteExtracting extends ProcessingRecipe<TileEntityChemExtractor>
+public class RecipeWasteExtracting extends RecipeProcessing<TileEntityChemExtractor>
 {
     @Override
     public boolean matches(TileEntityChemExtractor machine)
@@ -61,7 +62,6 @@ public class RecipeWasteExtracting extends ProcessingRecipe<TileEntityChemExtrac
     {
         return stack.getItem() == ASItems.itemProcessingWaste;
     }
-
 
     /**
      * Gets a random dust from the loot table

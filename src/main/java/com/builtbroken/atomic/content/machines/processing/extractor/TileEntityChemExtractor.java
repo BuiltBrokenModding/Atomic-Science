@@ -8,8 +8,8 @@ import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.ContainerExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.GuiExtractor;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipe;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
+import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
+import com.builtbroken.atomic.content.recipes.chem.RecipeChemExtractor;
 import com.builtbroken.atomic.lib.SideSettings;
 import com.builtbroken.atomic.lib.fluid.FluidSideWrapper;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
@@ -35,7 +35,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/19/2018.
  */
-public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHandlerModifiable, TileEntityChemExtractor, ProcessingRecipe<TileEntityChemExtractor>> implements IGuiTile
+public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHandlerModifiable, TileEntityChemExtractor, RecipeChemExtractor> implements IGuiTile
 {
     public static final int SLOT_FLUID_INPUT = 0;
     public static final int SLOT_ITEM_INPUT = 1;

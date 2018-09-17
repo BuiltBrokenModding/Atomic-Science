@@ -8,7 +8,8 @@ import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.boiler.gui.ContainerChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.gui.GuiChemBoiler;
-import com.builtbroken.atomic.content.machines.processing.recipes.ProcessingRecipeList;
+import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
+import com.builtbroken.atomic.content.recipes.chem.RecipeChemBoiler;
 import com.builtbroken.atomic.lib.SideSettings;
 import com.builtbroken.atomic.lib.fluid.FluidSideWrapper;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
