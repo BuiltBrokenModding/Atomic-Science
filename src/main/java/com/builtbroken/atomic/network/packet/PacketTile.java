@@ -21,6 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class PacketTile extends PacketBase
 {
+    public int dim;
     public BlockPos pos;
     public int id;
 
@@ -34,8 +35,9 @@ public class PacketTile extends PacketBase
     /**
      * @param pos - location
      */
-    public PacketTile(String name, int id, BlockPos pos)
+    public PacketTile(String name, int id, int dim, BlockPos pos)
     {
+        this.dim = dim;
         this.name = name;
         this.id = id;
         this.pos = pos;
@@ -46,7 +48,7 @@ public class PacketTile extends PacketBase
      */
     public PacketTile(String name, int id, TileEntity tile)
     {
-        this(name, id, tile.getPos());
+        this(name, id, tile.getWorld().provider.getDimension(), tile.getPos());
     }
 
     @Override
@@ -58,6 +60,7 @@ public class PacketTile extends PacketBase
             ByteBufUtils.writeUTF8String(buffer, name);
         }
         buffer.writeInt(id);
+        buffer.writeInt(dim);
         buffer.writeInt(pos.getX());
         buffer.writeInt(pos.getY());
         buffer.writeInt(pos.getZ());
@@ -72,6 +75,7 @@ public class PacketTile extends PacketBase
             name = ByteBufUtils.readUTF8String(buffer);
         }
         id = buffer.readInt();
+        dim = buffer.readInt();
         pos = new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt());
         super.decodeInto(ctx, buffer);
     }
@@ -114,17 +118,24 @@ public class PacketTile extends PacketBase
         {
             if (AtomicScience.runningAsDev)
             {
-                AtomicScience.logger.error("PacketTile#handle(" + player + ") - world is null for player while handling packet. ", new RuntimeException());
+                AtomicScience.logger.error("PacketTile#handle(" + player + ", " + name  + ") - world is null for player while handling packet. ", new RuntimeException());
             }
             return;
         }
-        if (player.getEntityWorld().isBlockLoaded(pos))
+        if (player.getEntityWorld().provider.getDimension() != dim)
+        {
+            if (AtomicScience.runningAsDev)
+            {
+                AtomicScience.logger.error("PacketTile#handle(" + player + ", " + name  + ") - packet received on wrong dim. Current[" + player.getEntityWorld().provider.getDimension() + "] Expected[" + dim + "]");
+            }
+        }
+        else if (player.getEntityWorld().isBlockLoaded(pos, false))
         {
             handle(player, player.getEntityWorld().getTileEntity(pos));
         }
         else if (AtomicScience.runningAsDev)
         {
-            AtomicScience.logger.error("PacketTile#handle(" + player + ") - block is not loaded for player while handling packet. ");
+            AtomicScience.logger.error("PacketTile#handle(" + player + ", " + name + ") - block is not loaded for player while handling packet. ");
         }
     }
 
@@ -140,11 +151,17 @@ public class PacketTile extends PacketBase
         final Location location = new Location(player.world, pos);
         if (tile == null)
         {
-            AtomicScience.logger.error(new PacketTileReadException(location, "Null tile"));
+            if (AtomicScience.runningAsDev)
+            {
+                AtomicScience.logger.error(new PacketTileReadException(location, "Null tile, PacketName: " + name));
+            }
         }
         else if (tile.isInvalid())
         {
-            AtomicScience.logger.error(new PacketTileReadException(location, "Invalidated tile"));
+            if (AtomicScience.runningAsDev)
+            {
+                AtomicScience.logger.error(new PacketTileReadException(location, "Invalidated tile, PacketName: " + name));
+            }
         }
         else if (tile instanceof IPacketIDReceiver)
         {
@@ -157,28 +174,28 @@ public class PacketTile extends PacketBase
                 }
                 catch (IndexOutOfBoundsException e)
                 {
-                    AtomicScience.logger.error(new PacketTileReadException(location, "Packet was read past it's size."));
+                    AtomicScience.logger.error(new PacketTileReadException(location, "Packet was read past it's size, PacketName: " + name));
                     AtomicScience.logger.error("Error: ", e);
                 }
                 catch (NullPointerException e)
                 {
-                    AtomicScience.logger.error(new PacketTileReadException(location, "Null pointer while reading data", e));
+                    AtomicScience.logger.error(new PacketTileReadException(location, "Null pointer while reading data, PacketName: " + name, e));
                     AtomicScience.logger.error("Error: ", e);
                 }
                 catch (Exception e)
                 {
-                    AtomicScience.logger.error(new PacketTileReadException(location, "Failed to read packet", e));
+                    AtomicScience.logger.error(new PacketTileReadException(location, "Failed to read packet, PacketName: " + name, e));
                     AtomicScience.logger.error("Error: ", e);
                 }
             }
-            else
+            else if (AtomicScience.runningAsDev)
             {
-                AtomicScience.logger.error("Error: " + tile + " rejected packet " + this + " due to invalid conditions.");
+                AtomicScience.logger.error("Error: " + tile + " rejected packet " + this + " due to invalid conditions, PacketName: " + name);
             }
         }
-        else
+        else if (AtomicScience.runningAsDev)
         {
-            AtomicScience.logger.error(new PacketTileReadException(location, "Unsupported action for " + tile));
+            AtomicScience.logger.error(new PacketTileReadException(location, "Unsupported action for " + tile + ", PacketName: " + name));
         }
     }
 }

@@ -191,7 +191,7 @@ public abstract class AbstractLocation<R extends AbstractLocation> extends Abstr
     @Deprecated //Use getBlockState()
     public Block getBlock()
     {
-        if (world != null && world.getChunkProvider().isChunkGeneratedAt(xi() / 16, zi() / 16))
+        if (world != null && world.isBlockLoaded(toBlockPos(), false))
         {
             return super.getBlock(world);
         }
@@ -203,7 +203,7 @@ public abstract class AbstractLocation<R extends AbstractLocation> extends Abstr
 
     public IBlockState getBlockState()
     {
-        if (world != null && world.getChunkProvider().isChunkGeneratedAt(xi() / 16, zi() / 16))
+        if (world != null &&  world.isBlockLoaded(toBlockPos(), false))
         {
             return super.getBlockState(world);
         }
