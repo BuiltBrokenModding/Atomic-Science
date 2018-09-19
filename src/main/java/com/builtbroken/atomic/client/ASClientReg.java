@@ -70,7 +70,6 @@ public class ASClientReg
 
         //Tools
         newItemModel(ASItems.itemHeatProbe);
-        newItemModel(ASItems.itemWrench);
 
         //Ore
         newBlockModel(ASBlocks.blockUraniumOre);
@@ -99,9 +98,9 @@ public class ASClientReg
         ModelLoader.setCustomMeshDefinition(ASItems.itemPoweredCell, stack -> location2);
         ModelBakery.registerItemVariants(ASItems.itemPoweredCell, location2);
 
-        for(ASFluids value : ASFluids.values())
+        for (ASFluids value : ASFluids.values())
         {
-            if(value.fluid.getBlock() instanceof IFluidBlock && value.fluid.getBlock().getRegistryName().getNamespace().equalsIgnoreCase(AtomicScience.DOMAIN))
+            if (value.fluid.getBlock() instanceof IFluidBlock && value.fluid.getBlock().getRegistryName().getNamespace().equalsIgnoreCase(AtomicScience.DOMAIN))
             {
                 newFluidModel((IFluidBlock) value.fluid.getBlock());
             }
@@ -130,7 +129,7 @@ public class ASClientReg
 
     private static void newFluidModel(IFluidBlock fluidBlock)
     {
-        if(fluidBlock != null)
+        if (fluidBlock != null)
         {
             final Item item = Item.getItemFromBlock((Block) fluidBlock);
 

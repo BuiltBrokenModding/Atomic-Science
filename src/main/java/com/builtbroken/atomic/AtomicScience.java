@@ -21,8 +21,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -130,7 +133,7 @@ public class AtomicScience
         proxyLoader.add(PacketSystem.INSTANCE);
         proxyLoader.add(sideProxy);
 
-        if(Loader.isModLoaded("ic2"))
+        if (Loader.isModLoaded("ic2"))
         {
             proxyLoader.add(new ProxyElectricalUnits());
         }
@@ -197,5 +200,19 @@ public class AtomicScience
         //Kill old thread
         MapHandler.THREAD_RAD_EXPOSURE.kill();
         MapHandler.THREAD_THERMAL_ACTION.kill();
+    }
+
+    /**
+     * Inject the new values and save to the config file when the config has been changed from the GUI.
+     *
+     * @param event The event
+     */
+    @SubscribeEvent
+    public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event)
+    {
+        if (event.getModID().equals(DOMAIN))
+        {
+            ConfigManager.sync(DOMAIN, Config.Type.INSTANCE);
+        }
     }
 }

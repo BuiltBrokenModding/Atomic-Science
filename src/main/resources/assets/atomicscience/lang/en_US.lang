@@ -141,3 +141,8 @@ tile.atomicscience:reactor.controller.cell.count=Controller is currently managin
 
 ## Misc
 error.translation.empty=Translation Missing for ' %s '
+
+## Config
+config.atomicscience:content.title=Content
+config.atomicscience:content.ore.uranium.title=Uranium Ore
+config.atomicscience:content.power.usage.title=Power Usage

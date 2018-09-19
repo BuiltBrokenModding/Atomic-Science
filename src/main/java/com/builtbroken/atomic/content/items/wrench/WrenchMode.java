@@ -1,5 +1,7 @@
 package com.builtbroken.atomic.content.items.wrench;
 
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/29/2018.
@@ -10,6 +12,8 @@ public enum WrenchMode
     ITEM,
     FLUID,
     REDSTONE;
+
+    public ModelResourceLocation modelResourceLocation;
 
     public static WrenchMode get(int value)
     {

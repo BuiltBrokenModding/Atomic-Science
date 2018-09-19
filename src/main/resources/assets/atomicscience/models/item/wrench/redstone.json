@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "atomicscience:items/wrench/wrench.redstone",
+    "layer1": "atomicscience:items/wrench/wrench.redstone.color"
+  }
+}
