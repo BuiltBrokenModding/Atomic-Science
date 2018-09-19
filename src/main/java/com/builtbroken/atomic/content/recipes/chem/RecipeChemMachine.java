@@ -164,7 +164,7 @@ public abstract class RecipeChemMachine<H extends TileEntityProcessingMachine> e
     {
         if (getInput(machine) != null)
         {
-            return matches(getInput(machine), machine.getInventory().getStackInSlot(getInputSlot()));
+            return matches(getInput(machine), stack);
         }
         return false;
     }

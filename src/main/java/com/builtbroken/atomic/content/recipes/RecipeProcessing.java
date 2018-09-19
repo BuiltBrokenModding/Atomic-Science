@@ -86,7 +86,6 @@ public abstract class RecipeProcessing<H extends TileEntityProcessingMachine> //
                 {
                     return doStacksMatch(inputStack, stack);
                 }
-                return true;
             }
         }
         return false;
