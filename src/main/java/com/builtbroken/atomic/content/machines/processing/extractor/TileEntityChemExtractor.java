@@ -2,7 +2,7 @@ package com.builtbroken.atomic.content.machines.processing.extractor;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.EffectRefs;
-import com.builtbroken.atomic.config.content.ConfigPowerUsage;
+import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.content.items.wrench.WrenchColor;
 import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
@@ -228,7 +228,7 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
     @Override
     public int getEnergyUsage()
     {
-        return ConfigPowerUsage.POWER_USAGE_EXTRACTOR;
+        return ConfigContent.POWER_USAGE.EXTRACTOR;
     }
 
     //-----------------------------------------------

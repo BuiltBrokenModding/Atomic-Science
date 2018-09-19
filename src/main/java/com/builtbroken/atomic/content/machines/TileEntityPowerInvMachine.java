@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.content.machines;
 
-import com.builtbroken.atomic.config.content.ConfigPowerUsage;
+import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.lib.power.Battery;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import io.netty.buffer.ByteBuf;
@@ -67,7 +67,7 @@ public abstract class TileEntityPowerInvMachine<I extends IItemHandlerModifiable
     {
         if (capability == CapabilityEnergy.ENERGY)
         {
-            return ConfigPowerUsage.ENABLE_POWER_USAGE;
+            return ConfigContent.POWER_USAGE.ENABLE;
         }
         return super.hasCapability(capability, facing);
     }
@@ -76,7 +76,7 @@ public abstract class TileEntityPowerInvMachine<I extends IItemHandlerModifiable
     @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
     {
-        if (capability == CapabilityEnergy.ENERGY && ConfigPowerUsage.ENABLE_POWER_USAGE)
+        if (capability == CapabilityEnergy.ENERGY && ConfigContent.POWER_USAGE.ENABLE)
         {
             return (T) getEnergyStorage();
         }
@@ -89,7 +89,7 @@ public abstract class TileEntityPowerInvMachine<I extends IItemHandlerModifiable
      */
     protected boolean checkEnergyExtract()
     {
-        return !ConfigPowerUsage.ENABLE_POWER_USAGE || getEnergyStored() >= getEnergyUsage();
+        return !ConfigContent.POWER_USAGE.ENABLE || getEnergyStored() >= getEnergyUsage();
     }
 
     /**
@@ -97,7 +97,7 @@ public abstract class TileEntityPowerInvMachine<I extends IItemHandlerModifiable
      */
     protected void extractEnergy()
     {
-        if (ConfigPowerUsage.ENABLE_POWER_USAGE)
+        if (ConfigContent.POWER_USAGE.ENABLE)
         {
             getEnergyStorage().extractEnergy(getEnergyUsage(), false);
         }
@@ -109,7 +109,7 @@ public abstract class TileEntityPowerInvMachine<I extends IItemHandlerModifiable
      */
     public int getEnergyStored()
     {
-        return !ConfigPowerUsage.ENABLE_POWER_USAGE ? getMaxEnergyStored() : getEnergyStorage().getEnergyStored();
+        return !ConfigContent.POWER_USAGE.ENABLE ? getMaxEnergyStored() : getEnergyStorage().getEnergyStored();
     }
 
     /**
@@ -127,7 +127,7 @@ public abstract class TileEntityPowerInvMachine<I extends IItemHandlerModifiable
      */
     protected void drainBattery(int slot)
     {
-        if (ConfigPowerUsage.ENABLE_POWER_USAGE)
+        if (ConfigContent.POWER_USAGE.ENABLE)
         {
             ItemStack itemStack = getInventory().getStackInSlot(slot);
 

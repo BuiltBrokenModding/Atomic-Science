@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.content;
 
-import com.builtbroken.atomic.config.content.ConfigOre;
+import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.lib.oregen.OreGenReplace;
 import com.builtbroken.atomic.lib.oregen.OreGeneratorSettings;
 import com.builtbroken.atomic.proxy.ContentProxy;
@@ -20,18 +20,18 @@ public class ASWorldGen extends ContentProxy
     @Override
     public void init()
     {
-        if (ConfigOre.ENABLE_URANIUM_ORE)
+        if (ConfigContent.URANIUM_ORE.ENABLE_URANIUM_ORE)
         {
             GameRegistry.registerWorldGenerator(
                     new OreGenReplace(ASBlocks.blockUraniumOre.getDefaultState(),
                             new OreGeneratorSettings(
-                                    ConfigOre.URANIUM_ORE_MIN_Y,
-                                    ConfigOre.URANIUM_ORE_MAX_Y,
-                                    ConfigOre.URANIUM_ORE_BRANCH_SIZE,
-                                    ConfigOre.URANIUM_ORE_COUNT
+                                    ConfigContent.URANIUM_ORE.URANIUM_ORE_MIN_Y,
+                                    ConfigContent.URANIUM_ORE.URANIUM_ORE_MAX_Y,
+                                    ConfigContent.URANIUM_ORE.URANIUM_ORE_BRANCH_SIZE,
+                                    ConfigContent.URANIUM_ORE.URANIUM_ORE_COUNT
                             ),
                             "pickaxe",
-                            ConfigOre.URANIUM_ORE_HARVEST_LEVEL),
+                            ConfigContent.URANIUM_ORE.URANIUM_ORE_HARVEST_LEVEL),
                     1);
         }
     }

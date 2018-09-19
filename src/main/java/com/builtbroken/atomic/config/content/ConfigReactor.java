@@ -7,7 +7,7 @@ import net.minecraftforge.common.config.Config;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/18/2018.
  */
-@Config(modid = AtomicScience.DOMAIN, name = "content/reactor")
+@Config(modid = AtomicScience.DOMAIN, name = AtomicScience.DOMAIN + "/content/reactor")
 @Config.LangKey("config.atomicscience:content.reactor.title")
 public class ConfigReactor
 {

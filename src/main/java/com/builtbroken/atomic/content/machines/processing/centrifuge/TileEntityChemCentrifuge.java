@@ -2,7 +2,7 @@ package com.builtbroken.atomic.content.machines.processing.centrifuge;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.EffectRefs;
-import com.builtbroken.atomic.config.content.ConfigPowerUsage;
+import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.content.items.wrench.WrenchColor;
 import com.builtbroken.atomic.content.items.wrench.WrenchMode;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
@@ -213,7 +213,7 @@ public class TileEntityChemCentrifuge extends TileEntityProcessingMachine<IItemH
     @Override
     public int getEnergyUsage()
     {
-        return ConfigPowerUsage.POWER_USAGE_CENTRIFUGE;
+        return ConfigContent.POWER_USAGE.CENTRIFUGE;
     }
 
     //-----------------------------------------------
