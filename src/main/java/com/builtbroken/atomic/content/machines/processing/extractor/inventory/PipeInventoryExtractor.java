@@ -24,7 +24,7 @@ public class PipeInventoryExtractor extends ItemStackHandlerWrapper
     @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate)
     {
-        if (slot == TileEntityChemExtractor.SLOT_ITEM_OUTPUT)
+        if (slot == TileEntityChemExtractor.SLOT_ITEM_OUTPUT || !isItemValid(slot, getStackInSlot(slot)))
         {
             return super.extractItem(slot, amount, simulate);
         }
@@ -35,7 +35,7 @@ public class PipeInventoryExtractor extends ItemStackHandlerWrapper
     @Nonnull
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
     {
-        if (slot == TileEntityChemExtractor.SLOT_ITEM_INPUT)
+        if (slot != TileEntityChemExtractor.SLOT_ITEM_OUTPUT)
         {
             return super.insertItem(slot, stack, simulate);
         }

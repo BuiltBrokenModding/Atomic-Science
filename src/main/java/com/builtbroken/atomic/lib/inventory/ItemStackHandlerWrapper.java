@@ -37,11 +37,15 @@ public class ItemStackHandlerWrapper implements IItemHandlerModifiable
         return inventory.getStackInSlot(slot);
     }
 
-    @Nonnull
     @Override
+    @Nonnull
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
     {
-        return inventory.insertItem(slot, stack, simulate);
+        if (isItemValid(slot, stack))
+        {
+            return inventory.insertItem(slot, stack, simulate);
+        }
+        return stack;
     }
 
     @Nonnull

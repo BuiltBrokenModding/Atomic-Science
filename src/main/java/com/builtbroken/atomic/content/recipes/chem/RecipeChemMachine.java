@@ -127,7 +127,7 @@ public abstract class RecipeChemMachine<H extends TileEntityProcessingMachine> e
         }
 
         //Match normal
-        return matches(getInput(machine), machine.getInventory().getStackInSlot(getInputSlot()));
+        return matches(input, machine.getInventory().getStackInSlot(getInputSlot()));
     }
 
     protected boolean canOutput(H machine)

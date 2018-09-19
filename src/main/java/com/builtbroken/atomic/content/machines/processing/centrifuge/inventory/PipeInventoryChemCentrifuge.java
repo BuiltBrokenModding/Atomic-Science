@@ -24,7 +24,7 @@ public class PipeInventoryChemCentrifuge extends ItemStackHandlerWrapper
     @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate)
     {
-        if (slot == TileEntityChemCentrifuge.SLOT_ITEM_OUTPUT)
+        if (slot == TileEntityChemCentrifuge.SLOT_ITEM_OUTPUT || !isItemValid(slot, getStackInSlot(slot)))
         {
             return super.extractItem(slot, amount, simulate);
         }

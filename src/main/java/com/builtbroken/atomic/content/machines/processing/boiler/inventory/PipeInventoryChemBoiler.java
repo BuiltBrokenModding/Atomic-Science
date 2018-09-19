@@ -35,7 +35,7 @@ public class PipeInventoryChemBoiler extends ItemStackHandlerWrapper
     @Nonnull
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
     {
-        if (slot == TileEntityChemBoiler.SLOT_ITEM_INPUT)
+        if (slot != TileEntityChemBoiler.SLOT_ITEM_OUTPUT)
         {
             return super.insertItem(slot, stack, simulate);
         }
