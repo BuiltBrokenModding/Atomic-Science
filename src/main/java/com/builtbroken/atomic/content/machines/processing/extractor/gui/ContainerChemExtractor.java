@@ -7,6 +7,7 @@ import com.builtbroken.atomic.lib.gui.slot.SlotEnergy;
 import com.builtbroken.atomic.lib.gui.slot.SlotFluid;
 import com.builtbroken.atomic.lib.gui.slot.SlotMachine;
 import com.builtbroken.atomic.lib.gui.slot.SlotOutput;
+import com.builtbroken.atomic.lib.power.PowerSystem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -83,6 +84,13 @@ public class ContainerChemExtractor extends ContainerBase<TileEntityChemExtracto
                 else if (host.isEmptyFluidContainer(itemstack1))
                 {
                     if (!this.mergeItemStack(itemstack1, TileEntityChemExtractor.SLOT_FLUID_OUTPUT, TileEntityChemExtractor.SLOT_FLUID_OUTPUT + 1, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if (PowerSystem.getEnergyStored(itemstack1) > 0)
+                {
+                    if (!this.mergeItemStack(itemstack1, TileEntityChemExtractor.SLOT_BATTERY, TileEntityChemExtractor.SLOT_BATTERY + 1, false))
                     {
                         return ItemStack.EMPTY;
                     }

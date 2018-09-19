@@ -6,6 +6,7 @@ import com.builtbroken.atomic.lib.gui.ContainerBase;
 import com.builtbroken.atomic.lib.gui.slot.SlotEnergy;
 import com.builtbroken.atomic.lib.gui.slot.SlotFluid;
 import com.builtbroken.atomic.lib.gui.slot.SlotOutput;
+import com.builtbroken.atomic.lib.power.PowerSystem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -73,6 +74,13 @@ public class ContainerChemCentrifuge extends ContainerBase<TileEntityChemCentrif
                 else if (host.isEmptyFluidContainer(itemstack1))
                 {
                     if (!this.mergeItemStack(itemstack1, TileEntityChemCentrifuge.SLOT_FLUID_OUTPUT, TileEntityChemCentrifuge.SLOT_FLUID_OUTPUT + 1, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if(PowerSystem.getEnergyStored(itemstack1) > 0)
+                {
+                    if (!this.mergeItemStack(itemstack1, TileEntityChemCentrifuge.SLOT_BATTERY, TileEntityChemCentrifuge.SLOT_BATTERY + 1, false))
                     {
                         return ItemStack.EMPTY;
                     }

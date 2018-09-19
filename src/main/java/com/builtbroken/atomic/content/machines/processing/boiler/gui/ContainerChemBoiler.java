@@ -7,6 +7,7 @@ import com.builtbroken.atomic.lib.gui.slot.SlotEnergy;
 import com.builtbroken.atomic.lib.gui.slot.SlotFluid;
 import com.builtbroken.atomic.lib.gui.slot.SlotMachine;
 import com.builtbroken.atomic.lib.gui.slot.SlotOutput;
+import com.builtbroken.atomic.lib.power.PowerSystem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -94,6 +95,13 @@ public class ContainerChemBoiler extends ContainerBase<TileEntityChemBoiler>
                         {
                             return ItemStack.EMPTY;
                         }
+                    }
+                }
+                else if(PowerSystem.getEnergyStored(itemstack1) > 0)
+                {
+                    if (!this.mergeItemStack(itemstack1, TileEntityChemBoiler.SLOT_BATTERY, TileEntityChemBoiler.SLOT_BATTERY + 1, false))
+                    {
+                        return ItemStack.EMPTY;
                     }
                 }
                 else if (index >= playerStart && index < playerHotbar)
