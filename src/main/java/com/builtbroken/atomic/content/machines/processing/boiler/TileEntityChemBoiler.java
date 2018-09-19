@@ -9,6 +9,8 @@ import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.boiler.gui.ContainerChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.gui.GuiChemBoiler;
+import com.builtbroken.atomic.content.machines.processing.boiler.inventory.InventoryChemBoiler;
+import com.builtbroken.atomic.content.machines.processing.boiler.inventory.PipeInventoryChemBoiler;
 import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.content.recipes.chem.RecipeChemBoiler;
 import com.builtbroken.atomic.lib.SideSettings;
@@ -28,7 +30,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -87,24 +88,13 @@ public class TileEntityChemBoiler extends TileEntityProcessingMachine<IItemHandl
     @Override
     protected IItemHandlerModifiable createInventory()
     {
-        return new InvChemBoiler(this);
+        return new PipeInventoryChemBoiler(this);
     }
 
     @Override
     protected IItemHandlerModifiable createInternalInventory()
     {
-        return new ItemStackHandler(inventorySize())
-        {
-            @Override
-            public int getSlotLimit(int slot)
-            {
-                if (slot == SLOT_FLUID_INPUT || slot == SLOT_HEX_FLUID || slot == SLOT_WASTE_FLUID || slot == SLOT_BATTERY)
-                {
-                    return 1;
-                }
-                return super.getSlotLimit(slot);
-            }
-        };
+        return new InventoryChemBoiler(this);
     }
 
     @Override

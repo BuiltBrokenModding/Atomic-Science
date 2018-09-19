@@ -9,6 +9,8 @@ import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.gui.ContainerChemCentrifuge;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.gui.GuiChemCentrifuge;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.inventory.InventoryChemCentrifuge;
+import com.builtbroken.atomic.content.machines.processing.centrifuge.inventory.PipeInventoryChemCentrifuge;
 import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.content.recipes.chem.RecipeChemCentrifuge;
 import com.builtbroken.atomic.lib.SideSettings;
@@ -27,7 +29,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -59,7 +60,7 @@ public class TileEntityChemCentrifuge extends TileEntityProcessingMachine<IItemH
         inputTank = new FluidTank(Fluid.BUCKET_VOLUME * 10); //TODO expose only one tank per side (output, input, none per side)
         outputTank = new FluidTank(Fluid.BUCKET_VOLUME * 10);
 
-        for(EnumFacing side : EnumFacing.values())
+        for (EnumFacing side : EnumFacing.values())
         {
             fluidSideWrappers[side.ordinal()] = new FluidSideWrapper(side);
             fluidSideWrappers[side.ordinal()].add(inputTankSideSettings, inputTank, false);  //TODO switch to map of all tanks for easier access
@@ -80,24 +81,13 @@ public class TileEntityChemCentrifuge extends TileEntityProcessingMachine<IItemH
     @Override
     protected IItemHandlerModifiable createInventory()
     {
-        return new InvChemCentrifuge(this);
+        return new PipeInventoryChemCentrifuge(this);
     }
 
     @Override
     protected IItemHandlerModifiable createInternalInventory()
     {
-        return new ItemStackHandler(inventorySize())
-        {
-            @Override
-            public int getSlotLimit(int slot)
-            {
-                if(slot == SLOT_FLUID_INPUT || slot == SLOT_FLUID_OUTPUT || slot == SLOT_BATTERY)
-                {
-                    return 1;
-                }
-                return super.getSlotLimit(slot);
-            }
-        };
+        return new InventoryChemCentrifuge(this);
     }
 
     @Override

@@ -9,6 +9,8 @@ import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.ContainerChemExtractor;
 import com.builtbroken.atomic.content.machines.processing.extractor.gui.GuiChemExtractor;
+import com.builtbroken.atomic.content.machines.processing.extractor.inventory.InventoryChemExtractor;
+import com.builtbroken.atomic.content.machines.processing.extractor.inventory.PipeInventoryExtractor;
 import com.builtbroken.atomic.content.recipes.ProcessingRecipeList;
 import com.builtbroken.atomic.content.recipes.chem.RecipeChemExtractor;
 import com.builtbroken.atomic.lib.SideSettings;
@@ -28,7 +30,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -88,24 +89,13 @@ public class TileEntityChemExtractor extends TileEntityProcessingMachine<IItemHa
     @Override
     protected IItemHandlerModifiable createInventory()
     {
-        return new InvChemExtractor(this);
+        return new PipeInventoryExtractor(this);
     }
 
     @Override
     protected IItemHandlerModifiable createInternalInventory()
     {
-        return new ItemStackHandler(inventorySize())
-        {
-            @Override
-            public int getSlotLimit(int slot)
-            {
-                if(slot == SLOT_FLUID_INPUT || slot == SLOT_FLUID_OUTPUT || slot == SLOT_BATTERY)
-                {
-                    return 1;
-                }
-                return super.getSlotLimit(slot);
-            }
-        };
+        return new InventoryChemExtractor(this);
     }
 
     @Override

@@ -1,44 +1,34 @@
-package com.builtbroken.atomic.content.machines.processing.boiler;
+package com.builtbroken.atomic.content.machines.processing.boiler.inventory;
 
-import com.builtbroken.atomic.lib.inventory.ItemStackHandlerWrapper;
+import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
+import com.builtbroken.atomic.lib.inventory.InventoryAS;
+import com.builtbroken.atomic.lib.power.PowerSystem;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
- * Created by Dark(DarkGuardsman, Robert) on 9/15/2018.
+ * Created by Dark(DarkGuardsman, Robert) on 9/19/2018.
  */
-class InvChemBoiler extends ItemStackHandlerWrapper
+public class InventoryChemBoiler extends InventoryAS
 {
     private TileEntityChemBoiler tile;
 
-    public InvChemBoiler(TileEntityChemBoiler tile)
+    public InventoryChemBoiler(TileEntityChemBoiler tileEntityChemBoiler)
     {
-        super(tile.getInventory());
-        this.tile = tile;
+        super(TileEntityChemBoiler.INVENTORY_SIZE);
+        this.tile = tileEntityChemBoiler;
     }
 
     @Override
-    @Nonnull
-    public ItemStack extractItem(int slot, int amount, boolean simulate)
+    public int getSlotLimit(int slot)
     {
-        if (slot == TileEntityChemBoiler.SLOT_ITEM_OUTPUT)
+        if (slot == TileEntityChemBoiler.SLOT_FLUID_INPUT || slot == TileEntityChemBoiler.SLOT_HEX_FLUID || slot == TileEntityChemBoiler.SLOT_WASTE_FLUID || slot == TileEntityChemBoiler.SLOT_BATTERY)
         {
-            return super.extractItem(slot, amount, simulate);
+            return 1;
         }
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    @Nonnull
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-    {
-        if (slot == TileEntityChemBoiler.SLOT_ITEM_INPUT)
-        {
-            return super.insertItem(slot, stack, simulate);
-        }
-        return stack;
+        return super.getSlotLimit(slot);
     }
 
     @Override
@@ -59,6 +49,10 @@ class InvChemBoiler extends ItemStackHandlerWrapper
         else if (slot == TileEntityChemBoiler.SLOT_ITEM_INPUT)
         {
             return tile.getRecipeList().isComponent(tile, stack);
+        }
+        else if (slot == TileEntityChemBoiler.SLOT_BATTERY)
+        {
+            return PowerSystem.getHandler(stack) != null;
         }
         return false;
     }
