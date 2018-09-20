@@ -8,11 +8,16 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -573,21 +578,33 @@ public class GuiContainerBase<H> extends GuiContainer
 
     protected void drawFluid(int x, int y, int line, int col, int width, int drawSize, FluidStack fluidStack)
     {
-        /* TODO implement
+
         if (fluidStack != null && fluidStack.getFluid() != null)
         {
             drawSize -= 1; //TODO why?
 
-            IIcon fluidIcon = null;
+            ResourceLocation fluidIcon = null;
             Fluid fluid = fluidStack.getFluid();
 
-            if (fluid != null && fluid.getStillIcon() != null)
+            if (fluid != null)
             {
-                fluidIcon = fluid.getStillIcon();
+                if (fluid.getStill(fluidStack) != null)
+                {
+                    fluidIcon = fluid.getStill(fluidStack);
+                }
+                else if (fluid.getFlowing(fluidStack) != null)
+                {
+                    fluidIcon = fluid.getFlowing(fluidStack);
+                }
+                else
+                {
+                    fluidIcon = FluidRegistry.WATER.getStill();
+                }
             }
 
             //Find texture for fluid
-            FMLClientHandler.instance().getClient().renderEngine.bindTexture(FMLClientHandler.instance().getClient().renderEngine.getResourceLocation(fluid.getSpriteNumber()));
+            FMLClientHandler.instance().getClient().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            TextureAtlasSprite texture = FMLClientHandler.instance().getClient().getTextureMapBlocks().getAtlasSprite(fluidIcon.toString());
 
             final int textureSize = 16;
             int start = 0;
@@ -607,11 +624,11 @@ public class GuiContainerBase<H> extends GuiContainer
                         drawSize = 0;
                     }
 
-                    this.drawTexturedModelRectFromIcon(x + col, y + line + 58 - renderY - start, fluidIcon, width, textureSize - (textureSize - renderY));
+                    this.drawTexturedModalRect(x + col, y + line + 58 - renderY - start, texture, width, textureSize - (textureSize - renderY));
                     start = start + textureSize;
                 }
             }
-        }*/
+        }
     }
 
     /**
