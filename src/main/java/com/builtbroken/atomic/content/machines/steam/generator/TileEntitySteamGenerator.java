@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.content.machines.steam.generator;
 
-import com.builtbroken.atomic.config.thermal.ConfigSteam;
-import com.builtbroken.atomic.config.mods.ConfigIC2;
+import com.builtbroken.atomic.config.mods.ConfigMod;
+import com.builtbroken.atomic.config.logic.ConfigSteam;
 import com.builtbroken.atomic.content.machines.steam.TileEntitySteamInput;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import ic2.api.energy.tile.IEnergyAcceptor;
@@ -111,7 +111,7 @@ public class TileEntitySteamGenerator extends TileEntitySteamInput implements IE
     //<editor-fold desc="ic2 power">
     protected boolean enableIC2Support()
     {
-        return ConfigIC2.ENABLE_IC2;
+        return ConfigMod.IC2.ENABLE_IC2;
     }
 
 
@@ -121,7 +121,7 @@ public class TileEntitySteamGenerator extends TileEntitySteamInput implements IE
     {
         if (enableIC2Support())
         {
-            return getPowerToOutput() / ConfigIC2.FE_PER_EU; //TODO add config for output limit
+            return getPowerToOutput() / ConfigMod.IC2.FE_PER_EU; //TODO add config for output limit
         }
         return 0;
     }

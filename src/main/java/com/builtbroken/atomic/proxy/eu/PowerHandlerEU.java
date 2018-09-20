@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.proxy.eu;
 
-import com.builtbroken.atomic.config.mods.ConfigIC2;
+import com.builtbroken.atomic.config.mods.ConfigMod;
 import com.builtbroken.atomic.lib.power.PowerHandler;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -28,14 +28,14 @@ public class PowerHandlerEU extends PowerHandler
     @Optional.Method(modid = "ic2")
     public boolean canHandle(ItemStack stack)
     {
-        return ConfigIC2.ENABLE_IC2 && stack.getItem() instanceof IElectricItem;
+        return ConfigMod.IC2.ENABLE_IC2 && stack.getItem() instanceof IElectricItem;
     }
 
     @Override
     @Optional.Method(modid = "ic2")
     public boolean canHandle(EnumFacing side, TileEntity tile)
     {
-        return ConfigIC2.ENABLE_IC2 && tile instanceof IEnergySink && ((IEnergySink) tile).acceptsEnergyFrom(null, side);
+        return ConfigMod.IC2.ENABLE_IC2 && tile instanceof IEnergySink && ((IEnergySink) tile).acceptsEnergyFrom(null, side);
     }
 
     //TODO add remove power method
@@ -48,7 +48,7 @@ public class PowerHandlerEU extends PowerHandler
         {
             //Get requested powerInFE of the target machine
             double demand_eu = ((IEnergySink) tile).getDemandedEnergy();
-            int demand_fe = (int) Math.floor(demand_eu * ConfigIC2.FE_PER_EU);
+            int demand_fe = (int) Math.floor(demand_eu * ConfigMod.IC2.FE_PER_EU);
 
             //If simulating return demand
             if (!doAction)
@@ -61,7 +61,7 @@ public class PowerHandlerEU extends PowerHandler
             if (inject_fe > 0)
             {
                 //Convert to IC2 powerInFE
-                double inject_eu = inject_fe / ConfigIC2.FE_PER_EU;
+                double inject_eu = inject_fe / ConfigMod.IC2.FE_PER_EU;
 
                 //Inject energy, get left over energy
                 double remain_eu = ((IEnergySink) tile).injectEnergy(side, inject_eu, 1);
@@ -70,7 +70,7 @@ public class PowerHandlerEU extends PowerHandler
                 inject_eu -= remain_eu;
 
                 //Convert back to FE
-                return (int) Math.ceil(inject_eu * ConfigIC2.FE_PER_EU);
+                return (int) Math.ceil(inject_eu * ConfigMod.IC2.FE_PER_EU);
             }
         }
         return 0;
@@ -85,13 +85,13 @@ public class PowerHandlerEU extends PowerHandler
             int tier = ((IElectricItem) stack.getItem()).getTier(stack);
 
             //Convert to IC2 power
-            double insert_eu = insert_fe / ConfigIC2.FE_PER_EU;
+            double insert_eu = insert_fe / ConfigMod.IC2.FE_PER_EU;
 
             //Give energy
             double taken_eu = ElectricItem.manager.charge(stack, insert_eu, tier, false, !doAction);
 
             //Convert to FE
-            return (int) Math.ceil(taken_eu * ConfigIC2.FE_PER_EU);
+            return (int) Math.ceil(taken_eu * ConfigMod.IC2.FE_PER_EU);
         }
         return 0;
     }
@@ -105,11 +105,11 @@ public class PowerHandlerEU extends PowerHandler
             int tier = ((IElectricItem) stack.getItem()).getTier(stack);
 
             //Calculate max remove_eu from battery
-            double remove_eu = remove_fe / ConfigIC2.FE_PER_EU;
+            double remove_eu = remove_fe / ConfigMod.IC2.FE_PER_EU;
             remove_eu = ElectricItem.manager.discharge(stack, remove_eu, tier, false, true, !doAction);
 
             //Convert to FE
-            return (int) Math.ceil(remove_eu * ConfigIC2.FE_PER_EU);
+            return (int) Math.ceil(remove_eu * ConfigMod.IC2.FE_PER_EU);
         }
         return 0;
     }
@@ -120,7 +120,7 @@ public class PowerHandlerEU extends PowerHandler
     {
         if (canHandle(stack))
         {
-            return (int) Math.floor(ElectricItem.manager.getCharge(stack) * ConfigIC2.FE_PER_EU);
+            return (int) Math.floor(ElectricItem.manager.getCharge(stack) * ConfigMod.IC2.FE_PER_EU);
         }
         return 0;
     }
@@ -131,7 +131,7 @@ public class PowerHandlerEU extends PowerHandler
     {
         if (canHandle(stack))
         {
-            return (int) Math.floor(ElectricItem.manager.getMaxCharge(stack) * ConfigIC2.FE_PER_EU);
+            return (int) Math.floor(ElectricItem.manager.getMaxCharge(stack) * ConfigMod.IC2.FE_PER_EU);
         }
         return 0;
     }
@@ -140,7 +140,7 @@ public class PowerHandlerEU extends PowerHandler
     @Optional.Method(modid = "ic2")
     public void onTileValidate(TileEntity tile)
     {
-        if (ConfigIC2.ENABLE_IC2 && tile instanceof IEnergyTile && !tile.getWorld().isRemote)
+        if (ConfigMod.IC2.ENABLE_IC2 && tile instanceof IEnergyTile && !tile.getWorld().isRemote)
         {
             MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile) tile));
         }
@@ -150,7 +150,7 @@ public class PowerHandlerEU extends PowerHandler
     @Optional.Method(modid = "ic2")
     public void onTileInvalidate(TileEntity tile)
     {
-        if (ConfigIC2.ENABLE_IC2 && tile instanceof IEnergyTile && !tile.getWorld().isRemote)
+        if (ConfigMod.IC2.ENABLE_IC2 && tile instanceof IEnergyTile && !tile.getWorld().isRemote)
         {
             MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile) tile));
         }

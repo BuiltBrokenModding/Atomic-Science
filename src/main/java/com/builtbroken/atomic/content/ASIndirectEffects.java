@@ -5,7 +5,7 @@ import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.api.armor.IAntiPoisonArmor;
 import com.builtbroken.atomic.api.effect.IIndirectEffectInstance;
 import com.builtbroken.atomic.api.effect.IIndirectEffectSource;
-import com.builtbroken.atomic.config.ConfigRadiation;
+import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.content.effects.IndirectEffectInstance;
 import com.builtbroken.atomic.content.effects.RadiationEntityEventHandler;
 import com.builtbroken.atomic.content.effects.type.IETRadiation;

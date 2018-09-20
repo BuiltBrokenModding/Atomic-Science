@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.map.exposure;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.config.ConfigRadiation;
+import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.*;
 import com.builtbroken.jlib.lang.StringHelpers;

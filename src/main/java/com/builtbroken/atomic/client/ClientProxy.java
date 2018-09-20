@@ -3,6 +3,7 @@ package com.builtbroken.atomic.client;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.CommonProxy;
 import com.builtbroken.atomic.client.fx.FxSmoke;
+import com.builtbroken.atomic.config.client.ConfigClient;
 import com.builtbroken.atomic.config.client.ConfigParticles;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.network.netty.PacketSystem;
@@ -124,7 +125,7 @@ public class ClientProxy extends CommonProxy
 
     private void boiling(double x, double y, double z, int count)
     {
-        if (ConfigParticles.BOILING_EFFECT)
+        if (ConfigClient.PARTICLES.BOILING_EFFECT)
         {
             final int xi = (int) Math.floor(x);
             final int yi = (int) Math.floor(y);
@@ -159,7 +160,7 @@ public class ClientProxy extends CommonProxy
 
     private void boilerComplete(double x, double y, double z)
     {
-        if (ConfigParticles.MACHINE_COMPLETE)
+        if (ConfigClient.PARTICLES.MACHINE_COMPLETE)
         {
             final float randomSpeed = 0.05f;
             int rand = Minecraft.getMinecraft().world.rand.nextInt(5);
@@ -206,7 +207,7 @@ public class ClientProxy extends CommonProxy
 
     private void centrifugeComplete(double x, double y, double z)
     {
-        if (ConfigParticles.MACHINE_COMPLETE)
+        if (ConfigClient.PARTICLES.MACHINE_COMPLETE)
         {
             final float randomSpeed = 0.05f;
             int rand = Minecraft.getMinecraft().world.rand.nextInt(5);
@@ -234,7 +235,7 @@ public class ClientProxy extends CommonProxy
 
     private void centrifugeRunning(double x, double y, double z)
     {
-        if (ConfigParticles.MACHINE_RUNNING)
+        if (ConfigClient.PARTICLES.MACHINE_RUNNING)
         {
             final float randomSpeed = 0.02f;
             FxSmoke smoke = new FxSmoke(Minecraft.getMinecraft().world,
@@ -252,7 +253,7 @@ public class ClientProxy extends CommonProxy
 
     private void extractorComplete(double x, double y, double z, int facing)
     {
-        if (ConfigParticles.MACHINE_COMPLETE)
+        if (ConfigClient.PARTICLES.MACHINE_COMPLETE)
         {
             final float randomSpeed = 0.05f;
             int rand = Minecraft.getMinecraft().world.rand.nextInt(5);
@@ -282,7 +283,7 @@ public class ClientProxy extends CommonProxy
 
     private void extractorRunning(double x, double y, double z, int facing)
     {
-        if (ConfigParticles.MACHINE_RUNNING)
+        if (ConfigClient.PARTICLES.MACHINE_RUNNING)
         {
             final float randomSpeed = 0.02f;
 
@@ -322,7 +323,7 @@ public class ClientProxy extends CommonProxy
 
     private void reactorRunning(double x, double y, double z)
     {
-        if (ConfigParticles.REACTOR_RUNNING)
+        if (ConfigClient.PARTICLES.REACTOR_RUNNING)
         {
             final float randomSpeed = 0.05f;
             Color color = Color.GREEN;

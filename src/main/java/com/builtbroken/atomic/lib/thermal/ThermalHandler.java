@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.lib.thermal;
 
 import com.builtbroken.atomic.api.thermal.IHeatSource;
-import com.builtbroken.atomic.config.thermal.ConfigSteam;
+import com.builtbroken.atomic.config.logic.ConfigSteam;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
 import com.builtbroken.atomic.map.MapHandler;

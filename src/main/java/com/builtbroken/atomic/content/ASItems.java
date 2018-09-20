@@ -1,9 +1,8 @@
 package com.builtbroken.atomic.content;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.config.ConfigRadiation;
-import com.builtbroken.atomic.config.content.ConfigReactor;
-import com.builtbroken.atomic.config.thermal.ConfigThermal;
+import com.builtbroken.atomic.config.content.ConfigContent;
+import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.content.items.ItemFuelRod;
 import com.builtbroken.atomic.content.items.ItemHazmat;
 import com.builtbroken.atomic.content.items.ItemHeatProbe;
@@ -97,12 +96,16 @@ public final class ASItems
 
         //Machine inputs
         event.getRegistry().register(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile",
-                ConfigReactor.FUEL_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD
-                , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_FUEL_ROD, ConfigThermal.HEAT_REACTOR_FUEL_ROD)
+                () -> ConfigContent.REACTOR.FUEL_ROD_RUNTIME,
+                () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD
+                , () -> ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_FUEL_ROD,
+                () -> ConfigContent.REACTOR.HEAT_REACTOR_FUEL_ROD)
                 .setRegistryName(AtomicScience.PREFIX + "fissile_fuel_cell"));
         event.getRegistry().register(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder",
-                ConfigReactor.BREEDER_ROD_RUNTIME, ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD
-                , ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_BREEDER_ROD, ConfigThermal.HEAT_REACTOR_BREEDER_ROD)
+                () -> ConfigContent.REACTOR.BREEDER_ROD_RUNTIME,
+                () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD
+                , () -> ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_BREEDER_ROD,
+                () -> ConfigContent.REACTOR.HEAT_REACTOR_BREEDER_ROD)
                 .setRegistryName(AtomicScience.PREFIX + "breeder_fuel_cell"));
 
         //Crafting items
@@ -111,13 +114,13 @@ public final class ASItems
                 .setCreativeTab(AtomicScience.creativeTab)
                 .setRegistryName(AtomicScience.PREFIX + "cell_empty"));
 
-        event.getRegistry().register(itemYellowCake = new ItemRadioactive("cake.yellow", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "yellow_cake"));
-        event.getRegistry().register(itemUranium235 = new ItemRadioactive("uranium.235", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235).setRegistryName(AtomicScience.PREFIX + "uranium_235"));
-        event.getRegistry().register(itemUranium238 = new ItemRadioactive("uranium.238", ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238).setRegistryName(AtomicScience.PREFIX + "uranium_238"));
+        event.getRegistry().register(itemYellowCake = new ItemRadioactive("cake.yellow", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "yellow_cake"));
+        event.getRegistry().register(itemUranium235 = new ItemRadioactive("uranium.235", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235).setRegistryName(AtomicScience.PREFIX + "uranium_235"));
+        event.getRegistry().register(itemUranium238 = new ItemRadioactive("uranium.238", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238).setRegistryName(AtomicScience.PREFIX + "uranium_238"));
 
         //Waste items
-        event.getRegistry().register(itemProcessingWaste = new ItemRadioactive("processing.waste", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "processing_waste"));
-        event.getRegistry().register(itemToxicWaste = new ItemRadioactive("toxic.waste", ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "toxic_waste"));
+        event.getRegistry().register(itemProcessingWaste = new ItemRadioactive("processing.waste", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "processing_waste"));
+        event.getRegistry().register(itemToxicWaste = new ItemRadioactive("toxic.waste", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "toxic_waste"));
 
         //Tools
         event.getRegistry().register(itemHeatProbe = new ItemHeatProbe());

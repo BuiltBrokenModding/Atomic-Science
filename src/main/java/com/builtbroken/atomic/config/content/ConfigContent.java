@@ -18,4 +18,8 @@ public class ConfigContent
     @Config.Name("power_usage")
     @Config.LangKey("config.atomicscience:content.power.usage.title")
     public static final ConfigPowerUsage POWER_USAGE = new ConfigPowerUsage();
+
+    @Config.Name("reactor")
+    @Config.LangKey("config.atomicscience:content.reactor.title")
+    public static final ConfigReactor REACTOR = new ConfigReactor();
 }

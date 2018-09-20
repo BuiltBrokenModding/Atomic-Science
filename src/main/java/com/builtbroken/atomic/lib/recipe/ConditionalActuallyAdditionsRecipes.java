@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.lib.recipe;
 
-import com.builtbroken.atomic.config.mods.ConfigActuallyAdditions;
+import com.builtbroken.atomic.config.mods.ConfigMod;
 import com.builtbroken.atomic.proxy.Mods;
 import com.google.gson.JsonObject;
 import net.minecraft.util.JsonUtils;
@@ -19,6 +19,6 @@ public class ConditionalActuallyAdditionsRecipes implements IConditionFactory
     public BooleanSupplier parse(JsonContext context, JsonObject json)
     {
         final boolean condition = Boolean.parseBoolean(JsonUtils.getString(json, "condition").toLowerCase());
-        return () -> (Mods.ACTUALLY_ADDITIONS.isLoaded() && ConfigActuallyAdditions.ENABLE_RECIPES == condition);
+        return () -> (Mods.ACTUALLY_ADDITIONS.isLoaded() && ConfigMod.ACTUALLY_ADDITIONS.ENABLE_RECIPES == condition);
     }
 }

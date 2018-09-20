@@ -12,6 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.IntSupplier;
 
 /**
  * Simple fuel rod
@@ -22,13 +23,13 @@ import java.util.List;
 public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
 {
     /** Time in ticks the fuel can run, when full */
-    public final int maxFuelRuntime;
+    public final IntSupplier maxFuelRuntime;
     /** Radioactivity of the fuel rod when the reactor is active */
-    public final int reactorRadioactivity;
+    public final IntSupplier reactorRadioactivity;
     /** Heat of the fuel rod when the reactor is active */
-    public final int reactorHeatOutput;
+    public final IntSupplier reactorHeatOutput;
 
-    public ItemFuelRod(String name, int maxFuelRuntime, int radioactiveMaterialValue, int reactorRadioactivity, int reactorHeatOutput)
+    public ItemFuelRod(String name, IntSupplier maxFuelRuntime, IntSupplier radioactiveMaterialValue, IntSupplier reactorRadioactivity, IntSupplier reactorHeatOutput)
     {
         super(name, radioactiveMaterialValue);
         this.maxFuelRuntime = maxFuelRuntime;
@@ -75,19 +76,19 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
     @Override
     public int getMaxFuelRodRuntime(ItemStack stack, IReactor reactor)
     {
-        return maxFuelRuntime;
+        return maxFuelRuntime.getAsInt();
     }
 
     @Override
     public int getHeatOutput(ItemStack stack, IReactor reactor)
     {
-        return reactorHeatOutput;
+        return reactorHeatOutput.getAsInt();
     }
 
     @Override
     public int getRadioactiveMaterial(ItemStack stack, IReactor reactor)
     {
-        return reactorRadioactivity;
+        return reactorRadioactivity.getAsInt();
     }
 
     @Override

@@ -5,6 +5,8 @@ import com.builtbroken.atomic.api.radiation.IRadioactiveItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import java.util.function.IntSupplier;
+
 /**
  * Radioactive item
  *
@@ -13,9 +15,14 @@ import net.minecraft.item.ItemStack;
  */
 public class ItemRadioactive extends Item implements IRadioactiveItem
 {
-    public final int radioactiveMaterialValue;
+    public final IntSupplier radioactiveMaterialValue;
 
     public ItemRadioactive(String name, int radioactiveMaterialValue)
+    {
+        this(name, () -> radioactiveMaterialValue);
+    }
+
+    public ItemRadioactive(String name, IntSupplier radioactiveMaterialValue)
     {
         this.radioactiveMaterialValue = radioactiveMaterialValue;
         this.setTranslationKey(AtomicScience.PREFIX + name);
@@ -25,6 +32,6 @@ public class ItemRadioactive extends Item implements IRadioactiveItem
     @Override
     public int getRadioactiveMaterial(ItemStack stack)
     {
-        return radioactiveMaterialValue * stack.getCount();
+        return radioactiveMaterialValue.getAsInt() * stack.getCount();
     }
 }

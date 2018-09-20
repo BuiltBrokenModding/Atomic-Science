@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.lib.recipe;
 
-import com.builtbroken.atomic.config.mods.ConfigThermalExpansion;
+import com.builtbroken.atomic.config.mods.ConfigMod;
 import com.builtbroken.atomic.proxy.Mods;
 import com.google.gson.JsonObject;
 import net.minecraft.util.JsonUtils;
@@ -19,6 +19,6 @@ public class ConditionalTFRecipes implements IConditionFactory
     public BooleanSupplier parse(JsonContext context, JsonObject json)
     {
         final boolean condition = Boolean.parseBoolean(JsonUtils.getString(json, "condition").toLowerCase());
-        return () -> (Mods.THERMAL_FOUNDATION.isLoaded() && ConfigThermalExpansion.ENABLE_RECIPES == condition);
+        return () -> (Mods.THERMAL_FOUNDATION.isLoaded() && ConfigMod.THERMAL_EXPANSION.ENABLE_RECIPES == condition);
     }
 }

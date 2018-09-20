@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.lib.recipe;
 
-import com.builtbroken.atomic.config.mods.ConfigIC2;
+import com.builtbroken.atomic.config.mods.ConfigMod;
 import com.builtbroken.atomic.proxy.Mods;
 import com.google.gson.JsonObject;
 import net.minecraft.util.JsonUtils;
@@ -19,6 +19,6 @@ public class ConditionalIc2Recipes implements IConditionFactory
     public BooleanSupplier parse(JsonContext context, JsonObject json)
     {
         final boolean condition = Boolean.parseBoolean(JsonUtils.getString(json, "condition").toLowerCase());
-        return () -> (Mods.IC2.isLoaded() && ConfigIC2.ENABLE_RECIPES == condition);
+        return () -> (Mods.IC2.isLoaded() && ConfigMod.IC2.ENABLE_RECIPES == condition);
     }
 }

@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.content.effects;
 
-import com.builtbroken.atomic.config.ConfigRadiation;
+import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.effects.source.SourceWrapperPosition;
 import com.builtbroken.atomic.map.MapHandler;

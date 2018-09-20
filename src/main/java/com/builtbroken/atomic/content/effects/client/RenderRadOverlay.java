@@ -2,7 +2,7 @@ package com.builtbroken.atomic.content.effects.client;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.ClientProxy;
-import com.builtbroken.atomic.config.ConfigRadiation;
+import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;

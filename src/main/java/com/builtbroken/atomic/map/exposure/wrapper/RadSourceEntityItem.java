@@ -2,7 +2,7 @@ package com.builtbroken.atomic.map.exposure.wrapper;
 
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.radiation.IRadioactiveItem;
-import com.builtbroken.atomic.config.ConfigRadiation;
+import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.lib.RadItemHandler;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.world.World;
