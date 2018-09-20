@@ -36,6 +36,8 @@ apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScr
 dependencies 
 {
     testCompile 'junit:junit:4.11'
+    // compile against the JEI API
+    deobfCompile "mezz.jei:jei_${minecraft.version}:4.12.0.216:api"
 }
 
 sourceCompatibility = 1.8
