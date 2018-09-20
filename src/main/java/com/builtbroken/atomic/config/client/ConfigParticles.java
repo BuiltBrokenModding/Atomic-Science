@@ -11,21 +11,26 @@ public class ConfigParticles
 {
     @Config.Name("boiling")
     @Config.Comment("Allows disabling the water boiling effect.")
+    @Config.LangKey("config.atomicscience:client.particles.boiling.title")
     public boolean BOILING_EFFECT = true;
 
     @Config.Name("machine_complete")
-    @Config.Comment("Allows disabling the effect generated when machine finishes a recipe.")
+    @Config.Comment("Allows disabling the effect generated when machine finishes an action or recipe.")
+    @Config.LangKey("config.atomicscience:client.particles.machine.complete.title")
     public boolean MACHINE_COMPLETE = true;
 
     @Config.Name("machine_running")
     @Config.Comment("Allows disabling the effect generated when machine processing materials.")
+    @Config.LangKey("config.atomicscience:client.particles.machine.running.title")
     public boolean MACHINE_RUNNING = true;
 
     @Config.Name("reactor_running")
     @Config.Comment("Allows disabling the effect generated when reactor is running.")
+    @Config.LangKey("config.atomicscience:client.particles.reactor.running.title")
     public boolean REACTOR_RUNNING = true;
 
     //@Config.Name("steam")
     //@Config.Comment("Allows disabling the water steam effect.")
-    public boolean STEAM_EFFECT = true;
+    // @Config.LangKey("config.atomicscience:client.particles.steam.title")
+    //public boolean STEAM_EFFECT = true;
 }

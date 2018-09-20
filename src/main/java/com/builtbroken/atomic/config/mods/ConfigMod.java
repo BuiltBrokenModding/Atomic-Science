@@ -17,7 +17,7 @@ public class ConfigMod
 
     @Config.LangKey("config.atomicscience:mods.buildcraft.title")
     @Config.Name("buildcraft")
-    public static final ConfigBC BC = new ConfigBC();
+    public static final ConfigBC BUILDCRAFT = new ConfigBC();
 
     @Config.LangKey("config.atomicscience:mods.actually.additions.title")
     @Config.Name("actually_additions")

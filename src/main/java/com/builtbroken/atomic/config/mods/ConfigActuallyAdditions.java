@@ -10,5 +10,6 @@ public class ConfigActuallyAdditions
 {
     @Config.Name("enable_recipes")
     @Config.Comment("Enable recipes that offer alternatives using actual additions items")
+    @Config.LangKey("config.atomicscience:mods.actually.additions.recipes.title")
     public boolean ENABLE_RECIPES = true;
 }

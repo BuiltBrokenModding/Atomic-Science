@@ -11,9 +11,11 @@ public class ConfigNetwork
 {
     @Config.Name("boiling_particle_packet")
     @Config.Comment("Disables the boiling effect to help reduce network load")
-    public static boolean BOILING_EFFECT = true;
+    @Config.LangKey("config.atomicscience:server.network.boiling.title")
+    public boolean BOILING_EFFECT = true;
 
     //@Config.Name("steam_particle_packet")
     //@Config.Comment("Disables the steam effect to help reduce network load")
-    public static boolean STEAM_EFFECT = true;
+    //@Config.LangKey("config.atomicscience:server.network.steam.title")
+    //public boolean STEAM_EFFECT = true;
 }

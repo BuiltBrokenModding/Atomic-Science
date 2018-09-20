@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.lib.thermal;
 
 import com.builtbroken.atomic.api.thermal.IHeatSource;
-import com.builtbroken.atomic.config.logic.ConfigSteam;
+import com.builtbroken.atomic.config.logic.ConfigLogic;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
 import com.builtbroken.atomic.map.MapHandler;
@@ -162,14 +162,14 @@ public class ThermalHandler
         {
             if (temperature > 373)
             {
-                return (int) Math.min(ConfigSteam.WATER_VAPOR_MAX_RATE, Math.ceil(ConfigSteam.WATER_VAPOR_RATE * (temperature / 373)));
+                return (int) Math.min(ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE, Math.ceil(ConfigLogic.STEAM.WATER_VAPOR_RATE * (temperature / 373)));
             }
         }
         else if (block == Blocks.FLOWING_WATER)
         {
             if (temperature > 373)
             {
-                return (int) Math.min(ConfigSteam.WATER_VAPOR_MAX_RATE, Math.ceil(ConfigSteam.WATER_FLOWING_VAPOR_RATE * (temperature / 373)));
+                return (int) Math.min(ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE, Math.ceil(ConfigLogic.STEAM.WATER_FLOWING_VAPOR_RATE * (temperature / 373)));
             }
         }
         return 0;

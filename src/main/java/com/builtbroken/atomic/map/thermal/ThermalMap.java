@@ -3,7 +3,7 @@ package com.builtbroken.atomic.map.thermal;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.thermal.IHeatSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
-import com.builtbroken.atomic.config.server.ConfigNetwork;
+import com.builtbroken.atomic.config.server.ConfigServer;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
@@ -372,7 +372,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
             final World world = event.world;
             final int dim = world.provider.getDimension();
 
-            if (ConfigNetwork.BOILING_EFFECT && steamSources.containsKey(dim))
+            if (ConfigServer.NETWORK.BOILING_EFFECT && steamSources.containsKey(dim))
             {
                 HashSet<DataPos> steamPositions = steamSources.get(dim);
                 Iterator<DataPos> it = steamPositions.iterator();

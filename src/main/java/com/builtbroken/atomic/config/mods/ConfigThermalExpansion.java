@@ -10,5 +10,6 @@ public class ConfigThermalExpansion
 {
     @Config.Name("enable_recipes")
     @Config.Comment("Enable recipes that offer alternatives using thermal expansion items")
+    @Config.LangKey("config.atomicscience:mods.thermal.expansion.recipes.title")
     public boolean ENABLE_RECIPES = true;
 }
