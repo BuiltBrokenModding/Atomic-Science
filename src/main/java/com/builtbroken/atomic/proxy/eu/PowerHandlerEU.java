@@ -28,14 +28,14 @@ public class PowerHandlerEU extends PowerHandler
     @Optional.Method(modid = "ic2")
     public boolean canHandle(ItemStack stack)
     {
-        return ConfigMod.IC2.ENABLE_IC2 && stack.getItem() instanceof IElectricItem;
+        return ConfigMod.IC2.ENABLE_POWER && stack.getItem() instanceof IElectricItem;
     }
 
     @Override
     @Optional.Method(modid = "ic2")
     public boolean canHandle(EnumFacing side, TileEntity tile)
     {
-        return ConfigMod.IC2.ENABLE_IC2 && tile instanceof IEnergySink && ((IEnergySink) tile).acceptsEnergyFrom(null, side);
+        return ConfigMod.IC2.ENABLE_POWER && tile instanceof IEnergySink && ((IEnergySink) tile).acceptsEnergyFrom(null, side);
     }
 
     //TODO add remove power method
@@ -140,7 +140,7 @@ public class PowerHandlerEU extends PowerHandler
     @Optional.Method(modid = "ic2")
     public void onTileValidate(TileEntity tile)
     {
-        if (ConfigMod.IC2.ENABLE_IC2 && tile instanceof IEnergyTile && !tile.getWorld().isRemote)
+        if (ConfigMod.IC2.ENABLE_POWER && tile instanceof IEnergyTile && !tile.getWorld().isRemote)
         {
             MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile) tile));
         }
@@ -150,7 +150,7 @@ public class PowerHandlerEU extends PowerHandler
     @Optional.Method(modid = "ic2")
     public void onTileInvalidate(TileEntity tile)
     {
-        if (ConfigMod.IC2.ENABLE_IC2 && tile instanceof IEnergyTile && !tile.getWorld().isRemote)
+        if (ConfigMod.IC2.ENABLE_POWER && tile instanceof IEnergyTile && !tile.getWorld().isRemote)
         {
             MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile) tile));
         }

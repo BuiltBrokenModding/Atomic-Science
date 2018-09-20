@@ -22,6 +22,8 @@ import java.util.function.IntSupplier;
  */
 public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
 {
+    public static final String NBT_FUEL_TIME = "fuelTimer";
+
     /** Time in ticks the fuel can run, when full */
     public final IntSupplier maxFuelRuntime;
     /** Radioactivity of the fuel rod when the reactor is active */
@@ -68,9 +70,9 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
         if (stack.getTagCompound() == null)
         {
             stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setInteger("fuelTimer", getMaxFuelRodRuntime(stack, reactor));
+            stack.getTagCompound().setInteger(NBT_FUEL_TIME, getMaxFuelRodRuntime(stack, reactor));
         }
-        return stack.getTagCompound().getInteger("fuelTimer");
+        return stack.getTagCompound().getInteger(NBT_FUEL_TIME);
     }
 
     @Override
@@ -98,7 +100,7 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
         {
             stack.setTagCompound(new NBTTagCompound());
         }
-        stack.getTagCompound().setInteger("fuelTimer", Math.max(0, fuelTick - 1));
+        stack.getTagCompound().setInteger(NBT_FUEL_TIME, Math.max(0, fuelTick - 1));
         return stack;
     }
 }

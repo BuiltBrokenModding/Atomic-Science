@@ -13,8 +13,10 @@ import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
 import com.builtbroken.atomic.network.netty.PacketSystem;
+import com.builtbroken.atomic.proxy.Mods;
 import com.builtbroken.atomic.proxy.ProxyLoader;
-import com.builtbroken.atomic.proxy.eu.ProxyElectricalUnits;
+import com.builtbroken.atomic.proxy.bc.ProxyBuildcraftEnergy;
+import com.builtbroken.atomic.proxy.eu.ProxyIC2;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
@@ -27,7 +29,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -133,9 +134,13 @@ public class AtomicScience
         proxyLoader.add(PacketSystem.INSTANCE);
         proxyLoader.add(sideProxy);
 
-        if (Loader.isModLoaded("ic2"))
+        if (Mods.IC2.isLoaded())
         {
-            proxyLoader.add(new ProxyElectricalUnits());
+            proxyLoader.add(new ProxyIC2());
+        }
+        if(Mods.BUILDCRAFT_ENERGY.isLoaded())
+        {
+            proxyLoader.add(new ProxyBuildcraftEnergy());
         }
 
         //Register content

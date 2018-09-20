@@ -3,6 +3,8 @@ package com.builtbroken.atomic.proxy.eu;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.lib.power.PowerSystem;
 import com.builtbroken.atomic.proxy.ContentProxy;
+import com.builtbroken.atomic.proxy.ModProxy;
+import com.builtbroken.atomic.proxy.Mods;
 
 /**
  * Proxy for Redstone Flux API
@@ -12,11 +14,11 @@ import com.builtbroken.atomic.proxy.ContentProxy;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/17/2018.
  */
-public class ProxyElectricalUnits extends ContentProxy
+public class ProxyIC2 extends ModProxy
 {
-    public ProxyElectricalUnits()
+    public ProxyIC2()
     {
-        super("EU Power API");
+        super("IndustrialCraft", Mods.IC2);
     }
 
     @Override

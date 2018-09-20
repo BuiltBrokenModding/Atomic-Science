@@ -17,11 +17,6 @@ public class ItemRadioactive extends Item implements IRadioactiveItem
 {
     public final IntSupplier radioactiveMaterialValue;
 
-    public ItemRadioactive(String name, int radioactiveMaterialValue)
-    {
-        this(name, () -> radioactiveMaterialValue);
-    }
-
     public ItemRadioactive(String name, IntSupplier radioactiveMaterialValue)
     {
         this.radioactiveMaterialValue = radioactiveMaterialValue;

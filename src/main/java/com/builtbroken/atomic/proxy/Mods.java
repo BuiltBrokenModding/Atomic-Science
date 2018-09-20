@@ -11,7 +11,14 @@ public enum Mods
     IC2("ic2"),
     THERMAL_FOUNDATION("thermalfoundation"),
     THERMAL_EXPANSION("thermalexpansion"),
-    ACTUALLY_ADDITIONS("actuallyadditions");
+    ACTUALLY_ADDITIONS("actuallyadditions"),
+    BUILDCRAFT_CORE("buildcraftcore"),
+    BUILDCRAFT_BUILDER("buildcraftbuilders"),
+    BUILDCRAFT_ENERGY("buildcraftenergy"),
+    BUILDCRAFT_FACTORY("buildcraftfactory"),
+    BUILDCRAFT_ROBOTICS("buildcraftrobotics"),
+    BUILDCRAFT_SILICON("buildcraftsilicon"),
+    BUILDCRAFT_TRANSPORT("buildcrafttransport");
 
     public final String id;
 
