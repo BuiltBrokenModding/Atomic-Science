@@ -22,6 +22,16 @@ public class ASWorldGen extends ContentProxy
     {
         if (ConfigContent.URANIUM_ORE.ENABLE_URANIUM_ORE)
         {
+            if(ConfigContent.URANIUM_ORE.URANIUM_ORE_MIN_Y > ConfigContent.URANIUM_ORE.URANIUM_ORE_MAX_Y)
+            {
+                throw new RuntimeException("AtomicScience: Uranium ore min spawn height must be smaller or equal to max spawn height");
+            }
+
+            if(ConfigContent.URANIUM_ORE.URANIUM_ORE_MIN_Y < 0)
+            {
+                throw new RuntimeException("AtomicScience: Uranium ore min spawn height must be greater than or equal to zero");
+            }
+
             GameRegistry.registerWorldGenerator(
                     new OreGenReplace(ASBlocks.blockUraniumOre.getDefaultState(),
                             new OreGeneratorSettings(

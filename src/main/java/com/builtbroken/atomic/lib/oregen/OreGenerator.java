@@ -37,21 +37,21 @@ public abstract class OreGenerator implements IWorldGenerator
 		block.getBlock().setHarvestLevel(this.harvestTool, this.harvestLevel);
 	}
 
-	public abstract void generate(World world, Random random, int varX, int varZ);
+	public abstract void generate(World world, Random random, int varX, int varZ, int chunkPosX, int chunkPosZ);
 
 	public abstract boolean isOreGeneratedInWorld(World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider);
 
 	@Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider)
 	{
-		chunkX = chunkX << 4;
-		chunkZ = chunkZ << 4;
+		int varX = chunkX << 4;
+		int varZ = chunkZ << 4;
 
 		// Checks to make sure this is the normal world
 
 		if (isOreGeneratedInWorld(world, chunkGenerator, chunkProvider))
 		{
-			generate(world, world.rand, chunkX, chunkZ);
+			generate(world, world.rand, varX, varZ, chunkX, chunkZ);
 		}
 	}
 }

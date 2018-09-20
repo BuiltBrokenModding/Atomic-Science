@@ -1,17 +1,24 @@
 package com.builtbroken.atomic.content.commands;
 
+import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.map.MapHandler;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
@@ -89,6 +96,37 @@ public class CommandAS extends CommandBase
                 {
                     throw new CommandNotFoundException();
                 }
+            }
+            else if (sub.equalsIgnoreCase("ore") && AtomicScience.runningAsDev && sender instanceof EntityPlayer)
+            {
+                EntityPlayer player = (EntityPlayer) sender;
+                BlockPos pos = player.getPosition();
+                Chunk chunk = player.world.getChunk(pos);
+
+                for (int x = 0; x < 16; x++)
+                {
+                    for (int z = 0; z < 16; z++)
+                    {
+                        for (int y = 0; y <= chunk.getHeightValue(x, z); y++)
+                        {
+                            IBlockState state = chunk.getBlockState(x, y, z);
+                            Block block = state.getBlock();
+                            if (block == Blocks.STONE
+                                    || state.getMaterial() == Material.SAND
+                                    || state.getMaterial() == Material.WATER
+                                    || state.getMaterial() == Material.GROUND
+                                    || state.getMaterial() == Material.GRASS)
+                            {
+                                player.world.setBlockState(new BlockPos(chunk.x * 16 + x, y, chunk.z * 16 + z), Blocks.AIR.getDefaultState());
+                            }
+                            else if(block == Blocks.AIR && y < player.world.getSeaLevel())
+                            {
+                                player.world.setBlockState(new BlockPos(chunk.x * 16 + x, y, chunk.z * 16 + z), Blocks.STAINED_GLASS.getDefaultState());
+                            }
+                        }
+                    }
+                }
+                sender.sendMessage(new TextComponentString("Done"));
             }
             else
             {
