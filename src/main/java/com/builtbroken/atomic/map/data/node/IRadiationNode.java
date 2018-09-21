@@ -6,5 +6,17 @@ package com.builtbroken.atomic.map.data.node;
  */
 public interface IRadiationNode extends IDataMapNode
 {
+    /**
+     * Gets the current value
+     *
+     * @return
+     */
     int getRadiationValue();
+
+    /**
+     * Updates the current value
+     *
+     * @param value
+     */
+    void setRadiationValue(int value);
 }

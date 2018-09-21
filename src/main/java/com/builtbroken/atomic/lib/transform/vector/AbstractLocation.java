@@ -141,6 +141,11 @@ public abstract class AbstractLocation<R extends AbstractLocation> extends Abstr
         return world;
     }
 
+    public int dim()
+    {
+        return world.provider.getDimension();
+    }
+
     /**
      * Conversions
      */

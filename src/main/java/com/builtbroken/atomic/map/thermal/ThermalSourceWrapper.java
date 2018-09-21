@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.map.thermal;
 
-import com.builtbroken.atomic.api.thermal.IHeatSource;
+import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.map.data.DataSourceWrapper;
 
 /**
@@ -9,11 +9,11 @@ import com.builtbroken.atomic.map.data.DataSourceWrapper;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/8/2018.
  */
-public class ThermalSourceWrapper extends DataSourceWrapper<IHeatSource>
+public class ThermalSourceWrapper extends DataSourceWrapper<IThermalSource>
 {
     public int heatValue;
 
-    public ThermalSourceWrapper(IHeatSource source)
+    public ThermalSourceWrapper(IThermalSource source)
     {
         super(source);
     }

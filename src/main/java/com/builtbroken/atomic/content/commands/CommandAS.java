@@ -119,7 +119,7 @@ public class CommandAS extends CommandBase
                             {
                                 player.world.setBlockState(new BlockPos(chunk.x * 16 + x, y, chunk.z * 16 + z), Blocks.AIR.getDefaultState());
                             }
-                            else if(block == Blocks.AIR && y < player.world.getSeaLevel())
+                            else if (block == Blocks.AIR && y < player.world.getSeaLevel())
                             {
                                 player.world.setBlockState(new BlockPos(chunk.x * 16 + x, y, chunk.z * 16 + z), Blocks.STAINED_GLASS.getDefaultState());
                             }
@@ -227,6 +227,8 @@ public class CommandAS extends CommandBase
 
     public void commandMat(MinecraftServer server, ICommandSender sender, String[] args) throws CommandNotFoundException
     {
+        sender.sendMessage(new TextComponentString("Command disable until system is re-implemented"));
+        /*
         if (args.length >= 6)
         {
             int dim = Integer.parseInt(args[2]);
@@ -257,6 +259,6 @@ public class CommandAS extends CommandBase
         else
         {
             throw new CommandNotFoundException();
-        }
+        }*/
     }
 }

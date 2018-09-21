@@ -238,6 +238,12 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
     }
 
     @Override
+    public int dim()
+    {
+        return getWorld().provider.getDimension();
+    }
+
+    @Override
     public double z()
     {
         return zi() + 0.5;

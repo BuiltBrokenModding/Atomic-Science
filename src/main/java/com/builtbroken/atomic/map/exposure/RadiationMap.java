@@ -175,7 +175,7 @@ public class RadiationMap implements IRadiationExposureSystem
             //Remove old, called separate in case position changed
             if (wrapper.radioactiveMaterialValue != 0)
             {
-                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(DataChange.get(wrapper.dim, wrapper.xi(), wrapper.yi(), wrapper.zi(), wrapper.radioactiveMaterialValue, 0));
+                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(DataChange.get(source, wrapper.radioactiveMaterialValue, 0));
             }
             //Log changes
             wrapper.logCurrentData();
@@ -183,7 +183,7 @@ public class RadiationMap implements IRadiationExposureSystem
             //Add new, called separate in case position changed
             if (newValue != 0 && source.isRadioactive())
             {
-                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(DataChange.get(wrapper.dim, wrapper.xi(), wrapper.yi(), wrapper.zi(), 0, newValue));
+                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(DataChange.get(source, 0, newValue));
             }
         }
     }

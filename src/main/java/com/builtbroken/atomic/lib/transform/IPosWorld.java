@@ -4,6 +4,7 @@ import com.builtbroken.atomic.lib.transform.vector.Location;
 import com.builtbroken.atomic.lib.transform.vector.Pos;
 import com.builtbroken.jlib.data.vector.IPos3D;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 
 /**
  * Useful interface to define that an object has a 3D location, and a defined world.
@@ -12,7 +13,12 @@ import net.minecraft.world.World;
  */
 public interface IPosWorld extends IPos3D
 {
-    World world();
+    default World world()
+    {
+        return DimensionManager.getWorld(dim());
+    }
+
+    int dim();
 
     /**
      * Converts the object to a location object.

@@ -4,11 +4,15 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.item.IFuelRodItem;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.reactor.IFissionReactor;
+import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.client.EffectRefs;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.machines.TileEntityInventoryMachine;
 import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
 import com.builtbroken.atomic.map.MapHandler;
+import com.builtbroken.atomic.map.exposure.wrapper.RadSourceTile;
+import com.builtbroken.atomic.map.thermal.wrapper.ThermalSource;
+import com.builtbroken.atomic.map.thermal.wrapper.ThermalSourceTile;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,7 +30,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public class TileEntityReactorCell extends TileEntityInventoryMachine implements IFissionReactor, IRadiationSource
+public class TileEntityReactorCell extends TileEntityInventoryMachine implements IFissionReactor
 {
     public static final int SLOT_FUEL_ROD = 0;
     public static final int[] ACCESSIBLE_SIDES = new int[]{SLOT_FUEL_ROD};
@@ -37,13 +41,16 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
 
     public boolean enabled = true; ///TODO add a spin up and down time, prevent instant enable/disable of reactors
 
+    private final RadSourceTile<TileEntityReactorCell> radiationSource = new RadSourceTile(this, () -> getRadioactiveMaterial());
+    private final ThermalSource<TileEntityReactorCell> thermalSource = new ThermalSourceTile(this, () -> getHeatGenerated());
+
     @Override
     protected void firstTick()
     {
         super.firstTick();
         updateStructureType();
-        MapHandler.RADIATION_MAP.addSource(this);
-        MapHandler.THERMAL_MAP.addSource(this);
+        MapHandler.RADIATION_MAP.addSource(getRadiationSource());
+        MapHandler.THERMAL_MAP.addSource(getHeatSource());
     }
 
     @Override
@@ -112,7 +119,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
                 {
                     tryToMoveRod((TileEntityReactorCell) tile);
                 }
-                else if(tile instanceof TileEntityReactorController)
+                else if (tile instanceof TileEntityReactorController)
                 {
                     tile = world.getTileEntity(getPos().down(2));
                     if (tile instanceof TileEntityReactorCell)
@@ -185,17 +192,17 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         if (isServer())
         {
             syncClientNextTick();
-            if(slot == 0)
+            if (slot == 0)
             {
-                if(getFuelRod() != null)
+                if (getFuelRod() != null)
                 {
-                    MapHandler.RADIATION_MAP.addSource(this); //TODO change this to not use inventory event
-                    MapHandler.THERMAL_MAP.addSource(this);
+                    MapHandler.RADIATION_MAP.addSource(getRadiationSource()); //TODO change this to not use inventory event
+                    MapHandler.THERMAL_MAP.addSource(getHeatSource());
                 }
                 else
                 {
-                    MapHandler.RADIATION_MAP.removeSource(this);
-                    MapHandler.THERMAL_MAP.removeSource(this);
+                    MapHandler.RADIATION_MAP.removeSource(getRadiationSource());
+                    MapHandler.THERMAL_MAP.removeSource(getHeatSource());
                 }
             }
         }
@@ -247,7 +254,6 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         return getInventory().getStackInSlot(SLOT_FUEL_ROD);
     }
 
-    @Override
     public int getRadioactiveMaterial()
     {
         IFuelRodItem fuelRod = getFuelRod();
@@ -258,19 +264,16 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         return 0;
     }
 
-    @Override
     public boolean isRadioactive()
     {
         return !isInvalid() && getRadioactiveMaterial() > 0;
     }
 
-    @Override
     public boolean canGeneratingHeat()
     {
         return !isInvalid() && getHeatGenerated() > 0;
     }
 
-    @Override
     public int getHeatGenerated()
     {
         IFuelRodItem fuelRodItem = getFuelRod();
@@ -322,7 +325,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     protected void writeDescPacket(List<Object> dataList, EntityPlayer player)
     {
         super.writeDescPacket(dataList, player);
-        dataList.add(_running ||canOperate());
+        dataList.add(_running || canOperate());
         dataList.add(hasFuel());
         dataList.add(getFuelRenderLevel());
     }
@@ -366,10 +369,10 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     public void setStructureType(ReactorStructureType structureType)
     {
         IBlockState blockState = world.getBlockState(getPos());
-        if(blockState.getProperties().containsKey(BlockReactorCell.REACTOR_STRUCTURE_TYPE))
+        if (blockState.getProperties().containsKey(BlockReactorCell.REACTOR_STRUCTURE_TYPE))
         {
             ReactorStructureType type = blockState.getValue(BlockReactorCell.REACTOR_STRUCTURE_TYPE);
-            if(type != structureType)
+            if (type != structureType)
             {
                 world.setBlockState(pos, blockState.withProperty(BlockReactorCell.REACTOR_STRUCTURE_TYPE, structureType));
             }
@@ -386,5 +389,17 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     private boolean canConnect(IBlockState block)
     {
         return block.getBlock() == ASBlocks.blockReactorCell || block.getBlock() == ASBlocks.blockReactorController;
+    }
+
+    @Override
+    public IRadiationSource getRadiationSource()
+    {
+        return radiationSource;
+    }
+
+    @Override
+    public IThermalSource getHeatSource()
+    {
+        return thermalSource;
     }
 }

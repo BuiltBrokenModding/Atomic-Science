@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.map.data.MapValueConsumer;
 import com.builtbroken.atomic.map.data.node.DataMapType;
 import com.builtbroken.atomic.map.data.node.IDataMapNode;
+import com.builtbroken.atomic.map.data.node.IDataMapSource;
 
 import java.util.ArrayList;
 
@@ -73,17 +74,40 @@ public class DataChunk
      * @param cz   - location (0-15)
      * @param node - data point to add
      */
-    public void removeData(int cx, int y, int cz, IDataMapNode node)
+    public boolean removeData(int cx, int y, int cz, IDataMapNode node)
     {
         //Keep inside of chunk
         if (y >= 0 && y < getChunkHeight())
         {
-            getLayer(y).removeData(cx, cz, node);
+            return getLayer(y).removeData(cx, cz, node);
         }
         else if (AtomicScience.runningAsDev)
         {
             AtomicScience.logger.error("DataChunk[" + xPosition + "," + zPosition + "]: Something tried to remove a block outside map", new RuntimeException("trace"));
         }
+        return false;
+    }
+
+    /**
+     * Sets the value into the chunk
+     *
+     * @param cx   - location (0-15)
+     * @param y    - location (0-255)
+     * @param cz   - location (0-15)
+     * @param source - data point to add
+     */
+    public boolean removeData(int cx, int y, int cz, IDataMapSource source)
+    {
+        //Keep inside of chunk
+        if (y >= 0 && y < getChunkHeight())
+        {
+            return getLayer(y).removeData(cx, cz, source);
+        }
+        else if (AtomicScience.runningAsDev)
+        {
+            AtomicScience.logger.error("DataChunk[" + xPosition + "," + zPosition + "]: Something tried to remove a block outside map", new RuntimeException("trace"));
+        }
+        return false;
     }
 
     /**
@@ -187,7 +211,7 @@ public class DataChunk
         return false;
     }
 
-    public void forEachValue(MapValueConsumer consumer)
+    public final void forEachValue(MapValueConsumer consumer)
     {
         for (DataLayer layer : getLayers())
         {

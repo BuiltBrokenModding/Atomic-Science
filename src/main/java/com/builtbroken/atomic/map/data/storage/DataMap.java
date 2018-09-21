@@ -3,6 +3,7 @@ package com.builtbroken.atomic.map.data.storage;
 import com.builtbroken.atomic.map.MapSystem;
 import com.builtbroken.atomic.map.data.node.DataMapType;
 import com.builtbroken.atomic.map.data.node.IDataMapNode;
+import com.builtbroken.atomic.map.data.node.IDataMapSource;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -85,7 +86,7 @@ public class DataMap
             }
 
             //Add node
-            chunk.addData(x, y, z, event.node);
+            chunk.addData(x & 15, y, z & 15, event.node);
 
             //if changed mark chunk so it saves
             World world = DimensionManager.getWorld(dim);
@@ -100,19 +101,42 @@ public class DataMap
         }
     }
 
-    /**
-     * Checks that we are inside the map and that
-     * the location is loaded into memory.
-     *
-     * @param pos - location
-     * @return true if block position exists
-     */
-    public boolean blockExists(BlockPos pos)
+    public boolean removeData(BlockPos pos, IDataMapNode node)
     {
-        World world = getWorld();
-        if (world != null && world.isBlockLoaded(pos))
+        DataChunk chunk = getChunkFromPosition(pos.getX(), pos.getY(), false);
+        if (chunk != null)
         {
-            return true;
+            return chunk.removeData(pos.getX() & 15, pos.getY(), pos.getZ() & 15, node);
+        }
+        return false;
+    }
+
+    public boolean removeData(int x, int y, int z, IDataMapNode node)
+    {
+        DataChunk chunk = getChunkFromPosition(x, z, false);
+        if (chunk != null)
+        {
+            return chunk.removeData(x & 15, y, z & 15, node);
+        }
+        return false;
+    }
+
+    public boolean removeData(BlockPos pos, IDataMapSource source)
+    {
+        DataChunk chunk = getChunkFromPosition(pos.getX(), pos.getY(), false);
+        if (chunk != null)
+        {
+            return chunk.removeData(pos.getX() & 15, pos.getY(), pos.getZ() & 15, source);
+        }
+        return false;
+    }
+
+    public boolean removeData(int x, int y, int z, IDataMapSource source)
+    {
+        DataChunk chunk = getChunkFromPosition(x, z, false);
+        if (chunk != null)
+        {
+            return chunk.removeData(x & 15, y, z & 15, source);
         }
         return false;
     }

@@ -2,6 +2,7 @@ package com.builtbroken.atomic.map.data;
 
 import com.builtbroken.jlib.data.vector.IPos3D;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -106,5 +107,12 @@ public class DataPos implements IPos3D
     public void dispose()
     {
         dataPosPool.dispose(this);
+    }
+
+    public BlockPos disposeReturnBlockPos()
+    {
+        BlockPos pos = new BlockPos(xi(), yi(), zi());
+        dataPosPool.dispose(this);
+        return pos;
     }
 }

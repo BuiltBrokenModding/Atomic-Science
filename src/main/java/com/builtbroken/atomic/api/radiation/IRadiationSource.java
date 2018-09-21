@@ -1,6 +1,11 @@
 package com.builtbroken.atomic.api.radiation;
 
 import com.builtbroken.atomic.lib.transform.IPosWorld;
+import com.builtbroken.atomic.map.data.node.IDataMapSource;
+import com.builtbroken.atomic.map.data.node.IRadiationNode;
+import net.minecraft.util.math.BlockPos;
+
+import java.util.HashMap;
 
 /**
  * Applied to objects that emmit radiation into the environment. Will
@@ -17,8 +22,22 @@ import com.builtbroken.atomic.lib.transform.IPosWorld;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/8/2018.
  */
-public interface IRadiationSource extends IPosWorld
+public interface IRadiationSource extends IPosWorld, IDataMapSource
 {
+    /**
+     * Current map of positions to nodes
+     *
+     * @return
+     */
+    HashMap<BlockPos, IRadiationNode> getCurrentNodes();
+
+    /**
+     * Sets current map of positions to nodes
+     * <p>
+     * Should only be called from pathing thread
+     */
+    void setCurrentNodes(HashMap<BlockPos, IRadiationNode> map);
+
     /**
      * Gets the amount of radioactive material
      * this source represents.

@@ -1,5 +1,7 @@
 package com.builtbroken.atomic.api.reactor;
 
+import com.builtbroken.atomic.api.radiation.IRadiationSource;
+
 /**
  * Applied to fission reactors
  *
@@ -8,4 +10,12 @@ package com.builtbroken.atomic.api.reactor;
  */
 public interface IFissionReactor extends IReactor
 {
+    /**
+     * Called to get the object that handles
+     * radiation for the reactor. This should be a
+     * capability on the tile itself.
+     *
+     * @return
+     */
+    IRadiationSource getRadiationSource();
 }

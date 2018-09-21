@@ -1,19 +1,17 @@
 package com.builtbroken.atomic.map.thermal;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.api.thermal.IHeatSource;
+import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import com.builtbroken.atomic.config.server.ConfigServer;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
-import com.builtbroken.atomic.map.data.MapChangeSet;
 import com.builtbroken.atomic.map.data.node.DataMapType;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
-import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -25,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Handles heat in the map
@@ -36,10 +33,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ThermalMap implements IThermalSystem
 {
     /** List of thermal sources in the world */
-    private HashMap<IHeatSource, ThermalSourceWrapper> thermalSourceMap = new HashMap();
+    private HashMap<IThermalSource, ThermalSourceWrapper> thermalSourceMap = new HashMap();
     private HashMap<Integer, HashSet<BlockPos>> steamSources = new HashMap();
-
-    public ConcurrentLinkedQueue<MapChangeSet> dataFromThread = new ConcurrentLinkedQueue();
 
     /**
      * Called to add source to the map
@@ -49,7 +44,7 @@ public class ThermalMap implements IThermalSystem
      *
      * @param source - valid source currently in the world
      */
-    public void addSource(IHeatSource source)
+    public void addSource(IThermalSource source)
     {
         if (source != null && source.canGeneratingHeat() && !thermalSourceMap.containsKey(source))
         {
@@ -65,12 +60,12 @@ public class ThermalMap implements IThermalSystem
      * is iterated at the end of each tick to check for changes.
      * <p>
      * Only remove if external logic requires it. As the source
-     * should return false for {@link IHeatSource#canGeneratingHeat()}
+     * should return false for {@link IThermalSource#canGeneratingHeat()}
      * to be automatically removed.
      *
      * @param source - valid source currently in the world
      */
-    public void removeSource(IHeatSource source)
+    public void removeSource(IThermalSource source)
     {
         if (thermalSourceMap.containsKey(source))
         {
@@ -84,7 +79,7 @@ public class ThermalMap implements IThermalSystem
      *
      * @param source
      */
-    protected void onSourceAdded(IHeatSource source)
+    protected void onSourceAdded(IThermalSource source)
     {
         if (AtomicScience.runningAsDev)
         {
@@ -98,7 +93,7 @@ public class ThermalMap implements IThermalSystem
      *
      * @param source
      */
-    protected void onSourceRemoved(IHeatSource source)
+    protected void onSourceRemoved(IThermalSource source)
     {
         if (AtomicScience.runningAsDev)
         {
@@ -112,10 +107,10 @@ public class ThermalMap implements IThermalSystem
      */
     public void clearDeadSources()
     {
-        Iterator<Map.Entry<IHeatSource, ThermalSourceWrapper>> it = thermalSourceMap.entrySet().iterator();
+        Iterator<Map.Entry<IThermalSource, ThermalSourceWrapper>> it = thermalSourceMap.entrySet().iterator();
         while (it.hasNext())
         {
-            Map.Entry<IHeatSource, ThermalSourceWrapper> next = it.next();
+            Map.Entry<IThermalSource, ThermalSourceWrapper> next = it.next();
             if (next == null || next.getKey() == null || next.getValue() == null || !next.getKey().canGeneratingHeat())
             {
                 if (next.getKey() != null)
@@ -133,7 +128,7 @@ public class ThermalMap implements IThermalSystem
      * @param source
      * @param newValue
      */
-    protected void fireSourceChange(IHeatSource source, int newValue)
+    protected void fireSourceChange(IThermalSource source, int newValue)
     {
         if (AtomicScience.runningAsDev)
         {
@@ -145,20 +140,21 @@ public class ThermalMap implements IThermalSystem
             //Remove old, called separate in case position changed
             if (wrapper.heatValue != 0)
             {
-                MapHandler.THREAD_THERMAL_ACTION.queuePosition(DataChange.get(wrapper.dim, wrapper.xi(), wrapper.yi(), wrapper.zi(), wrapper.heatValue, 0));
+                MapHandler.THREAD_THERMAL_ACTION.queuePosition(DataChange.get(source, wrapper.heatValue, 0));
             }
+
             //Log changes
             wrapper.logCurrentData();
 
             //Add new, called separate in case position changed
             if (newValue != 0 && source.canGeneratingHeat())
             {
-                MapHandler.THREAD_THERMAL_ACTION.queuePosition(DataChange.get(wrapper.dim, wrapper.xi(), wrapper.yi(), wrapper.zi(), 0, newValue));
+                MapHandler.THREAD_THERMAL_ACTION.queuePosition(DataChange.get(source, 0, newValue));
             }
         }
     }
 
-    protected ThermalSourceWrapper getRadSourceWrapper(IHeatSource source)
+    protected ThermalSourceWrapper getRadSourceWrapper(IThermalSource source)
     {
         if (thermalSourceMap.containsKey(source))
         {
@@ -342,22 +338,7 @@ public class ThermalMap implements IThermalSystem
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event)
     {
-        if (event.phase == TickEvent.Phase.START)
-        {
-            long time = System.currentTimeMillis();
-            while (!dataFromThread.isEmpty() && System.currentTimeMillis() - time < 10)
-            {
-                MapChangeSet change = dataFromThread.poll();
-                if (change != null)
-                {
-                    long t = System.nanoTime();
-                    change.pop();
-                    t = System.nanoTime() - t;
-                    AtomicScience.logger.info("ThermalMap: Dumped data from thread to map. Data size: " + change.size + " Time: " + StringHelpers.formatNanoTime(t));
-                }
-            }
-        }
-        else if (event.phase == TickEvent.Phase.END)
+        if (event.phase == TickEvent.Phase.END)
         {
             final World world = event.world;
             final int dim = world.provider.getDimension();

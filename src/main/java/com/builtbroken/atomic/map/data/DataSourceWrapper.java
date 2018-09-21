@@ -78,6 +78,11 @@ public abstract class DataSourceWrapper<S extends IPosWorld> implements IPosWorl
     @Override
     public World world()
     {
-        return DimensionManager.getWorld(dim) != null ? DimensionManager.getWorld(dim) : source.world();
+        return DimensionManager.getWorld(dim()) != null ? DimensionManager.getWorld(dim()) : source.world();
+    }
+
+    public int dim()
+    {
+        return dim;
     }
 }

@@ -1,14 +1,13 @@
 package com.builtbroken.atomic.map.thermal;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.lib.thermal.HeatSpreadDirection;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
-import com.builtbroken.atomic.map.data.MapChangeSet;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
-import com.builtbroken.atomic.map.data.storage.DataMap;
 import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -34,21 +33,20 @@ public class ThreadThermalAction extends ThreadDataChange
     protected boolean updateLocation(DataChange change)
     {
         //Get world
-        final World world = DimensionManager.getWorld(change.dim);
+        final World world = DimensionManager.getWorld(change.dim());
 
         final int cx = change.xi();
         final int cy = change.yi();
         final int cz = change.zi();
 
-        if (world != null)
+        if (world != null && change.source instanceof IThermalSource)
         {
-
             //Collect data
             HashMap<DataPos, DataPos> old_data = calculateHeatSpread(world, cx, cy, cz, change.old_value); //TODO pull data from heat source
             HashMap<DataPos, DataPos> new_data = calculateHeatSpread(world, cx, cy, cz, change.new_value); //TODO store data into heat source
 
             //Queue data update
-            MapHandler.THERMAL_MAP.dataFromThread.add(new MapChangeSet(world.provider.getDimension(), old_data, new_data));
+            //MapHandler.THERMAL_MAP.dataFromThread.add(new MapChangeSet(world.provider.getDimension(), old_data, new_data));
 
             return true;
         }
