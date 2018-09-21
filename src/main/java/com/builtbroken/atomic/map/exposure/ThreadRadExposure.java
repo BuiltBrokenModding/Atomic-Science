@@ -3,7 +3,14 @@ package com.builtbroken.atomic.map.exposure;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.data.*;
+import com.builtbroken.atomic.map.data.DataChange;
+import com.builtbroken.atomic.map.data.DataPos;
+import com.builtbroken.atomic.map.data.MapChangeSet;
+import com.builtbroken.atomic.map.data.ThreadDataChange;
+import com.builtbroken.atomic.map.data.node.DataMapType;
+import com.builtbroken.atomic.map.data.node.IDataMapNode;
+import com.builtbroken.atomic.map.data.storage.DataChunk;
+import com.builtbroken.atomic.map.data.storage.DataLayer;
 import com.builtbroken.atomic.map.data.storage.DataMap;
 import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraft.block.Block;
@@ -12,6 +19,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static java.lang.Math.cos;
@@ -43,7 +51,7 @@ public class ThreadRadExposure extends ThreadDataChange
         long time = System.nanoTime();
 
         final World world = map.getWorld();
-        if(world != null) //TODO check if world is loaded
+        if (world != null) //TODO check if world is loaded
         {
             HashMap<DataPos, DataPos> old_data = updateValue(map, world, change.xi(), change.yi(), change.zi(), change.old_value);
             HashMap<DataPos, DataPos> new_data = updateValue(map, world, change.xi(), change.yi(), change.zi(), change.new_value);
@@ -380,7 +388,7 @@ public class ThreadRadExposure extends ThreadDataChange
                         return ConfigRadiation.RADIATION_DECAY_STONE / 2;
                     }
                     else if (blockState.getMaterial() == Material.ICE
-                            ||blockState.getMaterial() == Material.PACKED_ICE
+                            || blockState.getMaterial() == Material.PACKED_ICE
                             || blockState.getMaterial() == Material.CRAFTED_SNOW)
                     {
                         return ConfigRadiation.RADIATION_DECAY_STONE / 3;
@@ -405,5 +413,25 @@ public class ThreadRadExposure extends ThreadDataChange
             }
         }
         return 0;
+    }
+
+    /**
+     * Called to scan a chunk to add remove calls
+     *
+     * @param chunk
+     */
+    protected void queueRemove(DataChunk chunk)
+    {
+        chunk.forEachValue(chunk, (dim, x, y, z, value) -> queuePosition(new DataChange(dim, x, y, z, value, 0)));
+    }
+
+    /**
+     * Called to scan a chunk to add addition calls
+     *
+     * @param chunk
+     */
+    protected void queueAddition(DataChunk chunk)
+    {
+        chunk.forEachValue(chunk, (dim, x, y, z, value) -> queuePosition(new DataChange(dim, x, y, z, 0, value)));
     }
 }

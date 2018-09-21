@@ -15,7 +15,7 @@ public class DataChange extends DataPos
     public int old_value;
     public int new_value;
 
-    protected DataChange(int dim, int x, int y, int z, int old_value, int new_value)
+    public DataChange(int dim, int x, int y, int z, int old_value, int new_value)
     {
         super(x, y, z);
         this.dim = dim;

@@ -1,11 +1,12 @@
 package com.builtbroken.atomic.map;
 
+import com.builtbroken.atomic.map.data.node.IDataMapNode;
 import com.builtbroken.atomic.map.data.storage.DataMap;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -16,24 +17,9 @@ import java.util.HashMap;
  */
 public class MapSystem
 {
-    /** Key used to save to the chunk */
-    protected final String saveKey;
-
-    /** Unique ID for tracking the map in events */
-    protected final String id;
 
     /** Dimension to data map, saved to world and updated over time */
     protected final HashMap<Integer, DataMap> dimensionToMap = new HashMap();
-
-    /**
-     * @param id      - unique ID for tracking the map in events
-     * @param saveKey - key used to save data to NBT of the game's map
-     */
-    public MapSystem(String id, String saveKey)
-    {
-        this.id = id;
-        this.saveKey = saveKey;
-    }
 
     /**
      * Gets the exposure map
@@ -92,14 +78,14 @@ public class MapSystem
      * @param pos   - location
      * @return radioactive material amount
      */
-    public int getData(World world, BlockPos pos)
+    public ArrayList<IDataMapNode> getData(World world, BlockPos pos)
     {
         DataMap map = getMap(world, false);
         if (map != null)
         {
             return map.getData(pos);
         }
-        return 0;
+        return null;
     }
 
     /**
@@ -111,14 +97,14 @@ public class MapSystem
      * @param z     - location
      * @return radioactive material amount
      */
-    public int getData(World world, int x, int y, int z)
+    public ArrayList<IDataMapNode> getData(World world, int x, int y, int z)
     {
         DataMap map = getMap(world, false);
         if (map != null)
         {
             return map.getData(x, y, z);
         }
-        return 0;
+        return null;
     }
 
     /**
@@ -128,14 +114,14 @@ public class MapSystem
      * @param pos - location
      * @return radioactive material amount
      */
-    public int getData(int dim, BlockPos pos)
+    public ArrayList<IDataMapNode> getData(int dim, BlockPos pos)
     {
         DataMap map = getMap(dim, false);
         if (map != null)
         {
             return map.getData(pos);
         }
-        return 0;
+        return null;
     }
 
     /**
@@ -147,70 +133,66 @@ public class MapSystem
      * @param z   - location
      * @return radioactive material amount
      */
-    public int getData(int dim, int x, int y, int z)
+    public ArrayList<IDataMapNode> getData(int dim, int x, int y, int z)
     {
         DataMap map = getMap(dim, false);
         if (map != null)
         {
             return map.getData(x, y, z);
         }
-        return 0;
+        return null;
     }
 
     /**
      * Called to set the data value of the position
      *
-     * @param dim    - world id
-     * @param x      - location
-     * @param y      - location
-     * @param z      - location
-     * @param amount - data
+     * @param dim  - world id
+     * @param x    - location
+     * @param y    - location
+     * @param z    - location
+     * @param node - data
      * @return true if the value was set
      */
-    public boolean setData(int dim, int x, int y, int z, int amount)
+    public void addData(int dim, int x, int y, int z, IDataMapNode node)
     {
-        DataMap map = getMap(dim, amount > 0);
+        DataMap map = getMap(dim, node != null);
         if (map != null)
         {
-            return map.setData(x, y, z, amount);
+            map.addData(x, y, z, node);
         }
-        return true;
     }
 
     /**
      * Called to set the data value of the position
      *
-     * @param world  - location
-     * @param pos    - location
-     * @param amount - data
+     * @param world - location
+     * @param pos   - location
+     * @param node  - data
      * @return true if the value was set
      */
-    public boolean setData(World world, BlockPos pos, int amount)
+    public void addData(World world, BlockPos pos, IDataMapNode node)
     {
-        DataMap map = getMap(world, amount > 0);
+        DataMap map = getMap(world, node != null);
         if (map != null)
         {
-            return map.setData(pos, amount);
+            map.addData(pos, node);
         }
-        return true;
     }
 
     /**
      * Called to set the data value of the position
      *
-     * @param dim    - world id
-     * @param pos    - location
-     * @param amount - data
-     * @return true if the value was set
+     * @param dim  - world id
+     * @param pos  - location
+     * @param node - data
      */
-    public boolean setData(int dim, BlockPos pos, int amount)
+    public void addData(int dim, BlockPos pos, IDataMapNode node)
     {
-        DataMap map = getMap(dim, amount > 0);
+        DataMap map = getMap(dim, node != null);
         if (map != null)
         {
-            return map.setData(pos, amount);
+            map.addData(pos, node);
         }
-        return true;
     }
 
     ///----------------------------------------------------------------
@@ -245,36 +227,6 @@ public class MapSystem
         if (map != null)
         {
             map.unloadChunk(chunk);
-        }
-    }
-
-    public void onChunkLoadData(World world, Chunk chunk, NBTTagCompound save) //Called before chunk load event
-    {
-        if (save != null && saveKey != null && save.hasKey(saveKey))
-        {
-            DataMap map = getMap(world, true);
-            if (map != null)
-            {
-                NBTTagCompound tag = save.getCompoundTag(saveKey);
-                if (!tag.isEmpty())
-                {
-                    map.loadChunk(chunk, tag);
-                }
-            }
-        }
-    }
-
-    public void onChunkSaveData(World world, Chunk chunk, NBTTagCompound save) //Called on world save
-    {
-        DataMap map = getMap(world, false);
-        if (map != null && saveKey != null)
-        {
-            NBTTagCompound tag = new NBTTagCompound();
-            map.saveChunk(chunk, tag);
-            if (!tag.isEmpty())
-            {
-                save.setTag(saveKey, tag);
-            }
         }
     }
 }

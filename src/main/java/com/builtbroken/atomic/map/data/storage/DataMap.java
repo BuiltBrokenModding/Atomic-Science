@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.map.data.storage;
 
 import com.builtbroken.atomic.map.MapSystem;
+import com.builtbroken.atomic.map.data.node.DataMapType;
 import com.builtbroken.atomic.map.data.node.IDataMapNode;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import net.minecraft.util.math.BlockPos;
@@ -38,6 +39,16 @@ public class DataMap
     ///----------------------------------------------------------------
     ///-------- Input/Output
     ///----------------------------------------------------------------
+
+    public int getValue(BlockPos pos, DataMapType type)
+    {
+        return type.getValue(getData(pos));
+    }
+
+    public int getValue(int x, int y, int z, DataMapType type)
+    {
+        return type.getValue(getData(x, y, z));
+    }
 
     public ArrayList<IDataMapNode> getData(BlockPos pos)
     {

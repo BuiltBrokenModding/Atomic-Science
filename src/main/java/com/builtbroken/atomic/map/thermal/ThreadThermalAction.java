@@ -4,12 +4,16 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.lib.thermal.HeatSpreadDirection;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.data.*;
+import com.builtbroken.atomic.map.data.DataChange;
+import com.builtbroken.atomic.map.data.DataPos;
+import com.builtbroken.atomic.map.data.MapChangeSet;
+import com.builtbroken.atomic.map.data.ThreadDataChange;
 import com.builtbroken.atomic.map.data.storage.DataMap;
 import com.builtbroken.jlib.lang.StringHelpers;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.DimensionManager;
 
 import java.util.*;
 
@@ -29,27 +33,22 @@ public class ThreadThermalAction extends ThreadDataChange
     @Override
     protected boolean updateLocation(DataChange change)
     {
-        //Get radiation exposure map
-        DataMap map;
-        synchronized (MapHandler.THERMAL_MAP)
-        {
-            map = MapHandler.THERMAL_MAP.getMap(change.dim, true); //TODO see if we need this, if yes find better solution
-        }
+        //Get world
+        final World world = DimensionManager.getWorld(change.dim);
 
         final int cx = change.xi();
         final int cy = change.yi();
         final int cz = change.zi();
 
-        final World world = map.getWorld();
-        if(world != null)
+        if (world != null)
         {
 
             //Collect data
-            HashMap<DataPos, DataPos> old_data = calculateHeatSpread(map, cx, cy, cz, change.old_value); //TODO pull data from heat source
-            HashMap<DataPos, DataPos> new_data = calculateHeatSpread(map, cx, cy, cz, change.new_value); //TODO store data into heat source
+            HashMap<DataPos, DataPos> old_data = calculateHeatSpread(world, cx, cy, cz, change.old_value); //TODO pull data from heat source
+            HashMap<DataPos, DataPos> new_data = calculateHeatSpread(world, cx, cy, cz, change.new_value); //TODO store data into heat source
 
             //Queue data update
-            MapHandler.THERMAL_MAP.dataFromThread.add(new MapChangeSet(map, old_data, new_data));
+            MapHandler.THERMAL_MAP.dataFromThread.add(new MapChangeSet(world.provider.getDimension(), old_data, new_data));
 
             return true;
         }
@@ -66,14 +65,14 @@ public class ThreadThermalAction extends ThreadDataChange
      * its assumed heat will constantly be generated. Thus migrating heat is not needed beyond
      * estimating how much heat would be moved.
      *
-     * @param map  - map to pull data from
+     * @param world  - map to pull data from
      * @param cx   - center of heat
      * @param cy   - center of heat
      * @param cz   - center of heat
      * @param heat - amount of heat to move
      * @return positions and changes (first pos is position, second is data (x -> heat, y -> heat used))
      */
-    protected HashMap<DataPos, DataPos> calculateHeatSpread(final DataMap map, final int cx, final int cy, final int cz, final int heat)
+    protected HashMap<DataPos, DataPos> calculateHeatSpread(final World world, final int cx, final int cy, final int cz, final int heat)
     {
         //TODO consider splitting over several threads
         //TODO map fluid(water, air, lava, etc) pockets to allow convection currents
@@ -132,7 +131,7 @@ public class ThreadThermalAction extends ThreadDataChange
                         spreadDirections.add(direction);
 
                         //Increase heat spread ratio
-                        heatRateTotal += ThermalHandler.getHeatTransferRate(map.getWorld(), new BlockPos(x, y, z));
+                        heatRateTotal += ThermalHandler.getHeatTransferRate(world, new BlockPos(x, y, z));
                     }
                 }
 
@@ -160,13 +159,13 @@ public class ThreadThermalAction extends ThreadDataChange
                         int heatAtNext = heatSpreadData.get(pos).x;
 
                         //Calculate spread ratio from direction
-                        double transferRate = ThermalHandler.getHeatTransferRate(map.getWorld(), new BlockPos(pos.x, pos.y, pos.z));   //TODO recycle block pos
+                        double transferRate = ThermalHandler.getHeatTransferRate(world, new BlockPos(pos.x, pos.y, pos.z));   //TODO recycle block pos
 
                         //Convert ratio into percentage
                         double percentage = transferRate / heatRateTotal;
 
                         //Calculate heat to move to current position from direction
-                        int heatMoved = getHeatToSpread(map, pos, currentPos, heatAtNext, percentage * direction.percentage, heatSpreadData);
+                        int heatMoved = getHeatToSpread(world, pos, currentPos, heatAtNext, percentage * direction.percentage, heatSpreadData);
 
                         //Update direction position with heat moved
                         heatSpreadData.get(pos).y += heatMoved;
@@ -219,19 +218,19 @@ public class ThreadThermalAction extends ThreadDataChange
     /**
      * Called to get the heat to spread to the target tile
      *
-     * @param map            - map (do not add or remove data from, tbh don't even use)
+     * @param world          - world
      * @param heatSource     - source of heat
      * @param heatTarget     - target of heat
      * @param heatToMove     - total heat to move
      * @param heatSpreadData - data of current heat movement
      * @return heat moved
      */
-    protected int getHeatToSpread(DataMap map, DataPos heatSource, DataPos heatTarget, final int heatToMove, final double percentage, HashMap<DataPos, DataPos> heatSpreadData)
+    protected int getHeatToSpread(World world, DataPos heatSource, DataPos heatTarget, final int heatToMove, final double percentage, HashMap<DataPos, DataPos> heatSpreadData)
     {
-        if (map.blockExists(new BlockPos(heatTarget.x, heatTarget.y, heatTarget.z)))   //TODO recycle block pos
+        if (world.isBlockLoaded(new BlockPos(heatTarget.x, heatTarget.y, heatTarget.z)))   //TODO recycle block pos
         {
             //Get heat actual movement (only move 25% of heat)
-            return getHeatSpread(map.getWorld(), heatSource, heatTarget, (int) Math.floor(heatToMove * percentage), heatSpreadData);
+            return getHeatSpread(world, heatSource, heatTarget, (int) Math.floor(heatToMove * percentage), heatSpreadData);
         }
         return heatToMove;
     }

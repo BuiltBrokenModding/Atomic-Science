@@ -7,11 +7,9 @@ import com.builtbroken.atomic.config.server.ConfigServer;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.MapSystem;
 import com.builtbroken.atomic.map.data.DataChange;
-import com.builtbroken.atomic.map.data.storage.DataMap;
-import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.MapChangeSet;
+import com.builtbroken.atomic.map.data.node.DataMapType;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
@@ -35,18 +33,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/6/2018.
  */
-public class ThermalMap extends MapSystem implements IThermalSystem
+public class ThermalMap implements IThermalSystem
 {
     /** List of thermal sources in the world */
     private HashMap<IHeatSource, ThermalSourceWrapper> thermalSourceMap = new HashMap();
-    private HashMap<Integer, HashSet<DataPos>> steamSources = new HashMap();
+    private HashMap<Integer, HashSet<BlockPos>> steamSources = new HashMap();
 
     public ConcurrentLinkedQueue<MapChangeSet> dataFromThread = new ConcurrentLinkedQueue();
-
-    public ThermalMap()
-    {
-        super(MapHandler.THERMAL_MAP_ID, null);
-    }
 
     /**
      * Called to add source to the map
@@ -183,12 +176,17 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * Energy in joules
      *
      * @param world
-     * @param pos - location
+     * @param pos   - location
      * @return
      */
     public long getJoules(World world, BlockPos pos)
     {
-        return getData(world, pos) * 1000L; //Map stores heat in kilo-joules
+        return getStoredValue(world, pos) * 1000L; //Map stores heat in kilo-joules
+    }
+
+    public int getStoredValue(World world, BlockPos pos)
+    {
+        return DataMapType.THERMAL.getValue(MapHandler.GLOBAL_DATA_MAP.getData(world, pos));
     }
 
     public long getActualJoules(World world, BlockPos pos)
@@ -203,7 +201,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * the heat + environmental values.
      *
      * @param world - map to pull data from
-     * @param pos - location
+     * @param pos   - location
      * @return temperature in Kelvin
      */
     public double getTemperature(World world, BlockPos pos)
@@ -218,7 +216,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * the heat + environmental values.
      *
      * @param world  - map to pull data from
-     * @param pos - location
+     * @param pos    - location
      * @param joules - heat energy
      * @return temperature in Kelvin
      */
@@ -231,8 +229,8 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * Gets the different in temperature between two locations
      *
      * @param world - map to pull data from
-     * @param pos - location
-     * @param pos2 - location2
+     * @param pos   - location
+     * @param pos2  - location2
      * @return temperature in Kelvin
      */
     public double getTemperatureDelta(World world, BlockPos pos, BlockPos pos2)
@@ -244,7 +242,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * Gets the amount of heat energy naturally present in the block due to environmental values
      *
      * @param world - location
-     * @param pos - location
+     * @param pos   - location
      * @return energy in joules
      */
     public long getEnvironmentalJoules(World world, BlockPos pos)
@@ -256,7 +254,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
      * Gets the natural resting temperature of the environment
      *
      * @param world - location
-     * @param pos - location
+     * @param pos   - location
      * @return temperature in kelvin
      */
     public double getEnvironmentalTemperature(World world, BlockPos pos)
@@ -264,10 +262,9 @@ public class ThermalMap extends MapSystem implements IThermalSystem
         return 290; //Slightly under room temp
     }
 
-    @Override
+
     public void onWorldUnload(World world)
     {
-        super.onWorldUnload(world);
         thermalSourceMap.clear();
         steamSources.clear();
     }
@@ -276,10 +273,9 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     public void onHeatChanged(MapSystemEvent.UpdateValue event)
     {
         World world = event.world();
-        DataMap map = getMap(world, false);
-        if (world != null && map != null && map.blockExists(event.pos))
+        if (world != null && world.isBlockLoaded(event.getPos()))
         {
-            checkForThermalChange(world, event.pos, event.new_value);
+            checkForThermalChange(world, event.getPos(), event.getNewValue());
         }
     }
 
@@ -288,7 +284,7 @@ public class ThermalMap extends MapSystem implements IThermalSystem
     {
         if (!event.getWorld().isRemote)
         {
-            checkForThermalChange(event.getWorld(), event.getPos(), getData(event.getWorld(), event.getPos()));
+            checkForThermalChange(event.getWorld(), event.getPos(), getStoredValue(event.getWorld(), event.getPos()));
         }
     }
 
@@ -304,7 +300,6 @@ public class ThermalMap extends MapSystem implements IThermalSystem
         }
 
         int vap = ThermalHandler.getVaporRate(world, pos, heat * 1000 + getEnvironmentalJoules(world, pos));
-        DataPos dataPos = DataPos.get(pos.getX(), pos.getY(), pos.getZ());
 
         final int dim = world.provider.getDimension();
         if (!steamSources.containsKey(dim))
@@ -314,19 +309,14 @@ public class ThermalMap extends MapSystem implements IThermalSystem
 
         if (vap > 0)
         {
-            if (!steamSources.get(dim).contains(dataPos))
+            if (!steamSources.get(dim).contains(pos))
             {
-                steamSources.get(dim).add(dataPos);
-            }
-            else
-            {
-                dataPos.dispose();
+                steamSources.get(dim).add(pos);
             }
         }
-        if (!steamSources.get(dim).contains(dataPos))
+        else if (!steamSources.get(dim).contains(pos))
         {
-            steamSources.remove(dataPos);
-            dataPos.dispose();
+            steamSources.remove(pos);
         }
     }
 
@@ -374,19 +364,19 @@ public class ThermalMap extends MapSystem implements IThermalSystem
 
             if (ConfigServer.NETWORK.BOILING_EFFECT && steamSources.containsKey(dim))
             {
-                HashSet<DataPos> steamPositions = steamSources.get(dim);
-                Iterator<DataPos> it = steamPositions.iterator();
+                HashSet<BlockPos> steamPositions = steamSources.get(dim);
+                Iterator<BlockPos> it = steamPositions.iterator();
                 while (it.hasNext())
                 {
-                    DataPos pos = it.next(); //TODO change over to block pos
-                    if (world.isBlockLoaded(new BlockPos(pos.x, pos.y, pos.z)))
+                    BlockPos pos = it.next(); //TODO change over to block pos
+                    if (world.isBlockLoaded(pos))
                     {
-                        int vap = ThermalHandler.getVaporRate(world, new BlockPos(pos.x, pos.y, pos.z));
+                        int vap = ThermalHandler.getVaporRate(world, pos);
                         if (vap > 0)
                         {
                             int count = Math.min(10, Math.max(1, vap / 100));
                             PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim,
-                                    pos.x + 0.5, pos.y + 0.5, pos.z + 0.5,
+                                    pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                                     0, 0, 0,
                                     "boiling;" + count);
                             PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, pos, 30);
@@ -394,13 +384,11 @@ public class ThermalMap extends MapSystem implements IThermalSystem
                         else
                         {
                             it.remove();
-                            pos.dispose();
                         }
                     }
                     else
                     {
                         it.remove();
-                        pos.dispose();
                     }
                 }
             }

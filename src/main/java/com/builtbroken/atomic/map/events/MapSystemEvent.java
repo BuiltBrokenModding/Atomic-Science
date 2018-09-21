@@ -74,6 +74,11 @@ public abstract class MapSystemEvent extends Event
             this.node = node;
         }
 
+        public int getNewValue()
+        {
+            return prev_value + type.getValue(node);
+        }
+
         public BlockPos getPos()
         {
             if (pos == null)

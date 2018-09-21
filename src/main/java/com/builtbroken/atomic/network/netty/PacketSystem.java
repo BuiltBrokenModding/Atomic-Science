@@ -8,6 +8,7 @@ import com.builtbroken.jlib.data.vector.IPos3D;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
@@ -127,6 +128,11 @@ public class PacketSystem extends ContentProxy
     public void sendToAllAround(IPacket message, IPosWorld point, double range)
     {
         sendToAllAround(message, point.world(), point.x(), point.y(), point.z(), range);
+    }
+
+    public void sendToAllAround(IPacket message, World world, BlockPos point, double range)
+    {
+        sendToAllAround(message, world, point.getX(), point.getY(), point.getZ(), range);
     }
 
     public void sendToAllAround(IPacket message, World world, IPos3D point, double range)

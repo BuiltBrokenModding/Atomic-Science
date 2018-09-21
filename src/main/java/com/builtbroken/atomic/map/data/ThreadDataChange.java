@@ -2,7 +2,6 @@ package com.builtbroken.atomic.map.data;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.map.data.storage.DataChunk;
-import com.builtbroken.atomic.map.data.storage.DataLayer;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -51,13 +50,21 @@ public abstract class ThreadDataChange extends Thread
                 //Cleanup of chunks, remove data from chunk so when re-added later it doesn't spike values
                 while (shouldRun && !removeScanQueue.isEmpty())
                 {
-                    queueRemove(removeScanQueue.poll());
+                    DataChunk chunk = removeScanQueue.poll();
+                    if (chunk != null)
+                    {
+                        queueRemove(chunk);
+                    }
                 }
 
                 //New additions, update data for values
                 while (shouldRun && !addScanQueue.isEmpty())
                 {
-                    queueAddition(addScanQueue.poll());
+                    DataChunk chunk = addScanQueue.poll();
+                    if (chunk != null)
+                    {
+                        queueAddition(chunk);
+                    }
                 }
 
                 //Stop looping if we have chunks to scan, only loop if we have something to do
@@ -67,7 +74,7 @@ public abstract class ThreadDataChange extends Thread
                     if (change != null)
                     {
                         //If return true, then clear object
-                        if(updateLocation(change))
+                        if (updateLocation(change))
                         {
                             change.dispose();
                         }
@@ -105,24 +112,7 @@ public abstract class ThreadDataChange extends Thread
      */
     protected void queueRemove(DataChunk chunk)
     {
-        if (chunk != null)
-        {
-            for (DataLayer layer : chunk.getLayers())
-            {
-                for (int cx = 0; cx < 16; cx++)
-                {
-                    for (int cz = 0; cz < 16; cz++)
-                    {
-                        if (layer != null && layer.getData(cx, cz) > 0)
-                        {
-                            int x = cx + chunk.xPosition * 16;
-                            int z = cz + chunk.xPosition * 16;
-                            changeQueue.add(new DataChange(chunk.dimension, x, layer.y_index, z, layer.getData(cx, cz), 0));
-                        }
-                    }
-                }
-            }
-        }
+
     }
 
     /**
@@ -132,24 +122,7 @@ public abstract class ThreadDataChange extends Thread
      */
     protected void queueAddition(DataChunk chunk)
     {
-        if (chunk != null)
-        {
-            for (DataLayer layer : chunk.getLayers())
-            {
-                for (int cx = 0; cx < 16; cx++)
-                {
-                    for (int cz = 0; cz < 16; cz++)
-                    {
-                        if (layer != null && layer.getData(cx, cz) > 0)
-                        {
-                            int x = cx + chunk.xPosition * 16;
-                            int z = cz + chunk.xPosition * 16;
-                            changeQueue.add(new DataChange(chunk.dimension, x, layer.y_index, z, 0, layer.getData(cx, cz)));
-                        }
-                    }
-                }
-            }
-        }
+
     }
 
     /**

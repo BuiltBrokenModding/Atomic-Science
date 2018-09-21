@@ -41,6 +41,11 @@ public enum DataMapType
         this.function = function;
     }
 
+    public int getValue(IDataMapNode node)
+    {
+        return node != null ? function.apply(node) : 0;
+    }
+
     public int getValue(ArrayList<IDataMapNode> nodes)
     {
         int value = 0;
@@ -48,10 +53,7 @@ public enum DataMapType
         {
             for (IDataMapNode node : nodes)
             {
-                if (node != null)
-                {
-                    value += function.apply(node);
-                }
+                value += getValue(node);
             }
         }
         return value;

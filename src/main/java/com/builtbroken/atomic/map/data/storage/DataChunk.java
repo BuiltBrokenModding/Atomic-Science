@@ -1,6 +1,8 @@
 package com.builtbroken.atomic.map.data.storage;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.map.data.MapValueConsumer;
+import com.builtbroken.atomic.map.data.node.DataMapType;
 import com.builtbroken.atomic.map.data.node.IDataMapNode;
 
 import java.util.ArrayList;
@@ -183,5 +185,32 @@ public class DataChunk
             }
         }
         return false;
+    }
+
+    public void forEachValue(MapValueConsumer consumer)
+    {
+        for (DataLayer layer : getLayers())
+        {
+            if (layer != null && layer.blocksUsed > 0)
+            {
+                for (int cx = 0; cx < 16; cx++)
+                {
+                    for (int cz = 0; cz < 16; cz++)
+                    {
+                        ArrayList<IDataMapNode> list = layer.getData(cx, cz);
+                        if (list != null && !list.isEmpty())
+                        {
+                            int value = DataMapType.RAD_MATERIAL.getValue(list);
+                            if (value > 0)
+                            {
+                                int x = cx + xPosition * 16;
+                                int z = cz + xPosition * 16;
+                                consumer.accept(dimension, x, layer.y_index, z, value);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
