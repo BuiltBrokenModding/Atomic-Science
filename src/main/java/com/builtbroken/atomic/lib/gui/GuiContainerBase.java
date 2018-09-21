@@ -602,30 +602,35 @@ public class GuiContainerBase<H> extends GuiContainer
                 }
             }
 
-            //Find texture for fluid
-            FMLClientHandler.instance().getClient().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            //Get sprite
             TextureAtlasSprite texture = FMLClientHandler.instance().getClient().getTextureMapBlocks().getAtlasSprite(fluidIcon.toString());
 
-            final int textureSize = 16;
-            int start = 0;
-            if (fluidIcon != null)
+            if (texture != null)
             {
-                int renderY = textureSize;
-                while (renderY != 0 && drawSize != 0)
-                {
-                    if (drawSize > textureSize)
-                    {
-                        renderY = textureSize;
-                        drawSize -= textureSize;
-                    }
-                    else
-                    {
-                        renderY = drawSize;
-                        drawSize = 0;
-                    }
+                //bind texture
+                FMLClientHandler.instance().getClient().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-                    this.drawTexturedModalRect(x + col, y + line + 58 - renderY - start, texture, width, textureSize - (textureSize - renderY));
-                    start = start + textureSize;
+                final int textureSize = 16;
+                int start = 0;
+                if (fluidIcon != null)
+                {
+                    int renderY = textureSize;
+                    while (renderY != 0 && drawSize != 0)
+                    {
+                        if (drawSize > textureSize)
+                        {
+                            renderY = textureSize;
+                            drawSize -= textureSize;
+                        }
+                        else
+                        {
+                            renderY = drawSize;
+                            drawSize = 0;
+                        }
+
+                        this.drawTexturedModalRect(x + col, y + line + 58 - renderY - start, texture, width, textureSize - (textureSize - renderY));
+                        start = start + textureSize;
+                    }
                 }
             }
         }
