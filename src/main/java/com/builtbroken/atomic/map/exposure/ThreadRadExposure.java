@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.*;
+import com.builtbroken.atomic.map.data.storage.DataMap;
 import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

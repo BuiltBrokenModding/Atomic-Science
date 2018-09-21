@@ -5,6 +5,7 @@ import com.builtbroken.atomic.lib.thermal.HeatSpreadDirection;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.*;
+import com.builtbroken.atomic.map.data.storage.DataMap;
 import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

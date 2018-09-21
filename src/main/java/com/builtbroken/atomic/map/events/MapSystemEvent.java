@@ -1,7 +1,9 @@
 package com.builtbroken.atomic.map.events;
 
-import com.builtbroken.atomic.map.data.DataChunk;
-import com.builtbroken.atomic.map.data.DataMap;
+import com.builtbroken.atomic.map.data.node.DataMapType;
+import com.builtbroken.atomic.map.data.node.IDataMapNode;
+import com.builtbroken.atomic.map.data.storage.DataChunk;
+import com.builtbroken.atomic.map.data.storage.DataMap;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -45,16 +47,40 @@ public abstract class MapSystemEvent extends Event
     @Cancelable
     public static class UpdateValue extends MapSystemEvent
     {
-        public final BlockPos pos;
-        public final int prev_value;
-        public int new_value;
+        /** Type of data */
+        public final DataMapType type;
 
-        public UpdateValue(DataMap map, BlockPos pos, int prev_value, int new_value)
+        //Location data
+        public final int x;
+        public final int y;
+        public final int z;
+
+        /** Previous value of all data of same type added together */
+        public final int prev_value;
+
+        /** Node being added, add value to prev_value to get new value */
+        public IDataMapNode node;
+
+        private BlockPos pos;
+
+        public UpdateValue(DataMap map, DataMapType type, int x, int y, int z, int prev_value, IDataMapNode node)
         {
             super(map);
-            this.pos = pos;
+            this.type = type;
+            this.x = x;
+            this.y = y;
+            this.z = z;
             this.prev_value = prev_value;
-            this.new_value = new_value;
+            this.node = node;
+        }
+
+        public BlockPos getPos()
+        {
+            if (pos == null)
+            {
+                pos = new BlockPos(x, y, z);
+            }
+            return pos;
         }
     }
 

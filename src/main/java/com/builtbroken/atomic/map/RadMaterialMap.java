@@ -1,8 +1,8 @@
 package com.builtbroken.atomic.map;
 
 import com.builtbroken.atomic.api.radiation.IRadioactiveMaterialSystem;
-import com.builtbroken.atomic.map.data.DataChunk;
-import com.builtbroken.atomic.map.data.DataMap;
+import com.builtbroken.atomic.map.data.storage.DataChunk;
+import com.builtbroken.atomic.map.data.storage.DataMap;
 
 import java.util.ArrayList;
 import java.util.List;

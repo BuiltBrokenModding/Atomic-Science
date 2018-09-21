@@ -1,6 +1,8 @@
 package com.builtbroken.atomic.map.data;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.map.data.storage.DataChunk;
+import com.builtbroken.atomic.map.data.storage.DataLayer;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 

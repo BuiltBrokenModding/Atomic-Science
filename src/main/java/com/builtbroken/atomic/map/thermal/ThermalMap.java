@@ -9,7 +9,7 @@ import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.MapSystem;
 import com.builtbroken.atomic.map.data.DataChange;
-import com.builtbroken.atomic.map.data.DataMap;
+import com.builtbroken.atomic.map.data.storage.DataMap;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.MapChangeSet;
 import com.builtbroken.atomic.map.events.MapSystemEvent;

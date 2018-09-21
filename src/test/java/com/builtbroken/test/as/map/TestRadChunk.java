@@ -1,7 +1,7 @@
 package com.builtbroken.test.as.map;
 
 import com.builtbroken.atomic.lib.transform.vector.Pos;
-import com.builtbroken.atomic.map.data.DataChunk;
+import com.builtbroken.atomic.map.data.storage.DataChunk;
 import junit.framework.TestCase;
 import net.minecraft.nbt.NBTTagCompound;
 import org.junit.Test;

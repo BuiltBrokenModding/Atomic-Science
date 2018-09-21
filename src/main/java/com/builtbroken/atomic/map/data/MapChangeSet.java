@@ -1,5 +1,7 @@
 package com.builtbroken.atomic.map.data;
 
+import com.builtbroken.atomic.map.data.storage.DataMap;
+
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,8 +1,8 @@
-package com.builtbroken.atomic.map.data;
+package com.builtbroken.atomic.map.data.storage;
 
 import com.builtbroken.atomic.map.MapSystem;
+import com.builtbroken.atomic.map.data.node.IDataMapNode;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -10,10 +10,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Stores a collection of chunks holding data
@@ -42,60 +39,54 @@ public class DataMap
     ///-------- Input/Output
     ///----------------------------------------------------------------
 
-    public int getData(BlockPos pos)
+    public ArrayList<IDataMapNode> getData(BlockPos pos)
     {
         return getData(pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public int getData(int x, int y, int z)
+    public ArrayList<IDataMapNode> getData(int x, int y, int z)
     {
         DataChunk chunk = getChunkFromPosition(x, z, false);
         if (chunk != null)
         {
-            return chunk.getValue(x & 15, y, z & 15);
+            return chunk.getData(x & 15, y, z & 15);
         }
-        return 0;
+        return null;
     }
 
-    public boolean setData(BlockPos pos, int amount)
+    public void addData(BlockPos pos, IDataMapNode node)
     {
-        return setData(pos.getX(), pos.getY(), pos.getZ(), amount);
+        addData(pos.getX(), pos.getY(), pos.getZ(), node);
     }
 
-    public boolean setData(int x, int y, int z, int amount)
+    public void addData(int x, int y, int z, IDataMapNode node)
     {
-        DataChunk chunk = getChunkFromPosition(x, z, amount > 0);
+        DataChunk chunk = getChunkFromPosition(x, z, node != null);
         if (chunk != null)
         {
-            final int prev_value = getData(x, y, z);
+            final int prev = node.getType().getValue(getData(x, y, z));
 
             //Fire change event for modification and to trigger exposure map update
-            MapSystemEvent.UpdateValue event = new MapSystemEvent.UpdateValue(this, new BlockPos(x, y, z), prev_value, amount); //TODO figure out if we need the block pos
-            if (MinecraftForge.EVENT_BUS.post(event))
+            MapSystemEvent.UpdateValue event = new MapSystemEvent.UpdateValue(this, node.getType(), x, y, z, prev, node); //TODO figure out if we need the block pos
+            if (MinecraftForge.EVENT_BUS.post(event) || event.node == null)
             {
-                return false;
+                return;
             }
-            amount = event.new_value;
 
-            //set value
-            boolean hasChanged = chunk.setValue(x & 15, y, z & 15, amount);
+            //Add node
+            chunk.addData(x, y, z, event.node);
 
             //if changed mark chunk so it saves
-            if (hasChanged)
+            World world = DimensionManager.getWorld(dim);
+            if (world != null)
             {
-                World world = DimensionManager.getWorld(dim);
-                if (world != null)
+                Chunk worldChunk = world.getChunk(x >> 4, z >> 4);
+                if (worldChunk != null)
                 {
-                    Chunk worldChunk = world.getChunk(x >> 4, z >> 4);
-                    if (worldChunk != null)
-                    {
-                        worldChunk.setModified(true);
-                    }
+                    worldChunk.setModified(true);
                 }
             }
-            return hasChanged;
         }
-        return true;
     }
 
     /**
@@ -188,51 +179,6 @@ public class DataMap
         {
             chunksWaitingToUnload.put(index, chunksCurrentlyLoaded.get(index));
             chunksCurrentlyLoaded.remove(index);
-        }
-    }
-
-    /**
-     * Called to save the chunk data.
-     * <p>
-     * Data provides should be an empty tag. Does not include
-     * all data for the chunk.
-     *
-     * @param chunk
-     * @param data  - tag to save directly two
-     */
-    public void saveChunk(Chunk chunk, NBTTagCompound data)
-    {
-        long index = index(chunk);
-        DataChunk radiationChunk = findChunk(index, true);
-        if (radiationChunk != null)
-        {
-            radiationChunk.save(data);
-        }
-    }
-
-    /**
-     * Called to load the chunk data
-     * <p>
-     * Will create a new chunk instance if missing
-     * <p>
-     * Data provides is unique to this chunk and is not
-     * the entire save data for the game's map.
-     *
-     * @param chunk
-     * @param data  - data to load
-     */
-    public void loadChunk(Chunk chunk, NBTTagCompound data)
-    {
-        //Get chunk
-        DataChunk radiationChunk = getChunk(chunk.x, chunk.z, true);
-
-        //Load
-        radiationChunk.load(data);
-
-        //Trigger event
-        if (radiationChunk != null)
-        {
-            MinecraftForge.EVENT_BUS.post(new MapSystemEvent.AddChunk(this, radiationChunk));
         }
     }
 
