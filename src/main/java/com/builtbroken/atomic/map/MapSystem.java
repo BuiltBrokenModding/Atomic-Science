@@ -196,6 +196,16 @@ public class MapSystem
         }
     }
 
+    public boolean removeData(World world, BlockPos pos, IDataMapSource source)
+    {
+        DataMap map = getMap(world, false);
+        if (map != null)
+        {
+            return map.removeData(pos, source);
+        }
+        return false;
+    }
+
     public boolean removeData(int dim, BlockPos pos, IDataMapSource source)
     {
         DataMap map = getMap(dim, false);

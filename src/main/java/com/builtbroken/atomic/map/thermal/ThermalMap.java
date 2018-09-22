@@ -237,10 +237,10 @@ public class ThermalMap implements IThermalSystem
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onHeatChanged(MapSystemEvent.UpdateValue event)
+    public void onHeatChanged(MapSystemEvent.OnValueChanged event)
     {
-        World world = event.world();
-        if (world != null && world.isBlockLoaded(event.getPos()))
+        final World world = event.world();
+        if (world != null && event.type == DataMapType.THERMAL && world.isBlockLoaded(event.getPos()))
         {
             checkForThermalChange(world, event.getPos(), event.getNewValue());
         }

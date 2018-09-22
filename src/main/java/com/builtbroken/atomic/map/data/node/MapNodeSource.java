@@ -22,7 +22,6 @@ public abstract class MapNodeSource<E, N extends IDataMapNode> implements IDataM
         this.host = host;
     }
 
-
     public HashMap<BlockPos, N> getCurrentNodes()
     {
         return nodes;
@@ -68,7 +67,7 @@ public abstract class MapNodeSource<E, N extends IDataMapNode> implements IDataM
         {
             for (BlockPos pos : getCurrentNodes().keySet())
             {
-                MapHandler.GLOBAL_DATA_MAP.removeData(dim(), pos, this);
+                MapHandler.GLOBAL_DATA_MAP.removeData(world(), pos, this);
             }
         }
     }
@@ -80,7 +79,7 @@ public abstract class MapNodeSource<E, N extends IDataMapNode> implements IDataM
         {
             for (Map.Entry<BlockPos, N> entry : getCurrentNodes().entrySet())
             {
-                MapHandler.GLOBAL_DATA_MAP.addData(dim(), entry.getKey(), entry.getValue());
+                MapHandler.GLOBAL_DATA_MAP.addData(world(), entry.getKey(), entry.getValue());
             }
         }
     }

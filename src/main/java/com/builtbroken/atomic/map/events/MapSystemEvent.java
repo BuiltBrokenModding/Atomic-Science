@@ -44,8 +44,7 @@ public abstract class MapSystemEvent extends Event
      * <p>
      * Is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}
      */
-    @Cancelable
-    public static class UpdateValue extends MapSystemEvent
+    public abstract static class OnValueChanged extends MapSystemEvent
     {
         /** Type of data */
         public final DataMapType type;
@@ -58,12 +57,10 @@ public abstract class MapSystemEvent extends Event
         /** Previous value of all data of same type added together */
         public final int prev_value;
 
-        /** Node being added, add value to prev_value to get new value */
-        public IDataMapNode node;
 
         private BlockPos pos;
 
-        public UpdateValue(DataMap map, DataMapType type, int x, int y, int z, int prev_value, IDataMapNode node)
+        public OnValueChanged(DataMap map, DataMapType type, int x, int y, int z, int prev_value)
         {
             super(map);
             this.type = type;
@@ -71,13 +68,9 @@ public abstract class MapSystemEvent extends Event
             this.y = y;
             this.z = z;
             this.prev_value = prev_value;
-            this.node = node;
         }
 
-        public int getNewValue()
-        {
-            return prev_value + type.getValue(node);
-        }
+        public abstract int getNewValue();
 
         public BlockPos getPos()
         {
@@ -86,6 +79,63 @@ public abstract class MapSystemEvent extends Event
                 pos = new BlockPos(x, y, z);
             }
             return pos;
+        }
+    }
+
+    /**
+     * Called when a node is added to the map changing the value
+     * <p>
+     * Is Cancelable to prevent the value from changing
+     * <p>
+     * Can change value in event to effect results
+     * <p>
+     * Is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}
+     */
+    @Cancelable
+    public static class OnNodeAdded extends OnValueChanged
+    {
+        /** Node being added, add value to prev_value to get new value */
+        public IDataMapNode node;
+
+        public OnNodeAdded(DataMap map, DataMapType type, int x, int y, int z, int prev_value, IDataMapNode node)
+        {
+            super(map, type, x, y, z, prev_value);
+            this.node = node;
+        }
+
+        public int getNewValue()
+        {
+            if (node == null)
+            {
+                return prev_value;
+            }
+            return prev_value + type.getValue(node);
+        }
+    }
+
+    /**
+     * Called when a node(s) are removed from the map changing the value
+     * <p>
+     * Is Cancelable to prevent the value from changing
+     * <p>
+     * Can change value in event to effect results
+     * <p>
+     * Is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}
+     */
+    public static class OnNodeRemoved extends OnValueChanged
+    {
+        public final int new_value;
+
+        public OnNodeRemoved(DataMap map, DataMapType type, int x, int y, int z, int prev_value, int new_value)
+        {
+            super(map, type, x, y, z, prev_value);
+            this.new_value = new_value;
+        }
+
+        @Override
+        public int getNewValue()
+        {
+            return new_value;
         }
     }
 
