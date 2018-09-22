@@ -30,4 +30,13 @@ public interface IDataMapNode
      */
     @Nullable
     IDataMapSource getSource();
+
+    /**
+     * Checks if the node is valid
+     * @return
+     */
+    default boolean isNodeValid()
+    {
+        return getSource() != null && getSource().isStillValid();
+    }
 }

@@ -10,9 +10,9 @@ import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.machines.TileEntityInventoryMachine;
 import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.exposure.wrapper.RadSourceTile;
-import com.builtbroken.atomic.map.thermal.wrapper.ThermalSource;
-import com.builtbroken.atomic.map.thermal.wrapper.ThermalSourceTile;
+import com.builtbroken.atomic.map.exposure.node.RadSourceTile;
+import com.builtbroken.atomic.map.thermal.node.ThermalSource;
+import com.builtbroken.atomic.map.thermal.node.ThermalSourceTile;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,6 +38,8 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     private boolean _running = false;
     private boolean _renderFuel = false;
     private float _renderFuelLevel = 0f;
+
+    private boolean hasRod = false;
 
     public boolean enabled = true; ///TODO add a spin up and down time, prevent instant enable/disable of reactors
 
@@ -191,21 +193,35 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
         this.markDirty();
         if (isServer())
         {
-            syncClientNextTick();
             if (slot == 0)
             {
-                if (getFuelRod() != null)
+                boolean prev = hasRod;
+                hasRod = getFuelRod() != null && world != null;
+
+                if (prev != hasRod)
                 {
-                    MapHandler.RADIATION_MAP.addSource(getRadiationSource()); //TODO change this to not use inventory event
-                    MapHandler.THERMAL_MAP.addSource(getHeatSource());
-                }
-                else
-                {
-                    MapHandler.RADIATION_MAP.removeSource(getRadiationSource());
-                    MapHandler.THERMAL_MAP.removeSource(getHeatSource());
+                    syncClientNextTick(); //TODO check rod type and value
+                    if (hasRod)
+                    {
+                        MapHandler.RADIATION_MAP.addSource(getRadiationSource()); //TODO change this to not use inventory event
+                        MapHandler.THERMAL_MAP.addSource(getHeatSource());
+                    }
+                    else
+                    {
+                        MapHandler.RADIATION_MAP.removeSource(getRadiationSource(), false);
+                        MapHandler.THERMAL_MAP.removeSource(getHeatSource(), false);
+                    }
                 }
             }
         }
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        MapHandler.RADIATION_MAP.removeSource(getRadiationSource(), true);
+        MapHandler.THERMAL_MAP.removeSource(getHeatSource(), true);
     }
 
     //-----------------------------------------------

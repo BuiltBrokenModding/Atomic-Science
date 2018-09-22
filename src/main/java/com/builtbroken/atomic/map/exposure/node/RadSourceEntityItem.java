@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.map.exposure.wrapper;
+package com.builtbroken.atomic.map.exposure.node;
 
 import com.builtbroken.atomic.api.radiation.IRadioactiveItem;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;

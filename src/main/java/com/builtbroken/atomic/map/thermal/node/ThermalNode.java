@@ -1,40 +1,40 @@
-package com.builtbroken.atomic.map.exposure;
+package com.builtbroken.atomic.map.thermal.node;
 
-import com.builtbroken.atomic.api.radiation.IRadiationSource;
+import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.map.data.DataPool;
 import com.builtbroken.atomic.map.data.IDataPoolObject;
 import com.builtbroken.atomic.map.data.node.DataMapType;
 import com.builtbroken.atomic.map.data.node.IDataMapSource;
-import com.builtbroken.atomic.map.data.node.IRadiationNode;
+import com.builtbroken.atomic.map.data.node.IThermalNode;
 
 import javax.annotation.Nullable;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
- * Created by Dark(DarkGuardsman, Robert) on 9/21/2018.
+ * Created by Dark(DarkGuardsman, Robert) on 9/22/2018.
  */
-public class RadiationNode implements IRadiationNode, IDataPoolObject
+public class ThermalNode implements IThermalNode, IDataPoolObject
 {
-    private static final DataPool<RadiationNode> RADIATION_NODE_POOL = new DataPool(100000);
+    private static final DataPool<ThermalNode> THERMAL_NODE_POOL = new DataPool(400000); //TODO add config
 
-    private IRadiationSource source;
+    private IThermalSource source;
 
     private int value;
 
-    private RadiationNode(IRadiationSource source, int value)
+    private ThermalNode(IThermalSource source, int value)
     {
         this.source = source;
         this.value = value;
     }
 
     @Override
-    public int getRadiationValue()
+    public int getHeatValue()
     {
         return value;
     }
 
     @Override
-    public void setRadiationValue(int value)
+    public void setHeatValue(int value)
     {
         this.value = value;
     }
@@ -52,11 +52,11 @@ public class RadiationNode implements IRadiationNode, IDataPoolObject
         return source;
     }
 
-    public static RadiationNode get(IRadiationSource source, int value)
+    public static ThermalNode get(IThermalSource source, int value)
     {
-        if (RADIATION_NODE_POOL.has())
+        if (THERMAL_NODE_POOL.has())
         {
-            RadiationNode dataChange = RADIATION_NODE_POOL.get();
+            ThermalNode dataChange = THERMAL_NODE_POOL.get();
             if (dataChange != null)
             {
                 dataChange.source = source;
@@ -64,11 +64,13 @@ public class RadiationNode implements IRadiationNode, IDataPoolObject
                 return dataChange;
             }
         }
-        return new RadiationNode(source, value);
+        return new ThermalNode(source, value);
     }
 
+    @Override
     public void dispose()
     {
-        RADIATION_NODE_POOL.dispose(this);
+        source = null;
+        THERMAL_NODE_POOL.dispose(this);
     }
 }

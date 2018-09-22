@@ -3,25 +3,22 @@ package com.builtbroken.atomic.map.exposure;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.radiation.IRadiationExposureSystem;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
-import com.builtbroken.atomic.api.radiation.IRadioactiveItem;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.node.DataMapType;
 import com.builtbroken.atomic.map.data.storage.DataMap;
-import com.builtbroken.atomic.map.exposure.wrapper.RadSourceEntityItem;
+import com.builtbroken.atomic.map.exposure.node.RadSourceEntityItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -33,7 +30,7 @@ import java.util.function.Function;
 public class RadiationMap implements IRadiationExposureSystem
 {
     /** List of radiation sources in the world that are not part of the {@link com.builtbroken.atomic.api.radiation.IRadioactiveMaterialSystem} */
-    private HashMap<IRadiationSource, RadSourceWrapper> radiationSourceMap = new HashMap();
+    private List<IRadiationSource> radiationSourceMap = new ArrayList();
     /** Map of entity to its wrapper */
     private HashMap<Entity, IRadiationSource> radiationEntityMap = new HashMap();
     private HashMap<Class<? extends Entity>, Function<Entity, IRadiationSource>> wrapperFactories = new HashMap();
@@ -59,9 +56,9 @@ public class RadiationMap implements IRadiationExposureSystem
      */
     public void addSource(IRadiationSource source)
     {
-        if (source != null && source.isRadioactive() && !radiationSourceMap.containsKey(source))
+        if (source != null && source.isRadioactive() && !radiationSourceMap.contains(source))
         {
-            radiationSourceMap.put(source, new RadSourceWrapper(source));
+            radiationSourceMap.add(source);
             onSourceAdded(source);
         }
     }
@@ -90,13 +87,16 @@ public class RadiationMap implements IRadiationExposureSystem
      * to be automatically removed.
      *
      * @param source - valid source currently in the world
+     * @param dead   - is this due to entity death
      */
-    public void removeSource(IRadiationSource source)
+    public void removeSource(IRadiationSource source, boolean dead)
     {
-        if (radiationSourceMap.containsKey(source))
+        if (radiationSourceMap.contains(source))
         {
-            onSourceRemoved(source);
+            //Remove
             radiationSourceMap.remove(source);
+
+            onSourceRemoved(source);
         }
     }
 
@@ -104,7 +104,7 @@ public class RadiationMap implements IRadiationExposureSystem
     {
         if (radiationEntityMap.containsKey(entity))
         {
-            removeSource(radiationEntityMap.get(entity));
+            removeSource(radiationEntityMap.get(entity), entity.isDead);
             radiationEntityMap.remove(entity);
         }
     }
@@ -120,7 +120,8 @@ public class RadiationMap implements IRadiationExposureSystem
         {
             AtomicScience.logger.info("RadiationMap: adding source " + source);
         }
-        fireSourceChange(source, source.getRadioactiveMaterial());
+
+        updateSourceData(source, source.getRadioactiveMaterial());
     }
 
     /**
@@ -134,7 +135,8 @@ public class RadiationMap implements IRadiationExposureSystem
         {
             AtomicScience.logger.info("RadiationMap: remove source " + source);
         }
-        fireSourceChange(source, 0);
+        source.disconnectMapData();
+        source.clearMapData();
     }
 
     /**
@@ -142,17 +144,14 @@ public class RadiationMap implements IRadiationExposureSystem
      */
     public void clearDeadSources()
     {
-        Iterator<Map.Entry<IRadiationSource, RadSourceWrapper>> it = radiationSourceMap.entrySet().iterator();
+        Iterator<IRadiationSource> it = radiationSourceMap.iterator();
         while (it.hasNext())
         {
-            Map.Entry<IRadiationSource, RadSourceWrapper> next = it.next();
-            if (next == null || next.getKey() == null || next.getValue() == null || !next.getKey().isRadioactive())
+            IRadiationSource source = it.next();
+            if (source == null || !source.isStillValid() || !source.isRadioactive())
             {
-                if (next.getKey() != null)
-                {
-                    onSourceRemoved(next.getKey());
-                }
                 it.remove();
+                onSourceRemoved(source);
             }
         }
     }
@@ -163,43 +162,16 @@ public class RadiationMap implements IRadiationExposureSystem
      * @param source
      * @param newValue
      */
-    protected void fireSourceChange(IRadiationSource source, int newValue)
+    protected void updateSourceData(IRadiationSource source, int newValue)
     {
         if (AtomicScience.runningAsDev)
         {
             AtomicScience.logger.info("RadiationMap: on changed " + source);
         }
-        RadSourceWrapper wrapper = getRadSourceWrapper(source);
-        if (wrapper != null && wrapper.radioactiveMaterialValue != newValue)
+        if (source.isRadioactive() && newValue > 0)
         {
-            //Remove old, called separate in case position changed
-            if (wrapper.radioactiveMaterialValue != 0)
-            {
-                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(DataChange.get(source, wrapper.radioactiveMaterialValue, 0));
-            }
-            //Log changes
-            wrapper.logCurrentData();
-
-            //Add new, called separate in case position changed
-            if (newValue != 0 && source.isRadioactive())
-            {
-                MapHandler.THREAD_RAD_EXPOSURE.queuePosition(DataChange.get(source, 0, newValue));
-            }
+            MapHandler.THREAD_RAD_EXPOSURE.queuePosition(DataChange.get(source, newValue));
         }
-    }
-
-    protected RadSourceWrapper getRadSourceWrapper(IRadiationSource source)
-    {
-        if (radiationSourceMap.containsKey(source))
-        {
-            RadSourceWrapper wrapper = radiationSourceMap.get(source);
-            if (wrapper == null)
-            {
-                radiationSourceMap.put(source, wrapper = new RadSourceWrapper(source));
-            }
-            return wrapper;
-        }
-        return null;
     }
 
     public IRadiationSource getSource(Entity entity)
@@ -332,13 +304,24 @@ public class RadiationMap implements IRadiationExposureSystem
         {
             //Cleanup
             clearDeadSources();
+        }
+    }
+
+    /*
+    @SubscribeEvent()
+    public void serverTick(TickEvent.ServerTickEvent event)
+    {
+        if (event.phase == TickEvent.Phase.END)
+        {
+            //Cleanup
+            clearDeadSources();
 
             //Loop sources looking for changes
             for (RadSourceWrapper wrapper : radiationSourceMap.values())
             {
                 if (wrapper.hasSourceChanged())
                 {
-                    fireSourceChange(wrapper.source, wrapper.source.getRadioactiveMaterial());
+                    updateSourceData(wrapper.source, wrapper.source.getRadioactiveMaterial());
                 }
             }
         }
@@ -370,4 +353,5 @@ public class RadiationMap implements IRadiationExposureSystem
             addSource(event.getEntity());
         }
     }
+    */
 }

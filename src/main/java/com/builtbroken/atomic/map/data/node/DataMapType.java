@@ -43,7 +43,7 @@ public enum DataMapType
 
     public int getValue(IDataMapNode node)
     {
-        return node != null ? function.apply(node) : 0;
+        return node != null && node.isNodeValid() ? function.apply(node) : 0;
     }
 
     public int getValue(ArrayList<IDataMapNode> nodes)

@@ -7,4 +7,6 @@ package com.builtbroken.atomic.map.data.node;
 public interface IThermalNode extends IDataMapNode
 {
     int getHeatValue();
+
+    void setHeatValue(int value);
 }

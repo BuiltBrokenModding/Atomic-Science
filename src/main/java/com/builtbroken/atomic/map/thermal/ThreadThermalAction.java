@@ -8,10 +8,13 @@ import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
+import com.builtbroken.atomic.map.data.node.IThermalNode;
+import com.builtbroken.atomic.map.thermal.node.ThermalNode;
 import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import java.util.*;
@@ -42,11 +45,63 @@ public class ThreadThermalAction extends ThreadDataChange
         if (world != null && change.source instanceof IThermalSource)
         {
             //Collect data
-            HashMap<DataPos, DataPos> old_data = calculateHeatSpread(world, cx, cy, cz, change.old_value); //TODO pull data from heat source
-            HashMap<DataPos, DataPos> new_data = calculateHeatSpread(world, cx, cy, cz, change.new_value); //TODO store data into heat source
+            HashMap<DataPos, DataPos> collectedData = calculateHeatSpread(world, cx, cy, cz, change.value); //TODO store data into heat source
 
-            //Queue data update
-            //MapHandler.THERMAL_MAP.dataFromThread.add(new MapChangeSet(world.provider.getDimension(), old_data, new_data));
+            //TODO convert to method or class
+            ((WorldServer) world).addScheduledTask(() ->
+            {
+                if (change.source instanceof IThermalSource)
+                {
+                    final IThermalSource source = ((IThermalSource) change.source);
+                    //Get data
+                    final HashMap<BlockPos, IThermalNode> oldMap = source.getCurrentNodes();
+                    final HashMap<BlockPos, IThermalNode> newMap = new HashMap();
+
+                    //Remove old data from map
+                    source.disconnectMapData();
+
+                    //Add new data, recycle old nodes to reduce memory churn
+                    for (Map.Entry<DataPos, DataPos> entry : collectedData.entrySet()) //TODO move this to source to give full control over data structure
+                    {
+                        final BlockPos pos = entry.getKey().disposeReturnBlockPos();
+                        final int value = entry.getValue().x - entry.getValue().y;
+
+                        if (oldMap != null && oldMap.containsKey(pos))
+                        {
+                            final IThermalNode node = oldMap.get(pos);
+                            if (node != null)
+                            {
+                                //Update value
+                                node.setHeatValue(value);
+
+                                //Store in new map
+                                newMap.put(pos, node);
+                            }
+
+                            //Remove from old map
+                            oldMap.remove(pos);
+                        }
+                        else
+                        {
+                            newMap.put(pos, ThermalNode.get(source, value));
+                        }
+                    }
+
+                    //Clear old data
+                    source.disconnectMapData();
+                    source.clearMapData();
+
+                    //Set new data
+                    source.setCurrentNodes(newMap);
+
+                    //Tell the source to connect to the map
+                    source.connectMapData();
+
+                    //Trigger source update
+                    source.initMapData();
+                }
+            });
+
 
             return true;
         }

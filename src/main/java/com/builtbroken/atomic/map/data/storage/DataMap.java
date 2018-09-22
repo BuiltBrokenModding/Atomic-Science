@@ -103,7 +103,7 @@ public class DataMap
 
     public boolean removeData(BlockPos pos, IDataMapNode node)
     {
-        DataChunk chunk = getChunkFromPosition(pos.getX(), pos.getY(), false);
+        DataChunk chunk = getChunkFromPosition(pos.getX(), pos.getZ(), false);
         if (chunk != null)
         {
             return chunk.removeData(pos.getX() & 15, pos.getY(), pos.getZ() & 15, node);
@@ -123,7 +123,7 @@ public class DataMap
 
     public boolean removeData(BlockPos pos, IDataMapSource source)
     {
-        DataChunk chunk = getChunkFromPosition(pos.getX(), pos.getY(), false);
+        DataChunk chunk = getChunkFromPosition(pos.getX(), pos.getZ(), false);
         if (chunk != null)
         {
             return chunk.removeData(pos.getX() & 15, pos.getY(), pos.getZ() & 15, source);

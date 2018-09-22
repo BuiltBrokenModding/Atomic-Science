@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.map.thermal.wrapper;
+package com.builtbroken.atomic.map.thermal.node;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -17,6 +17,12 @@ public class ThermalSourceTile<E extends TileEntity> extends ThermalSource<E>
     {
         super(host);
         this.heatFunction = heatFunction;
+    }
+
+    @Override
+    public boolean isStillValid()
+    {
+        return super.isStillValid() && !host.isInvalid();
     }
 
     @Override

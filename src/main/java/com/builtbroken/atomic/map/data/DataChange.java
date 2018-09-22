@@ -16,17 +16,15 @@ public class DataChange implements IPosWorld
 
     public IDataMapSource source;
 
-    public int old_value;
-    public int new_value;
+    public int value;
 
-    private DataChange(IDataMapSource source, int old_value, int new_value)
+    private DataChange(IDataMapSource source, int value)
     {
         this.source = source;
-        this.old_value = old_value;
-        this.new_value = new_value;
+        this.value = value;
     }
 
-    public static DataChange get(IDataMapSource source, int old_value, int new_value)
+    public static DataChange get(IDataMapSource source, int value)
     {
         if (dataChangePool.has())
         {
@@ -34,12 +32,11 @@ public class DataChange implements IPosWorld
             if (dataChange != null)
             {
                 dataChange.source = source;
-                dataChange.old_value = old_value;
-                dataChange.new_value = new_value;
+                dataChange.value = value;
                 return dataChange;
             }
         }
-        return new DataChange(source, old_value, new_value);
+        return new DataChange(source, value);
     }
 
     public void dispose()

@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.map.exposure.wrapper;
+package com.builtbroken.atomic.map.exposure.node;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -26,9 +26,9 @@ public class RadSourceTile<E extends TileEntity> extends RadiationSource<E>
     }
 
     @Override
-    public boolean isRadioactive()
+    public boolean isStillValid()
     {
-        return !host.isInvalid() && super.isRadioactive();
+        return super.isStillValid() && !host.isInvalid();
     }
 
     @Override

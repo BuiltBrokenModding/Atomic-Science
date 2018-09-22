@@ -19,10 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Handles heat in the map
@@ -33,7 +30,7 @@ import java.util.Map;
 public class ThermalMap implements IThermalSystem
 {
     /** List of thermal sources in the world */
-    private HashMap<IThermalSource, ThermalSourceWrapper> thermalSourceMap = new HashMap();
+    private List<IThermalSource> thermalSources = new ArrayList();
     private HashMap<Integer, HashSet<BlockPos>> steamSources = new HashMap();
 
     /**
@@ -46,9 +43,9 @@ public class ThermalMap implements IThermalSystem
      */
     public void addSource(IThermalSource source)
     {
-        if (source != null && source.canGeneratingHeat() && !thermalSourceMap.containsKey(source))
+        if (source != null && source.canGeneratingHeat() && !thermalSources.contains(source))
         {
-            thermalSourceMap.put(source, new ThermalSourceWrapper(source));
+            thermalSources.add(source);
             onSourceAdded(source);
         }
     }
@@ -64,13 +61,15 @@ public class ThermalMap implements IThermalSystem
      * to be automatically removed.
      *
      * @param source - valid source currently in the world
+     * @param dead   - is this due to entity death
      */
-    public void removeSource(IThermalSource source)
+    public void removeSource(IThermalSource source, boolean dead)
     {
-        if (thermalSourceMap.containsKey(source))
+        if (thermalSources.contains(source))
         {
+            thermalSources.remove(source);
+
             onSourceRemoved(source);
-            thermalSourceMap.remove(source);
         }
     }
 
@@ -85,7 +84,7 @@ public class ThermalMap implements IThermalSystem
         {
             AtomicScience.logger.info("ThermalMap: adding source " + source);
         }
-        fireSourceChange(source, source.getHeatGenerated());
+        updateSourceValue(source, source.getHeatGenerated());
     }
 
     /**
@@ -99,7 +98,9 @@ public class ThermalMap implements IThermalSystem
         {
             AtomicScience.logger.info("ThermalMap: remove source " + source);
         }
-        fireSourceChange(source, 0);
+
+        source.disconnectMapData();
+        source.clearMapData();
     }
 
     /**
@@ -107,17 +108,15 @@ public class ThermalMap implements IThermalSystem
      */
     public void clearDeadSources()
     {
-        Iterator<Map.Entry<IThermalSource, ThermalSourceWrapper>> it = thermalSourceMap.entrySet().iterator();
+        Iterator<IThermalSource> it = thermalSources.iterator();
         while (it.hasNext())
         {
-            Map.Entry<IThermalSource, ThermalSourceWrapper> next = it.next();
-            if (next == null || next.getKey() == null || next.getValue() == null || !next.getKey().canGeneratingHeat())
+            IThermalSource source = it.next();
+            if (source == null || !source.isStillValid() || !source.canGeneratingHeat())
             {
-                if (next.getKey() != null)
-                {
-                    onSourceRemoved(next.getKey());
-                }
                 it.remove();
+
+                onSourceRemoved(source);
             }
         }
     }
@@ -128,44 +127,16 @@ public class ThermalMap implements IThermalSystem
      * @param source
      * @param newValue
      */
-    protected void fireSourceChange(IThermalSource source, int newValue)
+    protected void updateSourceValue(IThermalSource source, int newValue)
     {
         if (AtomicScience.runningAsDev)
         {
             AtomicScience.logger.info("ThermalMap: on changed " + source);
         }
-        ThermalSourceWrapper wrapper = getRadSourceWrapper(source);
-        if (wrapper != null && wrapper.heatValue != newValue)
+        if (source.canGeneratingHeat() && newValue > 0)
         {
-            //Remove old, called separate in case position changed
-            if (wrapper.heatValue != 0)
-            {
-                MapHandler.THREAD_THERMAL_ACTION.queuePosition(DataChange.get(source, wrapper.heatValue, 0));
-            }
-
-            //Log changes
-            wrapper.logCurrentData();
-
-            //Add new, called separate in case position changed
-            if (newValue != 0 && source.canGeneratingHeat())
-            {
-                MapHandler.THREAD_THERMAL_ACTION.queuePosition(DataChange.get(source, 0, newValue));
-            }
+            MapHandler.THREAD_THERMAL_ACTION.queuePosition(DataChange.get(source, newValue));
         }
-    }
-
-    protected ThermalSourceWrapper getRadSourceWrapper(IThermalSource source)
-    {
-        if (thermalSourceMap.containsKey(source))
-        {
-            ThermalSourceWrapper wrapper = thermalSourceMap.get(source);
-            if (wrapper == null)
-            {
-                thermalSourceMap.put(source, wrapper = new ThermalSourceWrapper(source));
-            }
-            return wrapper;
-        }
-        return null;
     }
 
     /**
@@ -261,7 +232,7 @@ public class ThermalMap implements IThermalSystem
 
     public void onWorldUnload(World world)
     {
-        thermalSourceMap.clear();
+        thermalSources.clear();
         steamSources.clear();
     }
 
@@ -323,15 +294,6 @@ public class ThermalMap implements IThermalSystem
         {
             //Cleanup
             clearDeadSources();
-
-            //Loop sources looking for changes
-            for (ThermalSourceWrapper wrapper : thermalSourceMap.values())
-            {
-                if (wrapper.hasSourceChanged())
-                {
-                    fireSourceChange(wrapper.source, wrapper.source.getHeatGenerated());
-                }
-            }
         }
     }
 

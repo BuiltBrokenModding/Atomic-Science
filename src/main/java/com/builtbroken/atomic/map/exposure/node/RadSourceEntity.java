@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.map.exposure.wrapper;
+package com.builtbroken.atomic.map.exposure.node;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
@@ -15,9 +15,9 @@ public abstract class RadSourceEntity<E extends Entity> extends RadiationSource<
     }
 
     @Override
-    public boolean isRadioactive()
+    public boolean isStillValid()
     {
-        return !host.isDead && super.isRadioactive();
+        return super.isStillValid() && !host.isDead;
     }
 
     @Override

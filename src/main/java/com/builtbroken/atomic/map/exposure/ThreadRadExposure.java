@@ -3,14 +3,13 @@ package com.builtbroken.atomic.map.exposure;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
-import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
-import com.builtbroken.atomic.map.data.IDataPoolObject;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
 import com.builtbroken.atomic.map.data.node.IRadiationNode;
 import com.builtbroken.atomic.map.data.storage.DataChunk;
-import com.builtbroken.atomic.map.exposure.wrapper.RadSourceMap;
+import com.builtbroken.atomic.map.exposure.node.RadSourceMap;
+import com.builtbroken.atomic.map.exposure.node.RadiationNode;
 import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -47,61 +46,61 @@ public class ThreadRadExposure extends ThreadDataChange
         final World world = DimensionManager.getWorld(change.dim());
         if (world != null) //TODO check if world is loaded
         {
-            HashMap<BlockPos, Integer> new_data = updateValue(world, change.xi(), change.yi(), change.zi(), change.new_value);
+            final HashMap<BlockPos, Integer> collectedData = updateValue(world, change.xi(), change.yi(), change.zi(), change.value);
             if (shouldRun)
             {
+                //TODO convert to method or class
                 ((WorldServer) world).addScheduledTask(() ->
                 {
                     if (change.source instanceof IRadiationSource)
                     {
+                        final IRadiationSource source = ((IRadiationSource) change.source);
                         //Get data
-                        HashMap<BlockPos, IRadiationNode> oldMap = ((IRadiationSource) change.source).getCurrentNodes();
-                        HashMap<BlockPos, IRadiationNode> newMap = new HashMap();
+                        final HashMap<BlockPos, IRadiationNode> oldMap = source.getCurrentNodes();
+                        final HashMap<BlockPos, IRadiationNode> newMap = new HashMap();
 
                         //Remove old data from map
-                        for (BlockPos pos : oldMap.keySet())
-                        {
-                            MapHandler.GLOBAL_DATA_MAP.removeData(change.dim(), pos, change.source);
-                        }
+                        source.disconnectMapData();
 
                         //Add new data, recycle old nodes to reduce memory churn
-                        for (Map.Entry<BlockPos, Integer> entry : new_data.entrySet())
+                        for (Map.Entry<BlockPos, Integer> entry : collectedData.entrySet()) //TODO move this to source to give full control over data structure
                         {
-                            if (oldMap != null && oldMap.containsKey(entry.getKey()))
-                            {
-                                //Update value
-                                oldMap.get(entry.getKey()).setRadiationValue(entry.getValue());
+                            final int value = entry.getValue();
+                            final BlockPos pos = entry.getKey();
 
-                                //Store in new map
-                                newMap.put(entry.getKey(), oldMap.get(entry.getKey()));
+                            if (oldMap != null && oldMap.containsKey(pos))
+                            {
+                                final IRadiationNode node = oldMap.get(pos);
+                                if (node != null)
+                                {
+                                    //Update value
+                                    node.setRadiationValue(value);
+
+                                    //Store in new map
+                                    newMap.put(pos, node);
+                                }
 
                                 //Remove from old map
-                                oldMap.remove(entry.getKey());
+                                oldMap.remove(pos);
                             }
                             else
                             {
-                                newMap.put(entry.getKey(), RadiationNode.get((IRadiationSource) change.source, entry.getValue()));
+                                newMap.put(pos, RadiationNode.get(source, value));
                             }
                         }
+
+                        //Clear old data
+                        source.disconnectMapData();
+                        source.clearMapData();
 
                         //Set new data
-                        ((IRadiationSource) change.source).setCurrentNodes(newMap);
+                        source.setCurrentNodes(newMap);
 
-                        //Cleanup
-                        if (oldMap != null)
-                        {
-                            //Recycle old data for next run to reduce memory churn
-                            for (IRadiationNode node : oldMap.values())
-                            {
-                                if (node instanceof IDataPoolObject)
-                                {
-                                    ((IDataPoolObject) node).dispose();
-                                }
-                            }
+                        //Tell the source to connect to the map
+                        source.connectMapData();
 
-                            //Dump data for better GC
-                            oldMap.clear();
-                        }
+                        //Trigger source update
+                        source.initMapData();
                     }
                 });
             }
@@ -109,9 +108,9 @@ public class ThreadRadExposure extends ThreadDataChange
             if (AtomicScience.runningAsDev)
             {
                 time = System.nanoTime() - time;
-                AtomicScience.logger.info(String.format("ThreadRadExposure: %sx %sy %sz | %so %sn | took %s",
+                AtomicScience.logger.info(String.format("ThreadRadExposure: %sx %sy %sz | %sn | took %s",
                         change.xi(), change.yi(), change.zi(),
-                        change.old_value, change.new_value,
+                        change.value,
                         StringHelpers.formatNanoTime(time)
                 ));
             }
@@ -387,7 +386,7 @@ public class ThreadRadExposure extends ThreadDataChange
      */
     protected void queueRemove(DataChunk chunk)
     {
-        chunk.forEachValue((dim, x, y, z, value) -> ThreadRadExposure.this.queuePosition(DataChange.get(new RadSourceMap(dim, new BlockPos(x, y, z), value), value, 0)));
+        chunk.forEachValue((dim, x, y, z, value) -> ThreadRadExposure.this.queuePosition(DataChange.get(new RadSourceMap(dim, new BlockPos(x, y, z), value), 0))); //TODO see if needed
     }
 
     /**
@@ -397,6 +396,6 @@ public class ThreadRadExposure extends ThreadDataChange
      */
     protected void queueAddition(DataChunk chunk)
     {
-        chunk.forEachValue((dim, x, y, z, value) -> queuePosition(DataChange.get(new RadSourceMap(dim, new BlockPos(x, y, z), value), 0, value)));
+        chunk.forEachValue((dim, x, y, z, value) -> queuePosition(DataChange.get(new RadSourceMap(dim, new BlockPos(x, y, z), value), value)));
     }
 }
