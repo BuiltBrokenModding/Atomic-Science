@@ -1,8 +1,7 @@
 package com.builtbroken.atomic.api.radiation;
 
 import com.builtbroken.atomic.lib.transform.IPosWorld;
-import com.builtbroken.atomic.map.data.node.IDataMapSource;
-import com.builtbroken.atomic.map.data.node.IRadiationNode;
+import com.builtbroken.atomic.api.map.IDataMapSource;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;

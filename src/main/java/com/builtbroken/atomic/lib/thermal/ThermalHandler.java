@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.lib.thermal;
 
-import com.builtbroken.atomic.api.thermal.IThermalSource;
+import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.config.logic.ConfigLogic;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
@@ -116,7 +116,7 @@ public class ThermalHandler
             return data.heatMovementRate;
         }
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof IThermalSource)
+        if (tile.hasCapability(AtomicScienceAPI.THERAMAL_CAPABILITY, null))
         {
             return 1000;
         }

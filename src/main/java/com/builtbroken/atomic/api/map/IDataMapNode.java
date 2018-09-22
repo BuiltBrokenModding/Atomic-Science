@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.map.data.node;
+package com.builtbroken.atomic.api.map;
 
 import javax.annotation.Nullable;
 

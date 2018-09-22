@@ -1,5 +1,8 @@
 package com.builtbroken.atomic.map.data.node;
 
+import com.builtbroken.atomic.api.map.DataMapType;
+import com.builtbroken.atomic.api.map.IDataMapNode;
+import com.builtbroken.atomic.api.map.IDataMapSource;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.IDataPoolObject;
 import net.minecraft.util.math.BlockPos;

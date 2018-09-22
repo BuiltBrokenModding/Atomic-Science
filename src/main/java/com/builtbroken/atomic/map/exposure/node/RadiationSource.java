@@ -1,8 +1,8 @@
 package com.builtbroken.atomic.map.exposure.node;
 
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
-import com.builtbroken.atomic.map.data.node.DataMapType;
-import com.builtbroken.atomic.map.data.node.IRadiationNode;
+import com.builtbroken.atomic.api.map.DataMapType;
+import com.builtbroken.atomic.api.radiation.IRadiationNode;
 import com.builtbroken.atomic.map.data.node.MapNodeSource;
 
 /**

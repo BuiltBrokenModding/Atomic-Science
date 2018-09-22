@@ -1,9 +1,9 @@
 package com.builtbroken.atomic.map.data.storage;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.map.data.node.DataMapType;
-import com.builtbroken.atomic.map.data.node.IDataMapNode;
-import com.builtbroken.atomic.map.data.node.IDataMapSource;
+import com.builtbroken.atomic.api.map.DataMapType;
+import com.builtbroken.atomic.api.map.IDataMapNode;
+import com.builtbroken.atomic.api.map.IDataMapSource;
 
 import java.util.ArrayList;
 import java.util.Iterator;

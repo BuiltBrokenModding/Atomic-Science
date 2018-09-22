@@ -2,8 +2,12 @@ package com.builtbroken.atomic.api;
 
 import com.builtbroken.atomic.api.effect.IIndirectEffectType;
 import com.builtbroken.atomic.api.radiation.IRadiationExposureSystem;
+import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.radiation.IRadioactiveMaterialSystem;
+import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 
 /**
  * Reference object for Atomic Science API
@@ -22,8 +26,16 @@ public final class AtomicScienceAPI
     //  result in mixed logic of some stuff changing while others don't.
     /** System used to access radiation exposure information */
     public static IRadiationExposureSystem radiationExposureSystem;
+
     /** System used to access radioactive material data on the map */
     public static IRadioactiveMaterialSystem radioactiveMaterialSystem;
+
     /** System used to access thermal data on the map */
     public static IThermalSystem thermalSystem;
+
+    @CapabilityInject(IThermalSource.class)
+    public static Capability<IThermalSource> THERAMAL_CAPABILITY = null;
+
+    @CapabilityInject(IRadiationSource.class)
+    public static Capability<IRadiationSource> RADIATION_CAPABILITY = null;
 }

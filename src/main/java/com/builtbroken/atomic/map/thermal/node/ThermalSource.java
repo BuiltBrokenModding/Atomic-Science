@@ -1,8 +1,8 @@
 package com.builtbroken.atomic.map.thermal.node;
 
 import com.builtbroken.atomic.api.thermal.IThermalSource;
-import com.builtbroken.atomic.map.data.node.DataMapType;
-import com.builtbroken.atomic.map.data.node.IThermalNode;
+import com.builtbroken.atomic.api.map.DataMapType;
+import com.builtbroken.atomic.api.thermal.IThermalNode;
 import com.builtbroken.atomic.map.data.node.MapNodeSource;
 
 /**

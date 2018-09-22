@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.map.data;
 
 import com.builtbroken.atomic.lib.transform.IPosWorld;
-import com.builtbroken.atomic.map.data.node.IDataMapSource;
+import com.builtbroken.atomic.api.map.IDataMapSource;
 import net.minecraft.world.World;
 
 /**

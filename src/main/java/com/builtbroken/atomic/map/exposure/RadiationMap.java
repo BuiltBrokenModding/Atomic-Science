@@ -5,7 +5,7 @@ import com.builtbroken.atomic.api.radiation.IRadiationExposureSystem;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
-import com.builtbroken.atomic.map.data.node.DataMapType;
+import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.map.data.storage.DataMap;
 import com.builtbroken.atomic.map.exposure.node.RadSourceEntityItem;
 import net.minecraft.entity.Entity;

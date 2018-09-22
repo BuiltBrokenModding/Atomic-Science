@@ -1,4 +1,6 @@
-package com.builtbroken.atomic.map.data.node;
+package com.builtbroken.atomic.api.thermal;
+
+import com.builtbroken.atomic.api.map.IDataMapNode;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.

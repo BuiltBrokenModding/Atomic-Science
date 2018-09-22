@@ -1,4 +1,8 @@
-package com.builtbroken.atomic.map.data.node;
+package com.builtbroken.atomic.api.map;
+
+import com.builtbroken.atomic.api.radiation.IRadMaterialNode;
+import com.builtbroken.atomic.api.radiation.IRadiationNode;
+import com.builtbroken.atomic.api.thermal.IThermalNode;
 
 import java.util.ArrayList;
 

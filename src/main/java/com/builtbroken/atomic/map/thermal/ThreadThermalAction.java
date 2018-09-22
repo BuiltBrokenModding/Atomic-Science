@@ -8,7 +8,7 @@ import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
-import com.builtbroken.atomic.map.data.node.IThermalNode;
+import com.builtbroken.atomic.api.thermal.IThermalNode;
 import com.builtbroken.atomic.map.thermal.node.ThermalNode;
 import com.builtbroken.jlib.lang.StringHelpers;
 import net.minecraft.util.EnumFacing;
@@ -144,8 +144,7 @@ public class ThreadThermalAction extends ThreadDataChange
             final Queue<DataPos> pathNext = new LinkedList();
 
             //Add center point
-            final DataPos centerPos = DataPos.get(cx, cy, cz);
-            heatSpreadData.put(centerPos, DataPos.get(heat, 0, 0));
+            heatSpreadData.put(DataPos.get(cx, cy, cz), DataPos.get(heat, 0, 0));
 
             //Add connected tiles
             for (EnumFacing direction : EnumFacing.VALUES)
@@ -209,7 +208,7 @@ public class ThreadThermalAction extends ThreadDataChange
                     else
                     {
                         //Get heat from direction
-                        int heatAtNext = heatSpreadData.get(pos).x;
+                        final int heatAtNext = heatSpreadData.get(pos).x;
 
                         //Calculate spread ratio from direction
                         double transferRate = ThermalHandler.getHeatTransferRate(world, new BlockPos(pos.x, pos.y, pos.z));   //TODO recycle block pos

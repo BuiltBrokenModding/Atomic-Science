@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.map;
 
-import com.builtbroken.atomic.map.data.node.IDataMapNode;
-import com.builtbroken.atomic.map.data.node.IDataMapSource;
+import com.builtbroken.atomic.api.map.IDataMapNode;
+import com.builtbroken.atomic.api.map.IDataMapSource;
 import com.builtbroken.atomic.map.data.storage.DataMap;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

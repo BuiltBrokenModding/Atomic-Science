@@ -1,5 +1,6 @@
 package com.builtbroken.atomic;
 
+import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
@@ -9,8 +10,10 @@ import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
+import com.builtbroken.atomic.lib.transform.vector.Location;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
+import com.builtbroken.atomic.map.exposure.node.RadiationSource;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.proxy.Mods;
@@ -22,7 +25,12 @@ import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.event.RegistryEvent;
@@ -37,6 +45,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import java.io.File;
 
 /**
@@ -138,7 +147,7 @@ public class AtomicScience
         {
             proxyLoader.add(new ProxyIC2());
         }
-        if(Mods.BUILDCRAFT_ENERGY.isLoaded())
+        if (Mods.BUILDCRAFT_ENERGY.isLoaded())
         {
             proxyLoader.add(new ProxyBuildcraftEnergy());
         }
@@ -157,6 +166,57 @@ public class AtomicScience
                 FluidRegistry.addBucketForFluid(value.fluid);
             }
         }
+    }
+
+    public void registerCaps()
+    {
+        CapabilityManager.INSTANCE.register(IRadiationSource.class, new Capability.IStorage<IRadiationSource>()
+                {
+                    @Nullable
+                    @Override
+                    public NBTBase writeNBT(Capability<IRadiationSource> capability, IRadiationSource instance, EnumFacing side)
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public void readNBT(Capability<IRadiationSource> capability, IRadiationSource instance, EnumFacing side, NBTBase nbt)
+                    {
+
+                    }
+                },
+                () -> new RadiationSource<Location>(null)
+                {
+                    @Override
+                    public double x()
+                    {
+                        return host != null ? host.x() : 0;
+                    }
+
+                    @Override
+                    public double y()
+                    {
+                        return host != null ? host.y() : 0;
+                    }
+
+                    @Override
+                    public double z()
+                    {
+                        return host != null ? host.z() : 0;
+                    }
+
+                    @Override
+                    public World world()
+                    {
+                        return host != null ? host.world() : null;
+                    }
+
+                    @Override
+                    public int getRadioactiveMaterial()
+                    {
+                        return 0;
+                    }
+                });
     }
 
     @Mod.EventHandler

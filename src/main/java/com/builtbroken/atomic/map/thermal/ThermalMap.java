@@ -8,7 +8,7 @@ import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
-import com.builtbroken.atomic.map.data.node.DataMapType;
+import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;

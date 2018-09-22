@@ -6,7 +6,7 @@ import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
-import com.builtbroken.atomic.map.data.node.IRadiationNode;
+import com.builtbroken.atomic.api.radiation.IRadiationNode;
 import com.builtbroken.atomic.map.data.storage.DataChunk;
 import com.builtbroken.atomic.map.exposure.node.RadSourceMap;
 import com.builtbroken.atomic.map.exposure.node.RadiationNode;

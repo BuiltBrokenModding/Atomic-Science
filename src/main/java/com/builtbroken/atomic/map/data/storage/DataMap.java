@@ -1,9 +1,9 @@
 package com.builtbroken.atomic.map.data.storage;
 
 import com.builtbroken.atomic.map.MapSystem;
-import com.builtbroken.atomic.map.data.node.DataMapType;
-import com.builtbroken.atomic.map.data.node.IDataMapNode;
-import com.builtbroken.atomic.map.data.node.IDataMapSource;
+import com.builtbroken.atomic.api.map.DataMapType;
+import com.builtbroken.atomic.api.map.IDataMapNode;
+import com.builtbroken.atomic.api.map.IDataMapSource;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
