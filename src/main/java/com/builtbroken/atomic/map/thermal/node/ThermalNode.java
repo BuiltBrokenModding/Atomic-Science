@@ -42,7 +42,7 @@ public class ThermalNode implements IThermalNode, IDataPoolObject
     @Override
     public DataMapType getType()
     {
-        return DataMapType.RADIATION;
+        return DataMapType.THERMAL;
     }
 
     @Nullable

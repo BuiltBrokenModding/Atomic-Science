@@ -44,7 +44,7 @@ public abstract class MapSystemEvent extends Event
      * <p>
      * Is fired on {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}
      */
-    public abstract static class OnValueChanged extends MapSystemEvent
+    public static class OnValueChanged extends MapSystemEvent
     {
         /** Type of data */
         public final DataMapType type;
@@ -70,7 +70,10 @@ public abstract class MapSystemEvent extends Event
             this.prev_value = prev_value;
         }
 
-        public abstract int getNewValue();
+        public int getNewValue()
+        {
+            return prev_value;
+        }
 
         public BlockPos getPos()
         {
