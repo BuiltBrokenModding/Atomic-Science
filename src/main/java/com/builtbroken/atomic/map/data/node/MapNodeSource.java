@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public abstract class MapNodeSource<E, N extends IDataMapNode> implements IDataMapSource
 {
-    public final E host;
+    public E host;
     public HashMap<BlockPos, N> nodes;
 
     public MapNodeSource(E host)

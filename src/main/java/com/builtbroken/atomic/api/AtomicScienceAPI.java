@@ -34,7 +34,7 @@ public final class AtomicScienceAPI
     public static IThermalSystem thermalSystem;
 
     @CapabilityInject(IThermalSource.class)
-    public static Capability<IThermalSource> THERAMAL_CAPABILITY = null;
+    public static Capability<IThermalSource> THERMAL_CAPABILITY = null;
 
     @CapabilityInject(IRadiationSource.class)
     public static Capability<IRadiationSource> RADIATION_CAPABILITY = null;

@@ -116,7 +116,7 @@ public class ThermalHandler
             return data.heatMovementRate;
         }
         TileEntity tile = world.getTileEntity(pos);
-        if (tile.hasCapability(AtomicScienceAPI.THERAMAL_CAPABILITY, null))
+        if (tile != null && tile.hasCapability(AtomicScienceAPI.THERMAL_CAPABILITY, null))
         {
             return 1000;
         }

@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.core;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.api.item.IFuelRodItem;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.reactor.IFissionReactor;
@@ -18,19 +19,22 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public class TileEntityReactorCell extends TileEntityInventoryMachine implements IFissionReactor
+public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandlerModifiable> implements IFissionReactor
 {
     public static final int SLOT_FUEL_ROD = 0;
     public static final int[] ACCESSIBLE_SIDES = new int[]{SLOT_FUEL_ROD};
@@ -80,6 +84,27 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine implements
     protected int inventorySize()
     {
         return 1;
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+    {
+        return capability == AtomicScienceAPI.THERMAL_CAPABILITY || capability == AtomicScienceAPI.RADIATION_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @Nullable
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+    {
+        if (capability == AtomicScienceAPI.THERMAL_CAPABILITY)
+        {
+            return (T) thermalSource;
+        }
+        else if (capability == AtomicScienceAPI.RADIATION_CAPABILITY)
+        {
+            return (T) radiationSource;
+        }
+        return super.getCapability(capability, facing);
     }
 
     //-----------------------------------------------

@@ -11,7 +11,6 @@ import com.builtbroken.atomic.map.data.node.MapNodeSource;
  */
 public abstract class RadiationSource<E>  extends MapNodeSource<E, IRadiationNode> implements IRadiationSource
 {
-
     public RadiationSource(E host)
     {
         super(host);

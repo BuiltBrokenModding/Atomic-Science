@@ -1,6 +1,7 @@
 package com.builtbroken.atomic;
 
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
+import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
@@ -15,6 +16,7 @@ import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.exposure.node.RadiationSource;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
+import com.builtbroken.atomic.map.thermal.node.ThermalSource;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.proxy.Mods;
 import com.builtbroken.atomic.proxy.ProxyLoader;
@@ -166,6 +168,8 @@ public class AtomicScience
                 FluidRegistry.addBucketForFluid(value.fluid);
             }
         }
+
+        registerCaps();
     }
 
     public void registerCaps()
@@ -213,6 +217,54 @@ public class AtomicScience
 
                     @Override
                     public int getRadioactiveMaterial()
+                    {
+                        return 0;
+                    }
+                });
+
+        CapabilityManager.INSTANCE.register(IThermalSource.class, new Capability.IStorage<IThermalSource>()
+                {
+                    @Nullable
+                    @Override
+                    public NBTBase writeNBT(Capability<IThermalSource> capability, IThermalSource instance, EnumFacing side)
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public void readNBT(Capability<IThermalSource> capability, IThermalSource instance, EnumFacing side, NBTBase nbt)
+                    {
+
+                    }
+                },
+                () -> new ThermalSource<Location>(null)
+                {
+                    @Override
+                    public double x()
+                    {
+                        return host != null ? host.x() : 0;
+                    }
+
+                    @Override
+                    public double y()
+                    {
+                        return host != null ? host.y() : 0;
+                    }
+
+                    @Override
+                    public double z()
+                    {
+                        return host != null ? host.z() : 0;
+                    }
+
+                    @Override
+                    public World world()
+                    {
+                        return host != null ? host.world() : null;
+                    }
+
+                    @Override
+                    public int getHeatGenerated()
                     {
                         return 0;
                     }
