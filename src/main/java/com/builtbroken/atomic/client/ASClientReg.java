@@ -20,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * Handles registering renders and models
@@ -27,7 +28,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
-@Mod.EventBusSubscriber(modid = AtomicScience.DOMAIN)
+@Mod.EventBusSubscriber(modid = AtomicScience.DOMAIN, value = Side.CLIENT)
 public class ASClientReg
 {
     private static final String INVENTORY = "inventory";
