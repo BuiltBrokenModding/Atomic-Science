@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) & Calclavia
  */
-public interface IAntiPoisonArmor extends IArmorSet
+public interface IAntiPoisonArmor extends IArmorSet //TODO convert to capability TODO allow adding to mods via configs
 {
     /**
      * Use this to block indirect damage types from going through the armor (radiation, poison, etc)

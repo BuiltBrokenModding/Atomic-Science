@@ -6,6 +6,8 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.ASWorldGen;
+import com.builtbroken.atomic.content.armor.ArmorRadLevelData;
+import com.builtbroken.atomic.content.armor.ArmorRadiationHandler;
 import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.lib.MassHandler;
@@ -25,6 +27,7 @@ import com.builtbroken.atomic.proxy.eu.ProxyIC2;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
@@ -276,6 +279,9 @@ public class AtomicScience
     {
         //Proxy
         proxyLoader.init();
+
+        ArmorRadiationHandler.getArmorRadData(new ItemStack(Items.LEATHER_CHESTPLATE), true)
+                .addRadiationLevel(new ArmorRadLevelData(0).setProtectionFlat(20).setTranslationKey(AtomicScience.PREFIX + ":basic"));
     }
 
     @Mod.EventHandler
