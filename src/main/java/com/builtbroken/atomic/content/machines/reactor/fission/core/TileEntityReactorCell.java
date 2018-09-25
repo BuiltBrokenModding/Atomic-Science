@@ -43,8 +43,6 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     private boolean _renderFuel = false;
     private float _renderFuelLevel = 0f;
 
-    private boolean hasRod = false;
-
     public boolean enabled = true; ///TODO add a spin up and down time, prevent instant enable/disable of reactors
 
     private final RadSourceTile<TileEntityReactorCell> radiationSource = new RadSourceTile(this, () -> getRadioactiveMaterial());
@@ -117,44 +115,8 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         super.update(ticks);
         if (isServer())
         {
-            final boolean prev_running = _running;
-
-            if (canOperate())
-            {
-                _running = true;
-                consumeFuel(ticks);
-                if (ticks % 20 == 0)
-                {
-                    doOperationTick();
-                }
-            }
-            else
-            {
-                _running = false;
-            }
-
-            if (prev_running != _running || ticks % 20 == 0)
-            {
-                syncClientNextTick();
-            }
-
-            //Every 5 seconds, Check if we need to move rods (works like a hopper)
-            if (ticks % 100 == 0 && getFuelRod() != null)
-            {
-                TileEntity tile = world.getTileEntity(getPos().down());
-                if (tile instanceof TileEntityReactorCell)
-                {
-                    tryToMoveRod((TileEntityReactorCell) tile);
-                }
-                else if (tile instanceof TileEntityReactorController)
-                {
-                    tile = world.getTileEntity(getPos().down(2));
-                    if (tile instanceof TileEntityReactorCell)
-                    {
-                        tryToMoveRod((TileEntityReactorCell) tile);
-                    }
-                }
-            }
+            doRunChecks(ticks);
+            doRodMovement(ticks);
         }
         else if (_running)
         {
@@ -162,6 +124,80 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         }
     }
 
+    protected void doRunChecks(int ticks)
+    {
+        //Track previous state
+        final boolean prev_running = _running;
+
+        //Check if we can operate
+        if (canOperate())
+        {
+            //Set run status
+            _running = true;
+
+            //Consume fuel
+            consumeFuel(ticks);
+
+            //Every 1 second, do operation tick
+            if (ticks % 20 == 0)
+            {
+                doOperationTick();
+            }
+        }
+        //if not in operation status, set running to false
+        else
+        {
+            _running = false;
+        }
+
+        //If state changed cycle grid
+        if (prev_running != _running)
+        {
+            cycleGridData(_running);
+        }
+
+        //If state changes or every so often sync data to client
+        if (prev_running != _running || ticks % 20 == 0) //TODO see if %20 is needed
+        {
+            syncClientNextTick();
+        }
+    }
+
+    /**
+     * Do logic for rod movement between tiles
+     * <p>
+     * Does not always run every tick but calls logic to check if can/should run
+     *
+     * @param ticks - current tile ticks
+     */
+    protected void doRodMovement(int ticks)
+    {
+        //Every 5 seconds, Check if we need to move rods (works like a hopper)
+        if (ticks % 100 == 0 && getFuelRod() != null)
+        {
+            //Try to move rod to cell below reactor
+            TileEntity tile = world.getTileEntity(getPos().down());
+            if (tile instanceof TileEntityReactorCell)
+            {
+                tryToMoveRod((TileEntityReactorCell) tile);
+            }
+            //Try to move rod to cell below controller
+            else if (tile instanceof TileEntityReactorController)
+            {
+                tile = world.getTileEntity(getPos().down(2));
+                if (tile instanceof TileEntityReactorCell)
+                {
+                    tryToMoveRod((TileEntityReactorCell) tile);
+                }
+            }
+        }
+    }
+
+    /**
+     * Do reactor cell movement
+     *
+     * @param cell - reactor cell to move item into
+     */
     protected void tryToMoveRod(TileEntityReactorCell cell)
     {
         //always move lowest rod to bottom of stack (ensures dead rods exit core)
@@ -216,37 +252,30 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     protected void onSlotStackChanged(int slot)
     {
         this.markDirty();
-        if (isServer())
-        {
-            if (slot == 0)
-            {
-                boolean prev = hasRod;
-                hasRod = getFuelRod() != null && world != null;
-
-                if (prev != hasRod)
-                {
-                    syncClientNextTick(); //TODO check rod type and value
-                    if (hasRod)
-                    {
-                        MapHandler.RADIATION_MAP.addSource(getRadiationSource()); //TODO change this to not use inventory event
-                        MapHandler.THERMAL_MAP.addSource(getHeatSource());
-                    }
-                    else
-                    {
-                        MapHandler.RADIATION_MAP.removeSource(getRadiationSource(), false);
-                        MapHandler.THERMAL_MAP.removeSource(getHeatSource(), false);
-                    }
-                }
-            }
-        }
     }
 
     @Override
     public void invalidate()
     {
         super.invalidate();
-        MapHandler.RADIATION_MAP.removeSource(getRadiationSource(), true);
-        MapHandler.THERMAL_MAP.removeSource(getHeatSource(), true);
+        if (isServer())
+        {
+            cycleGridData(false);
+        }
+    }
+
+    protected void cycleGridData(boolean enable)
+    {
+        if (enable)
+        {
+            MapHandler.RADIATION_MAP.addSource(getRadiationSource()); //TODO change this to not use inventory event
+            MapHandler.THERMAL_MAP.addSource(getHeatSource());
+        }
+        else
+        {
+            MapHandler.RADIATION_MAP.removeSource(getRadiationSource(), false);
+            MapHandler.THERMAL_MAP.removeSource(getHeatSource(), false);
+        }
     }
 
     //-----------------------------------------------
