@@ -19,7 +19,13 @@ public abstract class ThermalSource<E> extends MapNodeSource<E, IThermalNode> im
     @Override
     public boolean canGeneratingHeat()
     {
-        return world() != null && getHeatGenerated() > 0;
+        return getHeatGenerated() > 0;
+    }
+
+    @Override
+    public boolean isStillValid()
+    {
+        return super.isStillValid() && canGeneratingHeat();
     }
 
     @Override

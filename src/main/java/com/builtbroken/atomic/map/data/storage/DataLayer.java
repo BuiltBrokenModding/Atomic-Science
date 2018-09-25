@@ -128,7 +128,7 @@ public class DataLayer
             while (it.hasNext())
             {
                 IDataMapNode node = it.next();
-                if (node == null)
+                if (node == null || !node.isNodeValid())
                 {
                     it.remove();
                 }

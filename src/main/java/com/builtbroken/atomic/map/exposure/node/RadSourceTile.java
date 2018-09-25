@@ -72,4 +72,22 @@ public class RadSourceTile<E extends TileEntity> extends RadiationSource<E>
     {
         return host.getPos().getY();
     }
+
+    @Override
+    public boolean equals(Object object)
+    {
+        if(object == this)
+        {
+            return true;
+        }
+        if(object instanceof RadSourceTile)
+        {
+            if(host != null && ((RadSourceTile)object).host != null)
+            {
+                return host.getWorld() == ((TileEntity)((RadSourceTile)object).host).getWorld() && host.getPos() == ((TileEntity)((RadSourceTile)object).host).getPos();
+            }
+            return ((RadSourceTile)object).host == host;
+        }
+        return false;
+    }
 }

@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.api.radiation;
 
-import com.builtbroken.atomic.lib.transform.IPosWorld;
 import com.builtbroken.atomic.api.map.IDataMapSource;
+import com.builtbroken.atomic.lib.transform.IPosWorld;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
@@ -54,8 +54,10 @@ public interface IRadiationSource extends IPosWorld, IDataMapSource
 
     /**
      * Is the source still radioactive at the time
-     * this was called. Used as an isAlive() and isValid()
-     * check to see if the source needs to be removed.
+     * this was called.
+     * <p>
+     * {@link #isStillValid()} is to be used as a validation
+     * check instead of this method.
      *
      * @return true if is still radioactive
      */

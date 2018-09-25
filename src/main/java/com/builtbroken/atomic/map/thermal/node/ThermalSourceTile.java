@@ -72,4 +72,22 @@ public class ThermalSourceTile<E extends TileEntity> extends ThermalSource<E>
     {
         return host.getPos().getY();
     }
+
+    @Override
+    public boolean equals(Object object)
+    {
+        if(object == this)
+        {
+            return true;
+        }
+        if(object instanceof ThermalSourceTile)
+        {
+            if(host != null && ((ThermalSourceTile)object).host != null)
+            {
+                return host.getWorld() == ((TileEntity)((ThermalSourceTile)object).host).getWorld() && host.getPos() == ((TileEntity)((ThermalSourceTile)object).host).getPos();
+            }
+            return ((ThermalSourceTile)object).host == host;
+        }
+        return false;
+    }
 }

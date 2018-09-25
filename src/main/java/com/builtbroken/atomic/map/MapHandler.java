@@ -48,7 +48,7 @@ public final class MapHandler
 
         MinecraftForge.EVENT_BUS.register(INSTANCE);
 
-        if(ConfigRadiation.ENABLE_MAP)
+        if (ConfigRadiation.ENABLE_MAP)
         {
             MinecraftForge.EVENT_BUS.register(RADIATION_MAP);
         }
@@ -63,15 +63,21 @@ public final class MapHandler
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event)
     {
-        RADIATION_MAP.onWorldUnload(event.getWorld());
-        THERMAL_MAP.onWorldUnload(event.getWorld());
-        GLOBAL_DATA_MAP.onWorldUnload(event.getWorld());
+        if (!event.getWorld().isRemote)
+        {
+            RADIATION_MAP.onWorldUnload(event.getWorld());
+            THERMAL_MAP.onWorldUnload(event.getWorld());
+            GLOBAL_DATA_MAP.onWorldUnload(event.getWorld());
+        }
     }
 
     @SubscribeEvent
     public void onChunkUnload(ChunkEvent.Unload event)
     {
-        GLOBAL_DATA_MAP.onChunkUnload(event.getWorld(), event.getChunk());
+        if (!event.getWorld().isRemote)
+        {
+            GLOBAL_DATA_MAP.onChunkUnload(event.getWorld(), event.getChunk());
+        }
     }
 
     @SubscribeEvent()
@@ -84,6 +90,9 @@ public final class MapHandler
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event)
     {
-        GLOBAL_DATA_MAP.onWorldTick(event.world);
+        if (!event.world.isRemote)
+        {
+            GLOBAL_DATA_MAP.onWorldTick(event.world);
+        }
     }
 }

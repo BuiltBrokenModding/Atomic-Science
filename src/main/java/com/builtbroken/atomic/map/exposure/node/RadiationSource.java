@@ -19,7 +19,13 @@ public abstract class RadiationSource<E>  extends MapNodeSource<E, IRadiationNod
     @Override
     public boolean isRadioactive()
     {
-        return isStillValid() && getRadioactiveMaterial() > 0;
+        return getRadioactiveMaterial() > 0;
+    }
+
+    @Override
+    public boolean isStillValid()
+    {
+        return super.isStillValid() && isRadioactive();
     }
 
     @Override
