@@ -43,7 +43,7 @@ public class ThermalMap implements IThermalSystem
      */
     public void addSource(IThermalSource source)
     {
-        if (source != null && source.canGeneratingHeat() && !thermalSources.contains(source))
+        if (source != null && !source.world().isRemote && source.canGeneratingHeat() && !thermalSources.contains(source))
         {
             thermalSources.add(source);
             onSourceAdded(source);
@@ -239,7 +239,7 @@ public class ThermalMap implements IThermalSystem
     public void onHeatChanged(MapSystemEvent.OnValueChanged event)
     {
         final World world = event.world();
-        if (world != null && event.type == DataMapType.THERMAL && world.isBlockLoaded(event.getPos()))
+        if (world != null && !world.isRemote && event.type == DataMapType.THERMAL && world.isBlockLoaded(event.getPos()))
         {
             checkForThermalChange(world, event.getPos(), event.getNewValue());
         }

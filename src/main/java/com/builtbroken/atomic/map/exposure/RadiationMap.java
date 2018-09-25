@@ -54,7 +54,7 @@ public class RadiationMap implements IRadiationExposureSystem
      */
     public void addSource(IRadiationSource source)
     {
-        if (source != null && source.isRadioactive() && !radiationSourceMap.contains(source))
+        if (source != null && !source.world().isRemote && source.isRadioactive() && !radiationSourceMap.contains(source))
         {
             radiationSourceMap.add(source);
             onSourceAdded(source);
@@ -63,7 +63,7 @@ public class RadiationMap implements IRadiationExposureSystem
 
     public void addSource(Entity entity)
     {
-        if (entity != null && entity.isEntityAlive() && !radiationEntityMap.containsKey(entity))
+        if (entity != null && !entity.getEntityWorld().isRemote && entity.isEntityAlive() && !radiationEntityMap.containsKey(entity))
         {
             IRadiationSource source = getSource(entity);
             if (source != null)
