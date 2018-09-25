@@ -305,16 +305,6 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         return 0;
     }
 
-    public boolean isRadioactive()
-    {
-        return !isInvalid() && getRadioactiveMaterial() > 0;
-    }
-
-    public boolean canGeneratingHeat()
-    {
-        return !isInvalid() && getHeatGenerated() > 0;
-    }
-
     public int getHeatGenerated()
     {
         IFuelRodItem fuelRodItem = getFuelRod();

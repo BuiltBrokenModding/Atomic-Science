@@ -1,9 +1,9 @@
 package com.builtbroken.atomic.map.data.storage;
 
-import com.builtbroken.atomic.map.MapSystem;
 import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.map.IDataMapNode;
 import com.builtbroken.atomic.api.map.IDataMapSource;
+import com.builtbroken.atomic.map.MapSystem;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -283,6 +283,27 @@ public class DataMap
 
     public void onWorldTick(World world)
     {
+        //Scan a single chunk for issues each tick
+        Long time = System.currentTimeMillis();
+        DataChunk chunkScaned = null;
+        for (DataChunk chunk : getLoadedChunks())
+        {
+            if (chunk.lastScanTime - time > 60000) //TODO add config for time
+            {
+                chunkScaned = chunk;
+                chunk.lastScanTime = time;
+                chunk.checkForIssues();
+                break;
+            }
+        }
+
+        //If chunk scanned is empty, set to be unloaded to save memory
+        if (chunkScaned != null && !chunkScaned.hasData())
+        {
+            chunksWaitingToUnload.put(index(chunkScaned.xPosition, chunkScaned.zPosition), chunkScaned);
+        }
+
+        //Tick each chunk waiting to be unloaded
         Iterator<Map.Entry<Long, DataChunk>> it = chunksWaitingToUnload.entrySet().iterator();
         while (it.hasNext())
         {
@@ -361,6 +382,7 @@ public class DataMap
             {
                 chunksWaitingToUnload.remove(index);
                 chunksCurrentlyLoaded.put(index, chunk);
+                chunk.unloadTick = 0;
             }
         }
         return chunk;

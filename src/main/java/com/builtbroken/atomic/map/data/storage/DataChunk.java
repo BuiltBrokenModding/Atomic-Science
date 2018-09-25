@@ -1,10 +1,10 @@
 package com.builtbroken.atomic.map.data.storage;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.map.data.MapValueConsumer;
 import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.map.IDataMapNode;
 import com.builtbroken.atomic.api.map.IDataMapSource;
+import com.builtbroken.atomic.map.data.MapValueConsumer;
 
 import java.util.ArrayList;
 
@@ -26,6 +26,9 @@ public class DataChunk
 
     /** Number of world ticks this chunk has been in the unload queue */
     public int unloadTick = 0;
+
+    /** Last time this chunk was scanned for issues */
+    public Long lastScanTime = System.currentTimeMillis();
 
     /** Array of active layers, modified by yStart */
     protected DataLayer[] layers = new DataLayer[256];
@@ -91,9 +94,9 @@ public class DataChunk
     /**
      * Sets the value into the chunk
      *
-     * @param cx   - location (0-15)
-     * @param y    - location (0-255)
-     * @param cz   - location (0-15)
+     * @param cx     - location (0-15)
+     * @param y      - location (0-255)
+     * @param cz     - location (0-15)
      * @param source - data point to add
      */
     public boolean removeData(int cx, int y, int cz, IDataMapSource source)
@@ -203,7 +206,7 @@ public class DataChunk
     {
         for (DataLayer layer : getLayers())
         {
-            if (layer != null && layer.blocksUsed > 0)
+            if (layer != null && !layer.isEmpty())
             {
                 return true;
             }
@@ -211,7 +214,26 @@ public class DataChunk
         return false;
     }
 
-    public final void forEachValue(MapValueConsumer consumer)
+    public void checkForIssues()
+    {
+        for (int i = 0; i < getLayers().length; i++)
+        {
+            DataLayer layer = getLayers()[i];
+            if (layer != null)
+            {
+                //Allow layer to free up data and correct problems
+                layer.checkForIssues();
+
+                //If layer is empty remove to save memory
+                if (layer.isEmpty())
+                {
+                    getLayers()[i] = null;
+                }
+            }
+        }
+    }
+
+    public final void forEachValue(MapValueConsumer consumer, DataMapType type)
     {
         for (DataLayer layer : getLayers())
         {
@@ -224,7 +246,7 @@ public class DataChunk
                         ArrayList<IDataMapNode> list = layer.getData(cx, cz);
                         if (list != null && !list.isEmpty())
                         {
-                            int value = DataMapType.RAD_MATERIAL.getValue(list);
+                            int value = type.getValue(list);
                             if (value > 0)
                             {
                                 int x = cx + xPosition * 16;

@@ -8,6 +8,7 @@ import com.builtbroken.atomic.api.map.IDataMapSource;
 import com.builtbroken.atomic.api.thermal.IThermalNode;
 
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -17,13 +18,13 @@ public class ThermalNode implements IThermalNode, IDataPoolObject
 {
     private static final DataPool<ThermalNode> THERMAL_NODE_POOL = new DataPool(400000); //TODO add config
 
-    private IThermalSource source;
+    private WeakReference<IThermalSource> source;
 
     private int value;
 
     private ThermalNode(IThermalSource source, int value)
     {
-        this.source = source;
+        this.source = new WeakReference(source);
         this.value = value;
     }
 
@@ -49,7 +50,11 @@ public class ThermalNode implements IThermalNode, IDataPoolObject
     @Override
     public IDataMapSource getSource()
     {
-        return source;
+        if(source == null || source.get() == null)
+        {
+            return null;
+        }
+        return source.get();
     }
 
     public static ThermalNode get(IThermalSource source, int value)
@@ -59,7 +64,7 @@ public class ThermalNode implements IThermalNode, IDataPoolObject
             ThermalNode dataChange = THERMAL_NODE_POOL.get();
             if (dataChange != null)
             {
-                dataChange.source = source;
+                dataChange.source = new WeakReference(source);
                 dataChange.value = value;
                 return dataChange;
             }

@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.map.exposure;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.map.data.DataChange;
@@ -386,7 +387,7 @@ public class ThreadRadExposure extends ThreadDataChange
      */
     protected void queueRemove(DataChunk chunk)
     {
-        chunk.forEachValue((dim, x, y, z, value) -> ThreadRadExposure.this.queuePosition(DataChange.get(new RadSourceMap(dim, new BlockPos(x, y, z), value), 0))); //TODO see if needed
+        chunk.forEachValue((dim, x, y, z, value) -> ThreadRadExposure.this.queuePosition(DataChange.get(new RadSourceMap(dim, new BlockPos(x, y, z), value), 0)), DataMapType.RAD_MATERIAL); //TODO see if needed
     }
 
     /**
@@ -396,6 +397,6 @@ public class ThreadRadExposure extends ThreadDataChange
      */
     protected void queueAddition(DataChunk chunk)
     {
-        chunk.forEachValue((dim, x, y, z, value) -> queuePosition(DataChange.get(new RadSourceMap(dim, new BlockPos(x, y, z), value), value)));
+        chunk.forEachValue((dim, x, y, z, value) -> queuePosition(DataChange.get(new RadSourceMap(dim, new BlockPos(x, y, z), value), value)), DataMapType.RAD_MATERIAL);
     }
 }

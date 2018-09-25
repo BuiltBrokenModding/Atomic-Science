@@ -1,19 +1,17 @@
 package com.builtbroken.atomic.map.exposure;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.radiation.IRadiationExposureSystem;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
-import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.map.data.storage.DataMap;
 import com.builtbroken.atomic.map.exposure.node.RadSourceEntityItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -296,16 +294,6 @@ public class RadiationMap implements IRadiationExposureSystem
         }
     }
     */
-
-    @SubscribeEvent()
-    public void serverTick(TickEvent.ServerTickEvent event)
-    {
-        if (event.phase == TickEvent.Phase.END)
-        {
-            //Cleanup
-            clearDeadSources();
-        }
-    }
 
     /*
     @SubscribeEvent()

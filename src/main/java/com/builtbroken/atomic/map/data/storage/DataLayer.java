@@ -81,6 +81,7 @@ public class DataLayer
         {
             count += removeData(source, data[i]);
         }
+        blocksUsed -= count;
         return count > 0;
     }
 
@@ -94,7 +95,9 @@ public class DataLayer
      */
     public boolean removeData(int x, int z, IDataMapSource source)
     {
-        return removeData(source, getData(x, z)) > 0;
+        int count = removeData(source, getData(x, z));
+        blocksUsed -= count;
+        return count > 0;
     }
 
     /**
@@ -108,9 +111,10 @@ public class DataLayer
     public boolean removeData(int x, int z, IDataMapNode node)
     {
         ArrayList<IDataMapNode> list = getData(x, z);
-        if(list != null)
+        if (list != null && list.remove(node))
         {
-            return list.remove(node);
+            blocksUsed -= 1;
+            return true;
         }
         return false;
     }
@@ -195,5 +199,31 @@ public class DataLayer
     public boolean isEmpty()
     {
         return blocksUsed <= 0;
+    }
+
+    public void checkForIssues()
+    {
+        for (int i = 0; i < data.length; i++)
+        {
+            if (data[i] != null)
+            {
+                //Clear bad nodes
+                Iterator<IDataMapNode> it = data[i].iterator();
+                while (it.hasNext())
+                {
+                    IDataMapNode node = it.next();
+                    if (!node.isNodeValid())
+                    {
+                        it.remove();
+                    }
+                }
+
+                //If empty clear slot
+                if (data[i].size() <= 0)
+                {
+                    data[i] = null;
+                }
+            }
+        }
     }
 }

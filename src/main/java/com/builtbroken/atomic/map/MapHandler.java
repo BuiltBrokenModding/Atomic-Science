@@ -8,8 +8,10 @@ import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThermalMap;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
  * Core handler for registering maps and triggering events
@@ -63,5 +65,25 @@ public final class MapHandler
     {
         RADIATION_MAP.onWorldUnload(event.getWorld());
         THERMAL_MAP.onWorldUnload(event.getWorld());
+        GLOBAL_DATA_MAP.onWorldUnload(event.getWorld());
+    }
+
+    @SubscribeEvent
+    public void onChunkUnload(ChunkEvent.Unload event)
+    {
+        GLOBAL_DATA_MAP.onChunkUnload(event.getWorld(), event.getChunk());
+    }
+
+    @SubscribeEvent()
+    public void serverTick(TickEvent.ServerTickEvent event)
+    {
+        RADIATION_MAP.clearDeadSources();
+        THERMAL_MAP.clearDeadSources();
+    }
+
+    @SubscribeEvent
+    public void onWorldTick(TickEvent.WorldTickEvent event)
+    {
+        GLOBAL_DATA_MAP.onWorldTick(event.world);
     }
 }

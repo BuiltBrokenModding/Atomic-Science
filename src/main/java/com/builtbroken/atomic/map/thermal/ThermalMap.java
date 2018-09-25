@@ -115,7 +115,6 @@ public class ThermalMap implements IThermalSystem
             if (source == null || !source.isStillValid() || !source.canGeneratingHeat())
             {
                 it.remove();
-
                 onSourceRemoved(source);
             }
         }
@@ -288,16 +287,6 @@ public class ThermalMap implements IThermalSystem
     }
 
     @SubscribeEvent
-    public void onServerTick(TickEvent.ServerTickEvent event)
-    {
-        if (event.phase == TickEvent.Phase.END)
-        {
-            //Cleanup
-            clearDeadSources();
-        }
-    }
-
-    @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event)
     {
         if (event.phase == TickEvent.Phase.END)
@@ -311,18 +300,21 @@ public class ThermalMap implements IThermalSystem
                 Iterator<BlockPos> it = steamPositions.iterator();
                 while (it.hasNext())
                 {
-                    BlockPos pos = it.next(); //TODO change over to block pos
+                    BlockPos pos = it.next();
                     if (world.isBlockLoaded(pos))
                     {
                         int vap = ThermalHandler.getVaporRate(world, pos);
                         if (vap > 0)
                         {
-                            int count = Math.min(10, Math.max(1, vap / 100));
-                            PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim,
-                                    pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                                    0, 0, 0,
-                                    "boiling;" + count);
-                            PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, pos, 30);
+                            if(event.world.rand.nextFloat() > 0.6)
+                            {
+                                int count = Math.min(10, Math.max(1, vap / 100));
+                                PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(dim,
+                                        pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                                        0, 0, 0,
+                                        "boiling;" + count);
+                                PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle, world, pos, 30);
+                            }
                         }
                         else
                         {
