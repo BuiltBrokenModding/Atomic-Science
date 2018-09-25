@@ -31,7 +31,7 @@ public class ArmorRadiationHandler
     {
         for (ArmorRadData data : armorRadiationList)
         {
-            if (ItemStack.areItemStackTagsEqual(stack, data.item) && ItemStack.areItemStackTagsEqual(stack, data.item))
+            if (ItemStack.areItemsEqual(stack, data.item) && ItemStack.areItemStackTagsEqual(stack, data.item))
             {
                 return data;
             }
