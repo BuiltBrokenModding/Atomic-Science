@@ -93,6 +93,7 @@ public class ItemWrench extends Item
         if (GuiScreen.isShiftKeyDown())
         {
             lines.add(LanguageUtility.getLocal(getTranslationKey() + ".info"));
+            lines.add(LanguageUtility.getLocal(getTranslationKey() + ".use.info"));
             lines.add(LanguageUtility.getLocal(getTranslationKey() + ".ctrl.info"));
             lines.add(LanguageUtility.getLocal(getTranslationKey() + ".wheel.info"));
         }
