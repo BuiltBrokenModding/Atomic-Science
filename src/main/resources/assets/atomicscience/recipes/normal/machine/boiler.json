@@ -24,8 +24,21 @@
       "ore": "motor"
     },
     "P": {
-      "type": "forge:ore_dict",
-      "ore": "plateIron"
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
     },
     "C": {
       "type": "forge:ore_dict",

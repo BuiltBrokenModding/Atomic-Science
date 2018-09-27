@@ -1,16 +1,20 @@
 {
   "result": {
-    "item": "atomicscience:steam_turbine",
+    "item": "atomicscience:chem_extractor",
     "data": 0,
     "count": 1
   },
   "pattern": [
     "IPI",
-    "PMP",
+    "MCM",
     "IPI"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {
+    "I": {
+      "type": "forge:ore_dict",
+      "ore": "ingotSteel"
+    },
     "M": {
       "type": "forge:ore_dict",
       "ore": "motor"
@@ -32,22 +36,25 @@
         }
       ]
     },
-    "I": {
-      "type": "atomicscience:first_match",
-      "items": [
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "circuitElite"
+    }
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
         {
-          "type": "forge:ore_dict",
-          "ore": "rodIron"
+          "type": "atomicscience:tf",
+          "condition": "false"
         },
         {
-          "type": "forge:ore_dict",
-          "ore": "ingotSteel"
-        },
-        {
-          "type": "forge:ore_dict",
-          "ore": "ingotIron"
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "circuitBasic"
         }
       ]
     }
-  }
+  ]
 }

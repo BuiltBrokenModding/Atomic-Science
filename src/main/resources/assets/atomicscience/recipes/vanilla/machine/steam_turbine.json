@@ -49,5 +49,21 @@
         }
       ]
     }
-  }
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "atomicscience:tf",
+          "condition": "false"
+        },
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "true",
+          "value": "circuitBasic"
+        }
+      ]
+    }
+  ]
 }

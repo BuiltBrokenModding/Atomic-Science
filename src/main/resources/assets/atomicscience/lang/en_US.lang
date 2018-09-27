@@ -118,9 +118,9 @@ item.atomicscience:wrench.color.purple.info=Color: Purple
 item.atomicscience:wrench.more.info=Hold §bSHIFT§f for more
 
 item.atomicscience:wrench.info=Adjusts machine settings
-item.atomicscience:wrench.use.info=While holding shift:
-item.atomicscience:wrench.ctrl.info=Ctrl + Mouse wheel to cycle modes
-item.atomicscience:wrench.wheel.info=Mouse wheel to cycle color
+item.atomicscience:wrench.use.info=§5While holding §bshift:
+item.atomicscience:wrench.ctrl.info=§bCtrl + §bMouse §5wheel to cycle modes
+item.atomicscience:wrench.wheel.info=§bMouse wheel §5to cycle color
 
 ## Gui
 gui.tank.tooltip=-fluid-;-vol-/-cap-
