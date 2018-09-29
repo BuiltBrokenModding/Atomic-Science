@@ -51,7 +51,7 @@
         },
         {
           "type": "atomicscience:ore_value",
-          "condition": "true",
+          "condition": "false",
           "value": "circuitBasic"
         }
       ]

@@ -16,8 +16,8 @@
       "data": 0
     },
     "M": {
-      "type": "forge:ore_dict",
-      "ore": "motor"
+      "item": "minecraft:piston",
+      "data": 0
     },
     "P": {
       "type": "atomicscience:first_match",
@@ -37,8 +37,8 @@
       ]
     },
     "C": {
-      "type": "forge:ore_dict",
-      "ore": "circuitAdvanced"
+      "item": "minecraft:repeater",
+      "data": 0
     }
   },
   "conditions": [
@@ -51,8 +51,8 @@
         },
         {
           "type": "atomicscience:ore_value",
-          "condition": "true",
-          "value": "circuitBasic"
+          "condition": "false",
+          "value": "circuitAdvanced"
         }
       ]
     }
