@@ -57,7 +57,7 @@ public class RenderRadOverlay
 
                 if (AtomicScience.runningAsDev)
                 {
-                    renderTextWithShadow("" + ClientProxy.RAD_REMOVE_TIMER, left + 60, top, endColor.getRGB());
+                    renderTextWithShadow("" + ClientProxy.RAD_REMOVE_TIMER, left, top + 20, endColor.getRGB());
                 }
 
                 //Set prev
