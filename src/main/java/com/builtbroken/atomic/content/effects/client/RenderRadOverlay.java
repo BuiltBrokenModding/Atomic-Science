@@ -25,7 +25,7 @@ public class RenderRadOverlay
     @SubscribeEvent
     public void renderOverlay(RenderGameOverlayEvent.Post event)
     {
-        if(ConfigClient.RADIATION_DISPLAY.ENABLE)
+        if(ConfigClient.RADIATION_DISPLAY.ENABLE && !Minecraft.getMinecraft().gameSettings.showDebugInfo && !Minecraft.getMinecraft().isReducedDebug())
         {
             int width = event.getResolution().getScaledWidth();
             int height = event.getResolution().getScaledHeight();
