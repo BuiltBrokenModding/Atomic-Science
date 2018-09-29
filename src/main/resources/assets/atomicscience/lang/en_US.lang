@@ -198,6 +198,10 @@ config.atomicscience:client.particles.machine.running.title=Machine Running
 config.atomicscience:client.particles.reactor.running.title=Reactor Running
 config.atomicscience:client.particles.steam.title=Steam Vapor Effect
 
+###### Radiation Display
+config.atomicscience:client.radiation.display.title=Radiation HUD
+config.atomicscience:client.radiation.display.enable.title=Enable
+
 #### Mods
 config.atomicscience:mods.title=Mods
 

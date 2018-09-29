@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.effects.client;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.client.ClientProxy;
+import com.builtbroken.atomic.config.client.ConfigClient;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -24,46 +25,49 @@ public class RenderRadOverlay
     @SubscribeEvent
     public void renderOverlay(RenderGameOverlayEvent.Post event)
     {
-        int width = event.getResolution().getScaledWidth();
-        int height = event.getResolution().getScaledHeight();
-        Minecraft mc = Minecraft.getMinecraft();
-
-        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
+        if(ConfigClient.RADIATION_DISPLAY.ENABLE)
         {
-            //Start
-            GL11.glPushMatrix();
-            //GL11.glTranslatef(0, 0, 0.0F);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            int width = event.getResolution().getScaledWidth();
+            int height = event.getResolution().getScaledHeight();
+            Minecraft mc = Minecraft.getMinecraft();
 
-            //Position TODO config TODO fire event
-            int left = 5;
-            int top = 5;
-
-            //Get data
-            final float rad_player = interpolate(ClientProxy.PREV_RAD_PLAYER, ClientProxy.RAD_PLAYER, event.getPartialTicks());
-            final float rad_area = interpolate(ClientProxy.PREV_RAD_EXPOSURE, ClientProxy.RAD_EXPOSURE, event.getPartialTicks());
-            final float rad_dead_min = ConfigRadiation.RADIATION_DEATH_POINT / (60 * 20); //Radiation needed to die in 1 min
-
-            //Format
-            String remDisplay = formatDisplay("PER:", rad_player, "rem");
-            String radDisplay = formatDisplay("ENV: ", rad_area * 20, "rem/s");
-
-            //Render
-            renderTextWithShadow(remDisplay, left, top, interpolate(startColor, endColor, rad_player / ConfigRadiation.RADIATION_DEATH_POINT).getRGB());
-            renderTextWithShadow(radDisplay, left, top + 10, interpolate(startColor, endColor, rad_area / rad_dead_min).getRGB());
-
-            if (AtomicScience.runningAsDev)
+            if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
             {
-                renderTextWithShadow("" + ClientProxy.RAD_REMOVE_TIMER, left + 60, top, endColor.getRGB());
+                //Start
+                GL11.glPushMatrix();
+                //GL11.glTranslatef(0, 0, 0.0F);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+                //Position TODO config TODO fire event
+                int left = 5;
+                int top = 5;
+
+                //Get data
+                final float rad_player = interpolate(ClientProxy.PREV_RAD_PLAYER, ClientProxy.RAD_PLAYER, event.getPartialTicks());
+                final float rad_area = interpolate(ClientProxy.PREV_RAD_EXPOSURE, ClientProxy.RAD_EXPOSURE, event.getPartialTicks());
+                final float rad_dead_min = ConfigRadiation.RADIATION_DEATH_POINT / (60 * 20); //Radiation needed to die in 1 min
+
+                //Format
+                String remDisplay = formatDisplay("PER:", rad_player, "rem");
+                String radDisplay = formatDisplay("ENV: ", rad_area * 20, "rem/s");
+
+                //Render
+                renderTextWithShadow(remDisplay, left, top, interpolate(startColor, endColor, rad_player / ConfigRadiation.RADIATION_DEATH_POINT).getRGB());
+                renderTextWithShadow(radDisplay, left, top + 10, interpolate(startColor, endColor, rad_area / rad_dead_min).getRGB());
+
+                if (AtomicScience.runningAsDev)
+                {
+                    renderTextWithShadow("" + ClientProxy.RAD_REMOVE_TIMER, left + 60, top, endColor.getRGB());
+                }
+
+                //Set prev
+                ClientProxy.PREV_RAD_PLAYER = rad_player;
+                ClientProxy.PREV_RAD_EXPOSURE = rad_area;
+
+                //End
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GL11.glPopMatrix();
             }
-
-            //Set prev
-            ClientProxy.PREV_RAD_PLAYER = rad_player;
-            ClientProxy.PREV_RAD_EXPOSURE = rad_area;
-
-            //End
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glPopMatrix();
         }
     }
 

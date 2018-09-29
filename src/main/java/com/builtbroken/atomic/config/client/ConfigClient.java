@@ -14,4 +14,8 @@ public class ConfigClient
     @Config.LangKey("config.atomicscience:client.particles.title")
     @Config.Name("particles")
     public static final ConfigParticles PARTICLES = new ConfigParticles();
+
+    @Config.LangKey("config.atomicscience:client.radiation.display.title")
+    @Config.Name("radiation_hud")
+    public static final ConfigRadiationDisplay RADIATION_DISPLAY = new ConfigRadiationDisplay();
 }
