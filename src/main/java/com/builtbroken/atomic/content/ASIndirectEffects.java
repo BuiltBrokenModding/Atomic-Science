@@ -5,10 +5,12 @@ import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.api.armor.IAntiPoisonArmor;
 import com.builtbroken.atomic.api.effect.IIndirectEffectInstance;
 import com.builtbroken.atomic.api.effect.IIndirectEffectSource;
+import com.builtbroken.atomic.api.effect.IIndirectEffectType;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.content.effects.IndirectEffectInstance;
 import com.builtbroken.atomic.content.effects.RadiationEntityEventHandler;
 import com.builtbroken.atomic.content.effects.type.IETRadiation;
+import com.builtbroken.atomic.content.effects.type.IETRadiationDamage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -37,6 +39,7 @@ public class ASIndirectEffects
     public static void register()
     {
         AtomicScienceAPI.RADIATION = new IETRadiation();
+        AtomicScienceAPI.RADIATION_DAMAGE = new IETRadiationDamage();
 
         if (ConfigRadiation.ENABLE_EXPOSURE)
         {
@@ -138,9 +141,9 @@ public class ASIndirectEffects
      * @param source - source of the radiation
      * @param amount - amount of radiation
      */
-    public static void applyIndirectEffect(EntityLivingBase entity, IIndirectEffectSource source, float amount)
+    public static void applyIndirectEffect(EntityLivingBase entity, IIndirectEffectType type,  IIndirectEffectSource source, float amount)
     {
-        IndirectEffectInstance indirectEffectInstance = new IndirectEffectInstance(AtomicScienceAPI.RADIATION, source, amount);
+        IndirectEffectInstance indirectEffectInstance = new IndirectEffectInstance(type, source, amount);
         applyIndirectEffect(entity, indirectEffectInstance);
     }
 

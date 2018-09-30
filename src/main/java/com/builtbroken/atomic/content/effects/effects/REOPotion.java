@@ -23,9 +23,9 @@ public class REOPotion extends RadiationEffectOutcome
     }
 
     @Override
-    public void applyEffects(EntityLivingBase entity, float currentRems)
+    public void applyEffects(EntityLivingBase entity, float currentRems, float environmentalRems)
     {
-        super.applyEffects(entity, currentRems);
+        super.applyEffects(entity, currentRems, environmentalRems);
         //Check chance
         if (chance.apply(entity, currentRems) > entity.getEntityWorld().rand.nextFloat())
         {

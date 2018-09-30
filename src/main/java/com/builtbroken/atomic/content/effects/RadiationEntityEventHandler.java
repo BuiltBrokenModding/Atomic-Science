@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.effects;
 
+import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.content.ASIndirectEffects;
 import com.builtbroken.atomic.content.effects.effects.REOPotion;
@@ -53,10 +54,12 @@ public class RadiationEntityEventHandler
 
     public static void init()
     {
+        //Simulate radiation posing
         globalEffectList.add(new REOPotion(() -> ConfigRadiation.RADIATION_SICKNESS_POINT,
                 (entity, rads) -> scaleChance(entity, rads, ConfigRadiation.RADIATION_SICKNESS_POINT),
                 entity -> new PotionEffect(MobEffects.HUNGER, 100)));
 
+        //Simulate radiation posing
         globalEffectList.add(new REOPotion(() -> ConfigRadiation.RADIATION_WEAKNESS_POINT,
                 (entity, rads) -> scaleChance(entity, rads, ConfigRadiation.RADIATION_WEAKNESS_POINT),
                 entity ->
@@ -76,14 +79,33 @@ public class RadiationEntityEventHandler
                     return null;
                 }));
 
+        //Simulate temp blindness
         globalEffectList.add(new REOPotion(() -> ConfigRadiation.RADIATION_CONFUSION_POINT,
                 (entity, rads) -> scaleChance(entity, rads, ConfigRadiation.RADIATION_CONFUSION_POINT),
                 entity -> new PotionEffect(MobEffects.BLINDNESS, 100)));
 
-        globalEffectList.add(new RadiationEffectOutcome(() -> ConfigRadiation.RADIATION_DEATH_POINT, (entity, rads) -> {
+        //Simulate high radiation thermal damage
+        globalEffectList.add(new RadiationEffectOutcome(() -> ConfigRadiation.RADIATION_DEATH_POINT, (entity, rads, env) -> {
+
+            final float check = 500 / 20f;
+            if (env > check) //TODO add config
+            {
+                float scale = env / check;
+                SourceWrapperPosition sourceWrapperPosition = new SourceWrapperPosition( //TODO recycle object
+                        entity.world,
+                        entity.posX,
+                        entity.posY,
+                        entity.posZ
+                );
+                ASIndirectEffects.applyIndirectEffect(entity, AtomicScienceAPI.RADIATION_DAMAGE, sourceWrapperPosition, 1 * scale); //TODO recycle object
+            }
+        }));
+
+        //Simulate radiation organ failure
+        globalEffectList.add(new RadiationEffectOutcome(() -> ConfigRadiation.RADIATION_DEATH_POINT, (entity, rads, env) -> {
             if (scaleToEntity(entity, rads) > ConfigRadiation.RADIATION_DEATH_POINT)
             {
-                entity.attackEntityFrom(radiationDeathDamage, 5);
+                entity.attackEntityFrom(radiationDeathDamage, 5); //TODO pass through indirect system to allow armor to block
             }
         }));
 
@@ -136,7 +158,8 @@ public class RadiationEntityEventHandler
                 //Increase radiation from environment
                 if (!entity.isInvisible() && (!(entity instanceof EntityPlayerMP) || !((EntityPlayerMP) entity).capabilities.isCreativeMode))
                 {
-                    applyExposure(entity);
+                    final float remExposure = MapHandler.RADIATION_MAP.getRemExposure(entity);
+                    applyExposure(entity, remExposure);
 
                     final float rad = ASIndirectEffects.getRadiation(entity);
 
@@ -144,13 +167,13 @@ public class RadiationEntityEventHandler
                     if (entity.ticksExisted % 5 == 0)
                     {
                         //Global list of effects
-                        globalEffectList.forEach(effect -> effect.applyEffects(entity, rad));
+                        globalEffectList.forEach(effect -> effect.applyEffects(entity, rad, remExposure));
 
                         //Per entity list of effects
                         Class<? extends Entity> clazz = entity.getClass();
                         if (perEntityEffectList.containsKey(clazz))
                         {
-                            perEntityEffectList.get(clazz).forEach(effect -> effect.applyEffects(entity, rad));
+                            perEntityEffectList.get(clazz).forEach(effect -> effect.applyEffects(entity, rad, remExposure));
                         }
                     }
                 }
@@ -169,10 +192,9 @@ public class RadiationEntityEventHandler
      *
      * @param entity
      */
-    protected void applyExposure(EntityLivingBase entity)
+    protected void applyExposure(EntityLivingBase entity, float remExposure)
     {
         //Apply exposure if greater than zero
-        float remExposure = MapHandler.RADIATION_MAP.getRemExposure(entity);
         if (remExposure > 0)
         {
             SourceWrapperPosition sourceWrapperPosition = new SourceWrapperPosition(
@@ -181,7 +203,7 @@ public class RadiationEntityEventHandler
                     entity.posY,
                     entity.posZ
             );
-            ASIndirectEffects.applyIndirectEffect(entity, sourceWrapperPosition, remExposure);
+            ASIndirectEffects.applyIndirectEffect(entity, AtomicScienceAPI.RADIATION, sourceWrapperPosition, remExposure);
         }
         else if (ASIndirectEffects.hasRadiationData(entity))
         {

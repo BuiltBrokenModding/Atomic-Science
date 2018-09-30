@@ -57,7 +57,7 @@ public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
         {
             return false;
         }
-        return instance.getIndirectEffectType() == AtomicScienceAPI.RADIATION;
+        return instance.getIndirectEffectType() == AtomicScienceAPI.RADIATION || instance.getIndirectEffectType() == AtomicScienceAPI.RADIATION_DAMAGE;
     }
 
     protected boolean hasFullSetOfArmor(EntityLivingBase entity)

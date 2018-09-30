@@ -23,7 +23,7 @@ public class IndirectEffectEntityEvent extends IndirectEffectEvent
     }
 
     /**
-     * Called before radiation is applied to an entity. Can be used to change the applied
+     * Called before an effect is applied to an entity. Can be used to change the applied
      * power value or to cancel the action.
      * <p>
      * Is {@link Cancelable}

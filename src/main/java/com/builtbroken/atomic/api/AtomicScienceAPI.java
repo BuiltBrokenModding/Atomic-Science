@@ -17,8 +17,11 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
  */
 public final class AtomicScienceAPI
 {
-    /** Generic radiation damage type */
+    /** Generic radiation application, used to apply radiation to entity (does not cause damage) */
     public static IIndirectEffectType RADIATION;
+
+    /** Generic radiation damage type */
+    public static IIndirectEffectType RADIATION_DAMAGE;
 
     //DO NOT override these, the option is there but its not used that way
     //  these are meant to exposure access to the system. A lot of internal
