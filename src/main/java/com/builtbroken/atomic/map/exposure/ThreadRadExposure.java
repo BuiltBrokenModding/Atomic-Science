@@ -237,9 +237,9 @@ public class ThreadRadExposure extends ThreadDataChange
                         double power, double edit_range)
     {
         //Position
-        double x = cx + 0.5;
-        double y = cy + 0.5;
-        double z = cz + 0.5;
+        double x = cx;
+        double y = cy;
+        double z = cz;
 
         double distanceSQ = 1;
         double radDistance = 1;
