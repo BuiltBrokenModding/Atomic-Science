@@ -2,12 +2,12 @@ package com.builtbroken.atomic.map.exposure;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.map.DataMapType;
+import com.builtbroken.atomic.api.radiation.IRadiationNode;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
-import com.builtbroken.atomic.api.radiation.IRadiationNode;
 import com.builtbroken.atomic.map.data.storage.DataChunk;
 import com.builtbroken.atomic.map.exposure.node.RadSourceMap;
 import com.builtbroken.atomic.map.exposure.node.RadiationNode;
@@ -232,14 +232,18 @@ public class ThreadRadExposure extends ThreadDataChange
     }
 
     protected void path(HashMap<BlockPos, Integer> radiationData, World world,
-                        final double cx, final double cy, final double cz,
+                        final double center_x, final double center_y, final double center_z,
                         final double dx, final double dy, final double dz,
                         double power, double edit_range)
     {
+        final int cx = (int) Math.floor(center_x);
+        final int cy = (int) Math.floor(center_y);
+        final int cz = (int) Math.floor(center_z);
+
         //Position
-        double x = cx;
-        double y = cy;
-        double z = cz;
+        double x = center_x;
+        double y = center_y;
+        double z = center_z;
 
         double distanceSQ = 1;
         double radDistance = 1;
@@ -258,15 +262,16 @@ public class ThreadRadExposure extends ThreadDataChange
             int yi = (int) Math.floor(y);
             int zi = (int) Math.floor(z);
 
-            //Get distance to center of block from center
-            double distanceX = cx - (xi + 0.5);
-            double distanceY = cy - (yi + 0.5);
-            double distanceZ = cz - (zi + 0.5);
-            distanceSQ = distanceX * distanceX + distanceZ * distanceZ + distanceY * distanceY;
-
             //Ignore center block
-            if (distanceSQ > 0.5)
+            if (!(xi == cx && yi == cy && zi == cz))
             {
+
+                //Get distance to center of block from center
+                double distanceX = center_x - (xi + 0.5);
+                double distanceY = center_y - (yi + 0.5);
+                double distanceZ = center_z - (zi + 0.5);
+                distanceSQ = distanceX * distanceX + distanceZ * distanceZ + distanceY * distanceY;
+
                 DataPos pos = DataPos.get(xi, yi, zi);
 
                 //Only do action one time per block (not a perfect solution, but solves double hit on the same block in the same line)

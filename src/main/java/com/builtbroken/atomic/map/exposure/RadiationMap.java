@@ -270,7 +270,7 @@ public class RadiationMap implements IRadiationExposureSystem
     @SubscribeEvent()
     public void onChunkAdded(MapSystemEvent.AddChunk event)
     {
-        if (event.world() != null && !!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP)
+        if (event.world() != null && !event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP)
         {
             MapHandler.THREAD_RAD_EXPOSURE.queueChunkForAddition(event.chunk);
         }
@@ -279,7 +279,7 @@ public class RadiationMap implements IRadiationExposureSystem
     @SubscribeEvent()
     public void onChunkRemove(MapSystemEvent.RemoveChunk event)
     {
-        if (event.world() != null && !!event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP)
+        if (event.world() != null && !event.world().isRemote && event.map.mapSystem == MapHandler.MATERIAL_MAP)
         {
             MapHandler.THREAD_RAD_EXPOSURE.queueChunkForRemoval(event.chunk);
         }

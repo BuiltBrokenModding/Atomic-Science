@@ -40,6 +40,7 @@ public class ASIndirectEffects
 
         if (ConfigRadiation.ENABLE_EXPOSURE)
         {
+            RadiationEntityEventHandler.init();
             MinecraftForge.EVENT_BUS.register(new RadiationEntityEventHandler());
         }
     }
