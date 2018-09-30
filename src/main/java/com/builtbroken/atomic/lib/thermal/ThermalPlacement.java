@@ -16,9 +16,15 @@ public class ThermalPlacement extends BlockPlacement
 
     public ThermalPlacement(World world, BlockPos pos, ThermalData data, long energyCheck)
     {
-        super(world, pos, data.changeBlock);
+        super(world, pos, data.blockFactory.get());
         this.data = data;
         this.energyCheck = energyCheck;
+    }
+
+    @Override
+    protected void onPlacedBlock()
+    {
+        super.onPlacedBlock();
     }
 
     @Override

@@ -2,6 +2,9 @@ package com.builtbroken.atomic.lib.thermal;
 
 import net.minecraft.block.state.IBlockState;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 /**
  * Stores data about a block's thermal properties
  *
@@ -22,15 +25,18 @@ public class ThermalData
     /** Temperature to change state, kelvin */
     public float changeStateTemperature;
 
-    public IBlockState changeBlock;
+    public Supplier<IBlockState> blockFactory;
 
-    public ThermalData(float heatMovementRate, float specificHeat, float changeStateHeat, float changeStateTemperature, IBlockState blockState)
+    public Consumer<ThermalPlacement> postPlacementCallback;
+
+    public ThermalData(float heatMovementRate, float specificHeat, float changeStateHeat, float changeStateTemperature, Supplier<IBlockState> blockFactory, Consumer<ThermalPlacement> postPlacementCallback)
     {
         this.heatMovementRate = heatMovementRate;
         this.specificHeat = specificHeat;
         this.changeStateHeat = changeStateHeat;
         this.changeStateTemperature = changeStateTemperature;
-        this.changeBlock = changeBlock;
+        this.blockFactory = blockFactory;
+        this.postPlacementCallback = postPlacementCallback;
     }
 
     public long energyToChangeStates(float mass)

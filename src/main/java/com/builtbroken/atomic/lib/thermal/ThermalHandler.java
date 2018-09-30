@@ -13,6 +13,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -26,7 +28,8 @@ public class ThermalHandler
     public static void init()
     {
         setValue(Blocks.WATER, 0.58f, 4.187f, 2257, 373.15f);
-        setValue(Blocks.ICE, 2.18f, 2.108f, 334, 273.15f, Blocks.WATER.getDefaultState());
+        setValue(Blocks.ICE, 2.18f, 2.108f, 334, 273.15f, () -> Blocks.WATER.getDefaultState(), thermalPlacement ->
+                thermalPlacement.world().neighborChanged(thermalPlacement.pos, Blocks.WATER, thermalPlacement.pos));
         setValue(Blocks.AIR, 0.024f, 0.718f, -1, -1);
         setValue(Blocks.IRON_BLOCK, 55f, 0.444f, -1, 1811.15f);
         setValue(Blocks.GOLD_BLOCK, 315f, 0.129f, -1, 1337.15f);
@@ -36,12 +39,12 @@ public class ThermalHandler
 
     public static void setValue(Block block, float rate, float specificHeat, float changeHeat, float changeTemp)
     {
-        setValue(block, rate, specificHeat, changeHeat, changeTemp, null);
+        setValue(block, rate, specificHeat, changeHeat, changeTemp, null, null);
     }
 
-    public static void setValue(Block block, float rate, float specificHeat, float changeHeat, float changeTemp, IBlockState changeBlock)
+    public static void setValue(Block block, float rate, float specificHeat, float changeHeat, float changeTemp, Supplier<IBlockState> blockFactory, Consumer<ThermalPlacement> postPlacementCallback)
     {
-        blockThermalDataMap.put(block, new ThermalData(rate, specificHeat, changeHeat, changeTemp, changeBlock));
+        blockThermalDataMap.put(block, new ThermalData(rate, specificHeat, changeHeat, changeTemp, blockFactory, postPlacementCallback));
     }
 
     public static ThermalData getThermalData(World world, BlockPos pos)
@@ -59,7 +62,7 @@ public class ThermalHandler
      * Can the block change states due to the thermal system
      *
      * @param world - location
-     * @param pos - location
+     * @param pos   - location
      * @return true if it is possible to change states
      */
     public static boolean canChangeStates(World world, BlockPos pos)
@@ -67,7 +70,7 @@ public class ThermalHandler
         ThermalData data = getThermalData(world, pos);
         if (data != null)
         {
-            return data.changeBlock != null;
+            return data.blockFactory != null;
         }
         return false;
     }
@@ -76,7 +79,7 @@ public class ThermalHandler
      * Can the block change states due to the thermal system
      *
      * @param world - location
-     * @param pos - location
+     * @param pos   - location
      * @return energy cost in joules to change states (e.g. ice -> water)
      */
     public static long energyCostToChangeStates(World world, BlockPos pos)
@@ -95,7 +98,7 @@ public class ThermalHandler
      * Gets the specific heat of the block a the location
      *
      * @param world - location
-     * @param pos - location
+     * @param pos   - location
      * @return specific heat J/kgK (joules / kilo-grams kelvin)
      */
     public static float getSpecificHeat(World world, BlockPos pos)
@@ -126,7 +129,7 @@ public class ThermalHandler
     public static void changeStates(World world, BlockPos pos)
     {
         ThermalData data = getThermalData(world, pos);
-        if (data != null && data.changeBlock != null)
+        if (data != null && data.blockFactory != null)
         {
             float mass = MassHandler.getMass(world, pos);
             double stateChangeEnergy = data.energyToChangeStates(mass);
@@ -139,7 +142,7 @@ public class ThermalHandler
      * Get amount of vapor produced per tick in mb
      *
      * @param world - location
-     * @param pos - location
+     * @param pos   - location
      * @return vapor in mb
      */
     public static int getVaporRate(World world, BlockPos pos)
@@ -151,7 +154,7 @@ public class ThermalHandler
      * Get amount of vapor produced per tick in mb
      *
      * @param world - location
-     * @param pos - location
+     * @param pos   - location
      * @return vapor in mb
      */
     public static int getVaporRate(World world, BlockPos pos, long heat)

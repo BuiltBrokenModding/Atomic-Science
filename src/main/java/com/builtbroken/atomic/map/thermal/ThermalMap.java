@@ -258,7 +258,7 @@ public class ThermalMap implements IThermalSystem
     {
         if (ThermalHandler.canChangeStates(world, pos))
         {
-            long joules = heat * 1000 + getEnvironmentalJoules(world, pos); //x1000 for kj -> j
+            long joules = heat * 1000L + getEnvironmentalJoules(world, pos); //x1000 for kj -> j
             if (joules > ThermalHandler.energyCostToChangeStates(world, pos))
             {
                 ThermalHandler.changeStates(world, pos);
