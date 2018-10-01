@@ -25,8 +25,21 @@
       ]
     },
     "W": {
-      "item": "ic2:cable",
-      "data": 0
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "wireCopper"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotCopper"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
     },
     "B": {
       "item": "minecraft:gold_nugget",
@@ -38,13 +51,23 @@
     },
     "C": {
       "type": "forge:ore_dict",
-      "ore": "circuitBasic"
+      "ore": "dustRedstone"
     }
   },
   "conditions": [
     {
-      "type": "atomicscience:ic2",
-      "condition": "true"
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "atomicscience:tf",
+          "condition": "false"
+        },
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "false",
+          "value": "circuitBasic"
+        }
+      ]
     }
   ]
 }

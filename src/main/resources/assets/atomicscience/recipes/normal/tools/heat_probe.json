@@ -25,8 +25,21 @@
       ]
     },
     "W": {
-      "type": "forge:ore_dict",
-      "ore": "wireCopper"
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "wireCopper"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotCopper"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
     },
     "B": {
       "item": "minecraft:gold_nugget",

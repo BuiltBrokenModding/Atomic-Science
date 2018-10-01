@@ -37,13 +37,8 @@
       "data": 0
     },
     "H": {
-      "type": "atomicscience:first_match",
-      "items": [
-        {
-          "type": "forge:ore_dict",
-          "ore": "circuitBasic"
-        }
-      ]
+      "type": "forge:ore_dict",
+      "ore": "circuitBasic"
     }
   }
 }

@@ -1,13 +1,13 @@
 {
   "result": {
-    "item": "atomicscience:heat_probe",
+    "item": "atomicscience:wrench",
     "data": 0,
     "count": 1
   },
   "pattern": [
     "ICI",
-    "IGI",
-    "WBW"
+    "GIG",
+    "GIG"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {
@@ -24,27 +24,29 @@
         }
       ]
     },
-    "W": {
-      "item": "ic2:cable",
-      "data": 0
-    },
-    "B": {
-      "item": "minecraft:gold_nugget",
-      "data": 0
-    },
     "G": {
-      "item": "minecraft:glass_pane",
+      "item": "minecraft:wool",
       "data": 0
     },
     "C": {
       "type": "forge:ore_dict",
-      "ore": "circuitBasic"
+      "ore": "dustRedstone"
     }
   },
   "conditions": [
     {
-      "type": "atomicscience:ic2",
-      "condition": "true"
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "atomicscience:tf",
+          "condition": "false"
+        },
+        {
+          "type": "atomicscience:ore_value",
+          "condition": "false",
+          "value": "circuitBasic"
+        }
+      ]
     }
   ]
 }

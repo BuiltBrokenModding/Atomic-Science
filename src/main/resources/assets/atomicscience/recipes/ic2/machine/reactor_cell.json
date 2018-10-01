@@ -27,5 +27,11 @@
       "type": "forge:ore_dict",
       "ore": "circuitAdvanced"
     }
-  }
+  },
+  "conditions": [
+    {
+      "type": "atomicscience:ic2",
+      "condition": "true"
+    }
+  ]
 }

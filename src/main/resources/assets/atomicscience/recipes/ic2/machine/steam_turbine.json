@@ -36,5 +36,11 @@
         }
       ]
     }
-  }
+  },
+  "conditions": [
+    {
+      "type": "atomicscience:ic2",
+      "condition": "true"
+    }
+  ]
 }
