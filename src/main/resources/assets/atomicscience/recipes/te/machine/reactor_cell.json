@@ -1,0 +1,50 @@
+{
+  "result": {
+    "item": "atomicscience:reactor_cell",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "PCP",
+    "MTM",
+    "PCP"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "T": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    },
+    "M": {
+      "type": "forge:ore_dict",
+      "ore": "gearElectrum"
+    },
+    "P": {
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    },
+    "C": {
+      "item": "thermalfoundation:material",
+      "data": 515
+    }
+  },
+  "conditions": [
+    {
+      "type": "atomicscience:tf",
+      "condition": "true"
+    }
+  ]
+}

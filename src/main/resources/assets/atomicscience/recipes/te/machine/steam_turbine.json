@@ -1,0 +1,59 @@
+{
+  "result": {
+    "item": "atomicscience:steam_turbine",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "IPI",
+    "PMP",
+    "IPI"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "M": {
+      "type": "forge:ore_dict",
+      "ore": "gearElectrum"
+    },
+    "P": {
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    },
+    "I": {
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "rodIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    }
+  },
+  "conditions": [
+    {
+      "type": "atomicscience:tf",
+      "condition": "true"
+    }
+  ]
+}
