@@ -12,8 +12,17 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "I": {
-      "type": "forge:ore_dict",
-      "ore": "ingotSteel"
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
     },
     "T": {
       "item": "atomicscience:cell_empty",
