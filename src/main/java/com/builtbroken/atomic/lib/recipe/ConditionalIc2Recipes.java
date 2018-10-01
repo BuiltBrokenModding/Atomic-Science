@@ -19,6 +19,6 @@ public class ConditionalIc2Recipes implements IConditionFactory
     public BooleanSupplier parse(JsonContext context, JsonObject json)
     {
         final boolean condition = Boolean.parseBoolean(JsonUtils.getString(json, "condition").toLowerCase());
-        return () -> (Mods.IC2.isLoaded() && ConfigMod.IC2.ENABLE_RECIPES == condition);
+        return () -> ((Mods.IC2.isLoaded() && ConfigMod.IC2.ENABLE_RECIPES) == condition);
     }
 }

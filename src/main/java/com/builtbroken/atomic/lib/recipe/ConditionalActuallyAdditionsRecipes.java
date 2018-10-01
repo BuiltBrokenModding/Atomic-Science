@@ -19,6 +19,6 @@ public class ConditionalActuallyAdditionsRecipes implements IConditionFactory
     public BooleanSupplier parse(JsonContext context, JsonObject json)
     {
         final boolean condition = Boolean.parseBoolean(JsonUtils.getString(json, "condition").toLowerCase());
-        return () -> (Mods.ACTUALLY_ADDITIONS.isLoaded() && ConfigMod.ACTUALLY_ADDITIONS.ENABLE_RECIPES == condition);
+        return () -> ((Mods.ACTUALLY_ADDITIONS.isLoaded() && ConfigMod.ACTUALLY_ADDITIONS.ENABLE_RECIPES) == condition);
     }
 }

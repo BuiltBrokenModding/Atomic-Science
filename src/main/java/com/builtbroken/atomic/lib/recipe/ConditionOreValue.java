@@ -21,20 +21,19 @@ public class ConditionOreValue implements IConditionFactory
     {
         final boolean condition = Boolean.parseBoolean(JsonUtils.getString(json, "condition").toLowerCase());
         final String value = JsonUtils.getString(json, "value");
-        return () -> hasOreValue(value, condition);
-    }
+        return () -> hasOreValue(value) == condition;
+}
 
-    private boolean hasOreValue(String value, boolean check)
+    private boolean hasOreValue(String value)
     {
         NonNullList<ItemStack> list = OreDictionary.getOres(value);
-        boolean hasValue = false;
         for (ItemStack stack : list)
         {
             if (!stack.isEmpty())
             {
-                return hasValue == check;
+                return true;
             }
         }
-        return hasValue == check;
+        return false;
     }
 }

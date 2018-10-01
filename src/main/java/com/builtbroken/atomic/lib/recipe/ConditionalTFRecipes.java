@@ -19,6 +19,6 @@ public class ConditionalTFRecipes implements IConditionFactory
     public BooleanSupplier parse(JsonContext context, JsonObject json)
     {
         final boolean condition = Boolean.parseBoolean(JsonUtils.getString(json, "condition").toLowerCase());
-        return () -> (Mods.THERMAL_FOUNDATION.isLoaded() && ConfigMod.THERMAL_EXPANSION.ENABLE_RECIPES == condition);
+        return () -> ((Mods.THERMAL_FOUNDATION.isLoaded() && ConfigMod.THERMAL_EXPANSION.ENABLE_RECIPES) == condition);
     }
 }
