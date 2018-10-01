@@ -12,16 +12,34 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "I": {
-      "type": "forge:ore_dict",
-      "ore": "ingotSteel"
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
     },
     "T": {
       "item": "atomicscience:cell_empty",
       "data": 0
     },
     "M": {
-      "type": "forge:ore_dict",
-      "ore": "motor"
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "motor"
+        },
+        {
+          "item": "minecraft:piston",
+          "data": 0
+        }
+      ]
     },
     "P": {
       "type": "atomicscience:first_match",

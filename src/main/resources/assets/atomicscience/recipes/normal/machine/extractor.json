@@ -16,8 +16,17 @@
       "ore": "ingotSteel"
     },
     "M": {
-      "type": "forge:ore_dict",
-      "ore": "motor"
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "motor"
+        },
+        {
+          "item": "minecraft:piston",
+          "data": 0
+        }
+      ]
     },
     "P": {
       "type": "atomicscience:first_match",
