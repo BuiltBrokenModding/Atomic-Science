@@ -1,0 +1,225 @@
+## Creative Tabs
+itemGroup.atomicscience=Atomische Wetenschap
+itemGroup.fluid.cells=[Dev] Vloeistof Cellen
+
+## Blocks
+tile.atomicscience:ore.uranium.name=Uranium Grondstof
+
+## Machines
+tile.atomicscience:reactor.cell.name=Fissie Reactor Kern
+tile.atomicscience:reactor.controller.name=Fissie Reactor Controleur
+
+tile.atomicscience:steam.funnel.name=Stoom Trechter
+
+tile.atomicscience:steam.generator.name=Stoom Turbine
+tile.atomicscience:steam.generator.0.name=UE Stoom Turbine
+tile.atomicscience:steam.generator.1.name=RF Stoom Turbine
+tile.atomicscience:steam.generator.2.name=EU Stoom Turbine
+
+tile.atomicscience:chem.centrifuge.name=Chemische Centrifuge
+tile.atomicscience:chem.centrifuge.gui=Chemische Centrifuge
+
+tile.atomicscience:chem.boiler.name=Chemische Boiler
+tile.atomicscience:chem.boiler.gui=Chemische Boiler
+
+tile.atomicscience:chem.extractor.name=Chemische Extractor
+tile.atomicscience:chem.extractor.gui=Chemische Extractor
+
+## Items
+item.atomicscience:hazmat.mask.name=Gaspak Masker
+item.atomicscience:hazmat.body.name=Gaspak Bovenlichaam
+item.atomicscience:hazmat.leggings.name=Gaspak Onderlichaam
+item.atomicscience:hazmat.boots.name=Gaspak Laarzeen
+
+item.atomicscience:cell.fluid.name=Vloeistof Cuvet
+item.atomicscience:cell.fluid.water.name=Water Cuvet
+item.atomicscience:cell.fluid.deuterium.name=Deuterium Cuvet
+
+item.atomicscience:cell.powered.name=Opgeladen Cuvet
+item.atomicscience:cell.powered.antimatter.name=Antimaterie Cuvet
+item.atomicscience:cell.powered.strange_matter.name=Vreemde Materie Cuvet
+
+item.atomicscience:cell.fuel.fissile.name=Fissie Brandstof Staaf
+item.atomicscience:cell.fuel.fissile.info.fuel=Brandstof: %time% / %maxTime%
+
+item.atomicscience:cell.fuel.breeder.name=Fissie Broed Staaf
+item.atomicscience:cell.fuel.breeder.info.fuel=Brandstof: %time% / %maxTime%
+
+item.atomicscience:cell.empty.name=Lege Cuvet
+
+item.atomicscience:cake.yellow.name=Uranium-concentraat
+item.atomicscience:uranium.235.name=Uranium 235
+item.atomicscience:uranium.238.name=Uranium 238
+
+item.atomicscience:processing.waste.name=Giftige Mineraal Afval
+item.atomicscience:toxic.waste.name=Giftige Afval
+
+## Tools
+item.atomicscience:heat.probe.name=Thermische Sonde
+
+## Fluids
+fluid.atomicscience:antimatter=Antimaterie
+fluid.atomicscience:strange_matter=Vreemde Materie
+fluid.atomicscience:deuterium=Deuterium
+fluid.atomicscience:steam=Stoom
+fluid.atomicscience:reactor_waste=Reactor Afval
+fluid.atomicscience:mineral_waste=Besmette Mineraal Modder
+fluid.atomicscience:contaminated_mineral_water=Besmette Mineraal Oplossing
+fluid.atomicscience:contaminated_water=Besmet Water
+fluid.atomicscience:uranium_hexafluoride=Uranium Hexafluoride
+
+## Wrench
+item.atomicscience:wrench.name=Aanpasser
+item.atomicscience:wrench.rotation.name=Rotatie Aanpasser
+item.atomicscience:wrench.item.name=Voorwerp Aanpasser
+item.atomicscience:wrench.fluid.name=Vloeistof Aanpasser
+item.atomicscience:wrench.redstone.name=Redstone Aanpasser
+
+item.atomicscience:wrench.rotation.green.name=Groene Rotatie Aanpasser
+item.atomicscience:wrench.rotation.yellow.name=Gele Rotatie Aanpasser
+item.atomicscience:wrench.rotation.red.name=Rode Rotatie Aanpasser
+item.atomicscience:wrench.rotation.blue.name=Blauwe Rotatie Aanpasser
+item.atomicscience:wrench.rotation.purple.name=Paarse Rotatie Aanpasser
+item.atomicscience:wrench.rotation.orange.name=Oranje Rotatie Aanpasser
+
+item.atomicscience:wrench.item.green.name=Groene Voorwerp Aanpasser
+item.atomicscience:wrench.item.yellow.name=Gele Voorwerp Aanpasser
+item.atomicscience:wrench.item.red.name=Rode Voorwerp Aanpasser
+item.atomicscience:wrench.item.blue.name=Blauwe Voorwerp Aanpasser
+item.atomicscience:wrench.item.purple.name=Paarse Voorwerp Aanpasser
+item.atomicscience:wrench.item.orange.name=Oranje Voorwerp Aanpasser
+
+item.atomicscience:wrench.fluid.green.name=Groene Vloeistof Aanpasser
+item.atomicscience:wrench.fluid.yellow.name=Gele Vloeistof Aanpasser
+item.atomicscience:wrench.fluid.red.name=Rode Vloeistof Aanpasser
+item.atomicscience:wrench.fluid.blue.name=Blauwe Vloeistof Aanpasser
+item.atomicscience:wrench.fluid.purple.name=Paarse Vloeistof Aanpasser
+item.atomicscience:wrench.fluid.orange.name=Oranje Vloeistof Aanpasser
+
+item.atomicscience:wrench.redstone.green.name=Groene Redstone Aanpasser
+item.atomicscience:wrench.redstone.yellow.name=Gele Redstone Aanpasser
+item.atomicscience:wrench.redstone.red.name=Rode Redstone Aanpasser
+item.atomicscience:wrench.redstone.blue.name=Blauwe Redstone Aanpasser
+item.atomicscience:wrench.redstone.purple.name=Paarse Redstone Aanpasser
+item.atomicscience:wrench.redstone.orange.name=Oranje Redstone Aanpasser
+
+## Wrench Info
+item.atomicscience:wrench.mode.rotation.info=Modus: §bRotatie
+item.atomicscience:wrench.mode.item.info=Modus: §eVoorwerp
+item.atomicscience:wrench.mode.fluid.info=Modus: §9Vloeistof
+item.atomicscience:wrench.mode.redstone.info=Modus: §4Redstone
+
+item.atomicscience:wrench.color.green.info=Kleur: Groen
+item.atomicscience:wrench.color.yellow.info=Kleur: Geel
+item.atomicscience:wrench.color.red.info=Kleur: Rood
+item.atomicscience:wrench.color.blue.info=Kleur: Blauw
+item.atomicscience:wrench.color.purple.info=Kleur: Paars
+
+item.atomicscience:wrench.more.info=Hou de §bSHIFT§f toes in voor meer informatie
+
+item.atomicscience:wrench.info=Pas machine instellingen aan
+item.atomicscience:wrench.use.info=§5Met §bshift ingehouden:
+item.atomicscience:wrench.ctrl.info=§bCtrl + §bMouse §5wheel om modus te wisselen
+item.atomicscience:wrench.wheel.info=§bMouse wheel §5om kleur te wisselen
+
+## Gui
+gui.tank.tooltip=-vloestof-;-vol-/-max-
+gui.tank.tooltip.empty=Leeg
+
+gui.tooltip.slot.tank.input.blue=Blauwe Tank Invoer
+
+gui.tooltip.slot.tank.output.green=Groene Tank Uitvoer
+gui.tooltip.slot.tank.output.yellow=Gele Tank Uitvoer
+
+gui.tooltip.slot.energy.input=Energie
+
+gui.tooltip.slot.input=Invoer
+gui.tooltip.slot.output=Outvoer
+
+## Info
+tile.atomicscience:reactor.controller.error.state=De controleur heeft een fout ervaren, dit wordt waarschijnlijk veroorzaakt door te veel CPUs in een kern stapel.| Maar 1 controleur mag aangesloten worden op een stapel van kernen op de Y as. Als je meerdere stapels wilt hebben op de Y as, scheidt iedere stapel met een tussenlaag. Als je de inventaris connectie wilt behaden gebruik een hopper of pijp tussen stapel lagen.
+tile.atomicscience:reactor.controller.cell.count=Controleur beheert momenteel %s reactor Cuvets
+
+## Misc
+error.translation.empty=Vertaling mist voor ' %s '
+
+## Config
+
+#### Content
+config.atomicscience:content.title=Inhoud
+
+###### Uranium Ore
+config.atomicscience:content.ore.uranium.title=Uranium Grondstof
+config.atomicscience:content.ore.uranium.enable.title=Schakel Grondstof Generatie in
+config.atomicscience:content.ore.uranium.min.title=Min Generatie Hoogte
+config.atomicscience:content.ore.uranium.max.title=Max Generatie Hoogte
+config.atomicscience:content.ore.uranium.count.title=Generatie Per Chunk
+config.atomicscience:content.ore.uranium.branch.title=Generate Per Branch
+config.atomicscience:content.ore.uranium.harvest.title=Gereedschap Oogst Niveau
+
+###### Power Usage
+config.atomicscience:content.power.usage.title=Stroom Verbruik
+config.atomicscience:content.power.usage.enable.title=Inschakelen
+config.atomicscience:content.power.usage.boiler.title=Chem Boiler
+config.atomicscience:content.power.usage.extractor.title=Chem Extractor
+config.atomicscience:content.power.usage.centrifuge.title=Chem Centrifuge
+
+###### Reactor
+config.atomicscience:content.reactor.title=Reactor
+config.atomicscience:content.reactor.fuel.rod.time.title=Brandstof Staaf Brand Tijd
+config.atomicscience:content.reactor.breeder.rod.time.title=Kweek Staaf Brand Tijd
+config.atomicscience:content.reactor.fuel.rod.heat.title=Brandstof Staaf Hitte Productie
+config.atomicscience:content.reactor.breeder.rod.heat.title=Kweek Staaf Hitte Productie
+
+#### Logic
+config.atomicscience:logic.title=Logica
+
+###### Steam
+config.atomicscience:thermal.steam.title=Stoom
+config.atomicscience:thermal.steam.energy.title=Stoom naar Energy ratio
+config.atomicscience:thermal.steam.water.vapor.title=Damp Ratio Water
+config.atomicscience:thermal.steam.water.flowing.vapor.title=Damp Ratio Vloeiend Water
+config.atomicscience:thermal.steam.water.max.vapor.title=Max Damp Ratio Water
+
+#### Server
+config.atomicscience:server.title=Server
+config.atomicscience:server.network.title=Netwerk
+config.atomicscience:server.network.boiling.title=Schakel Kook Effect Pakket In
+config.atomicscience:server.network.steam.title=Schakel Stoom Effect Pakket In
+
+#### Client
+config.atomicscience:client.title=Client
+
+###### Particles
+config.atomicscience:client.particles.title=Deeltjes
+config.atomicscience:client.particles.boiling.title=Kook Effect
+config.atomicscience:client.particles.machine.complete.title=Machine Compleet
+config.atomicscience:client.particles.machine.running.title=Machine Draait
+config.atomicscience:client.particles.reactor.running.title=Reactor Draait
+config.atomicscience:client.particles.steam.title=Stoom Damp Effect
+
+###### Radiation Display
+config.atomicscience:client.radiation.display.title=Straling HUD
+config.atomicscience:client.radiation.display.enable.title=Inschakelen
+
+#### Mods
+config.atomicscience:mods.title=Mods
+
+###### IC2
+config.atomicscience:mods.ic2.title=IndustrialCraft
+config.atomicscience:mods.ic2.power.title=Schakel Stroom Gebruik In
+config.atomicscience:mods.ic2.fe_per_eu.title=FE naar EU Conversie Ratio
+config.atomicscience:mods.ic2.recipes.title=Schakel Recepten in
+
+###### Buildcraft
+config.atomicscience:mods.buildcraft.title=BuildCraft
+config.atomicscience:mods.buildcraft.fe_per_mj.title=FE naar MJ Conversie Ratio
+config.atomicscience:mods.buildcraft.power.title=Schakel Stroom Gebruik In
+
+###### Actually Additions
+config.atomicscience:mods.actually.additions.title=Actually Additions
+config.atomicscience:mods.actually.additions.recipes.titleSchakel Recepten in
+
+###### Thermal Expansion
+config.atomicscience:mods.thermal.expansion.title=Thermal Expansion
+config.atomicscience:mods.thermal.expansion.recipes.title=Schakel Recepten in
