@@ -331,7 +331,7 @@ public class GuiContainerBase<H> extends GuiContainer
     {
         for (Object object : inventorySlots.inventorySlots)
         {
-            drawSlot((Slot) object);
+            drawSlotBackground((Slot) object);
         }
     }
 
@@ -340,7 +340,7 @@ public class GuiContainerBase<H> extends GuiContainer
      *
      * @param slot - slot to render
      */
-    protected void drawSlot(Slot slot)
+    protected void drawSlotBackground(Slot slot)
     {
         if(traceSlotDraw)
         {
@@ -362,7 +362,7 @@ public class GuiContainerBase<H> extends GuiContainer
             }
             else
             {
-                drawSlot(slot.xPos - 1, slot.yPos - 1);
+                drawSlotBackground(slot.xPos - 1, slot.yPos - 1);
             }
 
             if (renderSlotDebugIDs)
@@ -383,7 +383,7 @@ public class GuiContainerBase<H> extends GuiContainer
     }
 
     //TODO update and docs
-    protected void drawSlot(int x, int y)
+    protected void drawSlotBackground(int x, int y)
     {
         GlStateManager.pushMatrix();
 
