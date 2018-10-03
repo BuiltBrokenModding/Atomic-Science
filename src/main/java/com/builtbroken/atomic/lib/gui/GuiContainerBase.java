@@ -358,8 +358,15 @@ public class GuiContainerBase<H> extends GuiContainer
             if (renderSlotDebugIDs)
             {
                 GlStateManager.pushMatrix();
+
+                //Render slot index
                 this.drawStringCentered("" + slot.getSlotIndex(), guiLeft + slot.xPos + 9, guiTop + slot.yPos + 9, Color.YELLOW);
+                //Render slot number
                 this.drawStringCentered("" + slot.slotNumber, guiLeft + slot.xPos + 9, guiTop + slot.yPos + 1, Color.RED);
+
+                //Reset color
+                setColor(null);
+                
                 GlStateManager.popMatrix();
             }
         }
@@ -369,8 +376,14 @@ public class GuiContainerBase<H> extends GuiContainer
     protected void drawSlot(int x, int y)
     {
         GlStateManager.pushMatrix();
+
+        //Bind texture and reset color
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
+        setColor(null);
+
+        //Render
         this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 0, 0, 18, 18);
+
         GlStateManager.popMatrix();
     }
 
