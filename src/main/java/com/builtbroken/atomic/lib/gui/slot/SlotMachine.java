@@ -1,15 +1,13 @@
 package com.builtbroken.atomic.lib.gui.slot;
 
-import com.builtbroken.atomic.lib.gui.GuiContainerBase;
 import com.builtbroken.atomic.lib.gui.ISlotRender;
 import com.builtbroken.atomic.lib.gui.tip.ISlotToolTip;
 import com.builtbroken.atomic.lib.gui.tip.ToolTip;
 import com.builtbroken.atomic.lib.gui.tip.ToolTipSlot;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
@@ -43,18 +41,17 @@ public class SlotMachine extends SlotItemHandler implements ISlotRender, ISlotTo
     @Override
     public void renderSlotOverlay(Gui gui, int x, int y)
     {
-        Minecraft.getMinecraft().renderEngine.bindTexture(GuiContainerBase.GUI_COMPONENTS);
         if (edgeColor != null)
         {
-            GL11.glColor4f(edgeColor.getRed() / 255f, edgeColor.getGreen() / 255f, edgeColor.getBlue() / 255f, edgeColor.getAlpha() / 255f);
+            GlStateManager.color(edgeColor.getRed() / 255f, edgeColor.getGreen() / 255f, edgeColor.getBlue() / 255f, edgeColor.getAlpha() / 255f);
             gui.drawTexturedModalRect(x, y, 0, 0, 18, 18);
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             gui.drawTexturedModalRect(x + 1, y + 1, 1, 1, 16, 16);
         }
         else
         {
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             gui.drawTexturedModalRect(x, y, 0, 0, 18, 18);
         }
         if (!getHasStack())

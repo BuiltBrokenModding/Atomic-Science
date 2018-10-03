@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.lib.gui.tip.ISlotToolTip;
 import com.builtbroken.atomic.lib.gui.tip.ToolTip;
 import com.google.common.collect.Lists;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -60,13 +61,17 @@ public class GuiContainerBase<H> extends GuiContainer
         this.host = host;
         if (AtomicScience.runningAsDev)
         {
-            System.out.println("Container has " + container.inventorySlots.size() + " slots");
+            System.out.println("NEW: Container has " + container.inventorySlots.size() + " slots");
         }
     }
 
     @Override
     public void initGui()
     {
+        if (AtomicScience.runningAsDev)
+        {
+            System.out.println("InitGUI: Container has " + inventorySlots.inventorySlots.size() + " slots");
+        }
         super.initGui();
         this.buttonList.clear();
         this.fields.clear();
@@ -247,10 +252,32 @@ public class GuiContainerBase<H> extends GuiContainer
     @Override
     protected void keyTyped(char c, int id) throws IOException
     {
+        boolean shift = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
         //Key for debug render
-        if (id == Keyboard.KEY_INSERT)
+        if (shift && id == Keyboard.KEY_INSERT)
         {
             renderSlotDebugIDs = !renderSlotDebugIDs;
+            Minecraft.getMinecraft().player.sendChatMessage("Render Slot IDS: " + renderSlotDebugIDs);
+        }
+        else if(shift && id == Keyboard.KEY_HOME)
+        {
+            renderToolTips = !renderToolTips;
+            Minecraft.getMinecraft().player.sendChatMessage("Render Tooltips: " + renderToolTips);
+        }
+        else if(shift && id == Keyboard.KEY_END)
+        {
+            renderFluidTanks = !renderFluidTanks;
+            Minecraft.getMinecraft().player.sendChatMessage("Render Fluid Tanks: " + renderFluidTanks);
+        }
+        else if(shift && id == Keyboard.KEY_UP)
+        {
+            renderTextFields = !renderTextFields;
+            Minecraft.getMinecraft().player.sendChatMessage("Render Text Fields: " + renderTextFields);
+        }
+        else if(shift && id == Keyboard.KEY_DOWN)
+        {
+            renderSlots = !renderSlots;
+            Minecraft.getMinecraft().player.sendChatMessage("Render Slots: " + renderSlots);
         }
         else
         {
@@ -309,23 +336,32 @@ public class GuiContainerBase<H> extends GuiContainer
      */
     protected void drawSlot(Slot slot)
     {
-        if (slot instanceof ISlotRender)
+        if(renderSlots)
         {
-            GlStateManager.pushMatrix();
-            ((ISlotRender) slot).renderSlotOverlay(this, this.guiLeft + slot.xPos - 1, this.guiTop + slot.yPos - 1);
-            GlStateManager.popMatrix();
-        }
-        else
-        {
-            drawSlot(slot.xPos - 1, slot.yPos - 1);
-        }
+            if (slot instanceof ISlotRender)
+            {
+                GlStateManager.pushMatrix();
 
-        if (AtomicScience.runningAsDev && renderSlotDebugIDs)
-        {
-            GlStateManager.pushMatrix();
-            this.drawStringCentered("" + slot.getSlotIndex(), guiLeft + slot.xPos + 9, guiTop + slot.yPos + 9, Color.YELLOW);
-            this.drawStringCentered("" + slot.slotNumber, guiLeft + slot.xPos + 9, guiTop + slot.yPos + 1, Color.RED);
-            GlStateManager.popMatrix();
+                //Reset texture and color to default
+                this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
+                setColor(null);
+
+                ((ISlotRender) slot).renderSlotOverlay(this, this.guiLeft + slot.xPos - 1, this.guiTop + slot.yPos - 1);
+
+                GlStateManager.popMatrix();
+            }
+            else
+            {
+                drawSlot(slot.xPos - 1, slot.yPos - 1);
+            }
+
+            if (renderSlotDebugIDs)
+            {
+                GlStateManager.pushMatrix();
+                this.drawStringCentered("" + slot.getSlotIndex(), guiLeft + slot.xPos + 9, guiTop + slot.yPos + 9, Color.YELLOW);
+                this.drawStringCentered("" + slot.slotNumber, guiLeft + slot.xPos + 9, guiTop + slot.yPos + 1, Color.RED);
+                GlStateManager.popMatrix();
+            }
         }
     }
 
@@ -508,7 +544,7 @@ public class GuiContainerBase<H> extends GuiContainer
     protected void drawElectricity(int x, int y, float scale)
     {
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
-        GlStateManager.color(1, 1, 1, 1);
+        setColor(null);
 
         /** Draw background progress bar/ */
         this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 54, 0, 107, 11);
@@ -541,42 +577,45 @@ public class GuiContainerBase<H> extends GuiContainer
      */
     protected void drawFluidTank(int x, int y, IFluidTank tank, Color edgeColor)
     {
-        //Get data
-        final float scale = tank.getFluidAmount() / (float) tank.getCapacity();
-        final FluidStack fluidStack = tank.getFluid();
-
-        //Bing texture
-        this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
-
-        //Reset color
-        GlStateManager.color(1, 1, 1, 1);
-
-        //Draw background
-        if (edgeColor != null)
+        if(renderFluidTanks)
         {
-            setColor(edgeColor);
-            this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 40, 0, meterWidth, meterHeight);
+            //Get data
+            final float scale = tank.getFluidAmount() / (float) tank.getCapacity();
+            final FluidStack fluidStack = tank.getFluid();
 
+            //Bind texture
+            this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
+
+            //Reset color
+            GlStateManager.color(1, 1, 1, 1);
+
+            //Draw background
+            if (edgeColor != null)
+            {
+                setColor(edgeColor);
+                this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 40, 0, meterWidth, meterHeight);
+
+                setColor(null);
+                this.drawTexturedModalRect(this.guiLeft + x + 1, this.guiTop + y + 1, 41, 1, meterWidth - 2, meterHeight - 2);
+            }
+            else
+            {
+                this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 40, 0, meterWidth, meterHeight);
+            }
+
+            //Draw fluid
+            if (fluidStack != null)
+            {
+                this.drawFluid(this.guiLeft + x, this.guiTop + y, -10, 1, 12, (int) ((meterHeight - 1) * scale), fluidStack);
+            }
+
+            //Draw lines
+            this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
+            this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 40, 49 * 2, meterWidth, meterHeight);
+
+            //Reset color
             setColor(null);
-            this.drawTexturedModalRect(this.guiLeft + x + 1, this.guiTop + y + 1, 41, 1, meterWidth - 2, meterHeight - 2);
         }
-        else
-        {
-            this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 40, 0, meterWidth, meterHeight);
-        }
-
-        //Draw fluid
-        if (fluidStack != null)
-        {
-            this.drawFluid(this.guiLeft + x, this.guiTop + y, -10, 1, 12, (int) ((meterHeight - 1) * scale), fluidStack);
-        }
-
-        //Draw lines
-        this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
-        this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 40, 49 * 2, meterWidth, meterHeight);
-
-        //Reset color
-        setColor(null);
     }
 
     public void drawTooltip(int x, int y, String... tooltips)

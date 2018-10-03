@@ -1,16 +1,13 @@
 package com.builtbroken.atomic.lib.gui.slot;
 
-import com.builtbroken.atomic.lib.gui.GuiContainerBase;
 import com.builtbroken.atomic.lib.gui.ISlotRender;
 import com.builtbroken.atomic.lib.gui.tip.ISlotToolTip;
 import com.builtbroken.atomic.lib.gui.tip.ToolTip;
 import com.builtbroken.atomic.lib.gui.tip.ToolTipSlot;
 import com.builtbroken.atomic.lib.power.PowerSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import org.lwjgl.opengl.GL11;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -44,9 +41,6 @@ public class SlotEnergy extends SlotMachine implements ISlotRender, ISlotToolTip
     @Override
     protected void drawIcon(Gui gui, int x, int y)
     {
-        Minecraft.getMinecraft().renderEngine.bindTexture(GuiContainerBase.GUI_COMPONENTS);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
         gui.drawTexturedModalRect(x, y, 0, 18, 18, 18);
     }
 
