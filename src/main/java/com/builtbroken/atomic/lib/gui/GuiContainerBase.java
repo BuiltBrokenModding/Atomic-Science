@@ -42,20 +42,26 @@ public class GuiContainerBase<H> extends GuiContainer
     protected int meterHeight = 49;
     protected int meterWidth = 14;
 
-    protected int containerWidth;
-    protected int containerHeight;
-
     /** Debug toogle to render text for the ID and inventory ID for a slot */
     public boolean renderSlotDebugIDs = false;
 
     /** Object that is the host of the GUI */
     protected H host;
 
+    public boolean renderToolTips = true;
+    public boolean renderTextFields = true;
+    public boolean renderSlots = true;
+    public boolean renderFluidTanks = true;
+
     public GuiContainerBase(Container container, H host)
     {
         super(container);
         this.baseTexture = GUI_MC_BASE;
         this.host = host;
+        if (AtomicScience.runningAsDev)
+        {
+            System.out.println("Container has " + container.inventorySlots.size() + " slots");
+        }
     }
 
     @Override
@@ -185,7 +191,7 @@ public class GuiContainerBase<H> extends GuiContainer
         ///============================================================
         ///================Render Fields===============================
         ///============================================================
-        if (fields != null && fields.size() > 0)
+        if (renderTextFields && fields != null && fields.size() > 0)
         {
             GlStateManager.disableLighting();
             GlStateManager.disableBlend();
@@ -198,42 +204,44 @@ public class GuiContainerBase<H> extends GuiContainer
         ///============================================================
         ///===============Render tooltips===============================
         ///============================================================
-        GlStateManager.pushMatrix();
-        GlStateManager.disableRescaleNormal();
-        RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableLighting(); //GL11.glDisable(GL11.GL_LIGHTING);
-        GlStateManager.disableDepth(); //GL11.glDisable(GL11.GL_DEPTH_TEST);
-
-
-
-        //TODO rework to be object based
-        //TODO rework to be attached to components rather than free floating
-        for (ToolTip toolTip : this.tooltips)
+        if (renderToolTips)
         {
-            if (toolTip.isInArea(mouseX - this.guiLeft, mouseY - this.guiTop))
+            GlStateManager.pushMatrix();
+            GlStateManager.disableRescaleNormal();
+            RenderHelper.disableStandardItemLighting();
+            GlStateManager.disableLighting(); //GL11.glDisable(GL11.GL_LIGHTING);
+            GlStateManager.disableDepth(); //GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+
+            //TODO rework to be object based
+            //TODO rework to be attached to components rather than free floating
+            for (ToolTip toolTip : this.tooltips)
             {
-                this.currentToolTip = toolTip;
-                break;
+                if (toolTip.isInArea(mouseX - this.guiLeft, mouseY - this.guiTop))
+                {
+                    this.currentToolTip = toolTip;
+                    break;
+                }
             }
+
+            if (this.currentToolTip != null && this.currentToolTip.shouldShow())
+            {
+                this.drawTooltip(mouseX, mouseY, currentToolTip.getString().split(";"));
+            }
+
+            this.currentToolTip = null;
+
+            GlStateManager.enableLighting();
+            GlStateManager.enableDepth();
+            RenderHelper.enableStandardItemLighting();
+            ///============================================================
+
+            if (getSlotUnderMouse() != null && !getSlotUnderMouse().getStack().isEmpty())
+            {
+                renderToolTip(getSlotUnderMouse().getStack(), mouseX, mouseY);
+            }
+            GlStateManager.popMatrix();
         }
-
-        if (this.currentToolTip != null && this.currentToolTip.shouldShow())
-        {
-            this.drawTooltip(mouseX, mouseY, currentToolTip.getString().split(";"));
-        }
-
-        this.currentToolTip = null;
-
-        GlStateManager.enableLighting();
-        GlStateManager.enableDepth();
-        RenderHelper.enableStandardItemLighting();
-        ///============================================================
-
-        if (getSlotUnderMouse() != null && !getSlotUnderMouse().getStack().isEmpty())
-        {
-            renderToolTip(getSlotUnderMouse().getStack(), mouseX, mouseY);
-        }
-        GlStateManager.popMatrix();
     }
 
     @Override
@@ -277,13 +285,10 @@ public class GuiContainerBase<H> extends GuiContainer
     {
         drawDefaultBackground();
 
-        this.containerWidth = (this.width - this.xSize) / 2;
-        this.containerHeight = (this.height - this.ySize) / 2;
-
         this.mc.renderEngine.bindTexture(this.baseTexture);
-        GlStateManager.resetColor();
+        setColor(null);
 
-        this.drawTexturedModalRect(this.containerWidth, this.containerHeight, 0, 0, this.xSize, this.ySize);
+        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
     }
 
     /**
@@ -307,7 +312,7 @@ public class GuiContainerBase<H> extends GuiContainer
         if (slot instanceof ISlotRender)
         {
             GlStateManager.pushMatrix();
-            ((ISlotRender) slot).renderSlotOverlay(this, this.containerWidth + slot.xPos - 1, this.containerHeight + slot.yPos - 1);
+            ((ISlotRender) slot).renderSlotOverlay(this, this.guiLeft + slot.xPos - 1, this.guiTop + slot.yPos - 1);
             GlStateManager.popMatrix();
         }
         else
@@ -329,7 +334,7 @@ public class GuiContainerBase<H> extends GuiContainer
     {
         GlStateManager.pushMatrix();
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
-        this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 0, 0, 18, 18);
+        this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 0, 0, 18, 18);
         GlStateManager.popMatrix();
     }
 
@@ -349,10 +354,10 @@ public class GuiContainerBase<H> extends GuiContainer
         int width = Math.round(percent * 138);
         //Draws bar background
         setColor(null);
-        drawRectWithScaledWidth(containerWidth + x, containerHeight + y, 54, 33, 140, 15, w);
+        drawRectWithScaledWidth(guiLeft + x, guiTop + y, 54, 33, 140, 15, w);
         //draws the percent fill bar
         setColor(color);
-        drawRectWithScaledWidth(containerWidth + x + 1, containerHeight + y + 1, 55, 65, width, 13, w);
+        drawRectWithScaledWidth(guiLeft + x + 1, guiTop + y + 1, 55, 65, width, 13, w);
     }
 
     /**
@@ -371,11 +376,11 @@ public class GuiContainerBase<H> extends GuiContainer
         final int width = Math.round(percent * 105);
         //Draws bar background
         setColor(null);
-        drawRectWithScaledWidth(containerWidth + x, containerHeight + y, 54, 0, 107, 11, w);
+        drawRectWithScaledWidth(guiLeft + x, guiTop + y, 54, 0, 107, 11, w);
 
         //draws the percent fill bar
         setColor(color);
-        drawRectWithScaledWidth(containerWidth + x + 1, containerHeight + y + 1, 55, 24, width, 9, w);
+        drawRectWithScaledWidth(guiLeft + x + 1, guiTop + y + 1, 55, 24, width, 9, w);
     }
 
     /**
@@ -414,13 +419,13 @@ public class GuiContainerBase<H> extends GuiContainer
 
         //Render background bar
         setColor(null);
-        drawRectWithScaledWidth(containerWidth + x, containerHeight + y, 54, 79, backgroundWidth, 7, w);
+        drawRectWithScaledWidth(guiLeft + x, guiTop + y, 54, 79, backgroundWidth, 7, w);
 
 
         //Render foreground bar
         final int width = Math.round(percent * fillBarWidth);
         setColor(color);
-        drawRectWithScaledWidth(containerWidth + x + 1, containerHeight + y + 1, 55, 87, width, 5, (int) ((w - 2) * percent));
+        drawRectWithScaledWidth(guiLeft + x + 1, guiTop + y + 1, 55, 87, width, 5, (int) ((w - 2) * percent));
     }
 
     /**
@@ -491,7 +496,7 @@ public class GuiContainerBase<H> extends GuiContainer
     {
         if (color == null)
         {
-            GlStateManager.resetColor();
+            GlStateManager.color(1, 1, 1, 1);
         }
         else
         {
@@ -503,23 +508,23 @@ public class GuiContainerBase<H> extends GuiContainer
     protected void drawElectricity(int x, int y, float scale)
     {
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
-        GlStateManager.resetColor();
+        GlStateManager.color(1, 1, 1, 1);
 
         /** Draw background progress bar/ */
-        this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 54, 0, 107, 11);
+        this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 54, 0, 107, 11);
 
         if (scale > 0)
         {
             /** Draw white color actual progress. */
-            this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 54, 22, (int) (scale * 107), 11);
+            this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 54, 22, (int) (scale * 107), 11);
         }
     }
 
     /**
      * Renders fluid tank (background, fluid, and glass meter overlay)
      *
-     * @param x    - render position, containerWidth is added
-     * @param y    - render position, containerWidth is added
+     * @param x    - render position, guiLeft is added
+     * @param y    - render position, guiLeft is added
      * @param tank - tank containing fluid
      */
     protected void drawFluidTank(int x, int y, IFluidTank tank)
@@ -530,8 +535,8 @@ public class GuiContainerBase<H> extends GuiContainer
     /**
      * Renders fluid tank (background, fluid, and glass meter overlay)
      *
-     * @param x    - render position, containerWidth is added
-     * @param y    - render position, containerWidth is added
+     * @param x    - render position, guiLeft is added
+     * @param y    - render position, guiLeft is added
      * @param tank - tank containing fluid
      */
     protected void drawFluidTank(int x, int y, IFluidTank tank, Color edgeColor)
@@ -544,34 +549,34 @@ public class GuiContainerBase<H> extends GuiContainer
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
 
         //Reset color
-        GlStateManager.resetColor();
+        GlStateManager.color(1, 1, 1, 1);
 
         //Draw background
         if (edgeColor != null)
         {
-            GlStateManager.color(edgeColor.getRed() / 255f, edgeColor.getGreen() / 255f, edgeColor.getBlue() / 255f, edgeColor.getAlpha() / 255f);
-            this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 0, meterWidth, meterHeight);
+            setColor(edgeColor);
+            this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 40, 0, meterWidth, meterHeight);
 
-            GlStateManager.resetColor();
-            this.drawTexturedModalRect(this.containerWidth + x + 1, this.containerHeight + y + 1, 41, 1, meterWidth - 2, meterHeight - 2);
+            setColor(null);
+            this.drawTexturedModalRect(this.guiLeft + x + 1, this.guiTop + y + 1, 41, 1, meterWidth - 2, meterHeight - 2);
         }
         else
         {
-            this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 0, meterWidth, meterHeight);
+            this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 40, 0, meterWidth, meterHeight);
         }
 
         //Draw fluid
         if (fluidStack != null)
         {
-            this.drawFluid(this.containerWidth + x, this.containerHeight + y, -10, 1, 12, (int) ((meterHeight - 1) * scale), fluidStack);
+            this.drawFluid(this.guiLeft + x, this.guiTop + y, -10, 1, 12, (int) ((meterHeight - 1) * scale), fluidStack);
         }
 
         //Draw lines
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
-        this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 49 * 2, meterWidth, meterHeight);
+        this.drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 40, 49 * 2, meterWidth, meterHeight);
 
         //Reset color
-        GlStateManager.resetColor();
+        setColor(null);
     }
 
     public void drawTooltip(int x, int y, String... tooltips)
@@ -587,7 +592,6 @@ public class GuiContainerBase<H> extends GuiContainer
 
     protected void drawFluid(int x, int y, int line, int col, int width, int drawSize, FluidStack fluidStack)
     {
-
         if (fluidStack != null && fluidStack.getFluid() != null)
         {
             drawSize -= 1; //TODO why?
@@ -659,7 +663,7 @@ public class GuiContainerBase<H> extends GuiContainer
         cookTime = Math.min(cookTime, maxCookTime);
 
         //Draw background
-        drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 18, 0, 22, 15);
+        drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 18, 0, 22, 15);
 
         //Only draw arrow if time is above zero
         if (cookTime > 0)
@@ -668,7 +672,7 @@ public class GuiContainerBase<H> extends GuiContainer
             float p = cookTime / (maxCookTime + 0.0f);
 
             //Draw arrow
-            drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 18, 15, (int) Math.floor(22 * p), 15);
+            drawTexturedModalRect(this.guiLeft + x, this.guiTop + y, 18, 15, (int) Math.floor(22 * p), 15);
         }
     }
 }
