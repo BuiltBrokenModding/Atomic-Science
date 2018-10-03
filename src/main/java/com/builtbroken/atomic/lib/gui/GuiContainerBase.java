@@ -53,6 +53,7 @@ public class GuiContainerBase<H> extends GuiContainer
     public boolean renderTextFields = true;
     public boolean renderSlots = true;
     public boolean renderFluidTanks = true;
+    public boolean traceSlotDraw = false;
 
     public GuiContainerBase(Container container, H host)
     {
@@ -259,25 +260,30 @@ public class GuiContainerBase<H> extends GuiContainer
             renderSlotDebugIDs = !renderSlotDebugIDs;
             Minecraft.getMinecraft().player.sendChatMessage("Render Slot IDS: " + renderSlotDebugIDs);
         }
-        else if(shift && id == Keyboard.KEY_HOME)
+        else if (shift && id == Keyboard.KEY_HOME)
         {
             renderToolTips = !renderToolTips;
             Minecraft.getMinecraft().player.sendChatMessage("Render Tooltips: " + renderToolTips);
         }
-        else if(shift && id == Keyboard.KEY_END)
+        else if (shift && id == Keyboard.KEY_END)
         {
             renderFluidTanks = !renderFluidTanks;
             Minecraft.getMinecraft().player.sendChatMessage("Render Fluid Tanks: " + renderFluidTanks);
         }
-        else if(shift && id == Keyboard.KEY_UP)
+        else if (shift && id == Keyboard.KEY_UP)
         {
             renderTextFields = !renderTextFields;
             Minecraft.getMinecraft().player.sendChatMessage("Render Text Fields: " + renderTextFields);
         }
-        else if(shift && id == Keyboard.KEY_DOWN)
+        else if (shift && id == Keyboard.KEY_DOWN)
         {
             renderSlots = !renderSlots;
             Minecraft.getMinecraft().player.sendChatMessage("Render Slots: " + renderSlots);
+        }
+        else if (shift && id == Keyboard.KEY_LEFT)
+        {
+            traceSlotDraw = !traceSlotDraw;
+            Minecraft.getMinecraft().player.sendChatMessage("Debug Slot Render Calls: " + traceSlotDraw + "   !!expect debug spam");
         }
         else
         {
@@ -336,7 +342,11 @@ public class GuiContainerBase<H> extends GuiContainer
      */
     protected void drawSlot(Slot slot)
     {
-        if(renderSlots)
+        if(traceSlotDraw)
+        {
+            AtomicScience.logger.info("Trace for slot renders", new RuntimeException());
+        }
+        if (renderSlots)
         {
             if (slot instanceof ISlotRender)
             {
@@ -366,7 +376,7 @@ public class GuiContainerBase<H> extends GuiContainer
 
                 //Reset color
                 setColor(null);
-                
+
                 GlStateManager.popMatrix();
             }
         }
@@ -590,7 +600,7 @@ public class GuiContainerBase<H> extends GuiContainer
      */
     protected void drawFluidTank(int x, int y, IFluidTank tank, Color edgeColor)
     {
-        if(renderFluidTanks)
+        if (renderFluidTanks)
         {
             //Get data
             final float scale = tank.getFluidAmount() / (float) tank.getCapacity();
