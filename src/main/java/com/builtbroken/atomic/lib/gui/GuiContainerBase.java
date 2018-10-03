@@ -698,6 +698,10 @@ public class GuiContainerBase<H> extends GuiContainer
      */
     protected void renderFurnaceCookArrow(int x, int y, int cookTime, int maxCookTime)
     {
+        //Bind texture
+        this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
+        setColor(null);
+
         //Fix for tiles that do not cap value
         cookTime = Math.min(cookTime, maxCookTime);
 
