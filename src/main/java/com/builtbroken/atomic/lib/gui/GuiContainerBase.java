@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -19,8 +20,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
 import java.io.IOException;
@@ -188,8 +187,8 @@ public class GuiContainerBase<H> extends GuiContainer
         ///============================================================
         if (fields != null && fields.size() > 0)
         {
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.disableLighting();
+            GlStateManager.disableBlend();
             for (GuiTextField field : fields)
             {
                 field.drawTextBox();
@@ -199,10 +198,13 @@ public class GuiContainerBase<H> extends GuiContainer
         ///============================================================
         ///===============Render tooltips===============================
         ///============================================================
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GlStateManager.pushMatrix();
+        GlStateManager.disableRescaleNormal();
         RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GlStateManager.disableLighting(); //GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.disableDepth(); //GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+
 
         //TODO rework to be object based
         //TODO rework to be attached to components rather than free floating
@@ -222,8 +224,8 @@ public class GuiContainerBase<H> extends GuiContainer
 
         this.currentToolTip = null;
 
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
         RenderHelper.enableStandardItemLighting();
         ///============================================================
 
@@ -231,6 +233,7 @@ public class GuiContainerBase<H> extends GuiContainer
         {
             renderToolTip(getSlotUnderMouse().getStack(), mouseX, mouseY);
         }
+        GlStateManager.popMatrix();
     }
 
     @Override
@@ -278,7 +281,7 @@ public class GuiContainerBase<H> extends GuiContainer
         this.containerHeight = (this.height - this.ySize) / 2;
 
         this.mc.renderEngine.bindTexture(this.baseTexture);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.resetColor();
 
         this.drawTexturedModalRect(this.containerWidth, this.containerHeight, 0, 0, this.xSize, this.ySize);
     }
@@ -303,7 +306,9 @@ public class GuiContainerBase<H> extends GuiContainer
     {
         if (slot instanceof ISlotRender)
         {
+            GlStateManager.pushMatrix();
             ((ISlotRender) slot).renderSlotOverlay(this, this.containerWidth + slot.xPos - 1, this.containerHeight + slot.yPos - 1);
+            GlStateManager.popMatrix();
         }
         else
         {
@@ -312,16 +317,20 @@ public class GuiContainerBase<H> extends GuiContainer
 
         if (AtomicScience.runningAsDev && renderSlotDebugIDs)
         {
+            GlStateManager.pushMatrix();
             this.drawStringCentered("" + slot.getSlotIndex(), guiLeft + slot.xPos + 9, guiTop + slot.yPos + 9, Color.YELLOW);
             this.drawStringCentered("" + slot.slotNumber, guiLeft + slot.xPos + 9, guiTop + slot.yPos + 1, Color.RED);
+            GlStateManager.popMatrix();
         }
     }
 
     //TODO update and docs
     protected void drawSlot(int x, int y)
     {
+        GlStateManager.pushMatrix();
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
         this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 0, 0, 18, 18);
+        GlStateManager.popMatrix();
     }
 
     /**
@@ -482,11 +491,11 @@ public class GuiContainerBase<H> extends GuiContainer
     {
         if (color == null)
         {
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.resetColor();
         }
         else
         {
-            GL11.glColor3f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
+            GlStateManager.color(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f);
         }
     }
 
@@ -494,7 +503,7 @@ public class GuiContainerBase<H> extends GuiContainer
     protected void drawElectricity(int x, int y, float scale)
     {
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.resetColor();
 
         /** Draw background progress bar/ */
         this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 54, 0, 107, 11);
@@ -535,15 +544,15 @@ public class GuiContainerBase<H> extends GuiContainer
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
 
         //Reset color
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.resetColor();
 
         //Draw background
         if (edgeColor != null)
         {
-            GL11.glColor4f(edgeColor.getRed() / 255f, edgeColor.getGreen() / 255f, edgeColor.getBlue() / 255f, edgeColor.getAlpha() / 255f);
+            GlStateManager.color(edgeColor.getRed() / 255f, edgeColor.getGreen() / 255f, edgeColor.getBlue() / 255f, edgeColor.getAlpha() / 255f);
             this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 0, meterWidth, meterHeight);
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.resetColor();
             this.drawTexturedModalRect(this.containerWidth + x + 1, this.containerHeight + y + 1, 41, 1, meterWidth - 2, meterHeight - 2);
         }
         else
@@ -562,7 +571,7 @@ public class GuiContainerBase<H> extends GuiContainer
         this.drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 49 * 2, meterWidth, meterHeight);
 
         //Reset color
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.resetColor();
     }
 
     public void drawTooltip(int x, int y, String... tooltips)
