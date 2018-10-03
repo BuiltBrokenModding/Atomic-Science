@@ -6,7 +6,6 @@ import com.builtbroken.atomic.lib.LanguageUtility;
 import com.builtbroken.atomic.lib.gui.GuiContainerBase;
 import com.builtbroken.atomic.lib.gui.tip.ToolTipTank;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
 
 import java.awt.*;
 
@@ -44,13 +43,7 @@ public class GuiChemExtractor extends GuiContainerBase<TileEntityChemExtractor>
     protected void drawGuiContainerBackgroundLayer(float f, int mouseX, int mouseY)
     {
         super.drawGuiContainerBackgroundLayer(f, mouseX, mouseY);
-        for (Object object : inventorySlots.inventorySlots)
-        {
-            if (object instanceof Slot)
-            {
-                drawSlot((Slot) object);
-            }
-        }
+        drawContainerSlots();
 
         //Render progress arrow
         int x = 72;
