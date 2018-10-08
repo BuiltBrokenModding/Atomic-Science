@@ -28,6 +28,10 @@
       "items": [
         {
           "type": "forge:ore_dict",
+          "ore": "plateSteel"
+        },
+        {
+          "type": "forge:ore_dict",
           "ore": "plateIron"
         },
         {
