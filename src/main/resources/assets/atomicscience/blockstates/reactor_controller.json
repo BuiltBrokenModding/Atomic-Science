@@ -8,7 +8,8 @@
       "east": "atomicscience:blocks/reactor/controller.sides",
       "west": "atomicscience:blocks/reactor/controller.sides",
       "north": "atomicscience:blocks/reactor/controller.sides",
-      "south": "atomicscience:blocks/reactor/controller.sides"
+      "south": "atomicscience:blocks/reactor/controller.sides",
+      "particle": "atomicscience:blocks/reactor/controller.sides"
     }
   },
   "variants": {
