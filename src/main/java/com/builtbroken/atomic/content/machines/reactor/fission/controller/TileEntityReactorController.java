@@ -3,8 +3,12 @@ package com.builtbroken.atomic.content.machines.reactor.fission.controller;
 import com.builtbroken.atomic.content.machines.TileEntityMachine;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
@@ -58,6 +62,40 @@ public class TileEntityReactorController extends TileEntityMachine
                 }
             }
         }
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+    {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        {
+            TileEntity tile = getTileBelow();
+            if (tile != null)
+            {
+                return tile.hasCapability(capability, facing);
+            }
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @Nullable
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+    {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        {
+            TileEntity tile = getTileBelow();
+            if (tile != null)
+            {
+                return tile.getCapability(capability, facing);
+            }
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    private final TileEntity getTileBelow()
+    {
+        return world.getTileEntity(getPos().down());
     }
 
     public void setReactorsEnabled(boolean enabled)

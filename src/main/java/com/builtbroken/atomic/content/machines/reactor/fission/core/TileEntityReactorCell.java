@@ -23,6 +23,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -173,21 +175,44 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     protected void doRodMovement(int ticks)
     {
         //Every 5 seconds, Check if we need to move rods (works like a hopper)
-        if (ticks % 100 == 0 && getFuelRod() != null)
+        if (ticks % 100 == 0)
         {
-            //Try to move rod to cell below reactor
-            TileEntity tile = world.getTileEntity(getPos().down());
-            if (tile instanceof TileEntityReactorCell)
+            IFuelRodItem fuelRod = getFuelRod();
+            if (fuelRod != null)
             {
-                tryToMoveRod((TileEntityReactorCell) tile);
-            }
-            //Try to move rod to cell below controller
-            else if (tile instanceof TileEntityReactorController)
-            {
-                tile = world.getTileEntity(getPos().down(2));
+                int runtime = fuelRod.getFuelRodRuntime(getFuelRodStack(), this);
+                //Try to move rod to cell below reactor
+                TileEntity tile = world.getTileEntity(getPos().down());
                 if (tile instanceof TileEntityReactorCell)
                 {
                     tryToMoveRod((TileEntityReactorCell) tile);
+                }
+                //Skip over reactor trying to insert into next reactor
+                else if (tile instanceof TileEntityReactorController && runtime > 0)
+                {
+                    tile = world.getTileEntity(getPos().down(2));
+                    if (tile instanceof TileEntityReactorCell)
+                    {
+                        tryToMoveRod((TileEntityReactorCell) tile);
+                    }
+                }
+                //Rod is dead try to eject to inventory
+                else if (tile != null && runtime <= 0)
+                {
+                    if (tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP))
+                    {
+                        IItemHandler inventory = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+                        if (inventory != null)
+                        {
+                            for (int slot = 0; slot < inventory.getSlots(); slot++)
+                            {
+                                if (inventory.isItemValid(slot, getFuelRodStack()))
+                                {
+                                    setFuelRod(inventory.insertItem(slot, getFuelRodStack(), false));
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
