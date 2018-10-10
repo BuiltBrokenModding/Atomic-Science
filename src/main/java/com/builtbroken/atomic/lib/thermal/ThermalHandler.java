@@ -2,6 +2,7 @@ package com.builtbroken.atomic.lib.thermal;
 
 import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.config.logic.ConfigLogic;
+import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
 import com.builtbroken.atomic.map.MapHandler;
@@ -33,6 +34,7 @@ public class ThermalHandler
         setValue(Blocks.AIR, 0.024f, 0.718f, -1, -1);
         setValue(Blocks.IRON_BLOCK, 55f, 0.444f, -1, 1811.15f);
         setValue(Blocks.GOLD_BLOCK, 315f, 0.129f, -1, 1337.15f);
+        setValue(ASBlocks.blockRodPipe, 55f, 0.444f, -1, 1811.15f);
         //Melting point of stone is 1473.15 Kelvin
         //http://www.physicsclassroom.com/class/thermalP/Lesson-1/Rates-of-Heat-Transfer
     }

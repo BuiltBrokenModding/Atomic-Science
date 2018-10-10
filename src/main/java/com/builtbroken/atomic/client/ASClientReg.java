@@ -88,6 +88,10 @@ public class ASClientReg
         newBlockModel(ASBlocks.blockChemBoiler);
         newBlockModel(ASBlocks.blockChemCentrifuge);
 
+        //Reactor rods
+        newBlockModel(ASBlocks.blockRodPipe, 0,"slot=false", EMPTY);
+        newBlockModel(ASBlocks.blockRodPipe, 0,"slot=true", EMPTY);
+
         //Register custom cell model
         ModelLoaderRegistry.registerLoader(new BucketModelLoader(AtomicScience.DOMAIN));
 

@@ -25,6 +25,11 @@ tile.atomicscience:chem.boiler.gui=Chemical Boiler
 tile.atomicscience:chem.extractor.name=Chemical Extractor
 tile.atomicscience:chem.extractor.gui=Chemical Extractor
 
+tile.atomicscience:pipe.rod.name=Reactor Rod Conveyor
+tile.atomicscience:pipe.rod.info=Conveys Fuel rods from one inventory into the next
+tile.atomicscience:pipe.rod.inv.name=Reactor Rod Storage Conveyor
+tile.atomicscience:pipe.rod.inv.info=Conveys Fuel rods from one inventory into the next. If it can't move the item it will store it.
+
 ## Items
 item.atomicscience:hazmat.mask.name=Hazmat Mask
 item.atomicscience:hazmat.body.name=Hazmat Upper body

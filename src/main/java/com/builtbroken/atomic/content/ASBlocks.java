@@ -13,6 +13,9 @@ import com.builtbroken.atomic.content.machines.reactor.fission.controller.BlockR
 import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.BlockReactorCell;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
+import com.builtbroken.atomic.content.machines.reactor.pipe.BlockRodPipe;
+import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipe;
+import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipeInv;
 import com.builtbroken.atomic.content.machines.steam.funnel.BlockSteamFunnel;
 import com.builtbroken.atomic.content.machines.steam.funnel.TileEntitySteamFunnel;
 import com.builtbroken.atomic.content.machines.steam.generator.BlockSteamGenerator;
@@ -42,6 +45,8 @@ public final class ASBlocks
     public static Block blockChemBoiler;
     public static Block blockChemCentrifuge;
 
+    public static Block blockRodPipe;
+
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
@@ -67,6 +72,10 @@ public final class ASBlocks
 
         event.getRegistry().register(blockChemCentrifuge = new BlockChemCentrifuge());
         GameRegistry.registerTileEntity(TileEntityChemCentrifuge.class, new ResourceLocation(AtomicScience.PREFIX + "chem_centrifuge"));
+
+        event.getRegistry().register(blockRodPipe = new BlockRodPipe());
+        GameRegistry.registerTileEntity(TileEntityRodPipe.class, new ResourceLocation(AtomicScience.PREFIX + "rod_pipe"));
+        GameRegistry.registerTileEntity(TileEntityRodPipeInv.class, new ResourceLocation(AtomicScience.PREFIX + "rod_pipe_inv"));
 
         for(ASFluids value : ASFluids.values())
         {
