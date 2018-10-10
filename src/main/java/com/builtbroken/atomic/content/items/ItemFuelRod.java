@@ -4,8 +4,10 @@ import com.builtbroken.atomic.api.item.IFuelRodItem;
 import com.builtbroken.atomic.api.reactor.IReactor;
 import com.builtbroken.atomic.lib.LanguageUtility;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -96,11 +98,27 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
     @Override
     public ItemStack onReactorTick(IReactor reactor, ItemStack stack, int tick, int fuelTick)
     {
+        setFuelTime(stack, Math.max(0, fuelTick - 1));
+        return stack;
+    }
+
+    public ItemStack setFuelTime(ItemStack stack, int time)
+    {
         if (stack.getTagCompound() == null)
         {
             stack.setTagCompound(new NBTTagCompound());
         }
-        stack.getTagCompound().setInteger(NBT_FUEL_TIME, Math.max(0, fuelTick - 1));
+        stack.getTagCompound().setInteger(NBT_FUEL_TIME, time);
         return stack;
+    }
+
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
+    {
+        if (this.isInCreativeTab(tab))
+        {
+            items.add(new ItemStack(this));
+            items.add(setFuelTime(new ItemStack(this), 0));
+        }
     }
 }
