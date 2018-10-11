@@ -10,6 +10,7 @@ import com.builtbroken.atomic.client.EffectRefs;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.machines.TileEntityInventoryMachine;
 import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
+import com.builtbroken.atomic.lib.inventory.ItemStackHandlerWrapper;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.node.RadSourceTile;
 import com.builtbroken.atomic.map.thermal.node.ThermalSource;
@@ -69,15 +70,35 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
             {
                 TileEntityReactorCell.this.onSlotStackChanged(slot);
             }
-        };
 
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+            {
+                return stack.getItem() instanceof IFuelRodItem;
+            }
+        };
     }
 
     @Nonnull
     @Override
     protected IItemHandlerModifiable createInventory()
     {
-        return getInventory();
+        return new ItemStackHandlerWrapper(getInventory())
+        {
+            @Override
+            public ItemStack extractItem(int slot, int amount, boolean simulate)
+            {
+                if (slot == SLOT_FUEL_ROD)
+                {
+                    ItemStack slot_stack = getStackInSlot(SLOT_FUEL_ROD);
+                    if (!(slot_stack.getItem() instanceof IFuelRodItem) || ((IFuelRodItem) slot_stack.getItem()).getFuelRodRuntime(slot_stack, TileEntityReactorCell.this) <= 0)
+                    {
+                        return inventory.extractItem(slot, amount, simulate);
+                    }
+                }
+                return inventory.extractItem(slot, amount, simulate);
+            }
+        };
     }
 
     @Override
