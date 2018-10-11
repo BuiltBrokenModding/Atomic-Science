@@ -54,7 +54,7 @@ public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiT
             IItemHandler inventory = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
             if (inventory != null)
             {
-                ItemStack stackToInsert = getItem();
+                ItemStack stackToInsert = getItem().copy();
                 for (int slot = 0; slot < inventory.getSlots() && !stackToInsert.isEmpty(); slot++)
                 {
                     if (inventory.isItemValid(slot, stackToInsert))
@@ -109,7 +109,7 @@ public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiT
     {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && facing == EnumFacing.UP)
         {
-            return (T) inventory;
+            return (T) getInventory();
         }
         return super.getCapability(capability, facing);
     }
