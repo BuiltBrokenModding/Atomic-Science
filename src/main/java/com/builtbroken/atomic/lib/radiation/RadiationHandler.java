@@ -1,11 +1,14 @@
 package com.builtbroken.atomic.lib.radiation;
 
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
+import com.builtbroken.atomic.content.effects.effects.FloatSupplier;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.HashMap;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -13,16 +16,47 @@ import net.minecraft.world.World;
  */
 public class RadiationHandler
 {
+    public static final HashMap<Block, FloatSupplier> blockToRadiationPercentage = new HashMap();
+    public static final HashMap<Material, FloatSupplier> materialToRadiationPercentage = new HashMap();
+
+    public static void init()
+    {
+        setValue(Material.ROCK, () -> ConfigRadiation.RADIATION_DECAY_STONE);
+
+        setValue(Material.GROUND, () -> ConfigRadiation.RADIATION_DECAY_STONE / 2);
+        setValue(Material.GRASS, () -> ConfigRadiation.RADIATION_DECAY_STONE / 2);
+        setValue(Material.SAND, () -> ConfigRadiation.RADIATION_DECAY_STONE / 2);
+        setValue(Material.CLAY, () -> ConfigRadiation.RADIATION_DECAY_STONE / 2);
+
+        setValue(Material.ICE, () -> ConfigRadiation.RADIATION_DECAY_STONE / 3);
+        setValue(Material.PACKED_ICE, () -> ConfigRadiation.RADIATION_DECAY_STONE / 3);
+        setValue(Material.CRAFTED_SNOW, () -> ConfigRadiation.RADIATION_DECAY_STONE / 3);
+
+        setValue(Material.IRON, () -> ConfigRadiation.RADIATION_DECAY_METAL);
+
+        //TODO add JSON data to allow users to customize values
+    }
+
+    public static void setValue(Block block, FloatSupplier supplier)
+    {
+        blockToRadiationPercentage.put(block, supplier);
+    }
+
+    public static void setValue(Material material, FloatSupplier supplier)
+    {
+        materialToRadiationPercentage.put(material, supplier);
+    }
+
     public static float getReduceRadiationForBlock(World world, int xi, int yi, int zi) //TODO move to handler
     {
         //TODO add registry that allows decay per block & meta
         //TODO add interface to define radiation based on tile data
-        //TODO add JSON data to allow users to customize values
+
 
         //Decay power per block
-        BlockPos pos = new BlockPos(xi, yi, zi);
-        IBlockState blockState = world.getBlockState(pos);
-        Block block = blockState.getBlock();
+        final BlockPos pos = new BlockPos(xi, yi, zi);
+        final IBlockState blockState = world.getBlockState(pos);
+        final Block block = blockState.getBlock();
 
         if (!block.isAir(blockState, world, pos))
         {
@@ -30,26 +64,10 @@ public class RadiationHandler
             {
                 if (blockState.isOpaqueCube())
                 {
-                    if (blockState.getMaterial() == Material.ROCK)
+                    final Material material = blockState.getMaterial();
+                    if (materialToRadiationPercentage.containsKey(material))
                     {
-                        return ConfigRadiation.RADIATION_DECAY_STONE;
-                    }
-                    else if (blockState.getMaterial() == Material.GROUND
-                            || blockState.getMaterial() == Material.GRASS
-                            || blockState.getMaterial() == Material.SAND
-                            || blockState.getMaterial() == Material.CLAY)
-                    {
-                        return ConfigRadiation.RADIATION_DECAY_STONE / 2;
-                    }
-                    else if (blockState.getMaterial() == Material.ICE
-                            || blockState.getMaterial() == Material.PACKED_ICE
-                            || blockState.getMaterial() == Material.CRAFTED_SNOW)
-                    {
-                        return ConfigRadiation.RADIATION_DECAY_STONE / 3;
-                    }
-                    else if (blockState.getMaterial() == Material.IRON)
-                    {
-                        return ConfigRadiation.RADIATION_DECAY_METAL;
+                        return materialToRadiationPercentage.get(material).getAsFloat();
                     }
                     else
                     {
