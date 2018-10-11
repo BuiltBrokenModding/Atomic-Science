@@ -51,9 +51,12 @@ public class ContainerRodPipe extends ContainerBase<TileEntityRodPipeInv>
             //Move item from player inventory to machine
             else if (index >= playerStart)
             {
-                if (!this.mergeItemStack(itemstack1, 0, 1, false))
+                if(host.getInventory().isItemValid(0, itemstack))
                 {
-                    return ItemStack.EMPTY;
+                    if (!this.mergeItemStack(itemstack1, 0, 1, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
                 }
                 else if (index >= playerStart && index < playerHotbar)
                 {

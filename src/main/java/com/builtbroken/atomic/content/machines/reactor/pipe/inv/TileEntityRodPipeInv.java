@@ -88,6 +88,12 @@ public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiT
                 {
                     return 1;
                 }
+
+                @Override
+                protected void onContentsChanged(int slot)
+                {
+                    TileEntityRodPipeInv.this.markDirty();
+                }
             };
         }
         return inventory;
@@ -136,13 +142,14 @@ public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiT
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        compound.setTag(NBT_INVENTORY, getInventory().serializeNBT());
+        getInventory().deserializeNBT(compound.getCompoundTag(NBT_INVENTORY));
+
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
-        getInventory().deserializeNBT(compound.getCompoundTag(NBT_INVENTORY));
+        compound.setTag(NBT_INVENTORY, getInventory().serializeNBT());
         return super.writeToNBT(compound);
     }
 }
