@@ -7,6 +7,7 @@ import com.builtbroken.atomic.content.effects.effects.FloatSupplier;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,6 +27,7 @@ public class RadiationHandler
     public static void init()
     {
         setValue(Material.ROCK, () -> ConfigRadiation.RADIATION_DECAY_STONE);
+        setValue(Material.PISTON, () -> ConfigRadiation.RADIATION_DECAY_STONE);
 
         setValue(Material.GROUND, () -> ConfigRadiation.RADIATION_DECAY_STONE / 2);
         setValue(Material.GRASS, () -> ConfigRadiation.RADIATION_DECAY_STONE / 2);
@@ -38,7 +40,24 @@ public class RadiationHandler
 
         setValue(Material.IRON, () -> ConfigRadiation.RADIATION_DECAY_METAL);
 
+        setValue(Blocks.BRICK_BLOCK, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_STONE * 1.2f);
+        setValue(Blocks.NETHER_BRICK, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_STONE * 1.2f);
+        setValue(Blocks.STONEBRICK, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_STONE * 1.1f);
+        setValue(Blocks.QUARTZ_BLOCK, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_STONE * 1.4f);
+        setValue(Blocks.DIAMOND_BLOCK, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_STONE * 2f);
+        setValue(Blocks.GOLD_BLOCK, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_STONE * 1.3f);
+        setValue(Blocks.OBSIDIAN, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_STONE * 1.5f);
+        setValue(Blocks.COBBLESTONE, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_STONE * 0.7f);
+        setValue(Blocks.MOSSY_COBBLESTONE, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_STONE * 0.8f);
+        setValue(Blocks.IRON_DOOR, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_METAL / 3);
+        setValue(Blocks.IRON_BARS, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_METAL / 4);
+        setValue(Blocks.CONCRETE, (world, pos, state) -> ConfigRadiation.RADIATION_DECAY_METAL * 2);
+
         //TODO add JSON data to allow users to customize values
+
+        //https://en.wikipedia.org/wiki/Radiation_material_science
+        //https://en.wikipedia.org/wiki/Radiation_protection
+        //https://en.wikipedia.org/wiki/Half-value_layer
     }
 
     public static void setValue(Block block, RadiationResistanceSupplier supplier)
@@ -99,15 +118,9 @@ public class RadiationHandler
                     {
                         return materialToRadiationPercentage.get(material).getAsFloat();
                     }
-                    else
-                    {
-                        return ConfigRadiation.RADIATION_DECAY_PER_BLOCK;
-                    }
+                    return ConfigRadiation.RADIATION_DECAY_PER_BLOCK;
                 }
-                else
-                {
-                    return ConfigRadiation.RADIATION_DECAY_PER_BLOCK / 2;
-                }
+                return ConfigRadiation.RADIATION_DECAY_PER_BLOCK / 2;
             }
             else if (blockState.getMaterial().isLiquid())
             {
