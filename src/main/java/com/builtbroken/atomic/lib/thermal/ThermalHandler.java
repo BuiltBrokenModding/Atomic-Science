@@ -7,6 +7,7 @@ import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
 import com.builtbroken.atomic.map.MapHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -25,6 +26,7 @@ public class ThermalHandler
 {
     //Thermal data about blocks
     private static final HashMap<Block, ThermalData> blockThermalDataMap = new HashMap();
+    private static final HashMap<Material, ThermalData> materialThermalDataMap = new HashMap();
 
     public static void init()
     {
@@ -34,9 +36,17 @@ public class ThermalHandler
         setValue(Blocks.AIR, 0.024f, 0.718f, -1, -1);
         setValue(Blocks.IRON_BLOCK, 55f, 0.444f, -1, 1811.15f);
         setValue(Blocks.GOLD_BLOCK, 315f, 0.129f, -1, 1337.15f);
+
         setValue(ASBlocks.blockRodPipe, 55f, 0.444f, -1, 1811.15f);
-        //Melting point of stone is 1473.15 Kelvin
+
+        setValue(Material.AIR, 0.024f, 0.718f, -1, -1);
+        setValue(Material.IRON, 55f, 0.444f, -1, 1811.15f);
+        setValue(Material.ROCK, 1.7f, 0.84f, -1, 1473.15f);
+        setValue(Material.SAND, 0.2f, 0.80f, -1, 1923f);
+
         //http://www.physicsclassroom.com/class/thermalP/Lesson-1/Rates-of-Heat-Transfer
+        //https://www.engineeringtoolbox.com/specific-heat-solids-d_154.html
+        //https://www.engineeringtoolbox.com/thermal-conductivity-d_429.html
     }
 
     public static void setValue(Block block, float rate, float specificHeat, float changeHeat, float changeTemp)
@@ -49,14 +59,28 @@ public class ThermalHandler
         blockThermalDataMap.put(block, new ThermalData(rate, specificHeat, changeHeat, changeTemp, blockFactory, postPlacementCallback));
     }
 
+    public static void setValue(Material material, float rate, float specificHeat, float changeHeat, float changeTemp)
+    {
+        setValue(material, rate, specificHeat, changeHeat, changeTemp, null, null);
+    }
+
+    public static void setValue(Material material, float rate, float specificHeat, float changeHeat, float changeTemp, Supplier<IBlockState> blockFactory, Consumer<ThermalPlacement> postPlacementCallback)
+    {
+        materialThermalDataMap.put(material, new ThermalData(rate, specificHeat, changeHeat, changeTemp, blockFactory, postPlacementCallback));
+    }
+
     public static ThermalData getThermalData(World world, BlockPos pos)
     {
-        Block block = world.getBlockState(pos).getBlock();
+        IBlockState blockState = world.getBlockState(pos);
+        Block block = blockState.getBlock();
         if (blockThermalDataMap.containsKey(block))
         {
             return blockThermalDataMap.get(block);
         }
-        //TODO add IBlockState support
+        else if(materialThermalDataMap.containsKey(blockState.getMaterial()))
+        {
+            return materialThermalDataMap.get(blockState.getMaterial());
+        }
         return null;
     }
 
@@ -110,7 +134,7 @@ public class ThermalHandler
         {
             return data.specificHeat;
         }
-        return 0.2f;
+        return 1f;
     }
 
     public static double getHeatTransferRate(World world, BlockPos pos)
@@ -125,7 +149,7 @@ public class ThermalHandler
         {
             return 1000;
         }
-        return 0.1;
+        return 1;
     }
 
     public static void changeStates(World world, BlockPos pos)
