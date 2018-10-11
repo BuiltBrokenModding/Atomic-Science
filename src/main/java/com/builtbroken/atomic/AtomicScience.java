@@ -1,5 +1,6 @@
 package com.builtbroken.atomic;
 
+import com.builtbroken.atomic.api.radiation.IRadiationResistant;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.content.ASFluids;
@@ -12,6 +13,7 @@ import com.builtbroken.atomic.content.commands.CommandAS;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
+import com.builtbroken.atomic.lib.radiation.RadiationHandler;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.lib.transform.vector.Location;
 import com.builtbroken.atomic.map.MapHandler;
@@ -133,6 +135,7 @@ public class AtomicScience
 
         MapHandler.register();
         ThermalHandler.init();
+        RadiationHandler.init();
         MassHandler.init();
 
         proxyLoader = new ProxyLoader("AS");
@@ -272,6 +275,23 @@ public class AtomicScience
                         return 0;
                     }
                 });
+
+        CapabilityManager.INSTANCE.register(IRadiationResistant.class, new Capability.IStorage<IRadiationResistant>()
+                {
+                    @Nullable
+                    @Override
+                    public NBTBase writeNBT(Capability<IRadiationResistant> capability, IRadiationResistant instance, EnumFacing side)
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public void readNBT(Capability<IRadiationResistant> capability, IRadiationResistant instance, EnumFacing side, NBTBase nbt)
+                    {
+
+                    }
+                },
+                () -> (IRadiationResistant) () -> 0);
     }
 
     @Mod.EventHandler

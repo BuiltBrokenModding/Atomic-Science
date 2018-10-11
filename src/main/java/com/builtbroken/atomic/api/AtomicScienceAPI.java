@@ -2,6 +2,7 @@ package com.builtbroken.atomic.api;
 
 import com.builtbroken.atomic.api.effect.IIndirectEffectType;
 import com.builtbroken.atomic.api.radiation.IRadiationExposureSystem;
+import com.builtbroken.atomic.api.radiation.IRadiationResistant;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.radiation.IRadioactiveMaterialSystem;
 import com.builtbroken.atomic.api.thermal.IThermalSource;
@@ -41,4 +42,7 @@ public final class AtomicScienceAPI
 
     @CapabilityInject(IRadiationSource.class)
     public static Capability<IRadiationSource> RADIATION_CAPABILITY = null;
+
+    @CapabilityInject(IRadiationResistant.class)
+    public static Capability<IRadiationResistant> RADIATION_RESISTANT_CAPABILITY = null;
 }

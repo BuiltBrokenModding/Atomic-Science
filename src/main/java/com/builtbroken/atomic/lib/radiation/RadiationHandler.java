@@ -1,10 +1,13 @@
 package com.builtbroken.atomic.lib.radiation;
 
+import com.builtbroken.atomic.api.AtomicScienceAPI;
+import com.builtbroken.atomic.api.radiation.IRadiationResistant;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.content.effects.effects.FloatSupplier;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -53,28 +56,41 @@ public class RadiationHandler
         materialToRadiationPercentage.put(material, supplier);
     }
 
-    public static float getReduceRadiationForBlock(World world, int xi, int yi, int zi) //TODO move to handler
+    /**
+     * Called to get the generalized radiation resistance of a block at the position
+     *
+     * @param world - location
+     * @param xi-   location
+     * @param yi-   location
+     * @param zi-   location
+     * @return value between 0.0 and 1.0
+     */
+    public static float getReduceRadiationForBlock(World world, int xi, int yi, int zi) //TODO make a directional version
     {
-        //TODO add registry that allows decay per block & meta
-        //TODO add interface to define radiation based on tile data
-
-
-        //Decay power per block
         final BlockPos pos = new BlockPos(xi, yi, zi);
         final IBlockState blockState = world.getBlockState(pos);
         final Block block = blockState.getBlock();
 
         if (blockStateToRadiationPercentage.containsKey(blockState))
         {
-            return blockStateToRadiationPercentage.get(blockState).getAsFloat(world, xi, yi, zi, blockState);
+            return blockStateToRadiationPercentage.get(blockState).getAsFloat(world, pos, blockState);
         }
         else if (blockToRadiationPercentage.containsKey(block))
         {
-            return blockToRadiationPercentage.get(block).getAsFloat(world, xi, yi, zi, blockState);
+            return blockToRadiationPercentage.get(block).getAsFloat(world, pos, blockState);
         }
         else if (!block.isAir(blockState, world, pos))
         {
-            if (blockState.getMaterial().isSolid())
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity.hasCapability(AtomicScienceAPI.RADIATION_RESISTANT_CAPABILITY, null))
+            {
+                IRadiationResistant radiationResistant = tileEntity.getCapability(AtomicScienceAPI.RADIATION_RESISTANT_CAPABILITY, null);
+                if (radiationResistant != null)
+                {
+                    return radiationResistant.getRadiationResistance();
+                }
+            }
+            else if (blockState.getMaterial().isSolid())
             {
                 if (blockState.isOpaqueCube())
                 {
@@ -101,6 +117,16 @@ public class RadiationHandler
         return 0;
     }
 
+    /**
+     * Called to reduce the radiation value
+     *
+     * @param world - location
+     * @param xi    - location
+     * @param yi    - location
+     * @param zi    - location
+     * @param power - radiation value
+     * @return reduced value
+     */
     public static double reduceRadiationForBlock(World world, int xi, int yi, int zi, double power)
     {
         //Get reduction

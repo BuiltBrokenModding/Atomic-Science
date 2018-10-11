@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.lib.radiation;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @FunctionalInterface
@@ -11,5 +12,5 @@ public interface RadiationResistanceSupplier
      *
      * @return a result
      */
-    float getAsFloat(World world, int x, int y, int z, IBlockState state);
+    float getAsFloat(World world, BlockPos pos, IBlockState state);
 }
