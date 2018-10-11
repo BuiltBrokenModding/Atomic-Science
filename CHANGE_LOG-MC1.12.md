@@ -9,10 +9,64 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ### Development Changes
 
+## 3.0.6 - 1.12
+### Runtime Changes
+* Ported: mod to 1.12 version of Minecraft reworking much of the code, recipes, etc
+
+* Fixed: Many issues with port and some that existed before porting
+* Fixed: rad overlay showing in F3 menu
+* Fixed: Double slot render issues
+* Fixed: Colorization issue with slots
+* Fixed: Texture bleed over issues with GUI elements
+* Fixed: Some issues with thermal and radiation grid not updating
+* Fixed: Radiation source not being centered
+* Fixed: Many issues with processing recipes
+* Fixed: Ore-dictionary issues for Uranium Ore
+
+* Replaced: Interger based thermal/radiation system with Node based system
+* Replaced: Iron plate with steel plate in recipes
+
+* Reworked: Thermal systems to use capability system for tiles
+* Reworked: Radiation systems to use capability system for tiles
+* Reworked: Thermal, Radiation, and Radioactive material data to use nodes
+* Reworked: Thermal, Radiation, and Radioactive material systems to use the same node map
+
+* Added: Industrialcraft 2 support
+* Added: Buildcraft support
+* Added: JEI support for recipes
+* Added: cacti -> slime recipe in extractor
+* Added: Shift click support to processing machines
+* Added: new fluid textures by sukar42
+* Added: Start of system radiation protect for any armor
+* Added: in-game configs to most configs
+* Added: config to disable radiation overlay
+* Added: Recipe support for IC2 and ThermalExpansion
+* Added: Reactor Pipe rod -> redirects inventroy connections
+* Added: Reactor Pipe rod inventory -> single slot, 1 stack size hopper
+* Added: Spent rods to creative tab for testing of recipes & logic
+* Added: Bucket insertion support to processing machines
+* Added: Inventory insertion support to processing machines for most items
+* Added: Power usage to processing machines
+
+* Implemented: Fully new models for machines by Morton
+* Implemented: Forge Energy support in place of RF/UE support
+* Implemented: Inventory ejection for reactor for spent rods
+* Implemented: Inventory redirect for reactor stack controller
+* Implemented: Basic functionality for controller
+
+### Development Changes
+* Added: Debug hot keys to test UIs
+* Added: Timer object to make implementing machines easier
+
 ## 3.0.6
 ### Runtime Changes
 
-### Development Changes
+* Fixed: Crash generating list of reactors for controller
+* Fixed: Pathing of thermal system going outside of range
+
+* Added: Cell render handling for controller
+
+* Implemented: New Models for all machines by Morton
 
 ## 3.0.5
 ### Runtime Changes
