@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.machines.reactor.pipe;
 
 import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
+import com.builtbroken.atomic.content.machines.reactor.pipe.inv.TileEntityRodPipeInv;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

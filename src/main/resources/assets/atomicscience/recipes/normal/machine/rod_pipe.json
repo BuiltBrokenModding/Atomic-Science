@@ -1,0 +1,40 @@
+{
+  "result": {
+    "item": "atomicscience:rod_pipe",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "p p",
+    "pcp",
+    "p p"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "plateIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    },
+    "c": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    }
+  }
+}

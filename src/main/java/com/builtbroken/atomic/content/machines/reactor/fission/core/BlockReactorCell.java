@@ -1,8 +1,8 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.core;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.content.prefab.BlockPrefab;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public class BlockReactorCell extends BlockContainer
+public class BlockReactorCell extends BlockPrefab
 {
     public static final PropertyReactorState REACTOR_STRUCTURE_TYPE = new PropertyReactorState();
 

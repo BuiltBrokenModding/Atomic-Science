@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "atomicscience:rod_pipe_inv",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "c",
+    "h"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "item": "atomicscience:rod_pipe",
+      "data": 0
+    },
+    "h": {
+      "item": "minecraft:hopper",
+      "data": 0
+    }
+  }
+}

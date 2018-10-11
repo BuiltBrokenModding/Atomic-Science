@@ -18,23 +18,6 @@
     ],
     "inventory": [
       {}
-    ],
-    "slot":
-    {
-      "true":
-      {
-        "east": "atomicscience:blocks/reactor/rod.pipe.inv.sides",
-        "west": "atomicscience:blocks/reactor/rod.pipe.inv.sides",
-        "north": "atomicscience:blocks/reactor/rod.pipe.inv.sides",
-        "south": "atomicscience:blocks/reactor/rod.pipe.inv.sides"
-      },
-      "false":
-      {
-        "east": "atomicscience:blocks/reactor/rod.pipe.sides",
-        "west": "atomicscience:blocks/reactor/rod.pipe.sides",
-        "north": "atomicscience:blocks/reactor/rod.pipe.sides",
-        "south": "atomicscience:blocks/reactor/rod.pipe.sides"
-      }
-    }
+    ]
   }
 }

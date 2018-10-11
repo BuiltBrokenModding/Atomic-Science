@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.content.machines.processing.boiler;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.content.prefab.BlockAS;
+import com.builtbroken.atomic.content.prefab.BlockMachine;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +16,7 @@ import net.minecraft.world.World;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/22/2018.
  */
-public class BlockChemBoiler extends BlockAS
+public class BlockChemBoiler extends BlockMachine
 {
     public BlockChemBoiler()
     {

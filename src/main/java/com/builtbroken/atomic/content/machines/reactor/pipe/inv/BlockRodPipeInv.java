@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.reactor.pipe;
+package com.builtbroken.atomic.content.machines.reactor.pipe.inv;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.prefab.BlockPrefab;
@@ -24,13 +24,13 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 10/10/2018.
  */
-public class BlockRodPipe extends BlockPrefab implements ITileEntityProvider
+public class BlockRodPipeInv extends BlockPrefab implements ITileEntityProvider
 {
-    public BlockRodPipe()
+    public BlockRodPipeInv()
     {
         super(Material.IRON);
-        setRegistryName(AtomicScience.PREFIX + "rod_pipe");
-        setTranslationKey(AtomicScience.PREFIX + "pipe.rod");
+        setRegistryName(AtomicScience.PREFIX + "rod_pipe_inv");
+        setTranslationKey(AtomicScience.PREFIX + "pipe.rod.inv");
         setCreativeTab(AtomicScience.creativeTab);
         setHardness(10);
         setResistance(10);
@@ -50,7 +50,7 @@ public class BlockRodPipe extends BlockPrefab implements ITileEntityProvider
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new TileEntityRodPipe();
+        return new TileEntityRodPipeInv();
     }
 
     @Override

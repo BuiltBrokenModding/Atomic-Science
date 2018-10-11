@@ -11,7 +11,6 @@ import com.builtbroken.atomic.content.items.cell.CreativeTabCells;
 import com.builtbroken.atomic.content.items.cell.ItemFluidCell;
 import com.builtbroken.atomic.content.items.cell.ItemPoweredCell;
 import com.builtbroken.atomic.content.items.wrench.ItemWrench;
-import com.builtbroken.atomic.content.machines.reactor.pipe.ItemBlockRodPipe;
 import net.minecraft.block.Block;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -74,6 +73,7 @@ public final class ASItems
     public static ItemBlock blockChemCentrifuge;
 
     public static ItemBlock blockRodPipe;
+    public static ItemBlock blockRodPipeInv;
 
 
     @SubscribeEvent
@@ -142,7 +142,8 @@ public final class ASItems
         blockChemBoiler = addItemBlock(event.getRegistry(), ASBlocks.blockChemBoiler);
         blockChemCentrifuge = addItemBlock(event.getRegistry(), ASBlocks.blockChemCentrifuge);
 
-        event.getRegistry().register(blockRodPipe = (ItemBlock) new ItemBlockRodPipe(ASBlocks.blockRodPipe).setRegistryName(ASBlocks.blockRodPipe.getRegistryName()));
+        blockRodPipe = addItemBlock(event.getRegistry(), ASBlocks.blockRodPipe);
+        blockRodPipeInv = addItemBlock(event.getRegistry(), ASBlocks.blockRodPipeInv);
 
         if (AtomicScience.runningAsDev)
         {

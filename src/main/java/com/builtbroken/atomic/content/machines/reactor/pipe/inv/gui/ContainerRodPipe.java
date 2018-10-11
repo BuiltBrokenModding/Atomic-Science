@@ -1,6 +1,6 @@
-package com.builtbroken.atomic.content.machines.reactor.pipe.gui;
+package com.builtbroken.atomic.content.machines.reactor.pipe.inv.gui;
 
-import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipeInv;
+import com.builtbroken.atomic.content.machines.reactor.pipe.inv.TileEntityRodPipeInv;
 import com.builtbroken.atomic.lib.gui.ContainerBase;
 import com.builtbroken.atomic.lib.gui.slot.SlotMachine;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,7 +14,7 @@ public class ContainerRodPipe extends ContainerBase<TileEntityRodPipeInv>
     public ContainerRodPipe(EntityPlayer player, TileEntityRodPipeInv node)
     {
         super(player, node);
-        addSlotToContainer(new SlotMachine(node.getInventory(), 0, 50, 50));
+        addSlotToContainer(new SlotMachine(node.getInventory(), 0, 80, 40));
         addPlayerInventory(player);
     }
 }
