@@ -39,9 +39,9 @@ public class TileEntityReactorController extends TileEntityMachine
     private boolean enableReactors = true;
 
     @Override
-    protected void update(int ticks)
+    protected void update(int ticks, boolean isClient)
     {
-        if (isServer())
+        if (!isClient)
         {
             if (cells == null || refreshStack || ticks % 20 == 0) //TODO remove tick refresh after testing
             {

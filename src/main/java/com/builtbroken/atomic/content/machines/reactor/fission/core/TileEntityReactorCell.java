@@ -52,12 +52,15 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     private final ThermalSource<TileEntityReactorCell> thermalSource = new ThermalSourceTile(this, () -> getHeatGenerated());
 
     @Override
-    protected void firstTick()
+    protected void firstTick(boolean isClient)
     {
-        super.firstTick();
+        super.firstTick(isClient);
         updateStructureType();
-        MapHandler.RADIATION_MAP.addSource(getRadiationSource());
-        MapHandler.THERMAL_MAP.addSource(getHeatSource());
+        if(!isClient)
+        {
+            MapHandler.RADIATION_MAP.addSource(getRadiationSource());
+            MapHandler.THERMAL_MAP.addSource(getHeatSource());
+        }
     }
 
     @Override
@@ -66,15 +69,30 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         return new ItemStackHandler(inventorySize())
         {
             @Override
-            protected void onContentsChanged(int slot)
+            public void setStackInSlot(int slot, @Nonnull ItemStack stack)
             {
-                TileEntityReactorCell.this.onSlotStackChanged(slot);
+                validateSlotIndex(slot);
+                ItemStack prev = getStackInSlot(slot);
+                this.stacks.set(slot, stack);
+
+                if(!ItemStack.areItemStacksEqual(prev, stack))
+                {
+                    onSlotStackChanged(slot, prev, stack);
+                }
+
+                onContentsChanged(slot);
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack)
             {
                 return stack.getItem() instanceof IFuelRodItem;
+            }
+
+            @Override
+            public int getSlotLimit(int slot)
+            {
+                return 1;
             }
         };
     }
@@ -133,10 +151,10 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     //-----------------------------------------------
 
     @Override
-    public void update(int ticks)
+    public void update(int ticks, boolean isClient)
     {
-        super.update(ticks);
-        if (isServer())
+        super.update(ticks, isClient);
+        if (!isClient)
         {
             doRunChecks(ticks);
             doRodMovement(ticks);
@@ -225,7 +243,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
                         IItemHandler inventory = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
                         if (inventory != null)
                         {
-                            for (int slot = 0; slot < inventory.getSlots(); slot++)
+                            for (int slot = 0; slot < inventory.getSlots() && !getFuelRodStack().isEmpty(); slot++)
                             {
                                 if (inventory.isItemValid(slot, getFuelRodStack()))
                                 {
@@ -295,7 +313,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         return enabled && hasFuel() && getFuelRuntime() > 0;
     }
 
-    protected void onSlotStackChanged(int slot)
+    protected void onSlotStackChanged(int slot, ItemStack prev_stack, ItemStack new_stack)
     {
         this.markDirty();
     }

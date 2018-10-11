@@ -57,50 +57,45 @@ public class TileEntitySteamFunnel extends TileEntitySteamInput
         return super.getCapability(capability, facing);
     }
 
-
     @Override
-    public void firstTick()
+    protected void update(int ticks, boolean isClient)
     {
-        super.firstTick();
-    }
-
-    @Override
-    protected void update(int ticks)
-    {
-        super.update(ticks);
-
-        if (tank.getFluid() != null && tank.getFluid().getFluid() != ASFluids.STEAM.fluid)
+        super.update(ticks, isClient);
+        if(!isClient)
         {
-            tank.drain(tank.getCapacity(), true);
-        }
-
-        //Output steam to connected tiles
-        if (tank.getFluid() != null && tank.getFluidAmount() > 0)
-        {
-            int amountToGive = tank.getFluidAmount();
-            for (EnumFacing direction : EnumFacing.VALUES)
+            if (tank.getFluid() != null && tank.getFluid().getFluid() != ASFluids.STEAM.fluid)
             {
-                BlockPos blockPos = getPos().add(direction.getDirectionVec());
+                tank.drain(tank.getCapacity(), true);
+            }
 
-                TileEntity tile = world.getTileEntity(blockPos);
-                if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction))
+            //Output steam to connected tiles
+            if (tank.getFluid() != null && tank.getFluidAmount() > 0)
+            {
+                int amountToGive = tank.getFluidAmount();
+                for (EnumFacing direction : EnumFacing.VALUES)
                 {
-                    IFluidHandler fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
-                    if (fluidHandler != null)
+                    BlockPos blockPos = getPos().add(direction.getDirectionVec());
+
+                    TileEntity tile = world.getTileEntity(blockPos);
+                    if (tile != null && tile.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction))
                     {
-                        int give = amountToGive / 6;
-                        give = fluidHandler.fill(new FluidStack(tank.getFluid().getFluid(), give), true);
-                        amountToGive -= give;
+                        IFluidHandler fluidHandler = tile.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
+                        if (fluidHandler != null)
+                        {
+                            int give = amountToGive / 6;
+                            give = fluidHandler.fill(new FluidStack(tank.getFluid().getFluid(), give), true);
+                            amountToGive -= give;
+                        }
                     }
                 }
+                tank.drain(tank.getFluidAmount() - amountToGive, true);
             }
-            tank.drain(tank.getFluidAmount() - amountToGive, true);
-        }
 
-        //Generate steam
-        if (getSteamGeneration() > 0)
-        {
-            tank.fill(new FluidStack(ASFluids.STEAM.fluid, getSteamGeneration()), true);
+            //Generate steam
+            if (getSteamGeneration() > 0)
+            {
+                tank.fill(new FluidStack(ASFluids.STEAM.fluid, getSteamGeneration()), true);
+            }
         }
     }
 

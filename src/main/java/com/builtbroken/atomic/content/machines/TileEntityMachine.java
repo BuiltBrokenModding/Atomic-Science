@@ -41,9 +41,9 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
     {
         if (_ticks == 0)
         {
-            firstTick();
+            firstTick(world.isRemote);
         }
-        update(_ticks);
+        update(_ticks, world.isRemote);
         _ticks++;
         if (_ticks + 1 == Integer.MAX_VALUE)
         {
@@ -82,7 +82,7 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
      * Called on the very fist update loop call.
      * Only called once after the tile has been created
      */
-    protected void firstTick()
+    protected void firstTick(boolean isClient)
     {
 
     }
@@ -92,7 +92,7 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
      *
      * @param ticks - number of ticks of the world (20 ticks a second)
      */
-    protected void update(int ticks)
+    protected void update(int ticks, boolean isClient)
     {
 
     }

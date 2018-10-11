@@ -69,10 +69,10 @@ public class TileEntityChemCentrifuge extends TileEntityProcessingMachine<IItemH
     }
 
     @Override
-    public void update(int ticks)
+    public void update(int ticks, boolean isClient)
     {
-        super.update(ticks);
-        if (isServer())
+        super.update(ticks, isClient);
+        if (!isClient)
         {
             drainBattery(SLOT_BATTERY);
         }

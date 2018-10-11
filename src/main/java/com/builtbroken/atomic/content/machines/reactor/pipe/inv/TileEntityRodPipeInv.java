@@ -14,7 +14,6 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
@@ -27,9 +26,11 @@ import java.util.function.IntConsumer;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 10/10/2018.
  */
-public class TileEntityRodPipeInv extends TileEntityRodPipe implements ITickable, IGuiTile
+public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiTile
 {
     public static final String NBT_INVENTORY = "inventory";
+
+    public static final int SLOT_ROD = 0;
 
     private ItemStackHandler inventory;
     private final TileTimer inventoryMoveTimer = new TileTimer(10, (IntConsumer) ticks -> moveItems());
@@ -48,24 +49,32 @@ public class TileEntityRodPipeInv extends TileEntityRodPipe implements ITickable
     protected void moveItems()
     {
         TileEntity tile = world.getTileEntity(getPos().down());
-        if (tile != null && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP))
+        if (tile != null && TileEntityRodPipe.canSupport(tile) && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP))
         {
             IItemHandler inventory = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
             if (inventory != null)
             {
-                setItem(ItemHandlerHelper.insertItem(inventory, getItem(), false));
+                ItemStack stackToInsert = getItem();
+                for (int slot = 0; slot < inventory.getSlots() && !stackToInsert.isEmpty(); slot++)
+                {
+                    if (inventory.isItemValid(slot, stackToInsert))
+                    {
+                        stackToInsert = inventory.insertItem(slot, stackToInsert, false);
+                    }
+                }
+                setItem(stackToInsert);
             }
         }
     }
 
     protected ItemStack getItem()
     {
-        return getInventory().getStackInSlot(0);
+        return getInventory().getStackInSlot(SLOT_ROD);
     }
 
     protected void setItem(ItemStack stack)
     {
-        getInventory().setStackInSlot(0, stack);
+        getInventory().setStackInSlot(SLOT_ROD, stack);
     }
 
     public ItemStackHandler getInventory()
@@ -87,6 +96,10 @@ public class TileEntityRodPipeInv extends TileEntityRodPipe implements ITickable
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
     {
+        if (facing == EnumFacing.UP && TileEntityRodPipe.canSupport(capability))
+        {
+            return true;
+        }
         return super.hasCapability(capability, facing);
     }
 

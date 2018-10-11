@@ -41,9 +41,9 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
     float _processingAnimationRotation = 0;
 
     @Override
-    public void update(int ticks)
+    public void update(int ticks, boolean isClient)
     {
-        super.update(ticks);
+        super.update(ticks, isClient);
 
         //Check if has energy in order to run
         if (checkEnergyExtract())

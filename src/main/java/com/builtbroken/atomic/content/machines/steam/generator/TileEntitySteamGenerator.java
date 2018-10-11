@@ -35,16 +35,10 @@ public class TileEntitySteamGenerator extends TileEntitySteamInput implements IE
     private boolean hasValidated = false;
 
     @Override
-    public void firstTick()
+    protected void update(int ticks, boolean isClient)
     {
-        super.firstTick();
-    }
-
-    @Override
-    protected void update(int ticks)
-    {
-        super.update(ticks);
-        if (isClient())
+        super.update(ticks, isClient);
+        if (isClient)
         {
             _clientTurbineRotation += getRotationSpeed();
             if (_clientTurbineRotation > 360)

@@ -49,12 +49,12 @@ public class TileEntityRodPipe extends TileEntity
         return super.getCapability(capability, facing);
     }
 
-    protected boolean canSupport(Capability capability)
+    public static boolean canSupport(Capability capability)
     {
         return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
     }
 
-    protected boolean canSupport(TileEntity tileEntity)
+    public static boolean canSupport(TileEntity tileEntity)
     {
         return tileEntity instanceof TileEntityReactorCell
                 || tileEntity instanceof TileEntityReactorController

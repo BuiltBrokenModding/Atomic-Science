@@ -18,12 +18,15 @@ public class TileEntitySteamInput extends TileEntityMachine
     protected BlockPos topMostBlock;
 
     @Override
-    protected void update(int ticks)
+    protected void update(int ticks, boolean isClient)
     {
-        if (ticks % 20 == 0 || checkSteam)
+        if (!isClient)
         {
-            checkSteam = false;
-            pathDown();
+            if (ticks % 20 == 0 || checkSteam)
+            {
+                checkSteam = false;
+                pathDown();
+            }
         }
 
         //TODO produce steam effect on top of water
