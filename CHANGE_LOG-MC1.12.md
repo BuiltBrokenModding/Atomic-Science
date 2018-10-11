@@ -9,6 +9,11 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ### Development Changes
 
+## 3.1.0
+### Runtime Changes
+
+### Development Changes
+
 ## 3.0.6 - 1.12
 ### Runtime Changes
 * Ported: mod to 1.12 version of Minecraft reworking much of the code, recipes, etc

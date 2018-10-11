@@ -143,7 +143,6 @@ public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiT
     {
         super.readFromNBT(compound);
         getInventory().deserializeNBT(compound.getCompoundTag(NBT_INVENTORY));
-
     }
 
     @Override
