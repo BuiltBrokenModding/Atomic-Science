@@ -11,8 +11,12 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ## 3.1.0
 ### Runtime Changes
+* Added: Radiation data for several vanilla materials and blocks
+* Added: Thermal data for several vanilla materials and blocks
 
 ### Development Changes
+* Added: Capability for radiation resistance
+* Added: Regitry for block, block state, and materials for radiation resistance
 
 ## 3.0.6 - 1.12
 ### Runtime Changes
