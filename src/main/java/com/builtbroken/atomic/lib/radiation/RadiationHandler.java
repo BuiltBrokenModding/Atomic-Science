@@ -16,7 +16,8 @@ import java.util.HashMap;
  */
 public class RadiationHandler
 {
-    public static final HashMap<Block, FloatSupplier> blockToRadiationPercentage = new HashMap();
+    public static final HashMap<IBlockState, RadiationResistanceSupplier> blockStateToRadiationPercentage = new HashMap();
+    public static final HashMap<Block, RadiationResistanceSupplier> blockToRadiationPercentage = new HashMap();
     public static final HashMap<Material, FloatSupplier> materialToRadiationPercentage = new HashMap();
 
     public static void init()
@@ -37,9 +38,14 @@ public class RadiationHandler
         //TODO add JSON data to allow users to customize values
     }
 
-    public static void setValue(Block block, FloatSupplier supplier)
+    public static void setValue(Block block, RadiationResistanceSupplier supplier)
     {
         blockToRadiationPercentage.put(block, supplier);
+    }
+
+    public static void setValue(IBlockState blockState, RadiationResistanceSupplier supplier)
+    {
+        blockStateToRadiationPercentage.put(blockState, supplier);
     }
 
     public static void setValue(Material material, FloatSupplier supplier)
@@ -58,7 +64,15 @@ public class RadiationHandler
         final IBlockState blockState = world.getBlockState(pos);
         final Block block = blockState.getBlock();
 
-        if (!block.isAir(blockState, world, pos))
+        if (blockStateToRadiationPercentage.containsKey(blockState))
+        {
+            return blockStateToRadiationPercentage.get(blockState).getAsFloat(world, xi, yi, zi, blockState);
+        }
+        else if (blockToRadiationPercentage.containsKey(block))
+        {
+            return blockToRadiationPercentage.get(block).getAsFloat(world, xi, yi, zi, blockState);
+        }
+        else if (!block.isAir(blockState, world, pos))
         {
             if (blockState.getMaterial().isSolid())
             {
