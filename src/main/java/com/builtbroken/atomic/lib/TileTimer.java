@@ -32,7 +32,8 @@ public class TileTimer
 
     public void tick()
     {
-        if ((ticks++) % triggerTime == 0)
+        ticks++;
+        if (ticks % triggerTime == 0)
         {
             if (function.apply(ticks) || ticks >= Integer.MAX_VALUE - 2)
             {
