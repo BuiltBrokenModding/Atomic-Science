@@ -76,6 +76,11 @@ public abstract class ThreadDataChange extends Thread
                         //If return true, then clear object
                         if (updateLocation(change))
                         {
+                            if (change.completionListener != null)
+                            {
+                                change.completionListener.accept(change.source);
+                            }
+                            change.source.onThreadComplete();
                             change.dispose();
                         }
                         //False add back to queue, as we are not done
@@ -160,6 +165,7 @@ public abstract class ThreadDataChange extends Thread
      * Called to update the exposure value at the location
      *
      * @param change
+     * @return true to note change has completed
      */
     protected abstract boolean updateLocation(DataChange change);
 
@@ -185,11 +191,19 @@ public abstract class ThreadDataChange extends Thread
         }
     }
 
-    public void queuePosition(DataChange radChange)
+    public void queuePosition(DataChange change)
     {
-        if (radChange != null)
+        if (change != null)
         {
-            changeQueue.add(radChange);
+            changeQueue.add(change);
+
+            if (AtomicScience.runningAsDev)
+            {
+                AtomicScience.logger.info(String.format(this + ": Queued to thread a new change %sx %sy %sz | %sn",
+                        change.xi(), change.yi(), change.zi(),
+                        change.value
+                ));
+            }
         }
     }
 }

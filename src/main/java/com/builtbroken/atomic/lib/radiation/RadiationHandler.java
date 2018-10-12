@@ -26,6 +26,7 @@ public class RadiationHandler
 
     public static void init()
     {
+        //These values are not based on realism in order to make the game enjoyable
         setValue(Material.ROCK, () -> ConfigRadiation.RADIATION_DECAY_STONE);
         setValue(Material.PISTON, () -> ConfigRadiation.RADIATION_DECAY_STONE);
 
@@ -55,6 +56,7 @@ public class RadiationHandler
 
         //TODO add JSON data to allow users to customize values
 
+        //Sources to base values on, do not use real values as 1m dirt can block radiation easily
         //https://en.wikipedia.org/wiki/Radiation_material_science
         //https://en.wikipedia.org/wiki/Radiation_protection
         //https://en.wikipedia.org/wiki/Half-value_layer
@@ -90,7 +92,16 @@ public class RadiationHandler
         final IBlockState blockState = world.getBlockState(pos);
         final Block block = blockState.getBlock();
 
-        if (blockStateToRadiationPercentage.containsKey(blockState))
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity != null && tileEntity.hasCapability(AtomicScienceAPI.RADIATION_RESISTANT_CAPABILITY, null))
+        {
+            IRadiationResistant radiationResistant = tileEntity.getCapability(AtomicScienceAPI.RADIATION_RESISTANT_CAPABILITY, null);
+            if (radiationResistant != null)
+            {
+                return radiationResistant.getRadiationResistance();
+            }
+        }
+        else if (blockStateToRadiationPercentage.containsKey(blockState))
         {
             return blockStateToRadiationPercentage.get(blockState).getAsFloat(world, pos, blockState);
         }
@@ -100,16 +111,7 @@ public class RadiationHandler
         }
         else if (!block.isAir(blockState, world, pos))
         {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity.hasCapability(AtomicScienceAPI.RADIATION_RESISTANT_CAPABILITY, null))
-            {
-                IRadiationResistant radiationResistant = tileEntity.getCapability(AtomicScienceAPI.RADIATION_RESISTANT_CAPABILITY, null);
-                if (radiationResistant != null)
-                {
-                    return radiationResistant.getRadiationResistance();
-                }
-            }
-            else if (blockState.getMaterial().isSolid())
+            if (blockState.getMaterial().isSolid())
             {
                 if (blockState.isOpaqueCube())
                 {

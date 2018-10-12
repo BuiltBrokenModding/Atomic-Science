@@ -21,6 +21,12 @@ public abstract class RadSourceEntity<E extends Entity> extends RadiationSource<
     }
 
     @Override
+    public boolean doesSourceExist()
+    {
+        return super.doesSourceExist() && !host.isDead;
+    }
+
+    @Override
     public World world()
     {
         return host.world;

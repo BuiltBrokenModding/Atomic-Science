@@ -11,7 +11,7 @@ import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.machines.TileEntityInventoryMachine;
 import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
 import com.builtbroken.atomic.lib.inventory.ItemStackHandlerWrapper;
-import com.builtbroken.atomic.map.MapHandler;
+import com.builtbroken.atomic.map.data.node.MapDataSources;
 import com.builtbroken.atomic.map.exposure.node.RadSourceTile;
 import com.builtbroken.atomic.map.thermal.node.ThermalSource;
 import com.builtbroken.atomic.map.thermal.node.ThermalSourceTile;
@@ -56,10 +56,10 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     {
         super.firstTick(isClient);
         updateStructureType();
-        if(!isClient)
+        if (!isClient)
         {
-            MapHandler.RADIATION_MAP.addSource(getRadiationSource());
-            MapHandler.THERMAL_MAP.addSource(getHeatSource());
+            MapDataSources.addSource(getRadiationSource());
+            MapDataSources.addSource(getHeatSource());
         }
     }
 
@@ -75,7 +75,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
                 ItemStack prev = getStackInSlot(slot);
                 this.stacks.set(slot, stack);
 
-                if(!ItemStack.areItemStacksEqual(prev, stack))
+                if (!ItemStack.areItemStacksEqual(prev, stack))
                 {
                     onSlotStackChanged(slot, prev, stack);
                 }
@@ -194,7 +194,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         //If state changed cycle grid
         if (prev_running != _running)
         {
-            cycleGridData(_running);
+            onRunStateChanged();
         }
 
         //If state changes or every so often sync data to client
@@ -202,6 +202,11 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         {
             syncClientNextTick();
         }
+    }
+
+    protected void onRunStateChanged()
+    {
+
     }
 
     /**
@@ -324,21 +329,8 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         super.invalidate();
         if (isServer())
         {
-            cycleGridData(false);
-        }
-    }
-
-    protected void cycleGridData(boolean enable)
-    {
-        if (enable)
-        {
-            MapHandler.RADIATION_MAP.addSource(getRadiationSource()); //TODO change this to not use inventory event
-            MapHandler.THERMAL_MAP.addSource(getHeatSource());
-        }
-        else
-        {
-            MapHandler.RADIATION_MAP.removeSource(getRadiationSource(), false);
-            MapHandler.THERMAL_MAP.removeSource(getHeatSource(), false);
+            MapDataSources.removeSource(getRadiationSource());
+            MapDataSources.removeSource(getHeatSource());
         }
     }
 

@@ -40,7 +40,6 @@ public final class MapHandler
 
     public static final MapHandler INSTANCE = new MapHandler();
 
-
     public static void register()
     {
         AtomicScienceAPI.radiationExposureSystem = RADIATION_MAP;
@@ -80,12 +79,6 @@ public final class MapHandler
         }
     }
 
-    @SubscribeEvent()
-    public void serverTick(TickEvent.ServerTickEvent event)
-    {
-        RADIATION_MAP.clearDeadSources();
-        THERMAL_MAP.clearDeadSources();
-    }
 
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event)

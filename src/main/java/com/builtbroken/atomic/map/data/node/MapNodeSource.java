@@ -30,8 +30,19 @@ public abstract class MapNodeSource<E, N extends IDataMapNode> implements IDataM
         return nodes;
     }
 
+    protected boolean hasNodes()
+    {
+        return nodes != null && !nodes.isEmpty();
+    }
+
     @Override
     public boolean isStillValid()
+    {
+        return doesSourceExist();
+    }
+
+    @Override
+    public boolean doesSourceExist()
     {
         return world() != null;
     }

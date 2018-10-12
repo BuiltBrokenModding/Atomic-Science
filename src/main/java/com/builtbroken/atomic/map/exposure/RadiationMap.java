@@ -1,23 +1,12 @@
 package com.builtbroken.atomic.map.exposure;
 
-import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.radiation.IRadiationExposureSystem;
-import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.storage.DataMap;
-import com.builtbroken.atomic.map.exposure.node.RadSourceEntityItem;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Handles radiation exposure map. Is not saved and only cached to improve runtime.
@@ -27,167 +16,6 @@ import java.util.function.Function;
  */
 public class RadiationMap implements IRadiationExposureSystem
 {
-    /** List of radiation sources in the world that are not part of the {@link com.builtbroken.atomic.api.radiation.IRadioactiveMaterialSystem} */
-    private List<IRadiationSource> radiationSourceMap = new ArrayList();
-    /** Map of entity to its wrapper */
-    private HashMap<Entity, IRadiationSource> radiationEntityMap = new HashMap();
-    private HashMap<Class<? extends Entity>, Function<Entity, IRadiationSource>> wrapperFactories = new HashMap();
-
-    private int reloadTimer = 0;
-
-    public RadiationMap()
-    {
-        wrapperFactories.put(EntityItem.class, e -> RadSourceEntityItem.build((EntityItem) e));
-    }
-
-    ///----------------------------------------------------------------
-    ///-------- Radiation Sources
-    ///----------------------------------------------------------------
-
-    /**
-     * Called to add source to the map
-     * <p>
-     * Only call this from the main thread. As the list of sources
-     * is iterated at the end of each tick to check for changes.
-     *
-     * @param source - valid source currently in the world
-     */
-    public void addSource(IRadiationSource source)
-    {
-        if (source != null && !source.world().isRemote && source.isRadioactive() && !radiationSourceMap.contains(source))
-        {
-            radiationSourceMap.add(source);
-            onSourceAdded(source);
-        }
-    }
-
-    public void addSource(Entity entity)
-    {
-        if (entity != null && !entity.getEntityWorld().isRemote && entity.isEntityAlive() && !radiationEntityMap.containsKey(entity))
-        {
-            IRadiationSource source = getSource(entity);
-            if (source != null)
-            {
-                addSource(source);
-                radiationEntityMap.put(entity, source);
-            }
-        }
-    }
-
-    /**
-     * Called to remove a source from the map
-     * <p>
-     * Only call this from the main thread. As the list of sources
-     * is iterated at the end of each tick to check for changes.
-     * <p>
-     * Only remove if external logic requires it. As the source
-     * should return false for {@link IRadiationSource#isRadioactive()}
-     * to be automatically removed.
-     *
-     * @param source - valid source currently in the world
-     * @param dead   - is this due to entity death
-     */
-    public void removeSource(IRadiationSource source, boolean dead)
-    {
-        if (radiationSourceMap.contains(source))
-        {
-            //Remove
-            radiationSourceMap.remove(source);
-
-            onSourceRemoved(source);
-        }
-    }
-
-    public void removeSource(Entity entity)
-    {
-        if (radiationEntityMap.containsKey(entity))
-        {
-            removeSource(radiationEntityMap.get(entity), entity.isDead);
-            radiationEntityMap.remove(entity);
-        }
-    }
-
-    /**
-     * Called when a source is added
-     *
-     * @param source
-     */
-    protected void onSourceAdded(IRadiationSource source)
-    {
-        if (AtomicScience.runningAsDev)
-        {
-            AtomicScience.logger.info("RadiationMap: adding source " + source);
-        }
-
-        updateSourceData(source, source.getRadioactiveMaterial());
-    }
-
-    /**
-     * Called when a source is removed
-     *
-     * @param source
-     */
-    protected void onSourceRemoved(IRadiationSource source)
-    {
-        if (AtomicScience.runningAsDev)
-        {
-            AtomicScience.logger.info("RadiationMap: remove source " + source);
-        }
-        source.disconnectMapData();
-        source.clearMapData();
-    }
-
-    /**
-     * Called to cleanup invalid sources from the map
-     */
-    public void clearDeadSources()
-    {
-        Iterator<IRadiationSource> it = radiationSourceMap.iterator();
-        while (it.hasNext())
-        {
-            IRadiationSource source = it.next();
-            if (source == null || !source.isStillValid() || !source.isRadioactive())
-            {
-                it.remove();
-                onSourceRemoved(source);
-            }
-        }
-    }
-
-    /**
-     * Called to fire a source change event
-     *
-     * @param source
-     * @param newValue
-     */
-    protected void updateSourceData(IRadiationSource source, int newValue)
-    {
-        if (AtomicScience.runningAsDev)
-        {
-            AtomicScience.logger.info("RadiationMap: on changed " + source);
-        }
-        if (source.isRadioactive() && newValue > 0)
-        {
-            MapHandler.THREAD_RAD_EXPOSURE.queuePosition(DataChange.get(source, newValue));
-        }
-    }
-
-    public IRadiationSource getSource(Entity entity)
-    {
-        if (entity instanceof IRadiationSource)
-        {
-            return (IRadiationSource) entity;
-        }
-
-        Class<? extends Entity> clazz = entity.getClass();
-        if (wrapperFactories.containsKey(clazz))
-        {
-            return wrapperFactories.get(clazz).apply(entity);
-        }
-        //TODO wrapper IInventory
-        return null;
-    }
-
     ///----------------------------------------------------------------
     ///-------- Level Data Accessors
     ///----------------------------------------------------------------
@@ -262,8 +90,7 @@ public class RadiationMap implements IRadiationExposureSystem
 
     public void onWorldUnload(World world)
     {
-        radiationSourceMap.clear();
-        radiationEntityMap.clear();
+
     }
 
     /*

@@ -1,8 +1,10 @@
 package com.builtbroken.atomic.map.data;
 
-import com.builtbroken.atomic.lib.transform.IPosWorld;
 import com.builtbroken.atomic.api.map.IDataMapSource;
+import com.builtbroken.atomic.lib.transform.IPosWorld;
 import net.minecraft.world.World;
+
+import java.util.function.Consumer;
 
 /**
  * Used to store data for thread
@@ -15,6 +17,8 @@ public class DataChange implements IPosWorld
     private static final DataPool<DataChange> dataChangePool = new DataPool(100000);
 
     public IDataMapSource source;
+
+    public Consumer<IDataMapSource> completionListener;
 
     public int value;
 
@@ -33,6 +37,7 @@ public class DataChange implements IPosWorld
             {
                 dataChange.source = source;
                 dataChange.value = value;
+                dataChange.completionListener = null;
                 return dataChange;
             }
         }

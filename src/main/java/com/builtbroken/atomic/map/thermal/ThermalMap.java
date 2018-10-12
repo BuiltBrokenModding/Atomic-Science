@@ -1,14 +1,13 @@
 package com.builtbroken.atomic.map.thermal;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import com.builtbroken.atomic.config.server.ConfigServer;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.data.DataChange;
-import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
@@ -19,7 +18,9 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Handles heat in the map
@@ -29,96 +30,7 @@ import java.util.*;
  */
 public class ThermalMap implements IThermalSystem
 {
-    /** List of thermal sources in the world */
-    private List<IThermalSource> thermalSources = new ArrayList();
     private HashMap<Integer, HashSet<BlockPos>> steamSources = new HashMap();
-
-    /**
-     * Called to add source to the map
-     * <p>
-     * Only call this from the main thread. As the list of sources
-     * is iterated at the end of each tick to check for changes.
-     *
-     * @param source - valid source currently in the world
-     */
-    public void addSource(IThermalSource source)
-    {
-        if (source != null && !source.world().isRemote && source.canGeneratingHeat() && !thermalSources.contains(source))
-        {
-            thermalSources.add(source);
-            onSourceAdded(source);
-        }
-    }
-
-    /**
-     * Called to remove a source from the map
-     * <p>
-     * Only call this from the main thread. As the list of sources
-     * is iterated at the end of each tick to check for changes.
-     * <p>
-     * Only remove if external logic requires it. As the source
-     * should return false for {@link IThermalSource#canGeneratingHeat()}
-     * to be automatically removed.
-     *
-     * @param source - valid source currently in the world
-     * @param dead   - is this due to entity death
-     */
-    public void removeSource(IThermalSource source, boolean dead)
-    {
-        if (thermalSources.contains(source))
-        {
-            thermalSources.remove(source);
-
-            onSourceRemoved(source);
-        }
-    }
-
-    /**
-     * Called when a source is added
-     *
-     * @param source
-     */
-    protected void onSourceAdded(IThermalSource source)
-    {
-        if (AtomicScience.runningAsDev)
-        {
-            AtomicScience.logger.info("ThermalMap: adding source " + source);
-        }
-        updateSourceValue(source, source.getHeatGenerated());
-    }
-
-    /**
-     * Called when a source is removed
-     *
-     * @param source
-     */
-    protected void onSourceRemoved(IThermalSource source)
-    {
-        if (AtomicScience.runningAsDev)
-        {
-            AtomicScience.logger.info("ThermalMap: remove source " + source);
-        }
-
-        source.disconnectMapData();
-        source.clearMapData();
-    }
-
-    /**
-     * Called to cleanup invalid sources from the map
-     */
-    public void clearDeadSources()
-    {
-        Iterator<IThermalSource> it = thermalSources.iterator();
-        while (it.hasNext())
-        {
-            IThermalSource source = it.next();
-            if (source == null || !source.isStillValid() || !source.canGeneratingHeat())
-            {
-                it.remove();
-                onSourceRemoved(source);
-            }
-        }
-    }
 
     /**
      * Called to fire a source change event
@@ -132,10 +44,7 @@ public class ThermalMap implements IThermalSystem
         {
             AtomicScience.logger.info("ThermalMap: on changed " + source);
         }
-        if (source.canGeneratingHeat() && newValue > 0)
-        {
-            MapHandler.THREAD_THERMAL_ACTION.queuePosition(DataChange.get(source, newValue));
-        }
+
     }
 
     /**
@@ -231,7 +140,6 @@ public class ThermalMap implements IThermalSystem
 
     public void onWorldUnload(World world)
     {
-        thermalSources.clear();
         steamSources.clear();
     }
 

@@ -1,6 +1,10 @@
 package com.builtbroken.atomic.api.map;
 
 import com.builtbroken.atomic.lib.transform.IPosWorld;
+import net.minecraft.nbt.NBTTagCompound;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -15,6 +19,7 @@ public interface IDataMapSource extends IPosWorld
      *
      * @return source type
      */
+    @Nonnull
     DataMapType getType();
 
     /**
@@ -63,6 +68,67 @@ public interface IDataMapSource extends IPosWorld
      */
     default boolean isStillValid()
     {
+        return doesSourceExist();
+    }
+
+    /**
+     * Checks if the source still exists in the world
+     * and should continue to be used in the data map.
+     *
+     * @return true if all good, false to remove
+     */
+    default boolean doesSourceExist()
+    {
         return true;
+    }
+
+    /**
+     * Called when the data source is removed from the map.
+     * Use this call to clear all data stored in the tile.
+     */
+    default void onRemovedFromMap()
+    {
+        disconnectMapData();
+        clearMapData();
+    }
+
+    /**
+     * Called when the thread is done generating
+     * data for this source. Data will already
+     * be set into the source from the thread.
+     */
+    default void onThreadComplete()
+    {
+
+    }
+
+    /**
+     * Checks if the source has changed and needs to be
+     * queued for an update on the map thread.
+     *
+     * @param tagCompound - state save data
+     * @return true if should queue to thread
+     */
+    boolean shouldQueueForUpdate(@Nullable NBTTagCompound tagCompound);
+
+    /**
+     * Gets the save state for the source
+     * Only used for {@link #shouldQueueForUpdate(NBTTagCompound)}
+     *
+     * @return save state
+     */
+    @Nullable
+    default NBTTagCompound getSaveState()
+    {
+        return null;
+    }
+
+    /**
+     * Called each tick in the {@link net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent}
+     * Only use as needed
+     */
+    default void update()
+    {
+
     }
 }

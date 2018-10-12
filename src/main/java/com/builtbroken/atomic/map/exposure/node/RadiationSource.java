@@ -1,9 +1,10 @@
 package com.builtbroken.atomic.map.exposure.node;
 
-import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.radiation.IRadiationNode;
+import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.map.data.node.MapNodeSource;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -11,6 +12,8 @@ import com.builtbroken.atomic.map.data.node.MapNodeSource;
  */
 public abstract class RadiationSource<E>  extends MapNodeSource<E, IRadiationNode> implements IRadiationSource
 {
+    public static final String NBT_RAD = "rad";
+
     public RadiationSource(E host)
     {
         super(host);
@@ -32,5 +35,24 @@ public abstract class RadiationSource<E>  extends MapNodeSource<E, IRadiationNod
     public DataMapType getType()
     {
         return DataMapType.RADIATION;
+    }
+
+    @Override
+    public NBTTagCompound getSaveState()
+    {
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        tagCompound.setInteger(NBT_RAD, getRadioactiveMaterial());
+        return tagCompound;
+    }
+
+    @Override
+    public boolean shouldQueueForUpdate(NBTTagCompound saveState)
+    {
+        final int material = getRadioactiveMaterial();
+        if(material > 0 && !hasNodes())
+        {
+            return true;
+        }
+        return saveState == null || saveState.getInteger(NBT_RAD) != material;
     }
 }
