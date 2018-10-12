@@ -13,10 +13,22 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 ### Runtime Changes
 * Added: Radiation data for several vanilla materials and blocks
 * Added: Thermal data for several vanilla materials and blocks
+* Added: Redstone can connect support to reactor controller
+
+* Fixed: More issues with data sources (reactor) not clear nodes when disabled
 
 ### Development Changes
 * Added: Capability for radiation resistance
 * Added: Regitry for block, block state, and materials for radiation resistance
+* Added: Callback for thread complete to DataChange object
+* Added: Callbask for thread complete to data source
+* Added: State save method to data source to track changes via NBT
+* Added: method to check for if the data source has changed to trigger thread update
+
+* Changed: Sources no longer manually trigger thread updates. This is now done by an update loop in the server tick event.
+* Changed: All sources to be tracked by a single object. 
+* Changed: Sources to only be removed when dead
+* Changed: Sources to remove data from map when invalid but not clear data
 
 ## 3.0.6 - 1.12
 ### Runtime Changes
