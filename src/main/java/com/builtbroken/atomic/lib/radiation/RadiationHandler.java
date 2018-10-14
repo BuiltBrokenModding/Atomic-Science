@@ -210,18 +210,11 @@ public class RadiationHandler
     /**
      * At what point does radiation power drop below 1
      *
-     * @param value - starting value
+     * @param power - starting value
      * @return distance
      */
-    public static double getDecayRange(int value)
+    public static double getDecayRange(int power)
     {
-        double power = value;
-        double distance = 1;
-        while (power > 1)
-        {
-            distance += 0.5;
-            power = getRadForDistance(value, distance);
-        }
-        return distance;
+        return Math.sqrt(power + 1 / 0.5);
     }
 }
