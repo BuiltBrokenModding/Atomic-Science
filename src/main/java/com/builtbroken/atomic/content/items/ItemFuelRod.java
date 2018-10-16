@@ -33,9 +33,9 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
     /** Heat of the fuel rod when the reactor is active */
     public final IntSupplier reactorHeatOutput;
 
-    public ItemFuelRod(String name, IntSupplier maxFuelRuntime, IntSupplier radioactiveMaterialValue, IntSupplier reactorRadioactivity, IntSupplier reactorHeatOutput)
+    public ItemFuelRod(String key, String name, IntSupplier maxFuelRuntime, IntSupplier radioactiveMaterialValue, IntSupplier reactorRadioactivity, IntSupplier reactorHeatOutput)
     {
-        super(name, radioactiveMaterialValue);
+        super(key, name, radioactiveMaterialValue);
         this.maxFuelRuntime = maxFuelRuntime;
         this.reactorRadioactivity = reactorRadioactivity;
         this.reactorHeatOutput = reactorHeatOutput;
@@ -49,8 +49,8 @@ public class ItemFuelRod extends ItemRadioactive implements IFuelRodItem
         int maxTime = getMaxFuelRodRuntime(stack, null);
 
         String translation = LanguageUtility.getLocal(getTranslationKey() + ".info.fuel");
-        translation = translation.replace("%time%", "" + time);
-        translation = translation.replace("%maxTime%", "" + maxTime);
+        translation = translation.replace("-time-", "" + time);
+        translation = translation.replace("-maxTime-", "" + maxTime);
         lines.add(translation);
     }
 

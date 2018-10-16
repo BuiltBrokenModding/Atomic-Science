@@ -26,9 +26,10 @@ tile.atomicscience:chem.extractor.name=Chemical Extractor
 tile.atomicscience:chem.extractor.gui=Chemical Extractor
 
 tile.atomicscience:pipe.rod.name=Reactor Rod Conveyor
-tile.atomicscience:pipe.rod.info=Conveys Fuel rods from one inventory into the next
+tile.atomicscience:pipe.rod.info=Allowing easy control over, conveying rods into reactors, without storing items directly
+
 tile.atomicscience:pipe.rod.inv.name=Reactor Rod Storage Conveyor
-tile.atomicscience:pipe.rod.inv.info=Conveys Fuel rods from one inventory into the next. If it can't move the item it will store it.
+tile.atomicscience:pipe.rod.inv.info=Acts as a single item hopper, allowing easy control over, conveying rods into reactors
 
 ## Items
 item.atomicscience:hazmat.mask.name=Hazmat Mask
@@ -45,23 +46,34 @@ item.atomicscience:cell.powered.antimatter.name=Antimatter Cell
 item.atomicscience:cell.powered.strange_matter.name=Strange Matter Cell
 
 item.atomicscience:cell.fuel.fissile.name=Fission Fuel Rod
-item.atomicscience:cell.fuel.fissile.info.fuel=Fuel: %time% / %maxTime%
+item.atomicscience:cell.fuel.fissile.info.fuel=Fuel: -time- / -maxTime-
 
 item.atomicscience:cell.fuel.breeder.name=Fission Breeder Rod
-item.atomicscience:cell.fuel.breeder.info.fuel=Fuel: %time% / %maxTime%
+item.atomicscience:cell.fuel.breeder.info.fuel=Fuel: -time- / -maxTime-
 
 item.atomicscience:cell.empty.name=Empty Cell
 
 item.atomicscience:cake.yellow.name=Yellow Cake
+item.atomicscience:cake.yellow.info=Uranium Dust, Processed into Uranium Hexa-Floride
+
 item.atomicscience:uranium.234.name=Uranium 234
+item.atomicscience:uranium.234.info=Uranium Isotope, Has no use currently
+
 item.atomicscience:uranium.235.name=Uranium 235
+item.atomicscience:uranium.235.info=Uranium Isotope, Used as Fissile Fuel
+
 item.atomicscience:uranium.238.name=Uranium 238
+item.atomicscience:uranium.238.info=Uranium Isotope, Has no use currently
 
 item.atomicscience:processing.waste.name=Toxic Mineral Waste
+item.atomicscience:processing.waste.info=Waste product of resource processing, contains some trace materials
+
 item.atomicscience:toxic.waste.name=Toxic Waste
+item.atomicscience:toxic.waste.info=Solid uranium waste, Has no use currently
 
 ## Tools
 item.atomicscience:heat.probe.name=Thermal Probe
+item.atomicscience:heat.probe.info=Can be used to messure thermal energy, §bright-click§r to messure, §bshift§r to offset to face of block
 
 ## Fluids
 fluid.atomicscience:antimatter=Antimatter
@@ -148,6 +160,7 @@ tile.atomicscience:reactor.controller.cell.count=Controller is currently managin
 
 ## Misc
 error.translation.empty=Translation Missing for ' %s '
+error.translation.null=Translation key was null
 
 ## Config
 

@@ -1,12 +1,11 @@
 package com.builtbroken.atomic.content.items.wrench;
 
-import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.machines.processing.TileEntityProcessingMachine;
+import com.builtbroken.atomic.content.prefab.ItemPrefab;
 import com.builtbroken.atomic.lib.LanguageUtility;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -27,16 +26,14 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/29/2018.
  */
-public class ItemWrench extends Item
+public class ItemWrench extends ItemPrefab
 {
     public static final String NBT_COLOR = "toolColor";
     public static final String NBT_MODE = "toolMode";
 
     public ItemWrench()
     {
-        this.setTranslationKey(AtomicScience.PREFIX + "wrench");
-        this.setRegistryName(AtomicScience.PREFIX + "wrench");
-        this.setCreativeTab(AtomicScience.creativeTab);
+        super("wrench", "wrench");
     }
 
     //===============================================

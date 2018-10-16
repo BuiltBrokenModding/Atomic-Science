@@ -1,8 +1,7 @@
 package com.builtbroken.atomic.content.items;
 
-import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.radiation.IRadioactiveItem;
-import net.minecraft.item.Item;
+import com.builtbroken.atomic.content.prefab.ItemPrefab;
 import net.minecraft.item.ItemStack;
 
 import java.util.function.IntSupplier;
@@ -13,15 +12,14 @@ import java.util.function.IntSupplier;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
-public class ItemRadioactive extends Item implements IRadioactiveItem
+public class ItemRadioactive extends ItemPrefab implements IRadioactiveItem
 {
     public final IntSupplier radioactiveMaterialValue;
 
-    public ItemRadioactive(String name, IntSupplier radioactiveMaterialValue)
+    public ItemRadioactive(String key, String name, IntSupplier radioactiveMaterialValue)
     {
+        super(key, name);
         this.radioactiveMaterialValue = radioactiveMaterialValue;
-        this.setTranslationKey(AtomicScience.PREFIX + name);
-        this.setCreativeTab(AtomicScience.creativeTab);
     }
 
     @Override

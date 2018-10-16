@@ -35,59 +35,65 @@ public class LanguageUtility
         {
             if (AtomicScience.runningAsDev)
             {
-                AtomicScience.logger.error("LanguageUtility.getLocal(" + key + ") - invalid key", new RuntimeException());
+                AtomicScience.logger.error("LanguageUtility.getLocalName(" + key + ") - invalid key", new RuntimeException());
             }
-            return "error.key.empty";
+            return I18n.format("error.translation.null", key);
         }
 
-        //Get translation
-        String translation = I18n.format(key);
-        if (translation == null || translation.isEmpty())
+        //Check if we have a key before attempting to translate
+        if (I18n.hasKey(key))
         {
-            if (AtomicScience.runningAsDev)
+            //Get translation
+            String translation = I18n.format(key);
+            if (translation == null || translation.isEmpty())
             {
-                AtomicScience.logger.error("LanguageUtility.getLocal(" + key + ") - no translation", new RuntimeException());
+                return I18n.format("error.translation.empty", key);
             }
-            return key;
+            return translation;
         }
-        return translation;
+        return I18n.format("error.translation.empty", key);
+    }
+
+    /**
+     * Grabs the localization for the string provided. Make sure the string
+     * matches the exact key in a translation file.
+     * <p>
+     * If translation contains ',' it will split the string into several lines.
+     * Use {@link #getLocal(String)} to not split string into several lines.
+     *
+     * @param key     - translation key, Example 'tile.sometile.name' or 'tile.modname:sometile.name'
+     * @param tooltip - list to add translation keys to
+     */
+    public static void getLocal(String key, List<String> tooltip)
+    {
+        if (I18n.hasKey(key))
+        {
+            final String translation = LanguageUtility.getLocal(key);
+            if (translation.contains(","))
+            {
+                final String[] split = translation.split(",");
+                for (String s : split)
+                {
+                    tooltip.add(s.trim());
+                }
+            }
+            else
+            {
+                tooltip.add(translation);
+            }
+        }
     }
 
     /**
      * Same as getLocal(String) but appends '.name' if it is missing
      *
-     * @param key - translation key, Example 'tile.sometile.name' or 'tile.modname:sometile.name'
+     * @param key - translation key, Example 'tile.sometile' or 'tile.modname:sometile
      * @return translated key, or the same string provided if the key didn't match anything
      */
     public static String getLocalName(String key)
     {
-        //Check for empty or null keys
-        if (key == null || key.isEmpty())
-        {
-            if (AtomicScience.runningAsDev)
-            {
-                AtomicScience.logger.error("LanguageUtility.getLocalName(" + key + ")", new RuntimeException());
-            }
-            return "error.key.empty";
-        }
-        if (!key.endsWith(".name"))
-        {
-            key = key + ".name";
-        }
-
-        //Get translation
-        String translation = I18n.format(key);
-        if (translation == null || translation.isEmpty())
-        {
-            if (AtomicScience.runningAsDev)
-            {
-                AtomicScience.logger.error("LanguageUtility.getLocal(" + key + ") - no translation", new RuntimeException());
-            }
-            return key;
-        }
-        return translation;
+        return getLocal(key + ".name");
     }
-
 
     /**
      * Uses the language file as a place to store settings

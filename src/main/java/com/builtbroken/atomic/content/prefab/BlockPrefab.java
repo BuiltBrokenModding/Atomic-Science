@@ -1,9 +1,11 @@
 package com.builtbroken.atomic.content.prefab;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.lib.LanguageUtility;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -12,6 +14,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -28,6 +33,12 @@ public abstract class BlockPrefab extends BlockContainer
     }
 
     @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
+    {
+        LanguageUtility.getLocal(getTranslationKey() + ".info", tooltip);
+    }
+
+    @Override
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
         return EnumBlockRenderType.MODEL;
@@ -40,7 +51,7 @@ public abstract class BlockPrefab extends BlockContainer
         if (tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
         {
             IItemHandler inventory = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-            if(inventory != null)
+            if (inventory != null)
             {
                 for (int i = 0; i < inventory.getSlots(); ++i)
                 {

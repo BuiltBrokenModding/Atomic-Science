@@ -99,18 +99,16 @@ public final class ASItems
 
 
         //Machine inputs
-        event.getRegistry().register(itemFissileFuelCell = new ItemFuelRod("cell.fuel.fissile",
+        event.getRegistry().register(itemFissileFuelCell = new ItemFuelRod("fissile_fuel_cell", "cell.fuel.fissile",
                 () -> ConfigContent.REACTOR.FUEL_ROD_RUNTIME,
                 () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_FUEL_ROD
                 , () -> ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_FUEL_ROD,
-                () -> ConfigContent.REACTOR.HEAT_REACTOR_FUEL_ROD)
-                .setRegistryName(AtomicScience.PREFIX + "fissile_fuel_cell"));
-        event.getRegistry().register(itemBreederFuelCell = new ItemFuelRod("cell.fuel.breeder",
+                () -> ConfigContent.REACTOR.HEAT_REACTOR_FUEL_ROD));
+        event.getRegistry().register(itemBreederFuelCell = new ItemFuelRod("breeder_fuel_cell", "cell.fuel.breeder",
                 () -> ConfigContent.REACTOR.BREEDER_ROD_RUNTIME,
                 () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_BREEDER_ROD
                 , () -> ConfigRadiation.RADIOACTIVE_REACTOR_VALUE_BREEDER_ROD,
-                () -> ConfigContent.REACTOR.HEAT_REACTOR_BREEDER_ROD)
-                .setRegistryName(AtomicScience.PREFIX + "breeder_fuel_cell"));
+                () -> ConfigContent.REACTOR.HEAT_REACTOR_BREEDER_ROD));
 
         //Crafting items
         event.getRegistry().register(itemEmptyCell = new Item()
@@ -121,18 +119,18 @@ public final class ASItems
         //https://en.wikipedia.org/wiki/Isotopes_of_uranium
         //https://education.jlab.org/itselemental/ele092.html
         //https://en.wikipedia.org/wiki/Weapons-grade_nuclear_material
-        event.getRegistry().register(itemYellowCake = new ItemRadioactive("cake.yellow", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "yellow_cake"));
-        event.getRegistry().register(itemUranium234 = new ItemRadioactive("uranium.234", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U234).setRegistryName(AtomicScience.PREFIX + "uranium_234")); //Useless
-        event.getRegistry().register(itemUranium235 = new ItemRadioactive("uranium.235", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235).setRegistryName(AtomicScience.PREFIX + "uranium_235")); //Used as fuel
-        event.getRegistry().register(itemUranium238 = new ItemRadioactive("uranium.238", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238).setRegistryName(AtomicScience.PREFIX + "uranium_238")); //can be turned into plutonium-239
+        event.getRegistry().register(itemYellowCake = new ItemRadioactive("yellow_cake", "cake.yellow", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE));
+        event.getRegistry().register(itemUranium234 = new ItemRadioactive("uranium_234", "uranium.234", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U234)); //Useless
+        event.getRegistry().register(itemUranium235 = new ItemRadioactive("uranium_235", "uranium.235", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235)); //Used as fuel
+        event.getRegistry().register(itemUranium238 = new ItemRadioactive("uranium_238", "uranium.238", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238)); //can be turned into plutonium-239 or depleted uranium
 
         OreDictionary.registerOre("pelletUranium234", itemUranium235);
         OreDictionary.registerOre("pelletUranium235", itemUranium235);
         OreDictionary.registerOre("pelletUranium238", itemUranium238);
 
         //Waste items
-        event.getRegistry().register(itemProcessingWaste = new ItemRadioactive("processing.waste", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "processing_waste"));
-        event.getRegistry().register(itemToxicWaste = new ItemRadioactive("toxic.waste", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "toxic_waste"));
+        event.getRegistry().register(itemProcessingWaste = new ItemRadioactive("processing_waste", "processing.waste", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE));
+        event.getRegistry().register(itemToxicWaste = new ItemRadioactive("toxic_waste", "toxic.waste", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE));
 
         //Tools
         event.getRegistry().register(itemHeatProbe = new ItemHeatProbe());

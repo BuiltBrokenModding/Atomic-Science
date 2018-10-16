@@ -63,6 +63,7 @@ public class ASClientReg
 
         //Crafting
         newItemModel(ASItems.itemYellowCake);
+        newItemModel(ASItems.itemUranium234);
         newItemModel(ASItems.itemUranium235);
         newItemModel(ASItems.itemUranium238);
 
