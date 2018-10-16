@@ -53,6 +53,7 @@ item.atomicscience:cell.fuel.breeder.info.fuel=Fuel: %time% / %maxTime%
 item.atomicscience:cell.empty.name=Empty Cell
 
 item.atomicscience:cake.yellow.name=Yellow Cake
+item.atomicscience:uranium.234.name=Uranium 234
 item.atomicscience:uranium.235.name=Uranium 235
 item.atomicscience:uranium.238.name=Uranium 238
 

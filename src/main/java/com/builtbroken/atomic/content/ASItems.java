@@ -49,6 +49,7 @@ public final class ASItems
     //Crafting items
     public static Item itemEmptyCell; //crafting item (replaces empty cell)
     public static Item itemYellowCake;
+    public static Item itemUranium234;
     public static Item itemUranium235;
     public static Item itemUranium238;
 
@@ -117,9 +118,17 @@ public final class ASItems
                 .setCreativeTab(AtomicScience.creativeTab)
                 .setRegistryName(AtomicScience.PREFIX + "cell_empty"));
 
+        //https://en.wikipedia.org/wiki/Isotopes_of_uranium
+        //https://education.jlab.org/itselemental/ele092.html
+        //https://en.wikipedia.org/wiki/Weapons-grade_nuclear_material
         event.getRegistry().register(itemYellowCake = new ItemRadioactive("cake.yellow", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "yellow_cake"));
-        event.getRegistry().register(itemUranium235 = new ItemRadioactive("uranium.235", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235).setRegistryName(AtomicScience.PREFIX + "uranium_235"));
-        event.getRegistry().register(itemUranium238 = new ItemRadioactive("uranium.238", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238).setRegistryName(AtomicScience.PREFIX + "uranium_238"));
+        event.getRegistry().register(itemUranium234 = new ItemRadioactive("uranium.234", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U234).setRegistryName(AtomicScience.PREFIX + "uranium_234")); //Useless
+        event.getRegistry().register(itemUranium235 = new ItemRadioactive("uranium.235", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U235).setRegistryName(AtomicScience.PREFIX + "uranium_235")); //Used as fuel
+        event.getRegistry().register(itemUranium238 = new ItemRadioactive("uranium.238", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_U238).setRegistryName(AtomicScience.PREFIX + "uranium_238")); //can be turned into plutonium-239
+
+        OreDictionary.registerOre("pelletUranium234", itemUranium235);
+        OreDictionary.registerOre("pelletUranium235", itemUranium235);
+        OreDictionary.registerOre("pelletUranium238", itemUranium238);
 
         //Waste items
         event.getRegistry().register(itemProcessingWaste = new ItemRadioactive("processing.waste", () -> ConfigRadiation.RADIOACTIVE_MAT_VALUE_YELLOW_CAKE).setRegistryName(AtomicScience.PREFIX + "processing_waste"));

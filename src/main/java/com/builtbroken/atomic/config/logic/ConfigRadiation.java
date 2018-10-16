@@ -25,14 +25,17 @@ public class ConfigRadiation extends ContentProxy
     //Mega eV per gram of material
     public static float MEV_GRAM_U238 = 4.267f; //https://en.wikipedia.org/wiki/Uranium-238
     public static float MEV_GRAM_U235 = 4.679f; //https://en.wikipedia.org/wiki/Uranium-235
+    public static float MEV_GRAM_U234 = 4.679f;
 
     //mass in grams of sample items % of material
     public static float MASS_U238_SAMPLE = 500;
     public static float MASS_U235_SAMPLE = 500;
+    public static float MASS_U234_SAMPLE = 500;
 
     //Activity (number of decays per tick)
     public static float ACTIVITY_U238 = 12445; //TODO get actual numbers, then scale
     public static float ACTIVITY_U235 = 80011; //TODO get actual numbers, then scale
+    public static float ACTIVITY_U234 = 80011;
     //-------------------------------------------------------------------------------
 
 
@@ -84,14 +87,17 @@ public class ConfigRadiation extends ContentProxy
     public static float RBE_BETA_RADIATION = 10; //stopped by entity
 
     //Radiation per hour (mass * energy * decay_rate / MeV to rad
+    public static float RAD_U234 = (float) (MASS_U234_SAMPLE * MEV_GRAM_U234 * ACTIVITY_U234 / MeV_per_RAD); //alpha radiation
     public static float RAD_U235 = (float) (MASS_U235_SAMPLE * MEV_GRAM_U235 * ACTIVITY_U235 / MeV_per_RAD); //alpha radiation
     public static float RAD_U238 = (float) (MASS_U238_SAMPLE * MEV_GRAM_U238 * ACTIVITY_U238 / MeV_per_RAD); //alpha radiation
 
     /** How many points of map radioactive material converts to 1 RAD */
     public static float MAP_VALUE_TO_MILI_RAD = 0.01f; //100 material to 1/1000th of a RAD (material is a placeholder values since grams will not work)
 
+    public static int RADIOACTIVE_MAT_VALUE_U234 = (int) Math.ceil(RAD_U235 / MAP_VALUE_TO_MILI_RAD);
     public static int RADIOACTIVE_MAT_VALUE_U235 = (int) Math.ceil(RAD_U235 / MAP_VALUE_TO_MILI_RAD);
     public static int RADIOACTIVE_MAT_VALUE_U238 = (int) Math.ceil(RAD_U238 / MAP_VALUE_TO_MILI_RAD);
+
     public static int RADIOACTIVE_MAT_VALUE_YELLOW_CAKE = RADIOACTIVE_MAT_VALUE_U235 / 10;
     public static int RADIOACTIVE_MAT_VALUE_FUEL_ROD = RADIOACTIVE_MAT_VALUE_U235 * 100;
     public static int RADIOACTIVE_MAT_VALUE_BREEDER_ROD = RADIOACTIVE_MAT_VALUE_FUEL_ROD / 10;

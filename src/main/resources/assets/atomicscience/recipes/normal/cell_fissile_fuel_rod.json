@@ -12,8 +12,8 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "P": {
-      "item": "atomicscience:uranium_235",
-      "data": 0
+      "type": "forge:ore_dict",
+      "ore": "pelletUranium235"
     },
     "T": {
       "item": "atomicscience:cell_empty",

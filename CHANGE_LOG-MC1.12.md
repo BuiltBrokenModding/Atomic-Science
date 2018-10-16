@@ -9,6 +9,15 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ### Development Changes
 
+## 3.1.1
+### Runtime Changes
+* Added: Uranium 234 (will act as a waste product for the time being)
+* Improved: Radiation distance falloff equation to run in constant time. Should result in massive improvement in runtime of radiation thread.
+
+### Development Changes
+* Added: Ore dictionary values for U234 (pelletUranium234), U235(pelletUranium235), U238 (pelletUranium238)
+
+
 ## 3.1.0
 ### Runtime Changes
 * Added: Radiation data for several vanilla materials and blocks
