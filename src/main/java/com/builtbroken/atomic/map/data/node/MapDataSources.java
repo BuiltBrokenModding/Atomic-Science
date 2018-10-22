@@ -23,9 +23,19 @@ public final class MapDataSources
     private static final HashMap<IDataMapSource, MapSourceInfo> sourceInfo = new HashMap();
     private static final List<IDataMapSource> waitingForThread = new ArrayList();
 
+    private static boolean callChecked = false;
+
     @SubscribeEvent()
     public static void serverTick(TickEvent.ServerTickEvent event)
     {
+        if(!callChecked)
+        {
+            callChecked = true;
+            if(AtomicScience.runningAsDev)
+            {
+                AtomicScience.logger.info("MapDataSources#serverTick() is working");
+            }
+        }
         Iterator<IDataMapSource> it = sources.iterator();
         while (it.hasNext())
         {
@@ -42,18 +52,25 @@ public final class MapDataSources
 
                     if (AtomicScience.runningAsDev)
                     {
-                        AtomicScience.logger.error("Removed dead source, " + source);
+                        AtomicScience.logger.info("MapDataSources#serverTick() - Removed dead source, " + source);
                     }
                 }
                 else if (!source.isStillValid())
                 {
-                    source.disconnectMapData();
+                    if(source.hasActiveMapData())
+                    {
+                        if (AtomicScience.runningAsDev)
+                        {
+                            AtomicScience.logger.info("MapDataSources#serverTick() - Disconnected map data, " + source);
+                        }
+                        source.disconnectMapData();
 
-                    //Remove thread tracking
-                    waitingForThread.remove(source);
+                        //Remove thread tracking
+                        waitingForThread.remove(source);
 
-                    //Remove info
-                    sourceInfo.remove(source);
+                        //Remove info
+                        sourceInfo.remove(source);
+                    }
                 }
                 else
                 {
@@ -71,7 +88,7 @@ public final class MapDataSources
                     {
                         if (AtomicScience.runningAsDev)
                         {
-                            AtomicScience.logger.error("Marked source for update, " + source);
+                            AtomicScience.logger.info("MapDataSources#serverTick() - Marked source for update, " + source);
                         }
 
                         //Queue to thread
@@ -84,7 +101,7 @@ public final class MapDataSources
             }
             catch (Exception e)
             {
-                AtomicScience.logger.error("Unexpected error while checking source, " + source, e);
+                AtomicScience.logger.error("MapDataSources#serverTick() - Unexpected error while checking source, " + source, e);
             }
         }
 
