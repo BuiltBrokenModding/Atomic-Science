@@ -38,6 +38,22 @@ public interface IDataMapSource extends IPosWorld
     void disconnectMapData();
 
     /**
+     * Called to see if the source has map data
+     * stored
+     *
+     * @return true if map data is stored
+     */
+    boolean hasMapData();
+
+    /**
+     * Called to see if the source has map data
+     * stored and currently placed in the map
+     *
+     * @return true if map data is stored
+     */
+    boolean hasActiveMapData();
+
+    /**
      * Called to connect all stored data into
      * {@link com.builtbroken.atomic.map.MapHandler#GLOBAL_DATA_MAP}
      */

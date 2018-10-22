@@ -47,15 +47,15 @@ public abstract class BlockPrefab extends BlockContainer
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
-        TileEntity tile = world.getTileEntity(pos);
+        final TileEntity tile = world.getTileEntity(pos);
         if (tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
         {
-            IItemHandler inventory = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+            final IItemHandler inventory = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
             if (inventory != null)
             {
                 for (int i = 0; i < inventory.getSlots(); ++i)
                 {
-                    ItemStack itemstack = inventory.getStackInSlot(i);
+                    final ItemStack itemstack = inventory.getStackInSlot(i);
 
                     if (!itemstack.isEmpty())
                     {
