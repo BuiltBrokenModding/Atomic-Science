@@ -1,6 +1,5 @@
-package com.builtbroken.atomic.content.machines;
+package com.builtbroken.atomic.content.prefab;
 
-import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.lib.gui.IPlayerUsing;
 import com.builtbroken.atomic.lib.transform.IPosWorld;
 import com.builtbroken.atomic.network.IPacket;
@@ -11,7 +10,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -23,84 +21,16 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/7/2018.
  */
-public abstract class TileEntityMachine extends TileEntity implements IPacketIDReceiver, IPosWorld, IPlayerUsing, ITickable
+public abstract class TileEntityPrefab extends TileEntity implements IPacketIDReceiver, IPosWorld, IPlayerUsing
 {
     public static final int DESC_PACKET_ID = -1;
     public static final int GUI_PACKET_ID = -2;
 
-    private int _ticks = 0;
-    private boolean _syncClientNextTick = true;
-
-    private ArrayList<EntityPlayer> playersUsingGUI = new ArrayList();
-
-    //-----------------------------------------------
-    //--------- Update methods ----------------------
-    //-----------------------------------------------
-
-    public final void update()
-    {
-        if (_ticks == 0)
-        {
-            firstTick(world.isRemote);
-        }
-        update(_ticks, world.isRemote);
-        _ticks++;
-        if (_ticks + 1 == Integer.MAX_VALUE)
-        {
-            _ticks = 1;
-        }
-
-        if (isServer() && _ticks % 3 == 0 && this instanceof IGuiTile)
-        {
-            Iterator<EntityPlayer> it = playersUsingGUI.iterator();
-            while (it.hasNext())
-            {
-                EntityPlayer player = it.next();
-                if (player instanceof EntityPlayerMP && shouldSendGuiPacket((EntityPlayerMP) player))
-                {
-                    PacketTile packet = new PacketTile("gui", GUI_PACKET_ID, this);
-                    List<Object> objects = new ArrayList();
-                    writeGuiPacket(objects, player);
-                    packet.addData(objects);
-                    PacketSystem.INSTANCE.sendToPlayer(packet, (EntityPlayerMP) player);
-                }
-                else
-                {
-                    it.remove();
-                }
-            }
-        }
-
-        if (_syncClientNextTick)
-        {
-            _syncClientNextTick = false;
-            sendDescPacket();
-        }
-    }
-
-    /**
-     * Called on the very fist update loop call.
-     * Only called once after the tile has been created
-     */
-    protected void firstTick(boolean isClient)
-    {
-
-    }
-
-    /**
-     * Called each update loop
-     *
-     * @param ticks - number of ticks of the world (20 ticks a second)
-     */
-    protected void update(int ticks, boolean isClient)
-    {
-
-    }
+    private final ArrayList<EntityPlayer> playersUsingGUI = new ArrayList();
 
     //-----------------------------------------------
     //--------- Network -----------------------------
     //-----------------------------------------------
-
 
     @Override
     public boolean read(ByteBuf buf, int id, EntityPlayer player, IPacket type)
@@ -122,14 +52,6 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
     }
 
     /**
-     * Will send a description packet to the client next tick
-     */
-    protected void syncClientNextTick()
-    {
-        _syncClientNextTick = true;
-    }
-
-    /**
      * Sends the description packet to the client
      */
     protected void sendDescPacket()
@@ -142,6 +64,27 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
         packetTile.addData(list);
 
         PacketSystem.INSTANCE.sendToAllAround(packetTile, this);
+    }
+
+    protected void sendGuiPacket()
+    {
+        Iterator<EntityPlayer> it = getPlayersUsingGui().iterator();
+        while (it.hasNext())
+        {
+            EntityPlayer player = it.next();
+            if (player instanceof EntityPlayerMP && shouldSendGuiPacket((EntityPlayerMP) player))
+            {
+                PacketTile packet = new PacketTile("gui", GUI_PACKET_ID, this);
+                List<Object> objects = new ArrayList();
+                writeGuiPacket(objects, player);
+                packet.addData(objects);
+                PacketSystem.INSTANCE.sendToPlayer(packet, (EntityPlayerMP) player);
+            }
+            else
+            {
+                it.remove();
+            }
+        }
     }
 
     /**
