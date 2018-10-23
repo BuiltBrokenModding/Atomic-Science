@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.RegistryEvent;
@@ -76,12 +77,15 @@ public final class ASItems
     public static ItemBlock blockRodPipe;
     public static ItemBlock blockRodPipeInv;
 
+    /** Armor material used by hazmat armor sets */
+    public static ItemArmor.ArmorMaterial hazmatArmorMaterial;
+
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
         //Armor
-        ItemHazmatClassic.hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", "HAZMAT", 5, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
+        hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", "HAZMAT", 5, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
         event.getRegistry().register(itemArmorHazmatHelm = new ItemHazmatClassic(EntityEquipmentSlot.HEAD, "mask"));
         event.getRegistry().register(itemArmorHazmatChest = new ItemHazmatClassic(EntityEquipmentSlot.CHEST, "body"));
         event.getRegistry().register(itemArmorHazmatLegs = new ItemHazmatClassic(EntityEquipmentSlot.LEGS, "leggings"));
