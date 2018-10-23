@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.items;
+package com.builtbroken.atomic.content.armor;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.AtomicScienceAPI;
@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) & Calclavia
  */
-public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
+public class ItemHazmatClassic extends ItemArmor implements IAntiPoisonArmor
 {
     /** Prefix for model textures */
     public static final String ARMOR_MODEL_TEXTURE = AtomicScience.PREFIX + AtomicScience.MODEL_TEXTURE_DIRECTORY + "armor/hazmat.png";
@@ -27,7 +27,7 @@ public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
     public static int damagePerTick = 1;
     public static int damagePerAttack = 100; //TODO take damage faster from attacks
 
-    public ItemHazmat(EntityEquipmentSlot slot, String type)
+    public ItemHazmatClassic(EntityEquipmentSlot slot, String type)
     {
         super(hazmatArmorMaterial, 0, slot);
         this.setCreativeTab(AtomicScience.creativeTab);
@@ -92,7 +92,7 @@ public class ItemHazmat extends ItemArmor implements IAntiPoisonArmor
     @Override
     public boolean isArmorPartOfSet(ItemStack armorStack, ItemStack compareStack)
     {
-        return armorStack.getItem() instanceof ItemHazmat && compareStack.getItem() instanceof ItemHazmat;
+        return armorStack.getItem() instanceof ItemHazmatClassic && compareStack.getItem() instanceof ItemHazmatClassic;
     }
 
     @Override

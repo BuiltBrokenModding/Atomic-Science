@@ -4,7 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.content.items.ItemFuelRod;
-import com.builtbroken.atomic.content.items.ItemHazmat;
+import com.builtbroken.atomic.content.armor.ItemHazmatClassic;
 import com.builtbroken.atomic.content.items.ItemHeatProbe;
 import com.builtbroken.atomic.content.items.ItemRadioactive;
 import com.builtbroken.atomic.content.items.cell.CreativeTabCells;
@@ -33,10 +33,10 @@ import net.minecraftforge.registries.IForgeRegistry;
 public final class ASItems
 {
     //Armor
-    public static ItemHazmat itemArmorHazmatHelm;
-    public static ItemHazmat itemArmorHazmatChest;
-    public static ItemHazmat itemArmorHazmatLegs;
-    public static ItemHazmat itemArmorHazmatBoots;
+    public static ItemHazmatClassic itemArmorHazmatHelm;
+    public static ItemHazmatClassic itemArmorHazmatChest;
+    public static ItemHazmatClassic itemArmorHazmatLegs;
+    public static ItemHazmatClassic itemArmorHazmatBoots;
 
     //Fluid Cells
     public static ItemFluidCell itemFluidCell; //Generic fluid cell (replaces water cell, toxic waste bucket)
@@ -81,11 +81,11 @@ public final class ASItems
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
         //Armor
-        ItemHazmat.hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", "HAZMAT", 5, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
-        event.getRegistry().register(itemArmorHazmatHelm = new ItemHazmat(EntityEquipmentSlot.HEAD, "mask"));
-        event.getRegistry().register(itemArmorHazmatChest = new ItemHazmat(EntityEquipmentSlot.CHEST, "body"));
-        event.getRegistry().register(itemArmorHazmatLegs = new ItemHazmat(EntityEquipmentSlot.LEGS, "leggings"));
-        event.getRegistry().register(itemArmorHazmatBoots = new ItemHazmat(EntityEquipmentSlot.FEET, "boots"));
+        ItemHazmatClassic.hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", "HAZMAT", 5, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
+        event.getRegistry().register(itemArmorHazmatHelm = new ItemHazmatClassic(EntityEquipmentSlot.HEAD, "mask"));
+        event.getRegistry().register(itemArmorHazmatChest = new ItemHazmatClassic(EntityEquipmentSlot.CHEST, "body"));
+        event.getRegistry().register(itemArmorHazmatLegs = new ItemHazmatClassic(EntityEquipmentSlot.LEGS, "leggings"));
+        event.getRegistry().register(itemArmorHazmatBoots = new ItemHazmatClassic(EntityEquipmentSlot.FEET, "boots"));
 
         //Cells
         event.getRegistry().register(itemFluidCell = (ItemFluidCell) new ItemFluidCell(Fluid.BUCKET_VOLUME).setRegistryName(AtomicScience.PREFIX + "fluid_cell"));
