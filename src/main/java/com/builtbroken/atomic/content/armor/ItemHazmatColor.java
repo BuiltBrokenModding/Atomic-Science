@@ -5,13 +5,20 @@ import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.api.armor.IAntiPoisonArmor;
 import com.builtbroken.atomic.api.effect.IIndirectEffectInstance;
 import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.lib.LanguageUtility;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.List;
 
 /**
  * Colorized version of the Hazmat suit
@@ -33,6 +40,13 @@ public class ItemHazmatColor extends ItemArmor implements IAntiPoisonArmor
         this.setTranslationKey(AtomicScience.PREFIX + "hazmat." + type + ".color");
         this.setRegistryName(AtomicScience.PREFIX + "hazmat_color_" + type);
         this.setMaxDamage(200000);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
+    {
+        LanguageUtility.getLocal("item." + AtomicScience.PREFIX + "hazmat.color.info", tooltip);
     }
 
     ///------------------------------------------------------------------------------------
@@ -63,7 +77,6 @@ public class ItemHazmatColor extends ItemArmor implements IAntiPoisonArmor
 
         return color.getRGB();
     }
-
 
 
     @Override

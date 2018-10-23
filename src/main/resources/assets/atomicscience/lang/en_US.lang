@@ -42,6 +42,8 @@ item.atomicscience:hazmat.body.color.name=Hazmat Upper body M1B
 item.atomicscience:hazmat.leggings.color.name=Hazmat Lower Body M1B
 item.atomicscience:hazmat.boots.color.name=Hazmat Boots M1B
 
+item.atomicscience:hazmat.color.info=Modified version of M1A Suit, Allows color to be changed using dyes
+
 item.atomicscience:cell.fluid.name=Fluid Cell
 item.atomicscience:cell.fluid.water.name=Water Cell
 item.atomicscience:cell.fluid.deuterium.name=Deuterium Cell
