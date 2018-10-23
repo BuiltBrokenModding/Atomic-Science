@@ -119,7 +119,7 @@ public final class MapDataSources
      */
     public static void addSource(IDataMapSource source)
     {
-        if (source != null && !source.world().isRemote && source.isStillValid() && !sources.contains(source))
+        if (source != null && !source.world().isRemote && source.doesSourceExist() && !sources.contains(source))
         {
             if(AtomicScience.runningAsDev)
             {
