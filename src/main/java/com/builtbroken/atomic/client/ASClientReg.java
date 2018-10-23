@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -50,10 +52,15 @@ public class ASClientReg
         //TODO ClientRegistry.bindTileEntitySpecialRenderer(TileEntityChemCentrifuge.class, new TESRChemCentrifuge());
 
         //Armor
-        newItemModel(ASItems.itemArmorHazmatHelm);
-        newItemModel(ASItems.itemArmorHazmatChest);
-        newItemModel(ASItems.itemArmorHazmatLegs);
-        newItemModel(ASItems.itemArmorHazmatBoots);
+        newArmorModel(ASItems.itemArmorHazmatHelm, "armor/classic/hazmat_mask");
+        newArmorModel(ASItems.itemArmorHazmatChest, "armor/classic/hazmat_body");
+        newArmorModel(ASItems.itemArmorHazmatLegs, "armor/classic/hazmat_leggings");
+        newArmorModel(ASItems.itemArmorHazmatBoots, "armor/classic/hazmat_boots");
+
+        newArmorModel(ASItems.itemArmorHazmatHelmColor, "armor/color/hazmat_mask");
+        newArmorModel(ASItems.itemArmorHazmatChestColor, "armor/color/hazmat_body");
+        newArmorModel(ASItems.itemArmorHazmatLegsColor, "armor/color/hazmat_leggings");
+        newArmorModel(ASItems.itemArmorHazmatBootsColor, "armor/color/hazmat_boots");
 
         //Cells
         newItemModel(ASItems.itemFissileFuelCell);
@@ -133,6 +140,11 @@ public class ASClientReg
         ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(item.getRegistryName() + sub, varient));
     }
 
+    protected static void newArmorModel(Item item, String path)
+    {
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(AtomicScience.PREFIX + path, "inventory"));
+    }
+
     private static void newFluidModel(IFluidBlock fluidBlock)
     {
         if (fluidBlock != null)
@@ -177,4 +189,12 @@ public class ASClientReg
             }
         }
     }
+
+    @SubscribeEvent
+    public static void colorItemEvent(ColorHandlerEvent.Item event)
+    {
+        event.getItemColors().registerItemColorHandler((stack, tintIndex) -> tintIndex > 0 ? -1 : ((ItemArmor)stack.getItem()).getColor(stack),
+                ASItems.itemArmorHazmatHelmColor, ASItems.itemArmorHazmatChestColor, ASItems.itemArmorHazmatLegsColor, ASItems.itemArmorHazmatBootsColor);
+    }
+
 }

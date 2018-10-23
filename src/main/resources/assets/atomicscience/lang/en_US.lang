@@ -32,10 +32,15 @@ tile.atomicscience:pipe.rod.inv.name=Reactor Rod Storage Conveyor
 tile.atomicscience:pipe.rod.inv.info=Acts as a single item hopper, allowing easy control over, conveying rods into reactors
 
 ## Items
-item.atomicscience:hazmat.mask.name=Hazmat Mask
-item.atomicscience:hazmat.body.name=Hazmat Upper body
-item.atomicscience:hazmat.leggings.name=Hazmat Lower Body
-item.atomicscience:hazmat.boots.name=Hazmat Boots
+item.atomicscience:hazmat.mask.name=Hazmat Mask M1A
+item.atomicscience:hazmat.body.name=Hazmat Upper body M1A
+item.atomicscience:hazmat.leggings.name=Hazmat Lower Body M1A
+item.atomicscience:hazmat.boots.name=Hazmat Boots M1A
+
+item.atomicscience:hazmat.mask.color.name=Hazmat Mask M1B
+item.atomicscience:hazmat.body.color.name=Hazmat Upper body M1B
+item.atomicscience:hazmat.leggings.color.name=Hazmat Lower Body M1B
+item.atomicscience:hazmat.boots.color.name=Hazmat Boots M1B
 
 item.atomicscience:cell.fluid.name=Fluid Cell
 item.atomicscience:cell.fluid.water.name=Water Cell

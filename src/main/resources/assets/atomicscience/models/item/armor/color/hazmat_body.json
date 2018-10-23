@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "atomicscience:items/armor/color/hazmat_color_body",
+        "layer1": "atomicscience:items/armor/color/hazmat_color_body_overlay"
+    }
+}

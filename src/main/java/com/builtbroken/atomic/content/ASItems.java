@@ -3,6 +3,7 @@ package com.builtbroken.atomic.content;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
+import com.builtbroken.atomic.content.armor.ItemHazmatColor;
 import com.builtbroken.atomic.content.items.ItemFuelRod;
 import com.builtbroken.atomic.content.armor.ItemHazmatClassic;
 import com.builtbroken.atomic.content.items.ItemHeatProbe;
@@ -38,6 +39,11 @@ public final class ASItems
     public static ItemHazmatClassic itemArmorHazmatChest;
     public static ItemHazmatClassic itemArmorHazmatLegs;
     public static ItemHazmatClassic itemArmorHazmatBoots;
+
+    public static ItemHazmatColor itemArmorHazmatHelmColor;
+    public static ItemHazmatColor itemArmorHazmatChestColor;
+    public static ItemHazmatColor itemArmorHazmatLegsColor;
+    public static ItemHazmatColor itemArmorHazmatBootsColor;
 
     //Fluid Cells
     public static ItemFluidCell itemFluidCell; //Generic fluid cell (replaces water cell, toxic waste bucket)
@@ -79,17 +85,25 @@ public final class ASItems
 
     /** Armor material used by hazmat armor sets */
     public static ItemArmor.ArmorMaterial hazmatArmorMaterial;
+    public static ItemArmor.ArmorMaterial hazmatArmorMaterialColor;
 
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event)
     {
         //Armor
-        hazmatArmorMaterial = EnumHelper.addArmorMaterial("HAZMAT", "HAZMAT", 5, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
+        hazmatArmorMaterial = EnumHelper.addArmorMaterial(AtomicScience.PREFIX + "hazmat", AtomicScience.PREFIX + "hazmat", 5, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
+        hazmatArmorMaterialColor = EnumHelper.addArmorMaterial(AtomicScience.PREFIX + "hazmat_color", AtomicScience.PREFIX + "hazmat_color", 5, new int[]{0, 0, 0, 0}, 0, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F);
+
         event.getRegistry().register(itemArmorHazmatHelm = new ItemHazmatClassic(EntityEquipmentSlot.HEAD, "mask"));
         event.getRegistry().register(itemArmorHazmatChest = new ItemHazmatClassic(EntityEquipmentSlot.CHEST, "body"));
         event.getRegistry().register(itemArmorHazmatLegs = new ItemHazmatClassic(EntityEquipmentSlot.LEGS, "leggings"));
         event.getRegistry().register(itemArmorHazmatBoots = new ItemHazmatClassic(EntityEquipmentSlot.FEET, "boots"));
+
+        event.getRegistry().register(itemArmorHazmatHelmColor = new ItemHazmatColor(EntityEquipmentSlot.HEAD, "mask"));
+        event.getRegistry().register(itemArmorHazmatChestColor = new ItemHazmatColor(EntityEquipmentSlot.CHEST, "body"));
+        event.getRegistry().register(itemArmorHazmatLegsColor = new ItemHazmatColor(EntityEquipmentSlot.LEGS, "leggings"));
+        event.getRegistry().register(itemArmorHazmatBootsColor = new ItemHazmatColor(EntityEquipmentSlot.FEET, "boots"));
 
         //Cells
         event.getRegistry().register(itemFluidCell = (ItemFluidCell) new ItemFluidCell(Fluid.BUCKET_VOLUME).setRegistryName(AtomicScience.PREFIX + "fluid_cell"));

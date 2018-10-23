@@ -11,6 +11,8 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.awt.*;
+
 /**
  * Colorized version of the Hazmat suit
  *
@@ -22,12 +24,14 @@ public class ItemHazmatColor extends ItemArmor implements IAntiPoisonArmor
     public static int damagePerTick = 1;
     public static int damagePerAttack = 100; //TODO take damage faster from attacks
 
+    private static final Color color = new Color(0x99A008);
+
     public ItemHazmatColor(EntityEquipmentSlot slot, String type)
     {
-        super(ASItems.hazmatArmorMaterial, 0, slot);
+        super(ASItems.hazmatArmorMaterialColor, 0, slot);
         this.setCreativeTab(AtomicScience.creativeTab);
-        this.setTranslationKey(AtomicScience.PREFIX + "hazmat." + type);
-        this.setRegistryName(AtomicScience.PREFIX + "hazmat_" + type);
+        this.setTranslationKey(AtomicScience.PREFIX + "hazmat." + type + ".color");
+        this.setRegistryName(AtomicScience.PREFIX + "hazmat_color_" + type);
         this.setMaxDamage(200000);
     }
 
@@ -57,8 +61,10 @@ public class ItemHazmatColor extends ItemArmor implements IAntiPoisonArmor
             }
         }
 
-        return 10511680;
+        return color.getRGB();
     }
+
+
 
     @Override
     public void removeColor(ItemStack stack) //TODO create forge PR so we don't have to override to bypass is leather check
