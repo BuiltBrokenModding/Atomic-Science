@@ -61,5 +61,4 @@ public class TileEntityRodPipe extends TileEntity
                 || tileEntity instanceof TileEntityRodPipe
                 || tileEntity instanceof TileEntityRodPipeInv;
     }
-
 }

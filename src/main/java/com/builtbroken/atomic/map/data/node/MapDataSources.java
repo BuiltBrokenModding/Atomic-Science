@@ -55,6 +55,7 @@ public final class MapDataSources
                         AtomicScience.logger.info("MapDataSources#serverTick() - Removed dead source, " + source);
                     }
                 }
+                //Disconnect invalid sources
                 else if (!source.isStillValid())
                 {
                     if(source.hasActiveMapData())
@@ -72,6 +73,7 @@ public final class MapDataSources
                         sourceInfo.remove(source);
                     }
                 }
+                //Handle updates
                 else
                 {
                     MapSourceInfo info = sourceInfo.get(source);
@@ -119,6 +121,10 @@ public final class MapDataSources
     {
         if (source != null && !source.world().isRemote && source.isStillValid() && !sources.contains(source))
         {
+            if(AtomicScience.runningAsDev)
+            {
+                AtomicScience.logger.info("MapDataSources#addSource(" + source + ")");
+            }
             sources.add(source);
         }
     }
@@ -143,6 +149,10 @@ public final class MapDataSources
             sources.remove(source);
             onSourceRemoved(source);
 
+            if(AtomicScience.runningAsDev)
+            {
+                AtomicScience.logger.info("MapDataSources#removeSource(" + source + ")");
+            }
         }
     }
 

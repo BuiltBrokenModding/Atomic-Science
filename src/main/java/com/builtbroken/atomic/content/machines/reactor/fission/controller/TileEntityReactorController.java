@@ -197,4 +197,10 @@ public class TileEntityReactorController extends TileEntityMachine
     {
         return getReactorCells() != null ? getReactorCells().length : 0;
     }
+
+    @Override
+    public String toString()
+    {
+        return "ReactorController[W: " + worldName() + " | D: " + dim() + " | Pos(" + xi() + ", " + yi() + ", " + zi() + ")]@" + hashCode();
+    }
 }

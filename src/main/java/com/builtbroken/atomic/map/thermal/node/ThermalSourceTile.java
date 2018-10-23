@@ -90,4 +90,10 @@ public class ThermalSourceTile<E extends TileEntity> extends ThermalSource<E>
         }
         return false;
     }
+
+    @Override
+    public String toString()
+    {
+        return "ThermalSourceTile[W: " + world().getWorldInfo().getWorldName() + " | D: " + dim() + " | Pos(" + xi() + ", " + yi() + ", " + zi() + ")]@" + hashCode();
+    }
 }

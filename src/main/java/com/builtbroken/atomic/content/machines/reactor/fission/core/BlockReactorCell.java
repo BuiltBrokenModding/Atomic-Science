@@ -60,11 +60,31 @@ public class BlockReactorCell extends BlockPrefab
             ItemStack heldItem = player.getHeldItem(hand);
             if (!heldItem.isEmpty())
             {
-                if(heldItem.getItem() == Items.STICK)
+                if (heldItem.getItem() == Items.STICK)
                 {
                     if (!world.isRemote)
                     {
-                        player.sendStatusMessage(new TextComponentString("Fuel: " + reactorCell.getFuelRuntime()), true);
+                        player.sendMessage(new TextComponentString("Fuel: " + reactorCell.getFuelRuntime()));
+                        if (reactorCell.getHeatSource().getCurrentNodes() != null)
+                        {
+                            int nodes = reactorCell.getHeatSource().getCurrentNodes().size();
+                            int heat = reactorCell.getHeatSource().getHeatGenerated();
+                            player.sendMessage(new TextComponentString(String.format("Thermal: %,dn %,dh", nodes, heat)));
+                        }
+                        else
+                        {
+                            player.sendMessage(new TextComponentString("No thermal nodes"));
+                        }
+                        if (reactorCell.getRadiationSource().getCurrentNodes() != null)
+                        {
+                            int nodes = reactorCell.getRadiationSource().getCurrentNodes().size();
+                            int mat = reactorCell.getRadiationSource().getRadioactiveMaterial();
+                            player.sendMessage(new TextComponentString(String.format("Radiation: %,dn %,dr", nodes, mat)));
+                        }
+                        else
+                        {
+                            player.sendMessage(new TextComponentString("No radiation nodes"));
+                        }
                     }
                     return true;
                 }
@@ -88,7 +108,7 @@ public class BlockReactorCell extends BlockPrefab
                     return true;
                 }
             }
-            else if(player.isSneaking())
+            else if (player.isSneaking())
             {
                 if (!world.isRemote && !reactorCell.getInventory().getStackInSlot(0).isEmpty())
                 {
@@ -147,7 +167,7 @@ public class BlockReactorCell extends BlockPrefab
     //----------------------------------------------
 
     @Override
-    public boolean  isBlockNormalCube(IBlockState state)
+    public boolean isBlockNormalCube(IBlockState state)
     {
         return false;
     }

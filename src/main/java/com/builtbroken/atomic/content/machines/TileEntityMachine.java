@@ -2,11 +2,11 @@ package com.builtbroken.atomic.content.machines;
 
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.lib.gui.IPlayerUsing;
+import com.builtbroken.atomic.lib.transform.IPosWorld;
 import com.builtbroken.atomic.network.IPacket;
 import com.builtbroken.atomic.network.IPacketIDReceiver;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.PacketTile;
-import com.builtbroken.atomic.lib.transform.IPosWorld;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -240,7 +240,28 @@ public abstract class TileEntityMachine extends TileEntity implements IPacketIDR
     @Override
     public int dim()
     {
+        if (getWorld() == null)
+        {
+            return 0;
+        }
+        else if (getWorld().provider == null)
+        {
+            return 0;
+        }
         return getWorld().provider.getDimension();
+    }
+
+    public String worldName()
+    {
+        if (getWorld() == null)
+        {
+            return "-null-";
+        }
+        else if (getWorld().getWorldInfo() == null)
+        {
+            return "-null info-";
+        }
+        return getWorld().getWorldInfo().getWorldName();
     }
 
     @Override

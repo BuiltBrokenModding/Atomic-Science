@@ -156,8 +156,8 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         super.update(ticks, isClient);
         if (!isClient)
         {
-            doRunChecks(ticks);
             doRodMovement(ticks);
+            doRunChecks(ticks);
         }
         else if (_running)
         {
@@ -257,6 +257,11 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
                             }
                         }
                     }
+
+                    if (getFuelRod() == null && AtomicScience.runningAsDev)
+                    {
+                        AtomicScience.logger.info(this + " ejected spent rod");
+                    }
                 }
             }
         }
@@ -280,6 +285,10 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
                 ItemStack stack = cell.getFuelRodStack();
                 cell.setFuelRod(getFuelRodStack());
                 setFuelRod(stack);
+                if (AtomicScience.runningAsDev)
+                {
+                    AtomicScience.logger.info(this + " switched rods with lower reactor");
+                }
             }
         }
         //If not rod in lower core, move cell
@@ -287,6 +296,10 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         {
             cell.setFuelRod(getFuelRodStack());
             setFuelRod(ItemStack.EMPTY);
+            if (AtomicScience.runningAsDev)
+            {
+                AtomicScience.logger.info(this + " moved rod to lower reactor");
+            }
         }
     }
 
@@ -501,7 +514,6 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         return oldState.getBlock() != newSate.getBlock();
     }
 
-
     private boolean canConnect(IBlockState block)
     {
         return block.getBlock() == ASBlocks.blockReactorCell || block.getBlock() == ASBlocks.blockReactorController;
@@ -517,5 +529,11 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     public IThermalSource getHeatSource()
     {
         return thermalSource;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ReactorCell[W: " + worldName() + " | D: " + dim() + " | Pos(" + xi() + ", " + yi() + ", " + zi() + ")]@" + hashCode();
     }
 }

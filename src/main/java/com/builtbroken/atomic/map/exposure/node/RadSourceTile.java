@@ -90,4 +90,10 @@ public class RadSourceTile<E extends TileEntity> extends RadiationSource<E>
         }
         return false;
     }
+
+    @Override
+    public String toString()
+    {
+        return "RadSourceTile[W: " + world().getWorldInfo().getWorldName() + " | D: " + dim() + " | Pos(" + xi() + ", " + yi() + ", " + zi() + ")]@" + hashCode();
+    }
 }
