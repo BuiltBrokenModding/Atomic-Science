@@ -30,8 +30,8 @@ public class TileEntityThermalRedstone extends TileEntityPrefab implements IGuiT
     public static final int TRIGGER_SET_PACKET_ID = 1;
     public static final int GET_HEAT_PACKET_ID = 2;
 
-    public int minHeatTrigger = 100;
-    public int maxHeatTrigger = 100;
+    public int minHeatTrigger = 1000;
+    public int maxHeatTrigger = 1000;
 
     public int clientHeatValue = -1;
 
