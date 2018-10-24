@@ -5,7 +5,6 @@ import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.api.armor.IAntiPoisonArmor;
 import com.builtbroken.atomic.api.effect.IIndirectEffectInstance;
 import com.builtbroken.atomic.content.ASItems;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
@@ -19,9 +18,6 @@ import net.minecraft.item.ItemStack;
  */
 public class ItemHazmatClassic extends ItemArmor implements IAntiPoisonArmor
 {
-    /** Prefix for model textures */
-    public static final String ARMOR_MODEL_TEXTURE = AtomicScience.PREFIX + AtomicScience.MODEL_TEXTURE_DIRECTORY + "armor/hazmat.png";
-
     public static int damagePerTick = 1;
     public static int damagePerAttack = 100; //TODO take damage faster from attacks
 
@@ -32,16 +28,6 @@ public class ItemHazmatClassic extends ItemArmor implements IAntiPoisonArmor
         this.setTranslationKey(AtomicScience.PREFIX + "hazmat." + type);
         this.setRegistryName(AtomicScience.PREFIX + "hazmat_" + type);
         this.setMaxDamage(200000);
-    }
-
-    ///------------------------------------------------------------------------------------
-    /// Texture stuff
-    ///------------------------------------------------------------------------------------
-
-    @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type)
-    {
-        return ARMOR_MODEL_TEXTURE;
     }
 
     ///------------------------------------------------------------------------------------
