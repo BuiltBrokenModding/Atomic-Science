@@ -3,7 +3,13 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "all": "atomicscience:blocks/thermometer"
+      "up": "atomicscience:blocks/sensors/thermal_redstone/top",
+      "down": "atomicscience:blocks/sensors/thermal_redstone/bottom",
+      "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_0",
+      "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_0",
+      "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_0",
+      "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_0",
+      "particle": "atomicscience:blocks/sensors/thermal_redstone/redstone_0"
     }
   },
   "variants": {
@@ -15,36 +21,132 @@
     ],
     "redstone": {
       "0": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_0",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_0",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_0",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_0"
+        }
       },
       "1": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_1",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_1",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_1",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_1"
+        }
       },
       "2": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_2",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_2",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_2",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_2"
+        }
       },
       "3": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_3",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_3",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_3",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_3"
+        }
       },
       "4": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_4",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_4",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_4",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_4"
+        }
       },
       "5": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_5",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_5",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_5",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_5"
+        }
       },
       "6": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_6",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_6",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_6",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_6"
+        }
       },
       "7": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_7",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_7",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_7",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_7"
+        }
       },
       "8": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_8",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_8",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_8",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_8"
+        }
       },
       "9": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_9",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_9",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_9",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_9"
+        }
       },
       "10": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_10",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_10",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_10",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_10"
+        }
       },
       "11": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_11",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_11",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_11",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_11"
+        }
       },
       "12": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_12",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_12",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_12",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_12"
+        }
       },
       "13": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_13",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_13",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_13",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_13"
+        }
       },
       "14": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_14",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_14",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_14",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_14"
+        }
       },
       "15": {
+        "textures": {
+          "east": "atomicscience:blocks/sensors/thermal_redstone/redstone_15",
+          "west": "atomicscience:blocks/sensors/thermal_redstone/redstone_15",
+          "north": "atomicscience:blocks/sensors/thermal_redstone/redstone_15",
+          "south": "atomicscience:blocks/sensors/thermal_redstone/redstone_15"
+        }
       }
     }
   }
