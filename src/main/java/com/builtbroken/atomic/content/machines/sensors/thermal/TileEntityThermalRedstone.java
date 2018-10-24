@@ -1,6 +1,9 @@
 package com.builtbroken.atomic.content.machines.sensors.thermal;
 
+import com.builtbroken.atomic.content.machines.sensors.thermal.gui.ContainerThermalRedstone;
+import com.builtbroken.atomic.content.machines.sensors.thermal.gui.GuiThermalRedstone;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
+import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.network.IPacket;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.PacketTile;
@@ -17,7 +20,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 10/23/2018.
  */
-public class TileEntityThermalRedstone extends TileEntityPrefab
+public class TileEntityThermalRedstone extends TileEntityPrefab implements IGuiTile
 {
     public static final String NBT_MIN_HEAT = "minHeat";
     public static final String NBT_MAX_HEAT = "maxHeat";
@@ -26,6 +29,8 @@ public class TileEntityThermalRedstone extends TileEntityPrefab
 
     public int minHeatTrigger = 100;
     public int maxHeatTrigger = 100;
+
+    //TODO set owner of machine
 
     @Override
     public boolean read(ByteBuf buf, int id, EntityPlayer player, IPacket type)
@@ -93,5 +98,17 @@ public class TileEntityThermalRedstone extends TileEntityPrefab
             return (int) Math.min(15, Math.max(0, Math.floor(scale * 15)));
         }
         return 0;
+    }
+
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player)
+    {
+        return new ContainerThermalRedstone(player, this);
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player)
+    {
+        return new GuiThermalRedstone(player, this);
     }
 }

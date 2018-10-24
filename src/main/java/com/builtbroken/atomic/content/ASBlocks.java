@@ -17,6 +17,8 @@ import com.builtbroken.atomic.content.machines.reactor.pipe.BlockRodPipe;
 import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipe;
 import com.builtbroken.atomic.content.machines.reactor.pipe.inv.BlockRodPipeInv;
 import com.builtbroken.atomic.content.machines.reactor.pipe.inv.TileEntityRodPipeInv;
+import com.builtbroken.atomic.content.machines.sensors.thermal.BlockThermalRedstone;
+import com.builtbroken.atomic.content.machines.sensors.thermal.TileEntityThermalRedstone;
 import com.builtbroken.atomic.content.machines.steam.funnel.BlockSteamFunnel;
 import com.builtbroken.atomic.content.machines.steam.funnel.TileEntitySteamFunnel;
 import com.builtbroken.atomic.content.machines.steam.generator.BlockSteamGenerator;
@@ -49,6 +51,8 @@ public final class ASBlocks
     public static Block blockRodPipe;
     public static Block blockRodPipeInv;
 
+    public static Block blockThermalSensorRedstone;
+
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
@@ -76,9 +80,13 @@ public final class ASBlocks
         GameRegistry.registerTileEntity(TileEntityChemCentrifuge.class, new ResourceLocation(AtomicScience.PREFIX + "chem_centrifuge"));
 
         event.getRegistry().register(blockRodPipe = new BlockRodPipe());
-        event.getRegistry().register(blockRodPipeInv = new BlockRodPipeInv());
         GameRegistry.registerTileEntity(TileEntityRodPipe.class, new ResourceLocation(AtomicScience.PREFIX + "rod_pipe"));
+
+        event.getRegistry().register(blockRodPipeInv = new BlockRodPipeInv());
         GameRegistry.registerTileEntity(TileEntityRodPipeInv.class, new ResourceLocation(AtomicScience.PREFIX + "rod_pipe_inv"));
+
+        event.getRegistry().register(blockThermalSensorRedstone = new BlockThermalRedstone());
+        GameRegistry.registerTileEntity(TileEntityThermalRedstone.class, new ResourceLocation(AtomicScience.PREFIX + "sensor_thermal_redstone"));
 
         for(ASFluids value : ASFluids.values())
         {

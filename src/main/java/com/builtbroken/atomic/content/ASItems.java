@@ -83,6 +83,8 @@ public final class ASItems
     public static ItemBlock blockRodPipe;
     public static ItemBlock blockRodPipeInv;
 
+    public static ItemBlock blockThermalSensorRedstone;
+
     /** Armor material used by hazmat armor sets */
     public static ItemArmor.ArmorMaterial hazmatArmorMaterial;
     public static ItemArmor.ArmorMaterial hazmatArmorMaterialColor;
@@ -169,6 +171,8 @@ public final class ASItems
 
         blockRodPipe = addItemBlock(event.getRegistry(), ASBlocks.blockRodPipe);
         blockRodPipeInv = addItemBlock(event.getRegistry(), ASBlocks.blockRodPipeInv);
+
+        blockThermalSensorRedstone = addItemBlock(event.getRegistry(), ASBlocks.blockThermalSensorRedstone);
 
         if (AtomicScience.runningAsDev)
         {

@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines.sensors.thermal;
 
+import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.content.prefab.BlockPrefab;
 import com.builtbroken.atomic.lib.MetaEnum;
@@ -7,6 +8,7 @@ import com.builtbroken.atomic.map.events.MapSystemEvent;
 import com.google.common.collect.Lists;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -28,9 +30,11 @@ public class BlockThermalRedstone extends BlockPrefab
 {
     public static final PropertyEnum<MetaEnum> REDSTONE_PROPERTY = PropertyEnum.create("redstone", MetaEnum.class, Lists.newArrayList(MetaEnum.values()));
 
-    protected BlockThermalRedstone()
+    public BlockThermalRedstone()
     {
         super(Material.IRON);
+        setRegistryName(AtomicScience.PREFIX + "sensor_thermal_redstone");
+        setTranslationKey(AtomicScience.PREFIX + "sensor.thermal.redstone");
         setDefaultState(getDefaultState().withProperty(REDSTONE_PROPERTY, MetaEnum.ZERO));
     }
 
@@ -68,6 +72,12 @@ public class BlockThermalRedstone extends BlockPrefab
     public int getMetaFromState(IBlockState state)
     {
         return state.getValue(REDSTONE_PROPERTY).ordinal();
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, REDSTONE_PROPERTY);
     }
 
     @Nullable
