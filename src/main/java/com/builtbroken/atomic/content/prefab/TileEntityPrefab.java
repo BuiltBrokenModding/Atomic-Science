@@ -71,20 +71,28 @@ public abstract class TileEntityPrefab extends TileEntity implements IPacketIDRe
         Iterator<EntityPlayer> it = getPlayersUsingGui().iterator();
         while (it.hasNext())
         {
-            EntityPlayer player = it.next();
-            if (player instanceof EntityPlayerMP && shouldSendGuiPacket((EntityPlayerMP) player))
-            {
-                PacketTile packet = new PacketTile("gui", GUI_PACKET_ID, this);
-                List<Object> objects = new ArrayList();
-                writeGuiPacket(objects, player);
-                packet.addData(objects);
-                PacketSystem.INSTANCE.sendToPlayer(packet, (EntityPlayerMP) player);
-            }
-            else
+            final EntityPlayer player = it.next();
+            if (!sendGuiPacket(player))
             {
                 it.remove();
             }
         }
+    }
+
+    public boolean sendGuiPacket(EntityPlayer player)
+    {
+        if (player instanceof EntityPlayerMP && shouldSendGuiPacket((EntityPlayerMP) player))
+        {
+            PacketTile packet = new PacketTile("gui", GUI_PACKET_ID, this);
+
+            List<Object> objects = new ArrayList();
+            writeGuiPacket(objects, player);
+            packet.addData(objects);
+
+            PacketSystem.INSTANCE.sendToPlayer(packet, (EntityPlayerMP) player);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -143,12 +151,12 @@ public abstract class TileEntityPrefab extends TileEntity implements IPacketIDRe
     //--------- Helpers -----------------------------
     //-----------------------------------------------
 
-    protected boolean isServer()
+    public final boolean isServer()
     {
         return getWorld() != null && !getWorld().isRemote;
     }
 
-    protected boolean isClient()
+    public final boolean isClient()
     {
         return getWorld() != null && getWorld().isRemote;
     }

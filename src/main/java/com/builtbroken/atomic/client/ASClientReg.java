@@ -100,6 +100,9 @@ public class ASClientReg
         newBlockModel(ASBlocks.blockRodPipe);
         newBlockModel(ASBlocks.blockRodPipeInv);
 
+        //Sensors
+        newBlockModel(ASBlocks.blockThermalSensorRedstone);
+
         //Register custom cell model
         ModelLoaderRegistry.registerLoader(new BucketModelLoader(AtomicScience.DOMAIN));
 

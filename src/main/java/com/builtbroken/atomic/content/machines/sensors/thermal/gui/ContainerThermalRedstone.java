@@ -13,5 +13,9 @@ public class ContainerThermalRedstone extends ContainerBase<TileEntityThermalRed
     public ContainerThermalRedstone(EntityPlayer player, TileEntityThermalRedstone node)
     {
         super(player, node);
+        if (node.isServer())
+        {
+            node.sendGuiPacket(player);
+        }
     }
 }

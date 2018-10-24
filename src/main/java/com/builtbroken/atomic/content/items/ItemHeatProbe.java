@@ -20,7 +20,7 @@ import net.minecraft.world.World;
  */
 public class ItemHeatProbe extends ItemPrefab
 {
-    private final UnitDisplay unitDisplay = new UnitDisplay(UnitDisplay.Unit.JOULES, 0).symbol();
+    private static final UnitDisplay unitDisplay = new UnitDisplay(UnitDisplay.Unit.JOULES, 0).symbol();
     private final double colorHeatMax = 1811; //Melting point of iron
 
     public ItemHeatProbe()
@@ -61,7 +61,7 @@ public class ItemHeatProbe extends ItemPrefab
 
     }
 
-    protected String formatTemp(double heat)
+    public static String formatTemp(double heat) //TODO move to helper
     {
         unitDisplay.value = heat;
         return unitDisplay.toString();

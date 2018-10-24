@@ -3,7 +3,9 @@ package com.builtbroken.atomic.content.machines.sensors.thermal;
 import com.builtbroken.atomic.content.machines.sensors.thermal.gui.ContainerThermalRedstone;
 import com.builtbroken.atomic.content.machines.sensors.thermal.gui.GuiThermalRedstone;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
+import com.builtbroken.atomic.lib.MetaEnum;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
+import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.network.IPacket;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.PacketTile;
@@ -26,25 +28,62 @@ public class TileEntityThermalRedstone extends TileEntityPrefab implements IGuiT
     public static final String NBT_MAX_HEAT = "maxHeat";
 
     public static final int TRIGGER_SET_PACKET_ID = 1;
+    public static final int GET_HEAT_PACKET_ID = 2;
 
     public int minHeatTrigger = 100;
     public int maxHeatTrigger = 100;
 
+    public int clientHeatValue = -1;
+
     //TODO set owner of machine
+
+    @Override
+    public void onLoad()
+    {
+        updateRedstoneState(world.getBlockState(getPos()), MapHandler.THERMAL_MAP.getStoredValue(world, getPos()));
+    }
 
     @Override
     public boolean read(ByteBuf buf, int id, EntityPlayer player, IPacket type)
     {
         if (!super.read(buf, id, player, type))
         {
-            if (isServer() && id == TRIGGER_SET_PACKET_ID)
+            if (isServer())
             {
-                minHeatTrigger = buf.readInt();
-                maxHeatTrigger = buf.readInt();
+                if (id == TRIGGER_SET_PACKET_ID)
+                {
+                    minHeatTrigger = buf.readInt();
+                    maxHeatTrigger = buf.readInt();
+
+                    //TODO send to event queue to prevent packet spawn updating block
+                    int heat = MapHandler.THERMAL_MAP.getStoredValue(world, getPos());
+                    updateRedstoneState(world.getBlockState(getPos()), heat);
+                    sendGuiPacket();
+
+                    markDirty();
+
+                    return true;
+                }
+                else if(id == GET_HEAT_PACKET_ID)
+                {
+                    int heat = MapHandler.THERMAL_MAP.getStoredValue(world, getPos());
+                    PacketSystem.INSTANCE.sendToPlayer(new PacketTile("heat_send", GET_HEAT_PACKET_ID, this).addData(heat), player);
+                    return true;
+                }
+            }
+            else if(isClient() && id == GET_HEAT_PACKET_ID)
+            {
+                clientHeatValue = buf.readInt();
+                return true;
             }
             return false;
         }
         return true;
+    }
+
+    public void requestHeatValue()
+    {
+        PacketSystem.INSTANCE.sendToServer(new PacketTile("heat_get", GET_HEAT_PACKET_ID, this));
     }
 
     public void setTriggerClient(int min, int max)
@@ -94,10 +133,28 @@ public class TileEntityThermalRedstone extends TileEntityPrefab implements IGuiT
     {
         if (heatValue > minHeatTrigger)
         {
-            float scale = (heatValue - minHeatTrigger) / (float) (maxHeatTrigger - minHeatTrigger);
-            return (int) Math.min(15, Math.max(0, Math.floor(scale * 15)));
+            return (int) Math.min(15, Math.max(0, Math.floor(getHeatScale(heatValue) * 15)));
         }
         return 0;
+    }
+
+    public float getHeatScale(int heatValue)
+    {
+        if (heatValue > minHeatTrigger)
+        {
+            return Math.max(0, Math.min(1, (heatValue - minHeatTrigger) / (float) (maxHeatTrigger - minHeatTrigger)));
+        }
+        return 0;
+    }
+
+    public void updateRedstoneState(IBlockState blockState, int heatValue)
+    {
+        int redstone = getExpectedRedstoneValue(heatValue);
+        int currentRedstone = BlockThermalRedstone.getRedstoneValue(blockState);
+        if (redstone != currentRedstone)
+        {
+            world.setBlockState(getPos(), blockState.withProperty(BlockThermalRedstone.REDSTONE_PROPERTY, MetaEnum.get(redstone)));
+        }
     }
 
     @Override

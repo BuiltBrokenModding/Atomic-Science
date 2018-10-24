@@ -5,6 +5,19 @@ itemGroup.fluid.cells=[Dev] Fluid Cells
 ## Blocks
 tile.atomicscience:ore.uranium.name=Uranium Ore
 
+## Sensor
+tile.atomicscience:sensor.thermal.redstone.name=Thermal Sensor Redstone
+gui.atomicscience:sensor.thermal.redstone.button.set=Set
+gui.atomicscience:sensor.thermal.redstone.button.get=Measure
+gui.atomicscience:sensor.thermal.redstone.label.title=Thermal Sensor Redstone
+gui.atomicscience:sensor.thermal.redstone.label.min=Min
+gui.atomicscience:sensor.thermal.redstone.label.max=Max
+gui.atomicscience:sensor.thermal.redstone.label.heat.value=Heat:
+gui.atomicscience:sensor.thermal.redstone.label.heat.none=Heat: Click button to get
+gui.atomicscience:sensor.thermal.redstone.label.error=§cError:
+gui.atomicscience:sensor.thermal.redstone.label.info=Info:
+gui.atomicscience:sensor.thermal.redstone.label.redstone=Redstone:
+
 ## Machines
 tile.atomicscience:reactor.cell.name=Fission Reactor Core
 tile.atomicscience:reactor.controller.name=Fission Reactor Controller

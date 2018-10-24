@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.machines.sensors.thermal;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.map.DataMapType;
+import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.prefab.BlockPrefab;
 import com.builtbroken.atomic.lib.MetaEnum;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
@@ -10,8 +11,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -36,6 +39,20 @@ public class BlockThermalRedstone extends BlockPrefab
         setRegistryName(AtomicScience.PREFIX + "sensor_thermal_redstone");
         setTranslationKey(AtomicScience.PREFIX + "sensor.thermal.redstone");
         setDefaultState(getDefaultState().withProperty(REDSTONE_PROPERTY, MetaEnum.ZERO));
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        if(playerIn.getHeldItem(hand).getItem() == ASItems.itemHeatProbe)
+        {
+            return false;
+        }
+        if (!worldIn.isRemote)
+        {
+            playerIn.openGui(AtomicScience.INSTANCE, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        }
+        return true;
     }
 
     @Override
@@ -108,12 +125,7 @@ public class BlockThermalRedstone extends BlockPrefab
                 final TileEntity tile = world.getTileEntity(event.getPos());
                 if (tile instanceof TileEntityThermalRedstone)
                 {
-                    int redstone = ((TileEntityThermalRedstone) tile).getExpectedRedstoneValue(event.getNewValue());
-                    int currentRedstone = getRedstoneValue(blockState);
-                    if (redstone != currentRedstone)
-                    {
-                        world.setBlockState(event.getPos(), blockState.withProperty(REDSTONE_PROPERTY, MetaEnum.get(redstone)));
-                    }
+                    ((TileEntityThermalRedstone) tile).updateRedstoneState(blockState, event.getNewValue());
                 }
             }
         }
