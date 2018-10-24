@@ -1,9 +1,15 @@
 package com.builtbroken.atomic.content.machines.sensors.thermal;
 
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
+import com.builtbroken.atomic.network.IPacket;
+import com.builtbroken.atomic.network.netty.PacketSystem;
+import com.builtbroken.atomic.network.packet.PacketTile;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -16,8 +22,32 @@ public class TileEntityThermalRedstone extends TileEntityPrefab
     public static final String NBT_MIN_HEAT = "minHeat";
     public static final String NBT_MAX_HEAT = "maxHeat";
 
+    public static final int TRIGGER_SET_PACKET_ID = 1;
+
     public int minHeatTrigger = 100;
     public int maxHeatTrigger = 100;
+
+    @Override
+    public boolean read(ByteBuf buf, int id, EntityPlayer player, IPacket type)
+    {
+        if (!super.read(buf, id, player, type))
+        {
+            if (isServer() && id == TRIGGER_SET_PACKET_ID)
+            {
+                minHeatTrigger = buf.readInt();
+                maxHeatTrigger = buf.readInt();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public void setTriggerClient(int min, int max)
+    {
+        this.minHeatTrigger = min;
+        this.maxHeatTrigger = max;
+        PacketSystem.INSTANCE.sendToServer(new PacketTile("trigger_set", TRIGGER_SET_PACKET_ID, this).addData(min, max));
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound compound)
@@ -47,5 +77,21 @@ public class TileEntityThermalRedstone extends TileEntityPrefab
     {
         minHeatTrigger = buf.readInt();
         maxHeatTrigger = buf.readInt();
+    }
+
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
+    {
+        return oldState.getBlock() != newSate.getBlock();
+    }
+
+    public int getExpectedRedstoneValue(int heatValue)
+    {
+        if (heatValue > minHeatTrigger)
+        {
+            float scale = (heatValue - minHeatTrigger) / (float) (maxHeatTrigger - minHeatTrigger);
+            return (int) Math.min(15, Math.max(0, Math.floor(scale * 15)));
+        }
+        return 0;
     }
 }
