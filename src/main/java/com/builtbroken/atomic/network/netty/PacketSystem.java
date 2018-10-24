@@ -5,6 +5,7 @@ import com.builtbroken.atomic.lib.transform.IPosWorld;
 import com.builtbroken.atomic.network.IPacket;
 import com.builtbroken.atomic.proxy.ContentProxy;
 import com.builtbroken.jlib.data.vector.IPos3D;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
@@ -52,18 +53,25 @@ public class PacketSystem extends ContentProxy
      * @param packet the packet to send to the player
      * @param player the player MP object
      */
-    public void sendToPlayer(IPacket packet, EntityPlayerMP player)
+    public void sendToPlayer(IPacket packet, EntityPlayer player)
     {
-        //Null check is for JUnit
-        if (channelEnumMap != null)
+        if(player instanceof EntityPlayerMP)
         {
-            this.channelEnumMap.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-            this.channelEnumMap.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
-            this.channelEnumMap.get(Side.SERVER).writeAndFlush(packet);
+            //Null check is for JUnit
+            if (channelEnumMap != null)
+            {
+                this.channelEnumMap.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+                this.channelEnumMap.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+                this.channelEnumMap.get(Side.SERVER).writeAndFlush(packet);
+            }
+            else
+            {
+                AtomicScience.logger.error("PacketSystem#sendToPlayer() - Packet sent to player[" + player + "]");
+            }
         }
-        else
+        else if(AtomicScience.runningAsDev)
         {
-            AtomicScience.logger.error("Packet sent to player[" + player + "]");
+            AtomicScience.logger.error("PacketSystem#sendToPlayer() - Player object in not a MP player[" + player + "]");
         }
     }
 
@@ -82,7 +90,7 @@ public class PacketSystem extends ContentProxy
         }
         else
         {
-            AtomicScience.logger.error("Packet sent to dim[" + dimId + "]");
+            AtomicScience.logger.error("PacketSystem#sendToAllInDimension() - Packet sent to dim[" + dimId + "]");
         }
     }
 
