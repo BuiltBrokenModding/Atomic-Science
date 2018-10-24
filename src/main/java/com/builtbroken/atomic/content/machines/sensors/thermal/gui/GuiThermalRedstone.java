@@ -192,7 +192,7 @@ public class GuiThermalRedstone extends GuiContainerBase<TileEntityThermalRedsto
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        drawStringCentered("\u00a77" + getLocal("label.title"), xSize / 2, 6, 4210752);
+        drawStringCentered( getLocal("label.title"), xSize / 2, 6, 4210752);
         this.fontRenderer.drawString(getLocal("label.min"), 12, 30, 4210752);
         this.fontRenderer.drawString(getLocal("label.max"), 12, 50, 4210752);
 
