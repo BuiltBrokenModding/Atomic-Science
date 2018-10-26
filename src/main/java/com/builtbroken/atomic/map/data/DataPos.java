@@ -74,6 +74,16 @@ public class DataPos implements IPos3D
         return y;
     }
 
+    public double distanceSQ(DataPos pos)
+    {
+        return x * x + y * y + z * z;
+    }
+
+    public double distance(DataPos pos)
+    {
+        return Math.sqrt(distanceSQ(pos));
+    }
+
     @Override
     public boolean equals(Object object)
     {

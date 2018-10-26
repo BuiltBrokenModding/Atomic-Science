@@ -127,6 +127,7 @@ public class ThreadThermalAction extends ThreadDataChange
      */
     protected HashMap<DataPos, DataPos> calculateHeatSpread(final World world, final int cx, final int cy, final int cz, final int heat)
     {
+        final DataPos center = DataPos.get(cx, cy, cz);
         //TODO consider splitting over several threads
         //TODO map fluid(water, air, lava, etc) pockets to allow convection currents
         //TODO use fluid pockets to equalize heat levels
@@ -141,7 +142,8 @@ public class ThreadThermalAction extends ThreadDataChange
         if (heat > 6)
         {
             //Track tiles to path
-            final Queue<DataPos> pathNext = new LinkedList();
+            final Queue<DataPos> currentPathQueue = new LinkedList();
+            final List<DataPos> nextPathQueue = new LinkedList();
 
             //Add center point
             heatSpreadData.put(DataPos.get(cx, cy, cz), DataPos.get(heat, 0, 0));
@@ -150,7 +152,7 @@ public class ThreadThermalAction extends ThreadDataChange
             for (EnumFacing direction : EnumFacing.VALUES)
             {
                 DataPos pos = DataPos.get(cx, cy, cz, direction);
-                pathNext.add(pos);
+                currentPathQueue.add(pos);
                 heatSpreadData.put(pos, DataPos.get(0, 0, 0));
             }
 
@@ -158,10 +160,17 @@ public class ThreadThermalAction extends ThreadDataChange
             final ArrayList<DataPos> tempHold = new ArrayList(6);
 
             //Breadth first pathfinder
-            while (!pathNext.isEmpty())
+            while (!currentPathQueue.isEmpty() || !nextPathQueue.isEmpty())
             {
+                if(currentPathQueue.isEmpty())
+                {
+                    Collections.sort(nextPathQueue, Comparator.comparingDouble(pos -> pos.distance(center)));
+                    currentPathQueue.addAll(nextPathQueue);
+
+                    nextPathQueue.clear();
+                }
                 //Get next
-                final DataPos currentPos = pathNext.poll();
+                final DataPos currentPos = currentPathQueue.poll();
 
                 //Calculate heat pushed from all sides & look for new tiles to path
                 int heatAsPosition = 0;
@@ -234,7 +243,7 @@ public class ThreadThermalAction extends ThreadDataChange
                 if (heatAsPosition > 0)
                 {
                     //Add to path queue
-                    pathNext.addAll(tempHold);
+                    nextPathQueue.addAll(tempHold);
 
                     //Add to map so we don't path over again and have init data to grab
                     tempHold.forEach(e -> heatSpreadData.put(e, DataPos.get(0, 0, 0)));
@@ -263,6 +272,8 @@ public class ThreadThermalAction extends ThreadDataChange
                     cx, cy, cz,
                     StringHelpers.formatNanoTime(time)));
         }
+
+        center.dispose();
         return heatSpreadData;
     }
 
