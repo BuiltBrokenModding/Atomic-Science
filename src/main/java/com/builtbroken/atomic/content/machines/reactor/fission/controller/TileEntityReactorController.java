@@ -1,7 +1,9 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.controller;
 
-import com.builtbroken.atomic.content.prefab.TileEntityActive;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
+import com.builtbroken.atomic.content.prefab.TileEntityActive;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -10,6 +12,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Block used to relay data and control to a reactor stack
@@ -38,9 +41,12 @@ public class TileEntityReactorController extends TileEntityActive
     //Trigger to enable reactor cores
     private boolean enableReactors = true;
 
+    public ControllerState controllerState = ControllerState.OFF;
+
     @Override
     protected void update(int ticks, boolean isClient)
     {
+        super.update(ticks, isClient);
         if (!isClient)
         {
             if (cells == null || refreshStack || ticks % 20 == 0) //TODO remove tick refresh after testing
@@ -50,8 +56,10 @@ public class TileEntityReactorController extends TileEntityActive
 
             if (ticks % 3 == 0)
             {
-                boolean enabled = shouldEnableReactors();
+                //Check if we should be running
+                final boolean enabled = shouldEnableReactors();
 
+                //Enable/Disable reactors
                 TileEntityReactorCell[] cells = getReactorCells();
                 if (cells != null)
                 {
@@ -59,6 +67,18 @@ public class TileEntityReactorController extends TileEntityActive
                     {
                         cell.enabled = enabled;
                     }
+                }
+
+                //Store prev state to compare
+                final ControllerState prev = controllerState;
+
+                //Update state
+                controllerState = enabled ? ControllerState.ON : ControllerState.OFF;
+
+                //send packet next tick if state changed
+                if (prev != controllerState)
+                {
+                    sendDescPacket();
                 }
             }
         }
@@ -193,9 +213,33 @@ public class TileEntityReactorController extends TileEntityActive
         refreshStack = true;
     }
 
+    /**
+     * Number of reactors currently controlled by this controller
+     *
+     * @return
+     */
     public int getCellCount()
     {
         return getReactorCells() != null ? getReactorCells().length : 0;
+    }
+
+    @Override
+    protected void writeDescPacket(List<Object> dataList, EntityPlayer player)
+    {
+        super.writeDescPacket(dataList, player);
+        dataList.add(controllerState.ordinal());
+    }
+
+    @Override
+    protected void readDescPacket(ByteBuf buf, EntityPlayer player)
+    {
+        super.readDescPacket(buf, player);
+        final ControllerState prev = controllerState;
+        controllerState = ControllerState.get(buf.readInt());
+        if (prev != controllerState)
+        {
+            world.markBlockRangeForRenderUpdate(getPos(), getPos());
+        }
     }
 
     @Override

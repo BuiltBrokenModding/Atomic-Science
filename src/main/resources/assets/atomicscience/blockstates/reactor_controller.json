@@ -3,13 +3,13 @@
   "defaults": {
     "model": "cube_all",
     "textures": {
-      "up": "atomicscience:blocks/reactor/controller.top",
-      "down": "atomicscience:blocks/reactor/controller.bottom",
-      "east": "atomicscience:blocks/reactor/controller.sides",
-      "west": "atomicscience:blocks/reactor/controller.sides",
-      "north": "atomicscience:blocks/reactor/controller.sides",
-      "south": "atomicscience:blocks/reactor/controller.sides",
-      "particle": "atomicscience:blocks/reactor/controller.sides"
+      "up": "atomicscience:blocks/reactor/reactor_controller_top",
+      "down": "atomicscience:blocks/reactor/reactor_controller_top",
+      "east": "atomicscience:blocks/reactor/reactor_controller_off",
+      "west": "atomicscience:blocks/reactor/reactor_controller_off",
+      "north": "atomicscience:blocks/reactor/reactor_controller_off",
+      "south": "atomicscience:blocks/reactor/reactor_controller_off",
+      "particle": "atomicscience:blocks/reactor/reactor_controller_off"
     }
   },
   "variants": {
@@ -18,6 +18,20 @@
     ],
     "inventory": [
       {}
-    ]
+    ],
+    "state": {
+      "on": {
+        "east": "atomicscience:blocks/reactor/reactor_controller_on",
+        "west": "atomicscience:blocks/reactor/reactor_controller_on",
+        "north": "atomicscience:blocks/reactor/reactor_controller_on",
+        "south": "atomicscience:blocks/reactor/reactor_controller_on"
+      },
+      "off": {
+        "east": "atomicscience:blocks/reactor/reactor_controller_off",
+        "west": "atomicscience:blocks/reactor/reactor_controller_off",
+        "north": "atomicscience:blocks/reactor/reactor_controller_off",
+        "south": "atomicscience:blocks/reactor/reactor_controller_off"
+      }
+    }
   }
 }
