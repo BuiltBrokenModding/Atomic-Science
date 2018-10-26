@@ -3,7 +3,7 @@ package com.builtbroken.atomic.content.machines.reactor.pipe.inv;
 import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipe;
 import com.builtbroken.atomic.content.machines.reactor.pipe.inv.gui.ContainerRodPipe;
 import com.builtbroken.atomic.content.machines.reactor.pipe.inv.gui.GuiRodPipe;
-import com.builtbroken.atomic.lib.TileTimer;
+import com.builtbroken.atomic.lib.timer.TileTimer;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

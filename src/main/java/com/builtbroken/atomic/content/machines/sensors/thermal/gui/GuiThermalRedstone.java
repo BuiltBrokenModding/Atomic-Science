@@ -5,6 +5,7 @@ import com.builtbroken.atomic.content.items.ItemHeatProbe;
 import com.builtbroken.atomic.content.machines.sensors.thermal.TileEntityThermalRedstone;
 import com.builtbroken.atomic.lib.LanguageUtility;
 import com.builtbroken.atomic.lib.gui.GuiContainerBase;
+import com.builtbroken.atomic.lib.timer.TileTimerConditional;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +24,10 @@ public class GuiThermalRedstone extends GuiContainerBase<TileEntityThermalRedsto
 
     private String infoMessage;
 
+    private TileTimerConditional fieldRefreshTimer = TileTimerConditional.newSimple(40, ticks -> refreshFields())
+            .setShouldTickFunction(() -> !areFieldsSelected())
+            .setShouldResetFunction(() -> areFieldsSelected());
+
     public GuiThermalRedstone(EntityPlayer player, TileEntityThermalRedstone host)
     {
         super(new ContainerThermalRedstone(player, host), host);
@@ -34,6 +39,7 @@ public class GuiThermalRedstone extends GuiContainerBase<TileEntityThermalRedsto
         super.initGui();
         fields.add(minTriggerField = new GuiTextField(0, fontRenderer, guiLeft + 72, guiTop + 28, 80, 12));
         fields.add(maxTriggerField = new GuiTextField(1, fontRenderer, guiLeft + 72, guiTop + 48, 80, 12));
+        refreshFields();
 
         this.buttonList.add(new GuiButton(2, guiLeft + 130, guiTop + 64, 35, 20, getLocal("button.set")));
         this.buttonList.add(new GuiButton(3, guiLeft + 110, guiTop + 125, 55, 20, getLocal("button.get")));
@@ -51,14 +57,18 @@ public class GuiThermalRedstone extends GuiContainerBase<TileEntityThermalRedsto
     public void updateScreen()
     {
         super.updateScreen();
-        if (!minTriggerField.isFocused())
-        {
-            minTriggerField.setText("" + formatHeat(host.minHeatTrigger * 1000));
-        }
-        if (!maxTriggerField.isFocused())
-        {
-            maxTriggerField.setText("" + formatHeat(host.maxHeatTrigger * 1000));
-        }
+        fieldRefreshTimer.tick();
+    }
+
+    protected boolean areFieldsSelected()
+    {
+        return minTriggerField.isFocused() || maxTriggerField.isFocused();
+    }
+
+    protected void refreshFields()
+    {
+        minTriggerField.setText("" + formatHeat(host.minHeatTrigger * 1000));
+        maxTriggerField.setText("" + formatHeat(host.maxHeatTrigger * 1000));
     }
 
     @Override
@@ -192,7 +202,7 @@ public class GuiThermalRedstone extends GuiContainerBase<TileEntityThermalRedsto
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        drawStringCentered( getLocal("label.title"), xSize / 2, 6, 4210752);
+        drawStringCentered(getLocal("label.title"), xSize / 2, 6, 4210752);
         this.fontRenderer.drawString(getLocal("label.min"), 12, 30, 4210752);
         this.fontRenderer.drawString(getLocal("label.max"), 12, 50, 4210752);
 
