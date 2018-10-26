@@ -1,0 +1,264 @@
+## Creative Tabs
+itemGroup.atomicscience=Atomic Science
+itemGroup.fluid.cells=[Dev] 액체셀
+
+## Blocks
+tile.atomicscience:ore.uranium.name=우라늄 광석
+
+## Sensor
+tile.atomicscience:sensor.thermal.redstone.name=열감지 레드스톤 센서
+gui.atomicscience:sensor.thermal.redstone.button.set=설정
+gui.atomicscience:sensor.thermal.redstone.button.get=측정
+gui.atomicscience:sensor.thermal.redstone.label.title=열감지 센서
+gui.atomicscience:sensor.thermal.redstone.label.min=최소
+gui.atomicscience:sensor.thermal.redstone.label.max=최대
+gui.atomicscience:sensor.thermal.redstone.label.heat.value=Heat:
+gui.atomicscience:sensor.thermal.redstone.label.heat.none=Heat: 버튼을 눌러서 얻으십시오
+gui.atomicscience:sensor.thermal.redstone.label.error=§cError:
+gui.atomicscience:sensor.thermal.redstone.label.info=Info:
+gui.atomicscience:sensor.thermal.redstone.label.redstone=Redstone:
+
+## Machines
+tile.atomicscience:reactor.cell.name=원자로 코어
+tile.atomicscience:reactor.controller.name=원자로 제어기
+
+tile.atomicscience:steam.funnel.name=증기 배출구
+
+tile.atomicscience:steam.generator.name=증기 터빈
+tile.atomicscience:steam.generator.0.name=UE 증기 터빈
+tile.atomicscience:steam.generator.1.name=RF 증기 터빈
+tile.atomicscience:steam.generator.2.name=EU 증기 터빈
+
+tile.atomicscience:chem.centrifuge.name=Chemical 분리기
+tile.atomicscience:chem.centrifuge.gui=Chemical 분리기
+
+tile.atomicscience:chem.boiler.name=Chemical 보일러
+tile.atomicscience:chem.boiler.gui=Chemical 보일러
+
+tile.atomicscience:chem.extractor.name=Chemical 추출장치
+tile.atomicscience:chem.extractor.gui=Chemical 추출장치
+
+tile.atomicscience:pipe.rod.name=원자로 연료봉 컨베이어
+tile.atomicscience:pipe.rod.info=컨트롤을 쉽게 해줍니다, 연료봉을 원자로에 넣어줍니다, 곧바로 아이템을 넣는게 아니라
+
+tile.atomicscience:pipe.rod.inv.name=원자료 연료봉 전달 저장장치
+tile.atomicscience:pipe.rod.inv.info=단일 깔때기처럼 행동합니다, 컨트롤을 쉽게 하게해줍니다, 연료봉을 반응로로 옮겨줍니다
+
+## Items
+item.atomicscience:hazmat.mask.name=Hazmat Mask M1A
+item.atomicscience:hazmat.body.name=Hazmat Upper body M1A
+item.atomicscience:hazmat.leggings.name=Hazmat Lower Body M1A
+item.atomicscience:hazmat.boots.name=Hazmat Boots M1A
+
+item.atomicscience:hazmat.mask.color.name=Hazmat Mask M1B
+item.atomicscience:hazmat.body.color.name=Hazmat Upper body M1B
+item.atomicscience:hazmat.leggings.color.name=Hazmat Lower Body M1B
+item.atomicscience:hazmat.boots.color.name=Hazmat Boots M1B
+
+item.atomicscience:hazmat.color.info=Modified version of M1A Suit, 염료로 색을 바꿀수 있습니다.
+
+item.atomicscience:cell.fluid.name=액체 셀
+item.atomicscience:cell.fluid.water.name=물 셀
+item.atomicscience:cell.fluid.deuterium.name=중수소 셀
+
+item.atomicscience:cell.powered.name=충전된 셀
+item.atomicscience:cell.powered.antimatter.name=반물질 셀
+item.atomicscience:cell.powered.strange_matter.name=이상한 물질 셀
+
+item.atomicscience:cell.fuel.fissile.name=연료봉
+item.atomicscience:cell.fuel.fissile.info.fuel=Fuel: -time- / -maxTime-
+
+item.atomicscience:cell.fuel.breeder.name=Fission Breeder Rod
+item.atomicscience:cell.fuel.breeder.info.fuel=Fuel: -time- / -maxTime-
+
+item.atomicscience:cell.empty.name=빈셀
+
+item.atomicscience:cake.yellow.name=Yellow Cake
+item.atomicscience:cake.yellow.info=우라늄 가루, 우라늄을 헥사플루오라이드로 처리합니다
+
+item.atomicscience:uranium.234.name=우라늄 234
+item.atomicscience:uranium.234.info=우라늄 동위 원소, 현재 사용되지 않음
+
+item.atomicscience:uranium.235.name=우라늄 235
+item.atomicscience:uranium.235.info=우라늄 동위 원소, 핵분열 연료로 사용
+
+item.atomicscience:uranium.238.name=우라늄 238
+item.atomicscience:uranium.238.info=우라늄 동위 원소, 현재 사용하지 않음
+
+item.atomicscience:processing.waste.name=독성 미네랄 쓰레기
+item.atomicscience:processing.waste.info=자원 처리의 폐기물, 일부 추적 자료 포함
+
+item.atomicscience:toxic.waste.name=독성 쓰레기
+item.atomicscience:toxic.waste.info=고체 우라늄 폐기물, 현재 사용하지 않음
+
+## Tools
+item.atomicscience:heat.probe.name=열 프로브
+item.atomicscience:heat.probe.info=증기 에너지를 측정하는데 사용됨, §bright-click§r 으로 측정, §bshift§r to offset to face of block
+
+## Fluids
+fluid.atomicscience:antimatter=반물질
+fluid.atomicscience:strange_matter=이상한 물질
+fluid.atomicscience:deuterium=중수소
+fluid.atomicscience:steam=증기
+fluid.atomicscience:reactor_waste=반응 쓰레기
+fluid.atomicscience:mineral_waste=오염된 미네랄 쓰레기
+fluid.atomicscience:contaminated_mineral_water=오염 된 미네랄 용액
+fluid.atomicscience:contaminated_water=오염된 물
+fluid.atomicscience:uranium_hexafluoride=우라늄 헥사플루로이드
+
+## Wrench
+item.atomicscience:wrench.name=조정자
+item.atomicscience:wrench.rotation.name=회전 조절자
+item.atomicscience:wrench.item.name=아이템 조절자
+item.atomicscience:wrench.fluid.name=액체 조절자
+item.atomicscience:wrench.redstone.name=레드스톤 조절자
+
+item.atomicscience:wrench.rotation.green.name=초록 회전 조절자
+item.atomicscience:wrench.rotation.yellow.name=노랑 회전 조절자
+item.atomicscience:wrench.rotation.red.name=적색 회전 조절자
+item.atomicscience:wrench.rotation.blue.name=청색 회전 조절자
+item.atomicscience:wrench.rotation.purple.name=보라색 회전 조절자
+item.atomicscience:wrench.rotation.orange.name=주황 회전 조절자
+
+item.atomicscience:wrench.item.green.name=초록 아이템 조절자
+item.atomicscience:wrench.item.yellow.name=노랑 아이템 조절자
+item.atomicscience:wrench.item.red.name=적색 아이템 조절자
+item.atomicscience:wrench.item.blue.name=청색 아이템 조절자
+item.atomicscience:wrench.item.purple.name=보라 아이템 조절자
+item.atomicscience:wrench.item.orange.name=주황 아이템 조절자
+
+item.atomicscience:wrench.fluid.green.name=초록 액체 조절자
+item.atomicscience:wrench.fluid.yellow.name=노랑 액체 조절자
+item.atomicscience:wrench.fluid.red.name=적색 액체 조절자
+item.atomicscience:wrench.fluid.blue.name=청색 액체 조절자
+item.atomicscience:wrench.fluid.purple.name=보라 액체 조절자
+item.atomicscience:wrench.fluid.orange.name=주황 액체 조절자
+
+item.atomicscience:wrench.redstone.green.name=초록 레드스톤 조절자
+item.atomicscience:wrench.redstone.yellow.name=노랑 레드스톤 조절자
+item.atomicscience:wrench.redstone.red.name=적색 레드스톤 조절자
+item.atomicscience:wrench.redstone.blue.name=청색 레드스톤 조절자
+item.atomicscience:wrench.redstone.purple.name=보라 레드스톤 조절자
+item.atomicscience:wrench.redstone.orange.name=주황 레드스톤 조절자
+
+## Wrench Info
+item.atomicscience:wrench.mode.rotation.info=Mode: §bRotation
+item.atomicscience:wrench.mode.item.info=Mode: §eItem
+item.atomicscience:wrench.mode.fluid.info=Mode: §9Fluid
+item.atomicscience:wrench.mode.redstone.info=Mode: §4Redstone
+
+item.atomicscience:wrench.color.green.info=Color: 초록
+item.atomicscience:wrench.color.yellow.info=Color: 노랑
+item.atomicscience:wrench.color.red.info=Color: 적색
+item.atomicscience:wrench.color.blue.info=Color: 청색
+item.atomicscience:wrench.color.purple.info=Color: 보라
+
+item.atomicscience:wrench.more.info=Hold §bSHIFT§f for more
+
+item.atomicscience:wrench.info=Adjusts machine settings
+item.atomicscience:wrench.use.info=§5While holding §bshift:
+item.atomicscience:wrench.ctrl.info=§bCtrl + §bMouse §5wheel to cycle modes
+item.atomicscience:wrench.wheel.info=§bMouse wheel §5to cycle color
+
+## Gui
+gui.tank.tooltip=-fluid-;-vol-/-cap-
+gui.tank.tooltip.empty=비어있는
+
+gui.tooltip.slot.tank.input.blue=청색 탱크 투입구
+
+gui.tooltip.slot.tank.output.green=초록 탱크 배출구
+gui.tooltip.slot.tank.output.yellow=노랑 탱크 배출구
+
+gui.tooltip.slot.energy.input=Energy
+
+gui.tooltip.slot.input=투입구
+gui.tooltip.slot.output=배출구
+
+## Info
+tile.atomicscience:reactor.controller.error.state=컨트롤러에 에러발생, 이것은 CPU를 과하게 사용할수있습니다. 1 개의 컨트롤러 만 y 축에서 코어 스택에 연결할 수 있습니다. Y 축에 여러 개의 스택을 갖고 싶으면 스페이서로 각 스택을 분리하십시오. 재고 연결을 유지하려면 스택 레이어 사이에 호퍼 또는 파이프를 사용하십시오.
+tile.atomicscience:reactor.controller.cell.count=컨트롤러가 현재 만큼 사용되고  %s reactor cell(s)
+
+## Misc
+error.translation.empty=Translation Missing for ' %s '
+error.translation.null=Translation key was null
+
+## Config
+
+#### Content
+config.atomicscience:content.title=Content
+
+###### Uranium Ore
+config.atomicscience:content.ore.uranium.title=Uranium Ore
+config.atomicscience:content.ore.uranium.enable.title=Enable Generation
+config.atomicscience:content.ore.uranium.min.title=Min Spawn Height
+config.atomicscience:content.ore.uranium.max.title=Max Spawn Height
+config.atomicscience:content.ore.uranium.count.title=Spawn Per Chunk
+config.atomicscience:content.ore.uranium.branch.title=Spawn Per Branch
+config.atomicscience:content.ore.uranium.harvest.title=Tool Harvest Level
+
+###### Power Usage
+config.atomicscience:content.power.usage.title=Power Usage
+config.atomicscience:content.power.usage.enable.title=Enable
+config.atomicscience:content.power.usage.boiler.title=Chem Boiler
+config.atomicscience:content.power.usage.extractor.title=Chem Extractor
+config.atomicscience:content.power.usage.centrifuge.title=Chem Centrifuge
+
+###### Reactor
+config.atomicscience:content.reactor.title=Reactor
+config.atomicscience:content.reactor.fuel.rod.time.title=Fuel Rod Burn Time
+config.atomicscience:content.reactor.breeder.rod.time.title=Breeder Rod Burn Time
+config.atomicscience:content.reactor.fuel.rod.heat.title=Fuel Rod Heat Generation
+config.atomicscience:content.reactor.breeder.rod.heat.title=Breeder Rod Heat Generation
+
+#### Logic
+config.atomicscience:logic.title=Logic
+
+###### Steam
+config.atomicscience:thermal.steam.title=Steam
+config.atomicscience:thermal.steam.energy.title=Steam to Energy Rate
+config.atomicscience:thermal.steam.water.vapor.title=Vapor Rate Water
+config.atomicscience:thermal.steam.water.flowing.vapor.title=Vapor Rate Water Flowing
+config.atomicscience:thermal.steam.water.max.vapor.title=Max Vapor Rate Water
+
+#### Server
+config.atomicscience:server.title=Server
+config.atomicscience:server.network.title=Network
+config.atomicscience:server.network.boiling.title=Enable Boiling Effect Packet
+config.atomicscience:server.network.steam.title=Enable Steam Effect Packet
+
+#### Client
+config.atomicscience:client.title=Client
+
+###### Particles
+config.atomicscience:client.particles.title=Particles
+config.atomicscience:client.particles.boiling.title=Boiling Effect
+config.atomicscience:client.particles.machine.complete.title=Machine Complete
+config.atomicscience:client.particles.machine.running.title=Machine Running
+config.atomicscience:client.particles.reactor.running.title=Reactor Running
+config.atomicscience:client.particles.steam.title=Steam Vapor Effect
+
+###### Radiation Display
+config.atomicscience:client.radiation.display.title=Radiation HUD
+config.atomicscience:client.radiation.display.enable.title=Enable
+
+#### Mods
+config.atomicscience:mods.title=Mods
+
+###### IC2
+config.atomicscience:mods.ic2.title=IndustrialCraft
+config.atomicscience:mods.ic2.power.title=Enable Power Usage
+config.atomicscience:mods.ic2.fe_per_eu.title=FE to EU Conversion Rate
+config.atomicscience:mods.ic2.recipes.title=Enable Recipes
+
+###### Buildcraft
+config.atomicscience:mods.buildcraft.title=BuildCraft
+config.atomicscience:mods.buildcraft.fe_per_mj.title=FE to MJ Conversion Rate
+config.atomicscience:mods.buildcraft.power.title=Enable Power Usage
+
+###### Actually Additions
+config.atomicscience:mods.actually.additions.title=Actually Additions
+config.atomicscience:mods.actually.additions.recipes.title=Enable Recipes
+
+###### Thermal Expansion
+config.atomicscience:mods.thermal.expansion.title=Thermal Expansion
+config.atomicscience:mods.thermal.expansion.recipes.title=Enable Recipes
