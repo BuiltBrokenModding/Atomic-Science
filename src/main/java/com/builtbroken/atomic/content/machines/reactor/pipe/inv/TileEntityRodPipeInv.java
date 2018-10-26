@@ -3,7 +3,7 @@ package com.builtbroken.atomic.content.machines.reactor.pipe.inv;
 import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipe;
 import com.builtbroken.atomic.content.machines.reactor.pipe.inv.gui.ContainerRodPipe;
 import com.builtbroken.atomic.content.machines.reactor.pipe.inv.gui.GuiRodPipe;
-import com.builtbroken.atomic.lib.timer.TileTimer;
+import com.builtbroken.atomic.lib.timer.TickTimer;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,7 +33,7 @@ public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiT
     public static final int SLOT_ROD = 0;
 
     private ItemStackHandler inventory;
-    private final TileTimer inventoryMoveTimer = new TileTimer(10, (IntConsumer) ticks -> moveItems());
+    private final TickTimer inventoryMoveTimer = new TickTimer(10, (IntConsumer) ticks -> moveItems());
 
     private final List<EntityPlayer> playersGUI = new ArrayList();
 

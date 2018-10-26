@@ -5,7 +5,7 @@ import com.builtbroken.atomic.content.items.ItemHeatProbe;
 import com.builtbroken.atomic.content.machines.sensors.thermal.TileEntityThermalRedstone;
 import com.builtbroken.atomic.lib.LanguageUtility;
 import com.builtbroken.atomic.lib.gui.GuiContainerBase;
-import com.builtbroken.atomic.lib.timer.TileTimerConditional;
+import com.builtbroken.atomic.lib.timer.TickTimerConditional;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +24,7 @@ public class GuiThermalRedstone extends GuiContainerBase<TileEntityThermalRedsto
 
     private String infoMessage;
 
-    private TileTimerConditional fieldRefreshTimer = TileTimerConditional.newSimple(40, ticks -> refreshFields())
+    private TickTimerConditional fieldRefreshTimer = TickTimerConditional.newSimple(40, ticks -> refreshFields())
             .setShouldTickFunction(() -> !areFieldsSelected())
             .setShouldResetFunction(() -> areFieldsSelected());
 
