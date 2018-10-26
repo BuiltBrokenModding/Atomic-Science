@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.lib;
+package com.builtbroken.atomic.lib.timer;
 
 import java.util.function.IntConsumer;
 
@@ -8,10 +8,10 @@ import java.util.function.IntConsumer;
  */
 public class TileTimer
 {
-    private final int triggerTime;
-    private final TimeEndFunction function;
+    protected final int triggerTime;
+    protected final TimeEndFunction function;
 
-    private int ticks = 0;
+    protected int ticks = 0;
 
 
     public TileTimer(int triggerTime, TimeEndFunction function)
@@ -28,6 +28,11 @@ public class TileTimer
             consumer.accept(ticks);
             return true;
         };
+    }
+
+    public static TileTimer newSimple(int triggerTime, IntConsumer consumer)
+    {
+        return new TileTimer(triggerTime, consumer);
     }
 
     public void tick()
