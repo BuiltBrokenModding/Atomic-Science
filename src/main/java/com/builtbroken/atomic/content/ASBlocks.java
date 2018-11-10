@@ -3,6 +3,10 @@ package com.builtbroken.atomic.content;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.blocks.BlockUraniumOre;
 import com.builtbroken.atomic.content.fluid.BlockSimpleFluid;
+import com.builtbroken.atomic.content.machines.accelerator.magnet.BlockMagnet;
+import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
+import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import com.builtbroken.atomic.content.machines.processing.boiler.BlockChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.BlockChemCentrifuge;
@@ -53,6 +57,9 @@ public final class ASBlocks
 
     public static Block blockThermalSensorRedstone;
 
+    public static Block blockMagnet;
+    public static Block blockAcceleratorTube;
+
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
@@ -88,9 +95,15 @@ public final class ASBlocks
         event.getRegistry().register(blockThermalSensorRedstone = new BlockThermalRedstone());
         GameRegistry.registerTileEntity(TileEntityThermalRedstone.class, new ResourceLocation(AtomicScience.PREFIX + "sensor_thermal_redstone"));
 
-        for(ASFluids value : ASFluids.values())
+        event.getRegistry().register(blockMagnet = new BlockMagnet());
+        GameRegistry.registerTileEntity(TileEntityMagnet.class, new ResourceLocation(AtomicScience.PREFIX + "magnet"));
+
+        event.getRegistry().register(blockAcceleratorTube = new BlockAcceleratorTube());
+        GameRegistry.registerTileEntity(TileEntityAcceleratorTube.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_tube"));
+
+        for (ASFluids value : ASFluids.values())
         {
-            if(value.makeBlock && value.fluid.getBlock() == null)
+            if (value.makeBlock && value.fluid.getBlock() == null)
             {
                 event.getRegistry().register(createFluidBlock(value));
             }

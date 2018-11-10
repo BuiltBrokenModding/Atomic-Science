@@ -103,6 +103,12 @@ public class ASClientReg
         //Sensors
         newBlockModel(ASBlocks.blockThermalSensorRedstone);
 
+        //Magnet
+        newBlockModel(ASBlocks.blockMagnet);
+
+        //Accelerator
+        newBlockModel(ASBlocks.blockAcceleratorTube);
+
         //Register custom cell model
         ModelLoaderRegistry.registerLoader(new BucketModelLoader(AtomicScience.DOMAIN));
 

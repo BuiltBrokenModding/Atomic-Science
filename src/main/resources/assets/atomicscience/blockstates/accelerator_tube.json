@@ -1,0 +1,48 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "atomicscience:accelerator_tube/normal",
+    "textures": {
+      "top": "atomicscience:blocks/accelerator/tube_side_top",
+      "side": "atomicscience:blocks/accelerator/tube_side",
+      "opening": "atomicscience:blocks/accelerator/tube_opening"
+    }
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ],
+    "type": {
+      "normal": {},
+      "junction": {},
+      "direction": {}
+    },
+    "connection": {
+      "normal": {},
+      "corner_clockwise": {},
+      "corner_counter_clockwise": {},
+      "t_clockwise": {},
+      "t_counter_clockwise": {},
+      "intersection": {}
+    },
+    "rotation": {
+      "up": {},
+      "down": {},
+      "north": {
+        "y": 0
+      },
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      }
+    }
+  }
+}
