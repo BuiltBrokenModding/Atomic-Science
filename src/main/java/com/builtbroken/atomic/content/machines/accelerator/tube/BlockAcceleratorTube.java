@@ -9,8 +9,10 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -18,6 +20,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import scala.actors.threadpool.Arrays;
 
 import javax.annotation.Nullable;
@@ -46,14 +50,20 @@ public class BlockAcceleratorTube extends BlockPrefab
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileEntityAcceleratorTube)
         {
-            if(!world.isRemote)
+            if (playerIn.getHeldItem(hand).getItem() == Items.STICK)
             {
-                playerIn.sendMessage(new TextComponentString("Dir: " + ((TileEntityAcceleratorTube) tile).getDirection()));
-                playerIn.sendMessage(new TextComponentString("State: " + state));
+                if (!world.isRemote)
+                {
+                    playerIn.sendMessage(new TextComponentString("Block Debug:"));
+                    playerIn.sendMessage(new TextComponentString("---Dir: " + ((TileEntityAcceleratorTube) tile).getDirection() + "==" + state.getValue(ROTATION_PROP)));
+                    playerIn.sendMessage(new TextComponentString("---Type: " + state.getValue(TYPE_PROP)));
+                    playerIn.sendMessage(new TextComponentString("---Connection: " + state.getValue(CONNECTION_PROP)));
+                }
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     @Override
@@ -93,6 +103,7 @@ public class BlockAcceleratorTube extends BlockPrefab
         if (tile instanceof TileEntityAcceleratorTube)
         {
             ((TileEntityAcceleratorTube) tile).direction = placer.getHorizontalFacing();
+            ((TileEntityAcceleratorTube) tile).updateConnections(true);
         }
     }
 
@@ -118,7 +129,7 @@ public class BlockAcceleratorTube extends BlockPrefab
                 && tile.getWorld() != null
                 && !((TileEntityAcceleratorTube) tile).world().isRemote)
         {
-            ((TileEntityAcceleratorTube) tile).updateConnections();
+            ((TileEntityAcceleratorTube) tile).updateConnections(true);
         }
     }
 
@@ -127,5 +138,18 @@ public class BlockAcceleratorTube extends BlockPrefab
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
         return new TileEntityAcceleratorTube();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getRenderLayer()
+    {
+        return BlockRenderLayer.TRANSLUCENT;
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state)
+    {
+        return false;
     }
 }

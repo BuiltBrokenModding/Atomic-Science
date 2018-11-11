@@ -11,10 +11,17 @@ import net.minecraft.util.IStringSerializable;
 public enum AcceleratorConnectionType implements IStringSerializable
 {
     NORMAL,
-    CORNER_CLOCKWISE,
-    CORNER_COUNTER_CLOCKWISE,
-    T_CLOCKWISE,
-    T_COUNTER_CLOCKWISE,
+    //Turn
+    CORNER_RIGHT,
+    //Turn
+    CORNER_LEFT,
+    //Join two inputs to a single output, with only 1 being a turn
+    T_RIGHT,
+    //Join two inputs to a single output, with only 1 being a turn
+    T_LEFT,
+    //Join two inputs to a single output, with two turns
+    T_JOIN,
+    //Join 3 inputs to a single output
     INTERSECTION;
 
     public static AcceleratorConnectionType byIndex(int i)
