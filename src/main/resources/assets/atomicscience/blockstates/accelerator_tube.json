@@ -42,15 +42,19 @@
         }
       },
       "t_left": {
-        "model": "atomicscience:accelerator_tube/normal",
+        "model": "atomicscience:accelerator_tube/tube-t-left",
         "textures": {
-          "top": "atomicscience:blocks/accelerator/tube_top_t_left"
+          "0": "atomicscience:blocks/accelerator/tube_top_t_left",
+          "1": "atomicscience:blocks/accelerator/tube_top",
+          "particle": "atomicscience:blocks/accelerator/tube_top"
         }
       },
       "t_right": {
-        "model": "atomicscience:accelerator_tube/normal",
+        "model": "atomicscience:accelerator_tube/tube-t-right",
         "textures": {
-          "top": "atomicscience:blocks/accelerator/tube_top_t_right"
+          "0": "atomicscience:blocks/accelerator/tube_top_t_right",
+          "1": "atomicscience:blocks/accelerator/tube_top",
+          "particle": "atomicscience:blocks/accelerator/tube_top"
         }
       },
       "t_join": {
