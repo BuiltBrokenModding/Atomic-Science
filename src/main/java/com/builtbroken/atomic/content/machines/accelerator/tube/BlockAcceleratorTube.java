@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.prefab.BlockPrefab;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -11,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -50,7 +52,20 @@ public class BlockAcceleratorTube extends BlockPrefab
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileEntityAcceleratorTube)
         {
-            if (playerIn.getHeldItem(hand).getItem() == Items.STICK)
+            ItemStack heldItem = playerIn.getHeldItem(hand);
+            if (heldItem.getItem() == Items.GLOWSTONE_DUST)
+            {
+                if (tile instanceof TileEntityAcceleratorTubePowered)
+                {
+                    if (!world.isRemote)
+                    {
+                        ((TileEntityAcceleratorTubePowered) tile).scanForMagnets();
+                        playerIn.sendMessage(new TextComponentString("Power: " + ((TileEntityAcceleratorTubePowered) tile).calculateMagnetPower()));
+                    }
+                    return true;
+                }
+            }
+            else if (heldItem.getItem() == Items.STICK)
             {
                 if (!world.isRemote)
                 {
@@ -58,6 +73,32 @@ public class BlockAcceleratorTube extends BlockPrefab
                     playerIn.sendMessage(new TextComponentString("---Dir: " + ((TileEntityAcceleratorTube) tile).getDirection() + "==" + state.getValue(ROTATION_PROP)));
                     playerIn.sendMessage(new TextComponentString("---Type: " + state.getValue(TYPE_PROP)));
                     playerIn.sendMessage(new TextComponentString("---Connection: " + state.getValue(CONNECTION_PROP)));
+                }
+                return true;
+            }
+            else if (heldItem.getItem() == ASItems.itemWrench)
+            {
+
+                AcceleratorTubeType type = state.getValue(TYPE_PROP);
+                AcceleratorTubeType typeToSet = type.next();
+
+                NBTTagCompound save = new NBTTagCompound();
+                tile.writeToNBT(save);
+                save.removeTag("id");
+
+                world.setBlockState(pos, state.withProperty(TYPE_PROP, typeToSet));
+
+                tile = world.getTileEntity(pos);
+                if (tile instanceof TileEntityAcceleratorTube)
+                {
+                    tile.readFromNBT(save);
+                    ((TileEntityAcceleratorTube) tile).updateConnections(false);
+                    ((TileEntityAcceleratorTube) tile).updateState(true, true);
+                }
+
+                if (!world.isRemote)
+                {
+                    playerIn.sendMessage(new TextComponentString("Type changed from '" + type + "' to '" + typeToSet + "'"));
                 }
                 return true;
             }
@@ -137,6 +178,10 @@ public class BlockAcceleratorTube extends BlockPrefab
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
+        if (getStateFromMeta(meta).getValue(TYPE_PROP) == AcceleratorTubeType.DIRECTION)
+        {
+            return new TileEntityAcceleratorTubePowered();
+        }
         return new TileEntityAcceleratorTube();
     }
 

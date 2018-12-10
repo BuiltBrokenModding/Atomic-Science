@@ -7,6 +7,7 @@ import com.builtbroken.atomic.content.machines.accelerator.magnet.BlockMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTubePowered;
 import com.builtbroken.atomic.content.machines.processing.boiler.BlockChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.BlockChemCentrifuge;
@@ -100,6 +101,7 @@ public final class ASBlocks
 
         event.getRegistry().register(blockAcceleratorTube = new BlockAcceleratorTube());
         GameRegistry.registerTileEntity(TileEntityAcceleratorTube.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_tube"));
+        GameRegistry.registerTileEntity(TileEntityAcceleratorTubePowered.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_tube_powered"));
 
         for (ASFluids value : ASFluids.values())
         {
@@ -117,5 +119,4 @@ public final class ASBlocks
         blockSimpleFluid.setRegistryName(AtomicScience.PREFIX + fluid.name().toLowerCase());
         return blockSimpleFluid;
     }
-
 }

@@ -43,17 +43,17 @@ public class ItemWrench extends ItemPrefab
     @Override
     public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
     {
-        if (!world.isRemote)
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof TileEntityProcessingMachine)
         {
-            ItemStack stack = player.getHeldItem(hand);
-
-            TileEntity tile = world.getTileEntity(pos);
-            if (tile instanceof TileEntityProcessingMachine)
+            if (!world.isRemote)
             {
+                ItemStack stack = player.getHeldItem(hand);
                 ((TileEntityProcessingMachine) tile).onWrench(getMode(stack), getColor(stack), side, player);
             }
+            return EnumActionResult.SUCCESS;
         }
-        return EnumActionResult.SUCCESS;
+        return EnumActionResult.PASS;
     }
 
     /**

@@ -21,6 +21,16 @@ public enum AcceleratorTubeType implements IStringSerializable
         return NORMAL;
     }
 
+    public AcceleratorTubeType next()
+    {
+        int index = ordinal() + 1;
+        if(index >= values().length)
+        {
+            index = 0;
+        }
+        return byIndex(index);
+    }
+
     @Override
     public String getName()
     {
