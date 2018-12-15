@@ -1,0 +1,39 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "cube_all",
+    "textures": {
+      "up": "atomicscience:blocks/reactor_drain_front",
+      "down": "atomicscience:blocks/reactor_drain_front",
+      "east": "atomicscience:blocks/reactor_drain_front",
+      "west": "atomicscience:blocks/reactor_drain_front",
+      "north": "atomicscience:blocks/accelerator/electromagnet",
+      "south": "atomicscience:blocks/reactor_drain_front",
+      "particle": "atomicscience:blocks/reactor_drain_front"
+    }
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ],
+    "rotation": {
+      "up": {},
+      "down": {},
+      "north": {
+        "y": 0
+      },
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      }
+    }
+  }
+}

@@ -3,6 +3,8 @@ package com.builtbroken.atomic.content;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.blocks.BlockUraniumOre;
 import com.builtbroken.atomic.content.fluid.BlockSimpleFluid;
+import com.builtbroken.atomic.content.machines.accelerator.gun.BlockAcceleratorGun;
+import com.builtbroken.atomic.content.machines.accelerator.gun.TileEntityAcceleratorGun;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.BlockMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
@@ -60,6 +62,7 @@ public final class ASBlocks
 
     public static Block blockMagnet;
     public static Block blockAcceleratorTube;
+    public static Block blockAcceleratorGun;
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
@@ -102,6 +105,9 @@ public final class ASBlocks
         event.getRegistry().register(blockAcceleratorTube = new BlockAcceleratorTube());
         GameRegistry.registerTileEntity(TileEntityAcceleratorTube.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_tube"));
         GameRegistry.registerTileEntity(TileEntityAcceleratorTubePowered.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_tube_powered"));
+
+        event.getRegistry().register(blockAcceleratorGun = new BlockAcceleratorGun());
+        GameRegistry.registerTileEntity(TileEntityAcceleratorGun.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_gun"));
 
         for (ASFluids value : ASFluids.values())
         {

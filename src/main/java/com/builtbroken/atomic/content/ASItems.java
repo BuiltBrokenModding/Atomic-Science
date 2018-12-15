@@ -87,6 +87,7 @@ public final class ASItems
 
     public static ItemBlock blockMagnet;
     public static ItemBlock blockAcceleratorTube;
+    public static ItemBlock blockAcceleratorGun;
 
     /** Armor material used by hazmat armor sets */
     public static ItemArmor.ArmorMaterial hazmatArmorMaterial;
@@ -177,6 +178,7 @@ public final class ASItems
 
         blockMagnet = addItemBlock(event.getRegistry(), ASBlocks.blockMagnet);
         blockAcceleratorTube = addItemBlock(event.getRegistry(), ASBlocks.blockAcceleratorTube);
+        blockAcceleratorGun = addItemBlock(event.getRegistry(), ASBlocks.blockAcceleratorGun);
 
         blockThermalSensorRedstone = addItemBlock(event.getRegistry(), ASBlocks.blockThermalSensorRedstone);
 

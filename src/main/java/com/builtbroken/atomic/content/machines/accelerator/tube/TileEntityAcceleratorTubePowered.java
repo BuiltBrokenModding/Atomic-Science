@@ -27,10 +27,30 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
     {
         if (timer-- <= 0)
         {
+            //Start timer
             timer = 100 + world.rand.nextInt(100);
-            isLayoutInvalid = scanForMagnets();
-            magnetPower = calculateMagnetPower();
+            updateLayout();
         }
+    }
+
+    protected void updateLayout()
+    {
+        //Check layout
+        if (isLayoutInvalid = scanForMagnets())
+        {
+            //If invalid layout, clear magnet ownership
+            magnetPosList.forEach(pos -> {
+                TileEntity tile = world.getTileEntity(pos.pos);
+                if (tile instanceof TileEntityMagnet)
+                {
+                    ((TileEntityMagnet) tile).setOwner(null);
+                }
+            });
+            magnetPosList.clear();
+        }
+
+        //Calculate power
+        magnetPower = calculateMagnetPower();
     }
 
     protected float calculateMagnetPower()
@@ -38,8 +58,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         float power = 0;
         for (MagnetPos magnetPos : magnetPosList)
         {
-           //power += (1 / magnetPos.distance);
-            power += 1;
+            power += (1 / magnetPos.distance);
         }
 
         return power;
@@ -88,7 +107,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
                         if (((TileEntityMagnet) tile).getOwner() == null || ((TileEntityMagnet) tile).getOwner() == this)
                         {
                             ((TileEntityMagnet) tile).setOwner(this);
-                            addManget(next);
+                            addMagnet(next);
                             queue.offer(next);
                         }
                         else
@@ -103,7 +122,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         return true;
     }
 
-    protected void addManget(BlockPos pos)
+    protected void addMagnet(BlockPos pos)
     {
         //Manhattan distance
         int distance = Math.abs(pos.getX() - xi()) + Math.abs(pos.getY() - yi()) + Math.abs(pos.getZ() - zi());

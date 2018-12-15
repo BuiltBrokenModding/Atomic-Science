@@ -108,6 +108,7 @@ public class ASClientReg
 
         //Accelerator
         newBlockModel(ASBlocks.blockAcceleratorTube);
+        newBlockModel(ASBlocks.blockAcceleratorGun);
 
         //Register custom cell model
         ModelLoaderRegistry.registerLoader(new BucketModelLoader(AtomicScience.DOMAIN));
