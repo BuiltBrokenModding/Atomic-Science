@@ -58,35 +58,88 @@ public class BlockAcceleratorGun extends BlockPrefab
                     while (!positionsToPath.isEmpty())
                     {
                         //Get next pos
-                       final BlockPos pos = positionsToPath.pop();
+                        final BlockPos pos = positionsToPath.pop();
 
-                       //Add to pathed so we don't path again
-                       pathedPositions.add(pos);
+                        //Add to pathed so we don't path again
+                        pathedPositions.add(pos);
 
-                       //Check for tube at position
-                       final TileEntity tileEntity = world.getTileEntity(pos);
-                       if(tileEntity instanceof TileEntityAcceleratorTube)
-                       {
-                            AcceleratorNode node = new AcceleratorNode(((TileEntityAcceleratorTube) tileEntity).getDirection(), ((TileEntityAcceleratorTube) tileEntity).getConnectionType());
+                        //Check for tube at position
+                        final TileEntity tileEntity = world.getTileEntity(pos);
+                        if (tileEntity instanceof TileEntityAcceleratorTube)
+                        {
+                            AcceleratorNode node = new AcceleratorNode(pos,
+                                    ((TileEntityAcceleratorTube) tileEntity).getDirection(),
+                                    ((TileEntityAcceleratorTube) tileEntity).getConnectionType());
                             nodes.put(pos, node);
 
-                           //Get all possible directions
-                           for(EnumFacing facing : EnumFacing.HORIZONTALS)
-                           {
-                               BlockPos nextPos = pos.offset(facing);
+                            //Get all possible directions
+                            for (EnumFacing facing : EnumFacing.HORIZONTALS)
+                            {
+                                BlockPos nextPos = pos.offset(facing);
 
-                               //If we have not pathed, add to path list
-                               if(!pathedPositions.contains(nextPos))
-                               {
-                                   positionsToPath.add(nextPos);
-                               }
-                               //If we have pathed, check for connection
-                               else if(nodes.containsKey(nextPos))
-                               {
-                                   node.connect(nodes.get(nextPos));
-                               }
-                           }
-                       }
+                                //If we have not pathed, add to path list
+                                if (!pathedPositions.contains(nextPos))
+                                {
+                                    positionsToPath.add(nextPos);
+                                }
+                                //If we have pathed, check for connection
+                                else if (nodes.containsKey(nextPos))
+                                {
+                                    node.connect(nodes.get(nextPos));
+                                }
+                            }
+                        }
+                    }
+
+                    int minX = nodes.keySet().stream().min(Comparator.comparingInt(pos -> pos.getX())).get().getX();
+                    int minZ = nodes.keySet().stream().min(Comparator.comparingInt(pos -> pos.getZ())).get().getZ();
+
+                    int maxX = nodes.keySet().stream().max(Comparator.comparingInt(pos -> pos.getX())).get().getX();
+                    int maxZ = nodes.keySet().stream().max(Comparator.comparingInt(pos -> pos.getZ())).get().getZ();
+
+                    int sizeX = Math.abs(maxX - minX) + 10;
+                    int sizeY = Math.abs(maxZ - minZ) + 10;
+
+                    if (sizeX == 0)
+                    {
+                        sizeX = 1;
+                    }
+                    if (sizeY == 0)
+                    {
+                        sizeY = 1;
+                    }
+
+                    System.out.println(minX + ", " + minZ + " - " + maxX + ", " + maxZ + "  " + sizeX + "x" + sizeY);
+
+                    char[][] grid = new char[sizeX][sizeY];
+
+                    nodes.keySet().forEach(blockPos -> {
+                        int x = blockPos.getX() - minX + 2;
+                        int z = blockPos.getZ() - minZ + 2;
+
+                        System.out.println(blockPos);
+                        System.out.println(x + ", " + z + "  " + grid.length + "x" + grid[0].length);
+
+                        AcceleratorNode node = nodes.get(blockPos);
+                        int connections = node.nodes.size();
+
+                         node.nodes.forEach(n -> System.out.println("\t" + n.pos));
+
+                        grid[x][z] = Character.forDigit(connections, 10);
+                    });
+
+                    for (int x = 0; x < grid.length; x++)
+                    {
+                        for (int z = 0; z < grid[x].length; z++)
+                        {
+                            char c = grid[x][z];
+                            if (c == 0)
+                            {
+                                c = ' ';
+                            }
+                            System.out.print(c);
+                        }
+                        System.out.println();
                     }
 
                     playerIn.sendMessage(new TextComponentString("Tubes: " + nodes.size()));
