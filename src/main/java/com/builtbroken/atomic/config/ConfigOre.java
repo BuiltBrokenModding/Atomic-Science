@@ -37,7 +37,7 @@ public class ConfigOre extends ContentProxy
         URANIUM_ORE_COUNT = configuration.getInt("chunk_count", CATEGORY_URANIUM, URANIUM_ORE_MAX_Y, 1, 100, "Max amount of ore to spawn in each chunk. " +
                 "Actual count per chunk is a mix of randomization and conditions of the chunk itself.");
         URANIUM_ORE_BRANCH_SIZE = configuration.getInt("branch_size", CATEGORY_URANIUM, URANIUM_ORE_BRANCH_SIZE, 0, 100, "Amount of ore to generate per branch");
-        URANIUM_ORE_HARVEST_LEVEL = configuration.getInt("harvest_level", CATEGORY_URANIUM, URANIUM_ORE_MIN_Y, 0, 255, "Tool level needed to mine the ore \n" +
+        URANIUM_ORE_HARVEST_LEVEL = configuration.getInt("harvest_level", CATEGORY_URANIUM, URANIUM_ORE_HARVEST_LEVEL, 0, 255, "Tool level needed to mine the ore \n" +
                 "*     Wood:    0\n" +
                 "*     Stone:   1\n" +
                 "*     Iron:    2\n" +
