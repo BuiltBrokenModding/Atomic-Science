@@ -10,6 +10,7 @@ import com.builtbroken.atomic.client.EffectRefs;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.machines.TileEntityInventoryMachine;
 import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
+import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipe;
 import com.builtbroken.atomic.lib.inventory.ItemStackHandlerWrapper;
 import com.builtbroken.atomic.map.data.node.MapDataSources;
 import com.builtbroken.atomic.map.exposure.node.RadSourceTile;
@@ -40,7 +41,6 @@ import java.util.List;
 public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandlerModifiable> implements IFissionReactor
 {
     public static final int SLOT_FUEL_ROD = 0;
-    public static final int[] ACCESSIBLE_SIDES = new int[]{SLOT_FUEL_ROD};
     /** Client side */
     private boolean _running = false;
     private boolean _renderFuel = false;
@@ -48,8 +48,8 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
 
     public boolean enabled = true; ///TODO add a spin up and down time, prevent instant enable/disable of reactors
 
-    private final RadSourceTile<TileEntityReactorCell> radiationSource = new RadSourceTile(this, () -> getRadioactiveMaterial());
-    private final ThermalSource<TileEntityReactorCell> thermalSource = new ThermalSourceTile(this, () -> getHeatGenerated());
+    private final RadSourceTile<TileEntityReactorCell> radiationSource = new RadSourceTile(this, () -> getRadioactiveMaterial(), () -> canOperate());
+    private final ThermalSource<TileEntityReactorCell> thermalSource = new ThermalSourceTile(this, () -> getHeatGenerated(), () -> canOperate());
 
     @Override
     protected void firstTick(boolean isClient)
@@ -72,15 +72,22 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
             public void setStackInSlot(int slot, @Nonnull ItemStack stack)
             {
                 validateSlotIndex(slot);
+
                 ItemStack prev = getStackInSlot(slot);
                 this.stacks.set(slot, stack);
 
+                //Disable if not fuel rod
+                if (!(stack.getItem() instanceof IFuelRodItem))
+                {
+                    _running = false;
+                }
+
+                //If not the same item, trigger update
                 if (!ItemStack.areItemStacksEqual(prev, stack))
                 {
                     onSlotStackChanged(slot, prev, stack);
+                    onContentsChanged(slot);
                 }
-
-                onContentsChanged(slot);
             }
 
             @Override
@@ -232,12 +239,22 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
                     tryToMoveRod((TileEntityReactorCell) tile);
                 }
                 //Skip over reactor trying to insert into next reactor
-                else if (tile instanceof TileEntityReactorController && runtime > 0)
+                else if (isValidRodRelay(tile) && runtime > 0)
                 {
-                    tile = world.getTileEntity(getPos().down(2));
-                    if (tile instanceof TileEntityReactorCell)
+                    //Try to find the next cell in the path
+                    BlockPos pos = getPos().down(2);
+                    while (isValidRodRelay(tile))
                     {
-                        tryToMoveRod((TileEntityReactorCell) tile);
+                        tile = world.getTileEntity(pos);
+                        if (tile instanceof TileEntityReactorCell)
+                        {
+                            tryToMoveRod((TileEntityReactorCell) tile);
+                            break;
+                        }
+                        else
+                        {
+                            pos = pos.down();
+                        }
                     }
                 }
                 //Rod is dead try to eject to inventory
@@ -265,6 +282,18 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
                 }
             }
         }
+    }
+
+    /**
+     * Checks if a rod can be passed from this cell through
+     * the tile into another cell.
+     *
+     * @param tile
+     * @return
+     */
+    protected boolean isValidRodRelay(TileEntity tile)
+    {
+        return tile instanceof TileEntityReactorController || tile instanceof TileEntityRodPipe; //TODO use capability or interface for allow
     }
 
     /**
@@ -334,6 +363,10 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     protected void onSlotStackChanged(int slot, ItemStack prev_stack, ItemStack new_stack)
     {
         this.markDirty();
+        if (!canOperate())
+        {
+            _running = false;
+        }
     }
 
     @Override

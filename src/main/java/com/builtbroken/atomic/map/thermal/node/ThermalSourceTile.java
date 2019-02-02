@@ -3,6 +3,7 @@ package com.builtbroken.atomic.map.thermal.node;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 
 /**
@@ -12,17 +13,25 @@ import java.util.function.IntSupplier;
 public class ThermalSourceTile<E extends TileEntity> extends ThermalSource<E>
 {
     private final IntSupplier heatFunction;
+    private final BooleanSupplier activeFunction;
 
-    public ThermalSourceTile(E host, IntSupplier heatFunction)
+    public ThermalSourceTile(E host, IntSupplier heatFunction, BooleanSupplier activeFunction)
     {
         super(host);
         this.heatFunction = heatFunction;
+        this.activeFunction = activeFunction;
     }
 
     @Override
-    public boolean isStillValid()
+    public boolean canGeneratingHeat()
     {
-        return super.isStillValid() && !host.isInvalid();
+        return getHeatGenerated() > 0 && activeFunction.getAsBoolean();
+    }
+
+    @Override
+    public boolean doesSourceExist()
+    {
+        return world() != null && host != null && !host.isInvalid();
     }
 
     @Override

@@ -88,12 +88,12 @@ public class BlockReactorCell extends BlockPrefab
                     }
                     return true;
                 }
-                else if (reactorCell.isItemValidForSlot(0, heldItem))
+                else if (reactorCell.isItemValidForSlot(TileEntityReactorCell.SLOT_FUEL_ROD, heldItem))
                 {
-                    if (!world.isRemote && reactorCell.getInventory().getStackInSlot(0).isEmpty())
+                    if (!world.isRemote && reactorCell.getInventory().getStackInSlot(TileEntityReactorCell.SLOT_FUEL_ROD).isEmpty())
                     {
                         ItemStack copy = heldItem.splitStack(1);
-                        reactorCell.getInventory().setStackInSlot(0, copy); //TODO rework to use insert
+                        reactorCell.getInventory().setStackInSlot(TileEntityReactorCell.SLOT_FUEL_ROD, copy); //TODO rework to use insert
 
                         if (heldItem.getCount() <= 0)
                         {
@@ -110,10 +110,10 @@ public class BlockReactorCell extends BlockPrefab
             }
             else if (player.isSneaking())
             {
-                if (!world.isRemote && !reactorCell.getInventory().getStackInSlot(0).isEmpty())
+                if (!world.isRemote && !reactorCell.getInventory().getStackInSlot(TileEntityReactorCell.SLOT_FUEL_ROD).isEmpty())
                 {
-                    player.setHeldItem(hand, reactorCell.getInventory().getStackInSlot(0));
-                    reactorCell.getInventory().setStackInSlot(0, ItemStack.EMPTY);
+                    player.setHeldItem(hand, reactorCell.getInventory().getStackInSlot(TileEntityReactorCell.SLOT_FUEL_ROD));
+                    reactorCell.getInventory().setStackInSlot(TileEntityReactorCell.SLOT_FUEL_ROD, ItemStack.EMPTY);
                     player.inventoryContainer.detectAndSendChanges();
                 }
                 return true;

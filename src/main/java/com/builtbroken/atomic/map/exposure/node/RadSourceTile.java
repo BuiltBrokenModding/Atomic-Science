@@ -3,6 +3,7 @@ package com.builtbroken.atomic.map.exposure.node;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 
 /**
@@ -12,11 +13,19 @@ import java.util.function.IntSupplier;
 public class RadSourceTile<E extends TileEntity> extends RadiationSource<E>
 {
     private final IntSupplier radFunction;
+    private final BooleanSupplier activeFunction;
 
-    public RadSourceTile(E host, IntSupplier radFunction)
+    public RadSourceTile(E host, IntSupplier radFunction, BooleanSupplier activeFunction)
     {
         super(host);
         this.radFunction = radFunction;
+        this.activeFunction = activeFunction;
+    }
+
+    @Override
+    public boolean isRadioactive()
+    {
+        return super.isRadioactive() && activeFunction.getAsBoolean();
     }
 
     @Override
@@ -26,9 +35,9 @@ public class RadSourceTile<E extends TileEntity> extends RadiationSource<E>
     }
 
     @Override
-    public boolean isStillValid()
+    public boolean doesSourceExist()
     {
-        return super.isStillValid() && !host.isInvalid();
+        return world() != null && host != null && !host.isInvalid();
     }
 
     @Override

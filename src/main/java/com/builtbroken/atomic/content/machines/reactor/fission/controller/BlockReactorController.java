@@ -1,7 +1,6 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.controller;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.content.ASBlocks;
 import com.google.common.collect.Lists;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -56,36 +55,32 @@ public class BlockReactorController extends BlockContainer
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        ItemStack heldItem = player.getHeldItem(hand);
-        if (heldItem != null
-                && heldItem.getItem() instanceof ItemBlock
-                && ((ItemBlock) heldItem.getItem()).getBlock() == ASBlocks.blockReactorCell)
+        final ItemStack heldItem = player.getHeldItem(hand);
+        if (!(heldItem.getItem() instanceof ItemBlock))
         {
-            return false;
-        }
-
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityReactorController)
-        {
-            TileEntityReactorController controller = ((TileEntityReactorController) tileEntity);
-            if (!world.isRemote)
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof TileEntityReactorController)
             {
-                if (controller.isInErrorState())
+                TileEntityReactorController controller = ((TileEntityReactorController) tileEntity);
+                if (!world.isRemote)
                 {
-                    player.sendMessage(new TextComponentTranslation(getTranslationKey() + ".error.state"));
+                    if (controller.isInErrorState())
+                    {
+                        player.sendMessage(new TextComponentTranslation(getTranslationKey() + ".error.state"));
+                    }
+                    else if (heldItem != null && heldItem.getItem() == Items.STICK)
+                    {
+                        controller.setReactorsEnabled(!controller.areReactorsEnabled());
+                        player.sendMessage(new TextComponentString(controller.areReactorsEnabled() ? "Reactors are set into enabled state" : "Reactors are set into disabled state"));//TODO translate
+                        return true;
+                    }
+                    else
+                    {
+                        player.sendMessage(new TextComponentTranslation(getTranslationKey() + ".cell.count", "" + controller.getCellCount()));
+                    }
                 }
-                else if (heldItem != null && heldItem.getItem() == Items.STICK)
-                {
-                    controller.setReactorsEnabled(!controller.areReactorsEnabled());
-                    player.sendMessage(new TextComponentString(controller.areReactorsEnabled() ? "Reactors are set into enabled state" : "Reactors are set into disabled state"));//TODO translate
-                    return true;
-                }
-                else
-                {
-                    player.sendMessage(new TextComponentTranslation(getTranslationKey() + ".cell.count", "" + controller.getCellCount()));
-                }
+                return true;
             }
-            return true;
         }
         return false;
     }

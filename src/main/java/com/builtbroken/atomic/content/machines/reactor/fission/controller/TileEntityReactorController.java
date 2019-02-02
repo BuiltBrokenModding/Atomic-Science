@@ -1,6 +1,8 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.controller;
 
 import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
+import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipe;
+import com.builtbroken.atomic.content.machines.reactor.pipe.inv.TileEntityRodPipeInv;
 import com.builtbroken.atomic.content.prefab.TileEntityActive;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -165,6 +167,10 @@ public class TileEntityReactorController extends TileEntityActive
                 inErrorState = true; //TODO maybe use a message instead of a boolean for more detail?
                 return;
             }
+            else if(tileEntity instanceof TileEntityRodPipe || tileEntity instanceof TileEntityRodPipeInv)
+            {
+                //Ignore TODO add a is valid check
+            }
             else
             {
                 break;
@@ -186,6 +192,10 @@ public class TileEntityReactorController extends TileEntityActive
             {
                 inErrorState = true; //TODO maybe use a message instead of a boolean for more detail?
                 return;
+            }
+            else if(tileEntity instanceof TileEntityRodPipe || tileEntity instanceof TileEntityRodPipeInv)
+            {
+                //Ignore TODO add a is valid check
             }
             else
             {
