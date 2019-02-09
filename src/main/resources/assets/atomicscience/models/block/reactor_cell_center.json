@@ -8,7 +8,6 @@
 		{
 			"from": [5.5, 0, 2],
 			"to": [10.5, 16, 2],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [10.4, 12.8, 11.4, 16], "texture": "#0"},
 				"east": {"uv": [0, 0, 0, 3.2], "texture": "#0"},
@@ -47,7 +46,6 @@
 		{
 			"from": [2, 0, 5.5],
 			"to": [2, 16, 10.5],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-4, 8, 20]},
 			"faces": {
 				"north": {"uv": [0, 0, 0, 3.2], "texture": "#0"},
 				"east": {"uv": [4.4, 12.8, 5.4, 16], "texture": "#0"},
@@ -73,7 +71,6 @@
 		{
 			"from": [5.5, 0, 14],
 			"to": [10.5, 16, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [6.4, 12.8, 7.4, 16], "texture": "#0"},
 				"east": {"uv": [0, 0, 0, 3.2], "texture": "#0"},
@@ -99,7 +96,6 @@
 		{
 			"from": [14, 0, 5.5],
 			"to": [14, 16, 10.5],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 20]},
 			"faces": {
 				"north": {"uv": [0, 0, 0, 3.2], "texture": "#0"},
 				"east": {"uv": [8.4, 12.8, 9.4, 16], "texture": "#0"},
@@ -188,75 +184,45 @@
 				"south": {"uv": [6.8, 0.8, 7, 4], "texture": "#0"},
 				"west": {"uv": [6.4, 0.8, 6.6, 4], "texture": "#0"}
 			}
-		},
-		{
-			"name": "fuel_rod",
-			"from": [6, 0, 6],
-			"to": [10, 16, 10],
-			"faces": {
-				"north": {"uv": [0, 12.4, 0.8, 15.6], "texture": "#0"},
-				"east": {"uv": [2.4, 12.4, 3.2, 15.6], "texture": "#0"},
-				"south": {"uv": [1.6, 12.4, 2.4, 15.6], "texture": "#0"},
-				"west": {"uv": [0.8, 12.4, 1.6, 15.6], "texture": "#0"}
-			}
 		}
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"scale": [0.375, 0.375, 0.375],
 			"rotation": [75, -45, 0],
-			"translation": [0, 2.5, 0]
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
 		},
 		"gui": {
-			"scale": [0.625, 0.625, 0.625],
 			"rotation": [30, 135, 0],
-			"translation": [0, 0, 0]
+			"scale": [0.625, 0.625, 0.625]
 		},
 		"fixed": {
-			"scale": [0.5, 0.5, 0.5],
 			"rotation": [0, -90, 0],
-			"translation": [0, 0, -3.5]
+			"translation": [0, 0, -3.5],
+			"scale": [0.5, 0.5, 0.5]
 		},
 		"ground": {
-			"scale": [0.25, 0.25, 0.25],
-			"rotation": [0, 0, 0],
-			"translation": [0, 3, 0]
-		},
-		"firstperson_lefthand": {
-			"scale": [0.4, 0.4, 0.4],
-			"rotation": [0, 225, 0],
-			"translation": [0, 0, 0]
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
 		},
 		"firstperson_righthand": {
-			"scale": [0.4, 0.4, 0.4],
 			"rotation": [0, 45, 0],
-			"translation": [0, 0, 0]
+			"scale": [0.4, 0.4, 0.4]
 		},
 		"thirdperson_lefthand": {
-			"scale": [0.375, 0.375, 0.375],
 			"rotation": [70, 135, 0],
-			"translation": [0, 2.5, 0]
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
 		}
 	},
 	"groups": [
 		{
 			"name": "center",
-			"isOpen": true,
-			"shade": true,
-			"display": {
-				"visibility": true,
-				"autouv": true
-			},
 			"children": [0, 1, 2, 3, 4, 5, 6, 7]
 		},
 		{
 			"name": "pillars",
-			"isOpen": false,
-			"shade": true,
-			"display": {
-				"visibility": true,
-				"autouv": true
-			},
 			"children": [8, 9, 10, 11, 12, 13, 14, 15]
-		}, 16]
+		}
+	]
 }

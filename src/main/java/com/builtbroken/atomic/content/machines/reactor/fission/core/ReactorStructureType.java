@@ -11,7 +11,8 @@ public enum ReactorStructureType implements IStringSerializable
     NORMAL,
     TOP,
     MIDDLE,
-    BOTTOM;
+    BOTTOM,
+    ROD;
 
     public static ReactorStructureType get(int meta)
     {

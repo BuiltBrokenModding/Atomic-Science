@@ -116,6 +116,11 @@ public class BlockReactorCell extends BlockPrefab
                     reactorCell.getInventory().setStackInSlot(TileEntityReactorCell.SLOT_FUEL_ROD, ItemStack.EMPTY);
                     player.inventoryContainer.detectAndSendChanges();
                 }
+                else if (world.isRemote)
+                {
+                    reactorCell._renderFuel = false;
+                    reactorCell._renderFuelLevel = 0f;
+                }
                 return true;
             }
         }

@@ -42,6 +42,13 @@
           "0": "atomicscience:blocks/reactor_cell_bottom",
           "particle": "atomicscience:blocks/reactor_cell_bottom"
         }
+      },
+      "rod": {
+        "model": "atomicscience:reactor_rod",
+        "textures": {
+          "0": "atomicscience:blocks/reactor_cell",
+          "particle": "atomicscience:blocks/reactor_cell"
+        }
       }
     }
   }

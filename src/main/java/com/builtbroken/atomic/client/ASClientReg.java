@@ -6,6 +6,8 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.effects.client.RenderRadOverlay;
 import com.builtbroken.atomic.content.items.cell.BucketModelLoader;
+import com.builtbroken.atomic.content.machines.reactor.fission.core.FastTESRReactorCell;
+import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -20,6 +22,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -128,6 +131,9 @@ public class ASClientReg
                 newFluidModel((IFluidBlock) value.fluid.getBlock());
             }
         }
+
+        //Register TESRs
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorCell.class, new FastTESRReactorCell());
     }
 
     protected static void newBlockModel(Block block)

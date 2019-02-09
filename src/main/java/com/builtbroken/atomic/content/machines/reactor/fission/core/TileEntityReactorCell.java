@@ -42,14 +42,20 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
 {
     public static final int SLOT_FUEL_ROD = 0;
     /** Client side */
-    private boolean _running = false;
-    private boolean _renderFuel = false;
-    private float _renderFuelLevel = 0f;
+    public boolean _running = false;
+    public boolean _renderFuel = false;
+    public float _renderFuelLevel = 0f;
 
     public boolean enabled = true; ///TODO add a spin up and down time, prevent instant enable/disable of reactors
 
     private final RadSourceTile<TileEntityReactorCell> radiationSource = new RadSourceTile(this, () -> getRadioactiveMaterial(), () -> canOperate());
     private final ThermalSource<TileEntityReactorCell> thermalSource = new ThermalSourceTile(this, () -> getHeatGenerated(), () -> canOperate());
+
+    @Override
+    public boolean hasFastRenderer()
+    {
+        return true;
+    }
 
     @Override
     protected void firstTick(boolean isClient)
@@ -366,6 +372,8 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         if (!canOperate())
         {
             _running = false;
+            _renderFuel = false;
+            _renderFuelLevel = 0f;
         }
     }
 
