@@ -15,6 +15,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -32,6 +33,9 @@ import java.util.function.Function;
  */
 public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiable, H extends TileEntityProcessingMachine, R extends RecipeProcessing<H>> extends TileEntityPowerInvMachine<I>
 {
+
+    public static final String NBT_PROCESSING_RPOGRESS = "processingProgress";
+
     boolean processing = false;
     public int processTimer = 0;
 
@@ -274,15 +278,13 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
 
     public boolean isEmptyFluidContainer(ItemStack itemStack)
     {
-        if (itemStack != null)
+        if (itemStack != null && !itemStack.isEmpty())
         {
-            if (itemStack.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+            final IFluidHandler handler = FluidUtil.getFluidHandler(itemStack);
+            if (handler != null)
             {
-                IFluidHandler handler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-                if (handler != null)
-                {
-                    return handler.drain(1, false) == null;
-                }
+                final FluidStack fluidStack = handler.drain(1, false);
+                return fluidStack == null || fluidStack.amount <= 0;
             }
             return itemStack.getItem() == Items.BUCKET;
         }
@@ -493,7 +495,7 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt)
     {
-        nbt.setInteger("processingProgress", processTimer);
+        nbt.setInteger(NBT_PROCESSING_RPOGRESS, processTimer);
         return super.writeToNBT(nbt);
     }
 
@@ -501,7 +503,7 @@ public abstract class TileEntityProcessingMachine<I extends IItemHandlerModifiab
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        processTimer = nbt.getInteger("processingProgress");
+        processTimer = nbt.getInteger(NBT_PROCESSING_RPOGRESS);
     }
 
     @Override
