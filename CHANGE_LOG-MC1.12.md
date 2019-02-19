@@ -4,10 +4,36 @@ This log contains changes made to the project. Each entry contains changed made 
 If this is a problem, use exact build numbers to track changes. As each build logs the git-hash it was created from to better understand changes made.
 
 # Versions
-## 3.#.#
+## 3.2.1
 ### Runtime Changes
 
 ### Development Changes
+
+## 3.?.? to 3.2.0
+Neglected to keep a good log/update version numbers so we are merging all changes between 3.1.1 and up into this one area.
+### Runtime Changes
+* Added: Thermal sensor
+* Added: Colored hazmat suit
+* Added: JEI support for hazmat suit basic dyes 
+* Added: particle accelerator tube (not finished)
+* Added: Power magnet for accelerator
+* Added: test block for accelerator cannon
+
+* Changed: Reactor Core to only show rod visually when inserted and not always.
+
+* Fixed: Reactor rod not shutting off in some cases
+* Fixed: Crash due to scala import
+* Fixed: Crash for add info 
+* Fixed: Issues with rod contueing to work after fully used
+
+* Improved: Inventory handling for reactor cores
+* Improved: Threading and performance
+
+* Updated: textures for some items and blocks
+
+
+### Development Changes
+* Changed: License to MIT to allow a stronger open source ecosystem for the mod
 
 ## 3.1.1
 ### Runtime Changes
@@ -20,6 +46,8 @@ If this is a problem, use exact build numbers to track changes. As each build lo
 
 ### Development Changes
 * Added: Ore dictionary values for U234 (pelletUranium234), U235(pelletUranium235), U238 (pelletUranium238)
+* Added: capability for radiation
+* Added: capability for heat
 
 
 ## 3.1.0
