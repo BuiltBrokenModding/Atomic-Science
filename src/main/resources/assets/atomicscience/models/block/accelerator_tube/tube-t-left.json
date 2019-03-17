@@ -1,9 +1,9 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "tube:tube/tube_top_t_left",
-		"1": "tube:tube/tube_top",
-		"particle": "tube:tube/tube_top_t_left"
+		"0": "atomicscience:blocks/accelerator/tube_top_t_left",
+		"1": "atomicscience:blocks/accelerator/tube_top",
+		"particle": "atomicscience:blocks/accelerator/tube_top_t_left"
 	},
 	"elements": [
 		{
@@ -34,8 +34,8 @@
 		},
 		{
 			"name": "corner_ne",
-			"from": [1, 14, 0],
-			"to": [3, 16, 2],
+			"from": [0, 14, 0],
+			"to": [2, 16, 2],
 			"faces": {
 				"north": {"uv": [0, 0, 2, 2], "texture": "#0"},
 				"east": {"uv": [0, 0, 2, 2], "rotation": 90, "texture": "#0"},
@@ -73,8 +73,8 @@
 		},
 		{
 			"name": "window_t1",
-			"from": [1, 14.5, 2],
-			"to": [3, 15.5, 14],
+			"from": [0, 14.5, 2],
+			"to": [2, 15.5, 14],
 			"faces": {
 				"north": {"uv": [2, 15, 14, 16], "texture": "#0"},
 				"east": {"uv": [2, 15, 14, 16], "texture": "#0"},

@@ -1,11 +1,10 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "atomicscience:accelerator_tube/normal",
+    "model": "atomicscience:accelerator_tube/tube-normal",
     "textures": {
-      "top": "atomicscience:blocks/accelerator/tube_side_top",
-      "side": "atomicscience:blocks/accelerator/tube_side",
-      "opening": "atomicscience:blocks/accelerator/tube_opening"
+      "0": "atomicscience:blocks/accelerator/tube_top",
+      "particle": "atomicscience:blocks/accelerator/tube_top"
     }
   },
   "variants": {
@@ -64,9 +63,12 @@
         }
       },
       "t_join": {
-        "model": "atomicscience:accelerator_tube/normal",
+        "model": "atomicscience:accelerator_tube/tube-join",
         "textures": {
-          "top": "atomicscience:blocks/accelerator/tube_top_t_join"
+          "0": "atomicscience:blocks/accelerator/tube_top_join",
+          "2": "atomicscience:blocks/accelerator/tube_top_normal",
+          "3": "atomicscience:blocks/accelerator/tube_glass",
+          "particle": "atomicscience:blocks/accelerator/tube_top_join"
         }
       },
       "intersection": {

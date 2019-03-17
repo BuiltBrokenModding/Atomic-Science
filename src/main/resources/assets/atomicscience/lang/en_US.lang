@@ -48,7 +48,7 @@ tile.atomicscience:magnet.name=Electromagnet
 tile.atomicscience:magnet.info=Support block for building machines
 
 tile.atomicscience:accelerator.tube.name=Accelerator Tube
-tile.atomicscience:accelerator.tube.info=Vacum sealed tube for accelerating particles, Supports power connections for magnets, Can be configured as directional & junction tube
+tile.atomicscience:accelerator.tube.info=Vacuum sealed tube for accelerating particles, Supports power connections for magnets, Can be configured as directional & junction tube
 
 ## Items
 item.atomicscience:hazmat.mask.name=Hazmat Mask M1A
