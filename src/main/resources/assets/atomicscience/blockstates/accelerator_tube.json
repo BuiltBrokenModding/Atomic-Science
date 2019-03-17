@@ -30,23 +30,29 @@
         }
       },
       "corner_left": {
-        "model": "atomicscience:accelerator_tube/normal",
+        "model": "atomicscience:accelerator_tube/tube-left",
         "textures": {
-          "top": "atomicscience:blocks/accelerator/tube_top_left"
+          "0": "atomicscience:blocks/accelerator/tube_top",
+		  "1": "atomicscience:blocks/accelerator/tube_top_right",
+		  "2": "atomicscience:blocks/accelerator/tube_top_normal",
+		  "particle": "atomicscience:blocks/accelerator/tube_top"
         }
       },
       "corner_right": {
-        "model": "atomicscience:accelerator_tube/normal",
+       "model": "atomicscience:accelerator_tube/tube-right",
         "textures": {
-          "top": "atomicscience:blocks/accelerator/tube_top_right"
+          "0": "atomicscience:blocks/accelerator/tube_top",
+		  "1": "atomicscience:blocks/accelerator/tube_top_right",
+		  "2": "atomicscience:blocks/accelerator/tube_top_normal",
+		  "particle": "atomicscience:blocks/accelerator/tube_top"
         }
       },
       "t_left": {
         "model": "atomicscience:accelerator_tube/tube-t-left",
         "textures": {
           "0": "atomicscience:blocks/accelerator/tube_top_t_left",
-          "1": "atomicscience:blocks/accelerator/tube_top",
-          "particle": "atomicscience:blocks/accelerator/tube_top"
+		  "1": "atomicscience:blocks/accelerator/tube_top",
+		  "particle": "atomicscience:blocks/accelerator/tube_top"
         }
       },
       "t_right": {
