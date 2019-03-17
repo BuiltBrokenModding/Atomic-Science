@@ -323,9 +323,9 @@ public class AtomicScience
     {
         //Start thread
         MapHandler.THREAD_RAD_EXPOSURE = new ThreadRadExposure();
-        MapHandler.THREAD_RAD_EXPOSURE.start();
+        MapHandler.THREAD_RAD_EXPOSURE.start(); //TODO switch to worker thread
         MapHandler.THREAD_THERMAL_ACTION = new ThreadThermalAction();
-        MapHandler.THREAD_THERMAL_ACTION.start();
+        MapHandler.THREAD_THERMAL_ACTION.start(); //TODO switch to worker thread
     }
 
     @Mod.EventHandler
