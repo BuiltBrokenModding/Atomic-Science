@@ -115,7 +115,7 @@ item.atomicscience:wrench.color.red.info=Kleur: Rood
 item.atomicscience:wrench.color.blue.info=Kleur: Blauw
 item.atomicscience:wrench.color.purple.info=Kleur: Paars
 
-item.atomicscience:wrench.more.info=Hou de §bSHIFT§f toes in voor meer informatie
+item.atomicscience:wrench.more.info=Hou de §bSHIFT§f toets in voor meer informatie
 
 item.atomicscience:wrench.info=Pas machine instellingen aan
 item.atomicscience:wrench.use.info=§5Met §bshift ingehouden:
@@ -134,10 +134,10 @@ gui.tooltip.slot.tank.output.yellow=Gele Tank Uitvoer
 gui.tooltip.slot.energy.input=Energie
 
 gui.tooltip.slot.input=Invoer
-gui.tooltip.slot.output=Outvoer
+gui.tooltip.slot.output=Uitvoer
 
 ## Info
-tile.atomicscience:reactor.controller.error.state=De controleur heeft een fout ervaren, dit wordt waarschijnlijk veroorzaakt door te veel CPUs in een kern stapel.| Maar 1 controleur mag aangesloten worden op een stapel van kernen op de Y as. Als je meerdere stapels wilt hebben op de Y as, scheidt iedere stapel met een tussenlaag. Als je de inventaris connectie wilt behaden gebruik een hopper of pijp tussen stapel lagen.
+tile.atomicscience:reactor.controller.error.state=De controleur heeft een fout ervaren, dit wordt waarschijnlijk veroorzaakt door te veel CPUs in een kern stapel.| Maar 1 controleur mag aangesloten worden op een stapel van kernen op de Y as. Als je meerdere stapels wilt hebben op de Y as, scheidt iedere stapel met een tussenlaag. Als je de inventaris connectie wilt behouden gebruik een hopper of pijp tussen stapel lagen.
 tile.atomicscience:reactor.controller.cell.count=Controleur beheert momenteel %s reactor Cuvets
 
 ## Misc
