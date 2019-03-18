@@ -1,5 +1,7 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube;
 
+import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -12,7 +14,7 @@ import java.util.*;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 12/9/2018.
  */
-public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube implements ITickable
+public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube implements ITickable, IAcceleratorTube //TODO change tube interface to cap
 {
     private int timer = 0;
 
@@ -58,7 +60,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         float power = 0;
         for (MagnetPos magnetPos : magnetPosList)
         {
-            power += (1 / magnetPos.distance);
+            power += magnetPos.power;
         }
 
         return power;
@@ -100,20 +102,15 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
                     //Mark as already pathed
                     alreadySearched.add(next);
 
-                    //Check for magnet
-                    TileEntity tile = world.getTileEntity(next);
-                    if (tile instanceof TileEntityMagnet)
+                    //Get Tile
+                    final TileEntity tile = world.getTileEntity(next);
+
+                    //Get power
+                    final float power = AcceleratorHelpers.getMagnetPower(this, tile, direction);
+                    if (power > 0)
                     {
-                        if (((TileEntityMagnet) tile).getOwner() == null || ((TileEntityMagnet) tile).getOwner() == this)
-                        {
-                            ((TileEntityMagnet) tile).setOwner(this);
-                            addMagnet(next);
-                            queue.offer(next);
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        magnetPosList.add(new MagnetPos(next, power));
+                        queue.offer(next);
                     }
                 }
             }
@@ -122,22 +119,21 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         return true;
     }
 
-    protected void addMagnet(BlockPos pos)
+    @Override
+    public BlockPos getPosition()
     {
-        //Manhattan distance
-        int distance = Math.abs(pos.getX() - xi()) + Math.abs(pos.getY() - yi()) + Math.abs(pos.getZ() - zi());
-        magnetPosList.add(new MagnetPos(pos, distance));
+        return getPos();
     }
 
-    public static class MagnetPos
+    public static class MagnetPos //TODO add flywheel pattern
     {
         public final BlockPos pos;
-        public final int distance;
+        public final float power;
 
-        public MagnetPos(BlockPos pos, int distance)
+        public MagnetPos(BlockPos pos, float power)
         {
             this.pos = pos;
-            this.distance = distance;
+            this.power = power;
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.builtbroken.atomic;
 
+import com.builtbroken.atomic.api.accelerator.IAcceleratorMagnet;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.api.radiation.IRadiationResistant;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.api.thermal.IThermalSource;
@@ -10,6 +12,7 @@ import com.builtbroken.atomic.content.ASWorldGen;
 import com.builtbroken.atomic.content.armor.ArmorRadLevelData;
 import com.builtbroken.atomic.content.armor.ArmorRadiationHandler;
 import com.builtbroken.atomic.content.commands.CommandAS;
+import com.builtbroken.atomic.content.machines.accelerator.magnet.CapabilityMagnet;
 import com.builtbroken.atomic.content.machines.processing.ProcessorRecipeHandler;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
@@ -292,6 +295,40 @@ public class AtomicScience
                     }
                 },
                 () -> (IRadiationResistant) () -> 0);
+
+        CapabilityManager.INSTANCE.register(IAcceleratorMagnet.class, new Capability.IStorage<IAcceleratorMagnet>()
+                {
+                    @Nullable
+                    @Override
+                    public NBTBase writeNBT(Capability<IAcceleratorMagnet> capability, IAcceleratorMagnet instance, EnumFacing side)
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public void readNBT(Capability<IAcceleratorMagnet> capability, IAcceleratorMagnet instance, EnumFacing side, NBTBase nbt)
+                    {
+
+                    }
+                },
+                () -> new CapabilityMagnet(null));
+
+        CapabilityManager.INSTANCE.register(IAcceleratorTube.class, new Capability.IStorage<IAcceleratorTube>()
+                {
+                    @Nullable
+                    @Override
+                    public NBTBase writeNBT(Capability<IAcceleratorTube> capability, IAcceleratorTube instance, EnumFacing side)
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public void readNBT(Capability<IAcceleratorTube> capability, IAcceleratorTube instance, EnumFacing side, NBTBase nbt)
+                    {
+
+                    }
+                },
+                () -> null);
     }
 
     @Mod.EventHandler

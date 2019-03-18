@@ -1,5 +1,7 @@
 package com.builtbroken.atomic.api;
 
+import com.builtbroken.atomic.api.accelerator.IAcceleratorMagnet;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.api.effect.IIndirectEffectType;
 import com.builtbroken.atomic.api.radiation.IRadiationExposureSystem;
 import com.builtbroken.atomic.api.radiation.IRadiationResistant;
@@ -45,4 +47,10 @@ public final class AtomicScienceAPI
 
     @CapabilityInject(IRadiationResistant.class)
     public static Capability<IRadiationResistant> RADIATION_RESISTANT_CAPABILITY = null;
+
+    @CapabilityInject(IAcceleratorTube.class)
+    public static Capability<IAcceleratorTube> ACCELERATOR_TUBE_CAPABILITY = null;
+
+    @CapabilityInject(IAcceleratorMagnet.class)
+    public static Capability<IAcceleratorMagnet> ACCELERATOR_MAGNET_CAPABILITY = null;
 }
