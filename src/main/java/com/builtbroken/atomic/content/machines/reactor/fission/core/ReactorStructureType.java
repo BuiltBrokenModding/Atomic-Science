@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.core;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.IStringSerializable;
 
 /**
@@ -8,11 +9,19 @@ import net.minecraft.util.IStringSerializable;
  */
 public enum ReactorStructureType implements IStringSerializable
 {
-    NORMAL,
-    TOP,
-    MIDDLE,
-    BOTTOM,
-    ROD;
+    //Casings
+    CORE,
+    CORE_TOP,
+    CORE_MIDDLE,
+    CORE_BOTTOM,
+
+    //Rods
+    ROD,
+    ROD_TOP,
+    ROD_MIDDLE,
+    ROD_BOTTOM;
+
+    public IBlockState rodState;
 
     public static ReactorStructureType get(int meta)
     {
@@ -20,7 +29,7 @@ public enum ReactorStructureType implements IStringSerializable
         {
             return values()[meta];
         }
-        return NORMAL;
+        return CORE;
     }
 
     @Override

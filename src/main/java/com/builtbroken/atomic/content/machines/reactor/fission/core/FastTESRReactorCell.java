@@ -1,7 +1,6 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.core;
 
 import com.builtbroken.atomic.content.ASBlocks;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -14,25 +13,28 @@ import net.minecraftforge.client.model.animation.FastTESR;
  */
 public class FastTESRReactorCell extends FastTESR<TileEntityReactorCell>
 {
-    private IBlockState rodState;
-
     @Override
     public void renderTileEntityFast(TileEntityReactorCell te, double x, double y, double z, float partialTicks, int destroyStage, float partial, BufferBuilder buffer)
     {
-        if(te._renderFuel)
+        if (te._renderFuel)
         {
-            //Get model
-            if (rodState == null)
+            //Setting up states
+            if (ReactorStructureType.CORE.rodState == null)
             {
-                rodState = ASBlocks.blockReactorCell.getDefaultState().withProperty(BlockReactorCell.REACTOR_STRUCTURE_TYPE, ReactorStructureType.ROD);
+                ReactorStructureType.CORE.rodState = ASBlocks.blockReactorCell.getDefaultState().withProperty(BlockReactorCell.REACTOR_STRUCTURE_TYPE, ReactorStructureType.ROD);
+                ReactorStructureType.CORE_TOP.rodState = ASBlocks.blockReactorCell.getDefaultState().withProperty(BlockReactorCell.REACTOR_STRUCTURE_TYPE, ReactorStructureType.ROD_TOP);
+                ReactorStructureType.CORE_MIDDLE.rodState = ASBlocks.blockReactorCell.getDefaultState().withProperty(BlockReactorCell.REACTOR_STRUCTURE_TYPE, ReactorStructureType.ROD_MIDDLE);
+                ReactorStructureType.CORE_BOTTOM.rodState = ASBlocks.blockReactorCell.getDefaultState().withProperty(BlockReactorCell.REACTOR_STRUCTURE_TYPE, ReactorStructureType.ROD_BOTTOM);
             }
+
+            //Get model
             BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-            IBakedModel model = dispatcher.getModelForState(rodState);
+            IBakedModel model = dispatcher.getModelForState(te.getStructureType().rodState);
 
             //Render
             BlockPos pos = te.getPos();
             buffer.setTranslation(x - pos.getX(), y - pos.getY(), z - pos.getZ());
-            dispatcher.getBlockModelRenderer().renderModel(te.world(), model, rodState, pos, buffer, true);
+            dispatcher.getBlockModelRenderer().renderModel(te.world(), model, te.getStructureType().rodState, pos, buffer, true);
         }
     }
 }

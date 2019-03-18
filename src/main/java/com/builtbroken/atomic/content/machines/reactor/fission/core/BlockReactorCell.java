@@ -34,7 +34,7 @@ public class BlockReactorCell extends BlockPrefab
         super(Material.IRON);
         setHardness(1);
         setResistance(5);
-        setDefaultState(getDefaultState().withProperty(REACTOR_STRUCTURE_TYPE, ReactorStructureType.NORMAL));
+        setDefaultState(getDefaultState().withProperty(REACTOR_STRUCTURE_TYPE, ReactorStructureType.CORE));
         setCreativeTab(AtomicScience.creativeTab);
         setTranslationKey(AtomicScience.PREFIX + "reactor.cell");
         setRegistryName(AtomicScience.PREFIX + "reactor_cell");

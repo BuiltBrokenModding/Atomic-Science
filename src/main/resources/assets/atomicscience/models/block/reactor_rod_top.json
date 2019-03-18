@@ -1,0 +1,20 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "atomicscience:blocks/reactor_cell_top",
+		"particle": "atomicscience:blocks/reactor_cell_top"
+	},
+	"elements": [
+		{
+			"name": "fuel_rod",
+			"from": [6, 0, 6],
+			"to": [10, 13, 10],
+			"faces": {
+				"north": {"uv": [0, 13, 0.8, 15.6], "texture": "#0"},
+				"east": {"uv": [2.4, 13, 3.2, 15.6], "texture": "#0"},
+				"south": {"uv": [1.6, 13, 2.4, 15.6], "texture": "#0"},
+				"west": {"uv": [0.8, 13, 1.6, 15.6], "texture": "#0"}
+			}
+		}
+	]
+}

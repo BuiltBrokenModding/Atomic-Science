@@ -15,28 +15,28 @@
       {}
     ],
     "type": {
-      "normal": {
+      "core": {
         "model": "atomicscience:reactor_cell",
         "textures": {
           "0": "atomicscience:blocks/reactor_cell",
           "particle": "atomicscience:blocks/reactor_cell"
         }
       },
-      "top": {
+      "core_top": {
         "model": "atomicscience:reactor_cell_top",
         "textures": {
           "0": "atomicscience:blocks/reactor_cell_top",
           "particle": "atomicscience:blocks/reactor_cell_top"
         }
       },
-      "middle": {
+      "core_middle": {
         "model": "atomicscience:reactor_cell_center",
         "textures": {
           "0": "atomicscience:blocks/reactor_cell_center",
           "particle": "atomicscience:blocks/reactor_cell_center"
         }
       },
-      "bottom": {
+      "core_bottom": {
         "model": "atomicscience:reactor_cell_bottom",
         "textures": {
           "0": "atomicscience:blocks/reactor_cell_bottom",
@@ -48,6 +48,27 @@
         "textures": {
           "0": "atomicscience:blocks/reactor_cell",
           "particle": "atomicscience:blocks/reactor_cell"
+        }
+      },
+      "rod_top": {
+        "model": "atomicscience:reactor_rod_top",
+        "textures": {
+          "0": "atomicscience:blocks/reactor_cell_top",
+          "particle": "atomicscience:blocks/reactor_cell_top"
+        }
+      },
+      "rod_middle": {
+        "model": "atomicscience:reactor_rod_center",
+        "textures": {
+          "0": "atomicscience:blocks/reactor_cell_center",
+          "particle": "atomicscience:blocks/reactor_cell_center"
+        }
+      },
+      "rod_bottom": {
+        "model": "atomicscience:reactor_rod_bottom",
+        "textures": {
+          "0": "atomicscience:blocks/reactor_cell_bottom",
+          "particle": "atomicscience:blocks/reactor_cell_bottom"
         }
       }
     }

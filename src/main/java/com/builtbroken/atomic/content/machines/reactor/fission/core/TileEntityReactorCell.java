@@ -520,19 +520,19 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
 
         if (canConnect(blockAbove) && canConnect(blockBelow))
         {
-            setStructureType(ReactorStructureType.MIDDLE);
+            setStructureType(ReactorStructureType.CORE_MIDDLE);
         }
         else if (canConnect(blockBelow))
         {
-            setStructureType(ReactorStructureType.TOP);
+            setStructureType(ReactorStructureType.CORE_TOP);
         }
         else if (canConnect(blockAbove))
         {
-            setStructureType(ReactorStructureType.BOTTOM);
+            setStructureType(ReactorStructureType.CORE_BOTTOM);
         }
         else
         {
-            setStructureType(ReactorStructureType.NORMAL);
+            setStructureType(ReactorStructureType.CORE);
         }
     }
 
@@ -547,6 +547,16 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
                 world.setBlockState(pos, blockState.withProperty(BlockReactorCell.REACTOR_STRUCTURE_TYPE, structureType));
             }
         }
+    }
+
+    public ReactorStructureType getStructureType()
+    {
+        IBlockState blockState = world.getBlockState(getPos());
+        if (blockState.getProperties().containsKey(BlockReactorCell.REACTOR_STRUCTURE_TYPE))
+        {
+            return world.getBlockState(getPos()).getValue(BlockReactorCell.REACTOR_STRUCTURE_TYPE);
+        }
+        return ReactorStructureType.CORE;
     }
 
     @Override
