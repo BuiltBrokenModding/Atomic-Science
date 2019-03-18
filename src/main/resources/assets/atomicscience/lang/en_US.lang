@@ -80,7 +80,7 @@ item.atomicscience:cell.fuel.breeder.info.fuel=Fuel: -time- / -maxTime-
 item.atomicscience:cell.empty.name=Empty Cell
 
 item.atomicscience:cake.yellow.name=Yellow Cake
-item.atomicscience:cake.yellow.info=Uranium Dust, Processed into Uranium Hexa-Floride
+item.atomicscience:cake.yellow.info=Uranium Dust, Processed into Uranium Hexa-Fluoride
 
 item.atomicscience:uranium.234.name=Uranium 234
 item.atomicscience:uranium.234.info=Uranium Isotope, Has no use currently
@@ -99,7 +99,7 @@ item.atomicscience:toxic.waste.info=Solid uranium waste, Has no use currently
 
 ## Tools
 item.atomicscience:heat.probe.name=Thermal Probe
-item.atomicscience:heat.probe.info=Can be used to messure thermal energy, §bright-click§r to messure, §bshift§r to offset to face of block
+item.atomicscience:heat.probe.info=Can be used to measure thermal energy, §bright-click§r to measure, §bshift§r to offset to face of block
 
 ## Fluids
 fluid.atomicscience:antimatter=Antimatter
@@ -110,7 +110,7 @@ fluid.atomicscience:reactor_waste=Reactor Waste
 fluid.atomicscience:mineral_waste=Contaminated Mineral Sludge
 fluid.atomicscience:contaminated_mineral_water=Contaminated Mineral Solution
 fluid.atomicscience:contaminated_water=Contaminated Water
-fluid.atomicscience:uranium_hexafluoride=Uranium Hexaflouride
+fluid.atomicscience:uranium_hexafluoride=Uranium Hexafluoride
 
 ## Wrench
 item.atomicscience:wrench.name=Adjuster
