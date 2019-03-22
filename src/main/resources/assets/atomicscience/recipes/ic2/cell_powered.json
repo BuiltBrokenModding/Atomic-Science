@@ -28,11 +28,5 @@
       "type": "atomicscience:ic2",
       "condition": "true"
     }
-  ],
-  "conditions": [
-    {
-      "type": "atomicscience:ic2",
-      "condition": "true"
-    }
   ]
 }
