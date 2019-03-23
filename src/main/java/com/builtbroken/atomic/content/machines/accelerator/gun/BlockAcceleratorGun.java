@@ -3,12 +3,9 @@ package com.builtbroken.atomic.content.machines.accelerator.gun;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
-import com.builtbroken.atomic.content.prefab.BlockPrefab;
+import com.builtbroken.atomic.content.prefab.BlockMachine;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.tileentity.TileEntity;
@@ -25,10 +22,8 @@ import java.util.*;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 12/15/2018.
  */
-public class BlockAcceleratorGun extends BlockPrefab
+public class BlockAcceleratorGun extends BlockMachine
 {
-    public static final PropertyDirection ROTATION_PROP = PropertyDirection.create("rotation");
-
     public BlockAcceleratorGun()
     {
         super(Material.IRON);
@@ -151,30 +146,6 @@ public class BlockAcceleratorGun extends BlockPrefab
         }
 
         return false;
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, ROTATION_PROP);
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return getDefaultState().withProperty(ROTATION_PROP, EnumFacing.byIndex(meta));
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state)
-    {
-        return state.getValue(ROTATION_PROP).ordinal();
-    }
-
-    @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
-    {
-        return getStateFromMeta(meta).withProperty(ROTATION_PROP, placer.getHorizontalFacing());
     }
 
     @Nullable

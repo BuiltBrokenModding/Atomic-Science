@@ -113,6 +113,9 @@ public class ASClientReg
         newBlockModel(ASBlocks.blockAcceleratorTube);
         newBlockModel(ASBlocks.blockAcceleratorGun);
 
+        //Laser
+        newBlockModel(ASBlocks.blockLaserEmitter);
+
         //Register custom cell model
         ModelLoaderRegistry.registerLoader(new BucketModelLoader(AtomicScience.DOMAIN));
 

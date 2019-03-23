@@ -10,6 +10,8 @@ import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagn
 import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTubePowered;
+import com.builtbroken.atomic.content.machines.laser.emitter.BlockLaserEmitter;
+import com.builtbroken.atomic.content.machines.laser.emitter.TileEntityLaserEmitter;
 import com.builtbroken.atomic.content.machines.processing.boiler.BlockChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.BlockChemCentrifuge;
@@ -64,6 +66,8 @@ public final class ASBlocks
     public static Block blockAcceleratorTube;
     public static Block blockAcceleratorGun;
 
+    public static Block blockLaserEmitter;
+
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
     {
@@ -108,6 +112,9 @@ public final class ASBlocks
 
         event.getRegistry().register(blockAcceleratorGun = new BlockAcceleratorGun());
         GameRegistry.registerTileEntity(TileEntityAcceleratorGun.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_gun"));
+
+        event.getRegistry().register(blockLaserEmitter = new BlockLaserEmitter());
+        GameRegistry.registerTileEntity(TileEntityLaserEmitter.class, new ResourceLocation(AtomicScience.PREFIX + "laser_emitter"));
 
         for (ASFluids value : ASFluids.values())
         {
