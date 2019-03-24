@@ -21,27 +21,39 @@ public abstract class TileEntityActive extends TileEntityPrefab implements IPack
 
     public final void update()
     {
+        //Init tick
         if (_ticks == 0)
         {
             firstTick(world.isRemote);
         }
+
+        //Do tick
         update(_ticks, world.isRemote);
+
+        //Increase tick
         _ticks++;
         if (_ticks + 1 == Integer.MAX_VALUE)
         {
             _ticks = 1;
         }
 
+        //GUI packets
         if (isServer() && _ticks % 3 == 0 && this instanceof IGuiTile)
         {
             sendGuiPacket();
         }
 
+        //Sync
         if (_syncClientNextTick)
         {
             _syncClientNextTick = false;
             sendDescPacket();
         }
+    }
+
+    public int getTicks()
+    {
+        return _ticks;
     }
 
     /**

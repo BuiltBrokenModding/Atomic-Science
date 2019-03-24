@@ -6,6 +6,8 @@ import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.effects.client.RenderRadOverlay;
 import com.builtbroken.atomic.content.items.cell.BucketModelLoader;
+import com.builtbroken.atomic.content.machines.container.TESRItemContainer;
+import com.builtbroken.atomic.content.machines.container.TileEntityItemContainer;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.FastTESRReactorCell;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
 import net.minecraft.block.Block;
@@ -115,6 +117,10 @@ public class ASClientReg
 
         //Laser
         newBlockModel(ASBlocks.blockLaserEmitter);
+        newBlockModel(ASBlocks.blockLaserBooster);
+
+        //Containers
+        newBlockModel(ASBlocks.blockItemContainer);
 
         //Register custom cell model
         ModelLoaderRegistry.registerLoader(new BucketModelLoader(AtomicScience.DOMAIN));
@@ -137,6 +143,7 @@ public class ASClientReg
 
         //Register TESRs
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorCell.class, new FastTESRReactorCell());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityItemContainer.class, new TESRItemContainer());
     }
 
     protected static void newBlockModel(Block block)

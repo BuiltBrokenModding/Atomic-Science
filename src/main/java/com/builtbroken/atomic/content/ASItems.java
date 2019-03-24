@@ -89,7 +89,10 @@ public final class ASItems
     public static ItemBlock blockAcceleratorTube;
     public static ItemBlock blockAcceleratorGun;
 
-    public static ItemBlock blockLaser;
+    public static ItemBlock blockLaserEmitter;
+    public static ItemBlock blockLaserBooster;
+
+    public static ItemBlock blockItemContainer;
 
     /** Armor material used by hazmat armor sets */
     public static ItemArmor.ArmorMaterial hazmatArmorMaterial;
@@ -182,7 +185,10 @@ public final class ASItems
         blockAcceleratorTube = addItemBlock(event.getRegistry(), ASBlocks.blockAcceleratorTube);
         blockAcceleratorGun = addItemBlock(event.getRegistry(), ASBlocks.blockAcceleratorGun);
 
-        blockLaser = addItemBlock(event.getRegistry(), ASBlocks.blockLaserEmitter);
+        blockLaserEmitter = addItemBlock(event.getRegistry(), ASBlocks.blockLaserEmitter);
+        blockLaserBooster = addItemBlock(event.getRegistry(), ASBlocks.blockLaserBooster);
+
+        blockItemContainer = addItemBlock(event.getRegistry(), ASBlocks.blockItemContainer);
 
         blockThermalSensorRedstone = addItemBlock(event.getRegistry(), ASBlocks.blockThermalSensorRedstone);
 

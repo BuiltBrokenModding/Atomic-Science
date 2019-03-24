@@ -22,4 +22,8 @@ public class ConfigContent
     @Config.Name("reactor")
     @Config.LangKey("config.atomicscience:content.reactor.title")
     public static final ConfigReactor REACTOR = new ConfigReactor();
+
+    @Config.Name("laser")
+    @Config.LangKey("config.atomicscience:content.laser.title")
+    public static final ConfigLaser LASER = new ConfigLaser();
 }

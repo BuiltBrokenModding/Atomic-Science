@@ -10,6 +10,10 @@ import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagn
 import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTubePowered;
+import com.builtbroken.atomic.content.machines.container.BlockItemContainer;
+import com.builtbroken.atomic.content.machines.container.TileEntityItemContainer;
+import com.builtbroken.atomic.content.machines.laser.booster.BlockLaserBooster;
+import com.builtbroken.atomic.content.machines.laser.booster.TileEntityLaserBooster;
 import com.builtbroken.atomic.content.machines.laser.emitter.BlockLaserEmitter;
 import com.builtbroken.atomic.content.machines.laser.emitter.TileEntityLaserEmitter;
 import com.builtbroken.atomic.content.machines.processing.boiler.BlockChemBoiler;
@@ -67,6 +71,9 @@ public final class ASBlocks
     public static Block blockAcceleratorGun;
 
     public static Block blockLaserEmitter;
+    public static Block blockLaserBooster;
+
+    public static Block blockItemContainer;
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event)
@@ -115,6 +122,12 @@ public final class ASBlocks
 
         event.getRegistry().register(blockLaserEmitter = new BlockLaserEmitter());
         GameRegistry.registerTileEntity(TileEntityLaserEmitter.class, new ResourceLocation(AtomicScience.PREFIX + "laser_emitter"));
+
+        event.getRegistry().register(blockLaserBooster = new BlockLaserBooster());
+        GameRegistry.registerTileEntity(TileEntityLaserBooster.class, new ResourceLocation(AtomicScience.PREFIX + "laser_booster"));
+
+        event.getRegistry().register(blockItemContainer = new BlockItemContainer());
+        GameRegistry.registerTileEntity(TileEntityItemContainer.class, new ResourceLocation(AtomicScience.PREFIX + "item_container"));
 
         for (ASFluids value : ASFluids.values())
         {

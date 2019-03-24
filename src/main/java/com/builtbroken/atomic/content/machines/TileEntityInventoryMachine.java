@@ -1,6 +1,6 @@
 package com.builtbroken.atomic.content.machines;
 
-import com.builtbroken.atomic.content.prefab.TileEntityActive;
+import com.builtbroken.atomic.content.prefab.TileEntityMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 5/8/2018.
  */
-public abstract class TileEntityInventoryMachine<I extends IItemHandlerModifiable> extends TileEntityActive
+public abstract class TileEntityInventoryMachine<I extends IItemHandlerModifiable> extends TileEntityMachine
 {
     public static final String NBT_INVENTORY = "inventory";
 

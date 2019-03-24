@@ -33,7 +33,7 @@ public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiT
     public static final int SLOT_ROD = 0;
 
     private ItemStackHandler inventory;
-    private final TickTimer inventoryMoveTimer = new TickTimer(10, (IntConsumer) ticks -> moveItems());
+    private final TickTimer inventoryMoveTimer = TickTimer.newSimple(10, (IntConsumer) ticks -> moveItems());
 
     private final List<EntityPlayer> playersGUI = new ArrayList();
 

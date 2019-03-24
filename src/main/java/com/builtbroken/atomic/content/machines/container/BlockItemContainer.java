@@ -1,11 +1,10 @@
-package com.builtbroken.atomic.content.machines.laser.emitter;
+package com.builtbroken.atomic.content.machines.container;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.prefab.BlockMachine;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -18,43 +17,50 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 /**
- * Created by Dark(DarkGuardsman, Robert) on 3/23/2019.
+ * Created by Dark(DarkGuardsman, Robert) on 3/24/2019.
  */
-public class BlockLaserEmitter extends BlockMachine
+public class BlockItemContainer extends BlockMachine
 {
-    public BlockLaserEmitter()
+    public BlockItemContainer()
     {
         super(Material.IRON);
-        setRegistryName(AtomicScience.PREFIX + "laser_emitter");
-        setTranslationKey(AtomicScience.PREFIX + "laser.emitter");
+        setRegistryName(AtomicScience.PREFIX + "item_container");
+        setTranslationKey(AtomicScience.PREFIX + "item.container");
         setDefaultState(getDefaultState().withProperty(ROTATION_PROP, EnumFacing.NORTH));
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos blockClickPos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing clickSide, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        final ItemStack heldItem = playerIn.getHeldItem(hand);
-        if (heldItem.getItem() == Items.GLOWSTONE_DUST)
+        if (!world.isRemote)
         {
-            if (!world.isRemote)
+            ItemStack heldItem = player.getHeldItem(hand);
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof TileEntityItemContainer)
             {
-                TileEntity tileEntity = world.getTileEntity(blockClickPos);
-                if (tileEntity instanceof TileEntityLaserEmitter)
+                if (heldItem.isEmpty())
                 {
-                    playerIn.sendMessage(new TextComponentString("Boosters: " + ((TileEntityLaserEmitter) tileEntity).boosterCount));
-                    playerIn.sendMessage(new TextComponentString("Power: " + ((TileEntityLaserEmitter) tileEntity).battery.getEnergyStored()));
+                    heldItem = ((TileEntityItemContainer) tileEntity).getInventory().extractItem(0, 64, false);
                 }
+                else
+                {
+                    heldItem = ((TileEntityItemContainer) tileEntity).getInventory().insertItem(0, heldItem, false);
+                }
+
+                player.sendStatusMessage(new TextComponentString(((TileEntityItemContainer) tileEntity).getInventory().getStackInSlot(0).getDisplayName()), true);
+
+                player.setHeldItem(hand, heldItem);
+                player.inventoryContainer.detectAndSendChanges();
             }
-            return true;
         }
-        return false;
+        return true;
     }
 
     @Nullable
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new TileEntityLaserEmitter();
+        return new TileEntityItemContainer();
     }
 
     //-----------------------------------------------
