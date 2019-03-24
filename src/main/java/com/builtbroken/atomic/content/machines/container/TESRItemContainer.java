@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
@@ -19,7 +18,7 @@ public class TESRItemContainer extends TileEntitySpecialRenderer<TileEntityItemC
     @Override
     public void render(TileEntityItemContainer tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
-        final ItemStack stackToRender = new ItemStack(Items.REDSTONE);//tile.getHeldItem();
+        final ItemStack stackToRender = tile.getHeldItem();
         if (stackToRender != null && !stackToRender.isEmpty())
         {
             if(entityItem == null)
