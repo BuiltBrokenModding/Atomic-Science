@@ -51,7 +51,16 @@ tile.atomicscience:accelerator.tube.name=Accelerator Tube
 tile.atomicscience:accelerator.tube.info=Vacuum sealed tube for accelerating particles, Supports power connections for magnets, Can be configured as directional & junction tube
 
 tile.atomicscience:laser.emitter.name=Laser Emitter
-tile.atomicscience:laser.emittere.info=Emittes a laser for use, in other process such as, pushing particles
+tile.atomicscience:laser.emitter.info=Emittes a laser for use, in other process such as, pushing particles
+
+tile.atomicscience:laser.booster.name=Laser Booster
+tile.atomicscience:laser.booster.info=Used to power the laser emitter, stack to increase power
+
+tile.atomicscience:item.container.name=Item Holder
+tile.atomicscience:item.container.info=Used to hold items in place, Combined with laser, to generate particles
+
+tile.atomicscience:accelerator.gun.name=Accelerator Gun Tip
+tile.atomicscience:accelerator.gun.info=End of the Accelerator gun, used as the start of particles
 
 ## Items
 item.atomicscience:hazmat.mask.name=Hazmat Mask M1A

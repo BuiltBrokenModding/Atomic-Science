@@ -1,0 +1,35 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "atomicscience:blocks/laser/laser_booster_side",
+		"1": "atomicscience:blocks/laser/laser_booster_front",
+		"2": "atomicscience:blocks/laser/laser_case_back",
+		"particle": "atomicscience:blocks/laser/laser_booster_side"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 16, 6],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#2"},
+				"east": {"uv": [0, 0, 6, 16], "texture": "#0"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"west": {"uv": [0, 0, 6, 16], "rotation": 180, "texture": "#0"},
+				"up": {"uv": [0, 0, 6, 16], "rotation": 270, "texture": "#0"},
+				"down": {"uv": [0, 0, 6, 16], "rotation": 90, "texture": "#0"}
+			}
+		},
+		{
+			"from": [3, 3, 6],
+			"to": [13, 13, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 10, 10], "texture": "#0"},
+				"east": {"uv": [6, 3, 16, 13], "texture": "#0"},
+				"south": {"uv": [3, 3, 13, 13], "texture": "#1"},
+				"west": {"uv": [6, 3, 16, 13], "rotation": 180, "texture": "#0"},
+				"up": {"uv": [6, 3, 16, 13], "rotation": 270, "texture": "#0"},
+				"down": {"uv": [6, 3, 16, 13], "rotation": 90, "texture": "#0"}
+			}
+		}
+	]
+}
