@@ -1,55 +1,80 @@
 package com.builtbroken.atomic.lib.power;
 
-import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
+
+import java.util.function.IntSupplier;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 9/17/2018.
  */
-public class Battery extends EnergyStorage
+public class Battery implements IEnergyStorage
 {
+    protected int energy;
+    protected IntSupplier capacityFunction;
+
     public Battery(int capacity)
     {
-        super(capacity);
+        capacityFunction = () -> capacity;
     }
 
-    public Battery(int capacity, int maxTransfer)
+    public Battery(IntSupplier capacityFunction)
     {
-        super(capacity, maxTransfer);
-    }
-
-    public Battery(int capacity, int maxReceive, int maxExtract)
-    {
-        super(capacity, maxReceive, maxExtract);
-    }
-
-    public Battery(int capacity, int maxReceive, int maxExtract, int energy)
-    {
-        super(capacity, maxReceive, maxExtract, energy);
+        this.capacityFunction = capacityFunction;
     }
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate)
     {
-        int prev_energy = energy;
-        int receive = super.receiveEnergy(maxReceive, simulate);
+        //Check if we can receive
+        if (!canReceive())
+        {
+            return 0;
+        }
+
+        //Record previous energy
+        final int prev_energy = energy;
+
+        //Do receive
+        int energyReceived = Math.min(getMaxEnergyStored() - energy, Math.min(this.getReceiveLimit(), maxReceive));
+        if (!simulate)
+        {
+            energy += energyReceived;
+        }
+
+        //Check for changes
         if (simulate && prev_energy != energy)
         {
             onEnergyChanged(prev_energy, energy);
         }
-        return receive;
+        return energyReceived;
     }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate)
     {
-        int prev_energy = energy;
-        int extract = super.extractEnergy(maxExtract, simulate);
+        //Check if we can extract
+        if (!canExtract())
+        {
+            return 0;
+        }
+
+        //Record previous
+        final int prev_energy = energy;
+
+        //Do extraction
+        int energyExtracted = Math.min(energy, Math.min(this.getExtractLimit(), maxExtract));
+        if (!simulate)
+        {
+            energy -= energyExtracted;
+        }
+
+        //Check for changes
         if (simulate && prev_energy != energy)
         {
             onEnergyChanged(prev_energy, energy);
         }
-        return extract;
+        return energyExtracted;
     }
 
     protected void onEnergyChanged(int prev, int current)
@@ -60,5 +85,39 @@ public class Battery extends EnergyStorage
     public void setEnergy(int energy)
     {
         this.energy = energy;
+    }
+
+    @Override
+    public int getEnergyStored()
+    {
+        return energy;
+    }
+
+    @Override
+    public int getMaxEnergyStored()
+    {
+        return capacityFunction.getAsInt();
+    }
+
+    @Override
+    public boolean canExtract()
+    {
+        return this.getExtractLimit() > 0;
+    }
+
+    @Override
+    public boolean canReceive()
+    {
+        return this.getReceiveLimit() > 0;
+    }
+
+    public int getExtractLimit()
+    {
+        return getMaxEnergyStored();
+    }
+
+    public int getReceiveLimit()
+    {
+        return getMaxEnergyStored();
     }
 }
