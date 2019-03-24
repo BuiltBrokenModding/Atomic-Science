@@ -17,13 +17,13 @@ public class TickTimer
     protected int ticks = 0;
 
 
-    public TickTimer(int triggerTime, TimeEndFunction function)
+    protected TickTimer(int triggerTime, TimeEndFunction function)
     {
         this.triggerTime = triggerTime;
         this.function = function;
     }
 
-    public TickTimer(int triggerTime, IntConsumer consumer)
+    protected TickTimer(int triggerTime, IntConsumer consumer)
     {
         this.triggerTime = triggerTime;
         this.function = ticks ->

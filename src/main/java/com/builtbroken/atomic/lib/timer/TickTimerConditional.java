@@ -32,12 +32,12 @@ public class TickTimerConditional extends TickTimer
 
     public void tick()
     {
-        if (shouldTickFunction.orElse(() -> true).getAsBoolean())
+        if (shouldTickFunction == null || shouldTickFunction.orElse(() -> true).getAsBoolean())
         {
             super.tick();
         }
 
-        if (shouldResetFunction.orElse(() -> true).getAsBoolean())
+        if (shouldResetFunction != null && shouldResetFunction.orElse(() -> true).getAsBoolean())
         {
             ticks = 0;
         }
