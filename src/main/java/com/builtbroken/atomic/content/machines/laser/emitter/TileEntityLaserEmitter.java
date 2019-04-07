@@ -1,11 +1,13 @@
 package com.builtbroken.atomic.content.machines.laser.emitter;
 
 import com.builtbroken.atomic.config.content.ConfigContent;
+import com.builtbroken.atomic.content.machines.accelerator.gun.TileEntityAcceleratorGun;
+import com.builtbroken.atomic.content.machines.container.TileEntityItemContainer;
 import com.builtbroken.atomic.content.machines.laser.booster.TileEntityLaserBooster;
 import com.builtbroken.atomic.content.prefab.TileEntityMachine;
 import com.builtbroken.atomic.lib.power.Battery;
-import com.builtbroken.atomic.lib.timer.TickTimer;
 import com.builtbroken.atomic.lib.timer.TickTimerConditional;
+import com.builtbroken.atomic.lib.timer.TickTimerTileEntity;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,38 +26,42 @@ public class TileEntityLaserEmitter extends TileEntityMachine
     public static final String NBT_BOOSTER_COUNT = "booster_count";
     public static final String NBT_ENERGY = "energy";
 
+    /** Number of boosters we have connected */
     public int boosterCount;
 
-    public boolean sharingBoosters = false; //TODO change to broken state enum
+    /** Time left to cooldown after firing */
+    public int cooldown = 0;
+
+    /** Did we detect a booster being shared by another laser */
+    public boolean sharingBoosters = false; //TODO change to broken state enum so we can track different errors
+
+    /** Are we ready to fire, As in do we have enough energy */
     public boolean readyToFire = false;
 
+    /** Should the laser fire */
+    public boolean shouldFire = false;
+
+    /** Is an external machine asking us to fire */
+    public boolean fireOverride = false;
+
+    public boolean hasRedstone = false;
+
+    /** Battery of the laser */
     public final Battery battery = new Battery(() -> ConfigContent.LASER.ENERGY_PER_BOOSTER * boosterCount);
-    private final TickTimer scanTimer = TickTimer.newSimple(20, tick -> scanForBoosters());
 
-    private final TickTimer particleTickReadyToFire = TickTimerConditional.newSimple(3, tick -> spawnReadyToFireParticles())
-            .setShouldTickFunction(() -> readyToFire);
-    private final TickTimer particleTickBroken = TickTimerConditional.newSimple(3, tick -> spawnBrokenParticles())
-            .setShouldTickFunction(() -> sharingBoosters);
-
-    @Override
-    protected void update(int ticks, boolean isClient)
+    public TileEntityLaserEmitter()
     {
-        if (!isClient)
-        {
-            scanTimer.tick();
+        tickServer.add(TickTimerTileEntity.newSimple(20, tick -> scanForBoosters()));
+        tickServer.add(TickTimerTileEntity.newSimple(3, tick -> checkForRedstone()));
+        tickServer.add(TickTimerTileEntity.newSimple(3, tick -> checkMachineState()));
+        tickServer.add(TickTimerConditional.newTrigger(() -> ConfigContent.LASER.LASER_FIRING_DELAY, tick -> fire(), () -> readyToFire && shouldFire));
 
-            //Check if we are ready to fire
-            readyToFire = battery.getEnergyStored() >= getCostToFire();
-
-            sendDescPacket(); //TODO check for state change
-        }
-        else
-        {
-            particleTickReadyToFire.tick();
-            particleTickBroken.tick();
-        }
+        //Client only TODO find a way to init only if client
+        tickClient.add(TickTimerTileEntity.newConditional(3, tick -> spawnReadyToFireParticles(), () -> readyToFire));
+        tickClient.add(TickTimerTileEntity.newConditional(3, tick -> spawnBrokenParticles(), () -> sharingBoosters));
     }
 
+    //Spawn particles to show the machine is ready to fire
     private void spawnReadyToFireParticles()
     {
         final EnumFacing facing = getDirection();
@@ -90,17 +96,98 @@ public class TileEntityLaserEmitter extends TileEntityMachine
         sharingBoosters = buf.readBoolean();
     }
 
-    public void fire()
+    //Check for redstone
+    protected boolean checkForRedstone()
     {
-        battery.extractEnergy(getCostToFire(), false);
-        //TODO laser render
+        return hasRedstone = world.isBlockPowered(getPos());
     }
 
+    //Check state of the machine
+    protected void checkMachineState()
+    {
+        boolean prevReadyToFire = readyToFire; //TODO build a state change var with listener hooks to check for change
+        boolean prevShouldFire = shouldFire;
+
+        readyToFire = battery.getEnergyStored() >= getCostToFire();
+        shouldFire = hasRedstone || fireOverride;
+
+        if (prevReadyToFire != readyToFire || prevShouldFire != shouldFire)
+        {
+            syncClientNextTick();
+        }
+    }
+
+    /**
+     * Called to trigger the laser to fire
+     */
+    public void triggerFire()
+    {
+        fireOverride = true;
+    }
+
+    /**
+     * Fires the laser without a delay
+     * <p>
+     * Use {@link #triggerFire()} to fire the laser with its normal
+     * delay and warm up.
+     * <p>
+     * Normally this is controlled by internal timers. So
+     * only directly call from outside the laser for special needs.
+     */
+    public void fire()
+    {
+        //Reset
+        readyToFire = false;
+        shouldFire = false;
+        fireOverride = false;
+
+        //Eat energy
+        battery.extractEnergy(getCostToFire(), false);
+        doFire();
+
+        //Mark cooldown
+        cooldown = ConfigContent.LASER.LASER_COOLDOWN;
+
+        //Sync state so particles turn off
+        syncClientNextTick();
+    }
+
+    protected void doFire()
+    {
+        //TODO trigger client side laser
+
+        final EnumFacing facing = getDirection();
+
+        //Get tile in from of laser
+        TileEntity tileEntity = world.getTileEntity(getPos().offset(facing));
+
+        if (tileEntity instanceof TileEntityItemContainer) //TODO turn into capability so any machine can action with laser in front
+        {
+            //Try to find accelerator end cap
+            TileEntity tileEntity2 = world.getTileEntity(getPos().offset(facing, 2));
+
+            if (tileEntity2 instanceof TileEntityAcceleratorGun) //TODO turn into capability so any machine can action with laser in front
+            {
+                ((TileEntityAcceleratorGun)tileEntity2).onLaserFiredInto((TileEntityItemContainer) tileEntity, this);
+            }
+        }
+        else
+        {
+            //TODO raytrace to cause damage to open air entities and find block we can interact with
+        }
+    }
+
+    /**
+     * Cost in FE to use the laser
+     *
+     * @return forge energy cost
+     */
     public int getCostToFire()
     {
         return ConfigContent.LASER.FIRING_COST * boosterCount;
     }
 
+    //Check for boosters behind the laser
     private void scanForBoosters()
     {
         //Reset

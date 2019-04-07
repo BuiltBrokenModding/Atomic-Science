@@ -44,6 +44,13 @@ public class TileEntityItemContainer extends TileEntityMachine
         return inventory.getStackInSlot(0);
     }
 
+    public int consumeItems()
+    {
+        int count = getHeldItem().getCount();
+        inventory.extractItem(0, 64, false);
+        return count;
+    }
+
     @Override
     protected void writeDescPacket(List<Object> dataList, EntityPlayer player)
     {

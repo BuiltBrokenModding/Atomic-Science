@@ -30,4 +30,10 @@ public class ConfigLaser
     @Config.LangKey("config.atomicscience:content.laser.cooldown.title")
     @Config.RangeInt(min = 0, max = Short.MAX_VALUE)
     public int LASER_COOLDOWN = 20 * 60 * 2; //2 mins
+
+    @Config.Name("firing_delay")
+    @Config.Comment("Time to wait before firing a laser when triggered to fire")
+    @Config.LangKey("config.atomicscience:content.laser.firing.delay.title")
+    @Config.RangeInt(min = 0, max = Short.MAX_VALUE)
+    public int LASER_FIRING_DELAY = 10; //half a second
 }
