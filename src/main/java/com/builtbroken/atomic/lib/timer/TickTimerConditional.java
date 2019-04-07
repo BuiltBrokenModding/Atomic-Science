@@ -3,6 +3,7 @@ package com.builtbroken.atomic.lib.timer;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntConsumer;
+import java.util.function.IntSupplier;
 
 /**
  * Version of {@link TickTimer} that provides a way to disable tick or reset based on conditions
@@ -20,7 +21,17 @@ public class TickTimerConditional extends TickTimer
         super(triggerTime, function);
     }
 
+    public TickTimerConditional(IntSupplier triggerTime, TimeEndFunction function)
+    {
+        super(triggerTime, function);
+    }
+
     public TickTimerConditional(int triggerTime, IntConsumer consumer)
+    {
+        super(triggerTime, consumer);
+    }
+
+    public TickTimerConditional(IntSupplier triggerTime, IntConsumer consumer)
     {
         super(triggerTime, consumer);
     }
@@ -28,6 +39,21 @@ public class TickTimerConditional extends TickTimer
     public static TickTimerConditional newSimple(int triggerTime, IntConsumer consumer)
     {
         return new TickTimerConditional(triggerTime, consumer);
+    }
+
+    public static TickTimerConditional newSimple(IntSupplier triggerTime, IntConsumer consumer)
+    {
+        return new TickTimerConditional(triggerTime, consumer);
+    }
+
+    public static TickTimerConditional newTrigger(IntSupplier triggerTime, IntConsumer consumer, BooleanSupplier triggerCondition)
+    {
+        return new TickTimerConditional(triggerTime, consumer).setShouldTickFunction(triggerCondition).setShouldResetFunction(() -> !triggerCondition.getAsBoolean());
+    }
+
+    public static TickTimerConditional newTrigger(int triggerTime, IntConsumer consumer, BooleanSupplier triggerCondition)
+    {
+        return new TickTimerConditional(triggerTime, consumer).setShouldTickFunction(triggerCondition).setShouldResetFunction(() -> !triggerCondition.getAsBoolean());
     }
 
     public void tick()

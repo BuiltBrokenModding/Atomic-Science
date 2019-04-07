@@ -2,9 +2,13 @@ package com.builtbroken.atomic.content.prefab;
 
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import com.builtbroken.atomic.lib.gui.IPlayerUsing;
+import com.builtbroken.atomic.lib.timer.ITickTimer;
 import com.builtbroken.atomic.lib.transform.IPosWorld;
 import com.builtbroken.atomic.network.IPacketIDReceiver;
 import net.minecraft.util.ITickable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -14,6 +18,9 @@ public abstract class TileEntityActive extends TileEntityPrefab implements IPack
 {
     private int _ticks = 0;
     private boolean _syncClientNextTick = true;
+
+    protected final List<ITickTimer> tickServer = new ArrayList();
+    protected final List<ITickTimer> tickClient = new ArrayList();
 
     //-----------------------------------------------
     //--------- Update methods ----------------------
@@ -25,6 +32,16 @@ public abstract class TileEntityActive extends TileEntityPrefab implements IPack
         if (_ticks == 0)
         {
             firstTick(world.isRemote);
+        }
+
+        //Tick timers
+        if (isServer())
+        {
+            tickServer.forEach(timer -> timer.tick(this, _ticks));
+        }
+        else
+        {
+            tickClient.forEach(timer -> timer.tick(this, _ticks));
         }
 
         //Do tick
