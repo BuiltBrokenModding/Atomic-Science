@@ -36,7 +36,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     public void invalidate()
     {
         super.invalidate();
-        if (acceleratorNode.getNetwork() == null)
+        if (acceleratorNode.getNetwork() != null)
         {
             acceleratorNode.getNetwork().destroy();
         }
@@ -46,7 +46,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     public void onChunkUnload()
     {
         //TODO mark node as unloaded, find way to restore node
-        if (acceleratorNode.getNetwork() == null)
+        if (acceleratorNode.getNetwork() != null)
         {
             acceleratorNode.getNetwork().destroy();
         }

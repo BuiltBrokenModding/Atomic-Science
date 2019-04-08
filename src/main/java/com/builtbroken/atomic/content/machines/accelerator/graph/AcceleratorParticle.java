@@ -172,4 +172,10 @@ public class AcceleratorParticle implements IPos3D
     }
 
     //TODO entity version
+
+    @Override
+    public String toString()
+    {
+        return "AcceleratorParticle[" + x + "," + y +","+ z + " | " + moveDirection + "]@" + hashCode();
+    }
 }

@@ -89,6 +89,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
         {
             createParticle(heldItem, laserEmitter.boosterCount / container.consumeItems()); //TODO figure out how we are going to do energy
         }
+        System.out.println(this + " on laser fired " + container + "  " + laserEmitter);
     }
 
     /**

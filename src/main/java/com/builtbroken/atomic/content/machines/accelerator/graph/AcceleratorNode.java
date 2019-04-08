@@ -223,6 +223,7 @@ public class AcceleratorNode
     {
         this.currentParticles.add(particle);
         particle.setCurrentNode(this);
+        System.out.println(this + "Particle Entered: " + particle);
     }
 
     /**
@@ -234,6 +235,7 @@ public class AcceleratorNode
     {
         this.currentParticles.remove(particle);
         particle.setCurrentNode(null);
+        System.out.println(this + "Particle Exited: " + particle);
     }
 
     /**
@@ -289,7 +291,7 @@ public class AcceleratorNode
      */
     public TileEntityAcceleratorTube getHost()
     {
-        return host.get();
+        return host != null ? host.get() : null;
     }
 
     @Override

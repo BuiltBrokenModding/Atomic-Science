@@ -1,13 +1,16 @@
 package com.builtbroken.atomic.content.machines.accelerator.graph;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.client.EffectRefs;
+import com.builtbroken.atomic.network.netty.PacketSystem;
+import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.HashMap;
 
@@ -49,16 +52,39 @@ public class AcceleratorHandler
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event)
     {
-        if (event.side == Side.SERVER && event.phase == TickEvent.Phase.END)
+        if (event.phase == TickEvent.Phase.END)
         {
             final World world = event.world;
             final AcceleratorWorld acceleratorWorld = get(world);
-
             if (acceleratorWorld != null)
             {
-                acceleratorWorld.update(world);
+                if (event.side.isServer())
+                {
+                    acceleratorWorld.update(world);
+
+                    acceleratorWorld.particles.forEach(acceleratorParticle -> {
+
+                        System.out.println(acceleratorParticle);
+
+                        PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(world.provider.getDimension(),
+                                acceleratorParticle.xf(), acceleratorParticle.yf(), acceleratorParticle.zf(),
+                                0, 0, 0,
+                                EffectRefs.BOILER_COMPLETE);
+
+                        PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle,
+                                new NetworkRegistry.TargetPoint(world.provider.getDimension(),
+                                        acceleratorParticle.x(), acceleratorParticle.y(), acceleratorParticle.z(),
+                                        30));
+                    });
+                }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onWorldTick(TickEvent.ClientTickEvent event)
+    {
+
     }
 
     @SubscribeEvent
@@ -93,6 +119,8 @@ public class AcceleratorHandler
 
         //Add
         acceleratorWorld.particles.add(particle);
+
+        System.out.println("Created particle " + particle);
 
         //TODO fire events
         //TODO sanity check
