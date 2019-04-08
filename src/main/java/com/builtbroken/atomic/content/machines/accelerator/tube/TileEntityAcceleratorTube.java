@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube;
 
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,10 +24,32 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     protected EnumFacing direction;
     protected AcceleratorConnectionType connectionType = AcceleratorConnectionType.NORMAL;
 
+    public final AcceleratorNode acceleratorNode = new AcceleratorNode(this); //TODO turn into capability
+
     @Override
     public void markDirty()
     {
         super.markDirty();
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        if (acceleratorNode.getNetwork() == null)
+        {
+            acceleratorNode.getNetwork().destroy();
+        }
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        //TODO mark node as unloaded, find way to restore node
+        if (acceleratorNode.getNetwork() == null)
+        {
+            acceleratorNode.getNetwork().destroy();
+        }
     }
 
     @Override
@@ -41,7 +64,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
     {
-        if(oldState.getBlock() instanceof BlockAcceleratorTube && oldState.getBlock() == newSate.getBlock())
+        if (oldState.getBlock() instanceof BlockAcceleratorTube && oldState.getBlock() == newSate.getBlock())
         {
             return oldState.getValue(BlockAcceleratorTube.TYPE_PROP) != newSate.getValue(BlockAcceleratorTube.TYPE_PROP);
         }
@@ -93,6 +116,10 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         }
         state = state.withProperty(BlockAcceleratorTube.CONNECTION_PROP, getConnectionType());
 
+        //Update node in network
+        acceleratorNode.updateCache();
+
+        //Update actual block
         if (setBlock)
         {
             //Set state

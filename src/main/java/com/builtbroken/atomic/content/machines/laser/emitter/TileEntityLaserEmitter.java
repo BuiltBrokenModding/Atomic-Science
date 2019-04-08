@@ -120,9 +120,10 @@ public class TileEntityLaserEmitter extends TileEntityMachine
     /**
      * Called to trigger the laser to fire
      */
-    public void triggerFire()
+    public boolean triggerFire()
     {
         fireOverride = true;
+        return true;
     }
 
     /**
@@ -168,7 +169,7 @@ public class TileEntityLaserEmitter extends TileEntityMachine
 
             if (tileEntity2 instanceof TileEntityAcceleratorGun) //TODO turn into capability so any machine can action with laser in front
             {
-                ((TileEntityAcceleratorGun)tileEntity2).onLaserFiredInto((TileEntityItemContainer) tileEntity, this);
+                ((TileEntityAcceleratorGun) tileEntity2).onLaserFiredInto((TileEntityItemContainer) tileEntity, this);
             }
         }
         else
