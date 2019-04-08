@@ -1,6 +1,9 @@
 package com.builtbroken.atomic.content.machines.accelerator.gun;
 
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorHandler;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNetwork;
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
+import com.builtbroken.atomic.content.machines.accelerator.tube.AcceleratorConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import com.builtbroken.atomic.content.machines.container.TileEntityItemContainer;
 import com.builtbroken.atomic.content.machines.laser.emitter.TileEntityLaserEmitter;
@@ -16,7 +19,11 @@ import net.minecraft.util.EnumFacing;
  */
 public class TileEntityAcceleratorGun extends TileEntityMachine
 {
+
     private AcceleratorNetwork network;
+
+    //Fake node for particle to place inside
+    private AcceleratorNode fakeNode;
 
     public TileEntityAcceleratorGun()
     {
@@ -25,6 +32,13 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
 
     private void validateNetwork()
     {
+        //Setup a fake node for connecting to the network and providing the particle a place to spawn
+        if (fakeNode == null)
+        {
+            fakeNode = new AcceleratorNode(getPos(), getDirection(), AcceleratorConnectionType.NORMAL);
+        }
+
+        //If we have no network try to locate a tube with a network
         if (getNetwork() == null)
         {
             final EnumFacing facing = getDirection();
@@ -32,16 +46,25 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
             final TileEntity tileEntity = world.getTileEntity(getPos().offset(facing));
             if (tileEntity instanceof TileEntityAcceleratorTube)
             {
+                //Set network
                 setNetwork(((TileEntityAcceleratorTube) tileEntity).acceleratorNode.getNetwork());
+
+                //Connect to fake node
+                ((TileEntityAcceleratorTube) tileEntity).acceleratorNode.connect(fakeNode, getDirection().getOpposite());
+
+
+                //If network null create
                 if (getNetwork() == null)
                 {
                     setNetwork(new AcceleratorNetwork());
                     getNetwork().connect(((TileEntityAcceleratorTube) tileEntity).acceleratorNode);
                 }
 
+                //Link to network
                 if (getNetwork() != null)
                 {
                     getNetwork().guns.add(this);
+                    getNetwork().connect(fakeNode);
                 }
             }
         }
@@ -64,7 +87,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
         final ItemStack heldItem = container.getHeldItem();
         if (!heldItem.isEmpty())
         {
-            createParticle(heldItem.copy(), laserEmitter.boosterCount / container.consumeItems()); //TODO figure out how we are going to do energy
+            createParticle(heldItem, laserEmitter.boosterCount / container.consumeItems()); //TODO figure out how we are going to do energy
         }
     }
 
@@ -76,7 +99,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
      */
     public void createParticle(ItemStack item, int energyToStart)
     {
-
+        AcceleratorHandler.newParticle(world, fakeNode, item, energyToStart);
     }
 
     /**

@@ -144,7 +144,7 @@ public class AcceleratorNetwork
                         //If we have pathed, check for connection
                         else if (posToNode.containsKey(nextPos))
                         {
-                            tube.acceleratorNode.connect(posToNode.get(nextPos));
+                            tube.acceleratorNode.connect(posToNode.get(nextPos), facing);
                         }
                     }
                     //If not ignore, we will handle this later

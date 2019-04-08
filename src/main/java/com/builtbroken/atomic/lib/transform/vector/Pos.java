@@ -17,6 +17,7 @@ import net.minecraft.util.math.Vec3d;
  */
 public class Pos extends AbstractPos<Pos> implements IPos3D
 {
+
     public static final Pos zero = new Pos();
     public static final Pos up = new Pos(EnumFacing.UP);
     public static final Pos down = new Pos(EnumFacing.DOWN);
@@ -100,6 +101,11 @@ public class Pos extends AbstractPos<Pos> implements IPos3D
     public Pos newPos(double x, double y, double z)
     {
         return new Pos(x, y, z);
+    }
+
+    public static Pos newBlockCenter(BlockPos blockPos)
+    {
+        return new Pos(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5);
     }
 
     public static Pos getLook(Entity entity, double distance)

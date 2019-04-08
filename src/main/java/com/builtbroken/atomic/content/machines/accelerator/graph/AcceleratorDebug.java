@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.machines.accelerator.graph;
 
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
 
@@ -45,13 +46,15 @@ public class AcceleratorDebug
             int x = blockPos.getX() - minX + 2;
             int z = blockPos.getZ() - minZ + 2;
 
+            //Output position of connection
             System.out.println(blockPos);
             System.out.println(x + ", " + z + "  " + grid.length + "x" + grid[0].length);
 
-            int connections = node.getNodes().size();
+            //Output connections
+            Arrays.stream(node.getNodes()).forEach(n -> System.out.println("\t" + n.getNodes()));
 
-            node.getNodes().forEach(n -> System.out.println("\t" + n.getNodes()));
-
+            //Set char for number of connections 0-6
+            int connections = node.getNodes().length;
             grid[x][z] = Character.forDigit(connections, 10);
         });
 
