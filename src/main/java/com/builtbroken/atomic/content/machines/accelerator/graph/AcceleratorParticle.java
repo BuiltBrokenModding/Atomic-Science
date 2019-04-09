@@ -82,6 +82,10 @@ public class AcceleratorParticle implements IPos3D
                 if (prevDirection != moveDirection)
                 {
                     System.out.println(this + ": Has turned from " + prevDirection + " to " + moveDirection);
+
+                    //Consume extra energy for turn TODO figure out how much rather than just x2
+                    consumeEnergy();
+
                     //TODO track when we make a turn
                     //TODO send turn point to client for smooth animation
                     //      Client will need to lerp between points
@@ -89,6 +93,8 @@ public class AcceleratorParticle implements IPos3D
                     //      Each time it gets to a point it will clear the last
                     //      This mean it only has a current pos and target pos
                     //      If it has no target then its goal is the server's position
+                    //TODO long term send path to client so we don't need to send every turn change
+                    //TODO render points ahead and behind of the particle for debug
                 }
 
                 //Reset for next loop
@@ -107,6 +113,13 @@ public class AcceleratorParticle implements IPos3D
         this.x += x;
         this.y += y;
         this.z += z;
+    }
+
+    public void move(float moveAmount, EnumFacing direction)
+    {
+        move(moveAmount * direction.getXOffset(),
+                moveAmount * direction.getYOffset(),
+                moveAmount * direction.getZOffset());
     }
 
     protected void consumeEnergy()
@@ -160,6 +173,13 @@ public class AcceleratorParticle implements IPos3D
         return y;
     }
 
+    public void setPos(float x, float y, float z)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
     public AcceleratorNode getCurrentNode()
     {
         return node;
@@ -184,6 +204,11 @@ public class AcceleratorParticle implements IPos3D
             this.itemStack = ItemStack.EMPTY;
         }
         return this;
+    }
+
+    public EnumFacing getMoveDirection()
+    {
+        return moveDirection;
     }
 
     public boolean isInvalid()

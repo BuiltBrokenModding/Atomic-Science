@@ -132,70 +132,93 @@ public class AcceleratorNode
         //final float deltaY = particle.yf() - (getPos().getY() + 0.5f);
         final float deltaZ = particle.zf() - (getPos().getZ() + 0.5f);
 
-        float remaining;
+        float remaining = 0;
         float moveAmount;
+
+        final EnumFacing direction = getDirection();
 
         if (getConnectionType() == AcceleratorConnectionType.NORMAL)
         {
             //Force direction
-            particle.setMoveDirection(getDirection());
+            particle.setMoveDirection(direction); //TODO consider allowing opposite directions
 
-            //Update motion
-            switch (getDirection())
+            //Get remaining distance til end
+            remaining = remainingDistance(deltaX, deltaZ, 0.5f, direction);
+
+            //do move
+            return move(particle, direction, remaining, distanceToMove);
+        }
+        else if (getConnectionType() == AcceleratorConnectionType.CORNER_LEFT)
+        {
+            final EnumFacing incomingDirection = direction.rotateY().getOpposite();
+            if (particle.getMoveDirection() == incomingDirection)
             {
-                //-z
-                case NORTH:
-                    remaining = Math.max(0, 0.5f + deltaZ);
-                    moveAmount = Math.min(remaining, distanceToMove);
-                    if (moveAmount <= ZERO)
-                    {
-                        moveToNextNode(particle, getNodes()[getDirection().ordinal()]);
-                    }
-                    else
-                    {
-                        particle.move(0, 0, -moveAmount);
-                    }
-                    return moveAmount;
-                //+X
-                case EAST:
-                    remaining = Math.max(0, 0.5f - deltaX);
-                    moveAmount = Math.min(remaining, distanceToMove);
-                    if (moveAmount <= ZERO)
-                    {
-                        moveToNextNode(particle, getNodes()[getDirection().ordinal()]);
-                    }
-                    else
-                    {
-                        particle.move(moveAmount, 0, 0);
-                    }
-                    return moveAmount;
-                //+Z
-                case SOUTH:
-                    remaining = Math.max(0, 0.5f - deltaZ);
-                    moveAmount = Math.min(remaining, distanceToMove);
-                    if (moveAmount <= ZERO)
-                    {
-                        moveToNextNode(particle, getNodes()[getDirection().ordinal()]);
-                    }
-                    else
-                    {
-                        particle.move(0, 0, moveAmount);
-                    }
-                    return moveAmount;
-                //-X
-                case WEST:
-                    remaining = Math.max(0, 0.5f + deltaX);
-                    moveAmount = Math.min(remaining, distanceToMove);
-                    if (moveAmount <= ZERO)
-                    {
-                        moveToNextNode(particle, getNodes()[getDirection().ordinal()]);
-                    }
-                    else
-                    {
-                        particle.move(-moveAmount, 0, 0);
-                    }
-                    return moveAmount;
+                //Get remaining distance til center
+                remaining = remainingDistance(deltaX, deltaZ, 0, incomingDirection);
+
+                //Turn
+                if (remaining <= ZERO)
+                {
+                    particle.setMoveDirection(direction);
+                    return move(particle, distanceToMove);
+                }
+                //Move towards center
+                else
+                {
+                    return move(particle, incomingDirection, remaining, distanceToMove);
+                }
             }
+            else if (particle.getMoveDirection() == direction)
+            {
+                //Get remaining distance til end
+                remaining = remainingDistance(deltaX, deltaZ, 0.5f, direction);
+
+                //do move
+                return move(particle, direction, remaining, distanceToMove);
+            }
+            else
+            {
+                System.out.println("Invalid particle in left turn: " + particle);
+                particle.setCurrentNode(null); //TODO destroy as this means a particle entered incorrectly
+            }
+        }
+        return 0;
+    }
+
+    private float move(AcceleratorParticle particle, EnumFacing direction, float remaining, float distanceToMove)
+    {
+        //calculate actual move, we are limited by tube size for now
+        float moveAmount = Math.min(remaining, distanceToMove);
+
+        //If less then cut off, switch tubes
+        if (moveAmount <= ZERO)
+        {
+            moveToNextNode(particle, getNodes()[direction.ordinal()]);
+        }
+        //Else, move by direction
+        else
+        {
+            particle.move(moveAmount, direction);
+        }
+        return moveAmount;
+    }
+
+    private float remainingDistance(float deltaX, float deltaZ, float goal, EnumFacing facing)
+    {
+        switch (direction)
+        {
+            //-z
+            case NORTH:
+                return Math.max(0, goal + deltaZ);
+            //+X
+            case EAST:
+                return Math.max(0, goal - deltaX);
+            //+Z
+            case SOUTH:
+                return Math.max(0, goal - deltaZ);
+            //-X
+            case WEST:
+                return Math.max(0, goal + deltaX);
         }
         return 0;
     }
@@ -238,7 +261,6 @@ public class AcceleratorNode
     {
         this.currentParticles.add(particle);
         particle.setCurrentNode(this);
-        System.out.println(this + " - Particle Entered: " + particle);
     }
 
     /**
@@ -250,7 +272,6 @@ public class AcceleratorNode
     {
         this.currentParticles.remove(particle);
         particle.setCurrentNode(null);
-        System.out.println(this + " - Particle Exited: " + particle);
     }
 
     /**

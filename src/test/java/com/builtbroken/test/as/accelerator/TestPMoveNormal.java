@@ -1,5 +1,6 @@
 package com.builtbroken.test.as.accelerator;
 
+import com.builtbroken.atomic.content.effects.effects.FloatSupplier;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.tube.AcceleratorConnectionType;
@@ -16,12 +17,14 @@ import org.junit.jupiter.api.Test;
 public class TestPMoveNormal
 {
 
+    private static final float SPEED = 0.1f;
+
     @Test
     public void moveNorth()
     {
         //Create
         AcceleratorParticle particle = new AcceleratorParticle(new BlockPos(0, 0, 0), EnumFacing.NORTH, 1);
-        particle.setSpeed(0.1f);
+        particle.setSpeed(SPEED);
 
         //Create tube
         particle.setCurrentNode(new AcceleratorNode(new BlockPos(0, 0, 0), EnumFacing.NORTH, AcceleratorConnectionType.NORMAL));
@@ -36,21 +39,11 @@ public class TestPMoveNormal
         //Check move
         TestHelpers.compareFloats3Zeros(0.4f, particle.zf(), "Should have only moved -.1f and now be 0.4f");
 
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.3f, particle.zf(), "Should have only moved -.1f and now be 0.3f");
+        //Set position to edge
+        particle.setPos(0.5f, 0.5f, 1f);
 
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.2f, particle.zf(), "Should have only moved -.1f and now be 0.2f");
-
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.1f, particle.zf(), "Should have only moved -.1f and now be 0.1f");
-
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.0f, particle.zf(), "Should have only moved -.1f and now be 0.0f");
+        //Move in line
+        checkMoveLine(particle, () -> particle.zf(), -SPEED, 1);
 
         //Check that we exited the tube, previous step we would be at the edge of the tube
         particle.update(0);
@@ -62,7 +55,7 @@ public class TestPMoveNormal
     {
         //Create
         AcceleratorParticle particle = new AcceleratorParticle(new BlockPos(0, 0, 0), EnumFacing.EAST, 1);
-        particle.setSpeed(0.1f);
+        particle.setSpeed(SPEED);
 
         //Create tube
         particle.setCurrentNode(new AcceleratorNode(new BlockPos(0, 0, 0), EnumFacing.EAST, AcceleratorConnectionType.NORMAL));
@@ -77,21 +70,11 @@ public class TestPMoveNormal
         //Check move
         TestHelpers.compareFloats3Zeros(0.6f, particle.xf(), "Should have only moved .1f and now be 0.6f");
 
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.7f, particle.xf(), "Should have only moved .1f and now be 0.7f");
+        //Set position to edge
+        particle.setPos(0, 0.5f, 0.5f);
 
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.8f, particle.xf(), "Should have only moved .1f and now be 0.8");
-
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.9f, particle.xf(), "Should have only moved .1f and now be 0.9f");
-
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(1f, particle.xf(), "Should have only moved .1f and now be 1f");
+        //Move in line
+        checkMoveLine(particle, () -> particle.xf(), SPEED, 0);
 
         //Check that we exited the tube, previous step we would be at the edge of the tube
         particle.update(0);
@@ -103,7 +86,7 @@ public class TestPMoveNormal
     {
         //Create
         AcceleratorParticle particle = new AcceleratorParticle(new BlockPos(0, 0, 0), EnumFacing.SOUTH, 1);
-        particle.setSpeed(0.1f);
+        particle.setSpeed(SPEED);
 
         //Create tube
         particle.setCurrentNode(new AcceleratorNode(new BlockPos(0, 0, 0), EnumFacing.SOUTH, AcceleratorConnectionType.NORMAL));
@@ -118,21 +101,11 @@ public class TestPMoveNormal
         //Check move
         TestHelpers.compareFloats3Zeros(0.6f, particle.zf(), "Should have only moved .1f and now be 0.6f");
 
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.7f, particle.zf(), "Should have only moved .1f and now be 0.7f");
+        //Set position to edge
+        particle.setPos(0.5f, 0.5f, 0f);
 
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.8f, particle.zf(), "Should have only moved .1f and now be 0.8f");
-
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.9f, particle.zf(), "Should have only moved .1f and now be 0.9f");
-
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(1f, particle.zf(), "Should have only moved .1f and now be 1f");
+        //Move in line
+        checkMoveLine(particle, () -> particle.zf(), SPEED, 0);
 
         //Check that we exited the tube, previous step we would be at the edge of the tube
         particle.update(0);
@@ -144,7 +117,7 @@ public class TestPMoveNormal
     {
         //Create
         AcceleratorParticle particle = new AcceleratorParticle(new BlockPos(0, 0, 0), EnumFacing.WEST, 1);
-        particle.setSpeed(0.1f);
+        particle.setSpeed(SPEED);
 
         //Create tube
         particle.setCurrentNode(new AcceleratorNode(new BlockPos(0, 0, 0), EnumFacing.WEST, AcceleratorConnectionType.NORMAL));
@@ -159,24 +132,34 @@ public class TestPMoveNormal
         //Check move
         TestHelpers.compareFloats3Zeros(0.4f, particle.xf(), "Should have only moved -.1f and now be 0.4f");
 
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.3f, particle.xf(), "Should have only moved -.1f and now be 0.3f");
+        //Set position to edge
+        particle.setPos(1, 0.5f, 0.5f);
 
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.2f, particle.xf(), "Should have only moved -.1f and now be 0.2f");
-
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.1f, particle.xf(), "Should have only moved -.1f and now be 0.1f");
-
-        //Move again
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.0f, particle.xf(), "Should have only moved -.1f and now be 0.0f");
+        //Move in line
+        checkMoveLine(particle, () -> particle.xf(), -SPEED, 1);
 
         //Check that we exited the tube, previous step we would be at the edge of the tube
         particle.update(0);
         Assertions.assertNull(particle.getCurrentNode());
+    }
+
+    public void checkMoveLine(AcceleratorParticle particle, FloatSupplier data, float speed, float start)
+    {
+        //Check start
+        TestHelpers.compareFloats3Zeros(start, data.getAsFloat(),
+                String.format("[" + 0 + "]Should have started at %.2f", start));
+
+        //Move forward
+        for (int i = 0; i < 10; i++)
+        {
+            final float expected = start + ((i + 1) * speed);
+
+            //Move
+            particle.update(i);
+
+            //Assert
+            TestHelpers.compareFloats3Zeros(expected, data.getAsFloat(),
+                    String.format("[" + i + "]Should have only moved %.2f and now be %.2f", speed, expected));
+        }
     }
 }
