@@ -11,19 +11,27 @@ import net.minecraft.util.math.BlockPos;
 public class AcceleratorParticle implements IPos3D
 {
 
-    private float speed;
+    //How far in meters/blocks can be move per tick of the game
+    private float movementPerTick;
+
+    //Energy stored
     private float energy;
 
+    //Position data
     private float x;
     private float y;
     private float z;
 
+    //Movement direction
     private EnumFacing moveDirection;
 
+    //Current pathing node, can be null if we are not in a accelerator
     private AcceleratorNode node;
 
+    //Stack that was used to make the particle, used for mass and recipes
     private ItemStack itemStack = ItemStack.EMPTY;
 
+    //True if we are not in a tube
     private boolean notInTube = false;
 
     public AcceleratorParticle(BlockPos start, EnumFacing moveDirection, float energy)
@@ -33,6 +41,7 @@ public class AcceleratorParticle implements IPos3D
         this.z = start.getZ() + 0.5f;
         this.moveDirection = moveDirection;
         this.energy = energy;
+        this.movementPerTick = .1f; //TODO calculate speed from energy and mass of the itemstack
     }
 
     public void update(int worldTick)
@@ -48,20 +57,26 @@ public class AcceleratorParticle implements IPos3D
         //TODO center on tube
 
         //How much we can move in a single go
-        float distanceToMove = speed;
+        float distanceToMove = movementPerTick;
 
+        //Get current node we are pathing
         AcceleratorNode currentNode = getCurrentNode();
         if (currentNode != null)
         {
             //WE can move through several nodes, so loop until done TODO replace with path so we can % locate position and node
-            while (distanceToMove > 0 && currentNode != null)
+            while (distanceToMove > AcceleratorNode.ZERO && currentNode != null)
             {
                 final EnumFacing prevDirection = moveDirection;
 
                 //Move forward consuming distance
                 float distanceMoved = currentNode.move(this, distanceToMove);
                 distanceToMove -= distanceMoved;
-                System.out.println(this + ": Has moved " + distanceMoved + " in " + currentNode);
+
+                //Exit condition if we didn't move, prevents infinite loops
+                if (Math.abs(distanceMoved) <= 0.0001)
+                {
+                    break;
+                }
 
                 //Check if our direction changed
                 if (prevDirection != moveDirection)
@@ -102,6 +117,11 @@ public class AcceleratorParticle implements IPos3D
     public void setMoveDirection(EnumFacing direction)
     {
         this.moveDirection = direction;
+    }
+
+    public void setSpeed(float v)
+    {
+        this.movementPerTick = v;
     }
 
     @Override
@@ -176,6 +196,6 @@ public class AcceleratorParticle implements IPos3D
     @Override
     public String toString()
     {
-        return "AcceleratorParticle[" + x + "," + y +","+ z + " | " + moveDirection + "]@" + hashCode();
+        return String.format("AcceleratorParticle[Pos: %.2f, %.2f, %.2f", x, y, z) + " Dir:" + moveDirection + "]@" + hashCode();
     }
 }

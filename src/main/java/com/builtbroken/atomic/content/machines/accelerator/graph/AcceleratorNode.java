@@ -16,6 +16,8 @@ import java.util.List;
 public class AcceleratorNode
 {
 
+    public static final float ZERO = 0.001f; //WE consider anything under zero due to precision errors
+
     //Connections
     private final AcceleratorNode[] nodes = new AcceleratorNode[6];
 
@@ -145,7 +147,7 @@ public class AcceleratorNode
                 case NORTH:
                     remaining = Math.max(0, 0.5f + deltaZ);
                     moveAmount = Math.min(remaining, distanceToMove);
-                    if (moveAmount == 0)
+                    if (moveAmount <= ZERO)
                     {
                         moveToNextNode(particle, getNodes()[getDirection().ordinal()]);
                     }
@@ -158,7 +160,7 @@ public class AcceleratorNode
                 case EAST:
                     remaining = Math.max(0, 0.5f - deltaX);
                     moveAmount = Math.min(remaining, distanceToMove);
-                    if (moveAmount == 0)
+                    if (moveAmount <= ZERO)
                     {
                         moveToNextNode(particle, getNodes()[getDirection().ordinal()]);
                     }
@@ -171,7 +173,7 @@ public class AcceleratorNode
                 case SOUTH:
                     remaining = Math.max(0, 0.5f - deltaZ);
                     moveAmount = Math.min(remaining, distanceToMove);
-                    if (moveAmount == 0)
+                    if (moveAmount <= ZERO)
                     {
                         moveToNextNode(particle, getNodes()[getDirection().ordinal()]);
                     }
@@ -184,7 +186,7 @@ public class AcceleratorNode
                 case WEST:
                     remaining = Math.max(0, 0.5f + deltaX);
                     moveAmount = Math.min(remaining, distanceToMove);
-                    if (moveAmount == 0)
+                    if (moveAmount <= ZERO)
                     {
                         moveToNextNode(particle, getNodes()[getDirection().ordinal()]);
                     }
@@ -198,10 +200,23 @@ public class AcceleratorNode
         return 0;
     }
 
+    /**
+     * Called to move to the next tube
+     *
+     * @param particle - particle to move
+     * @param node     - next node, can be null if there is no next
+     */
     protected void moveToNextNode(AcceleratorParticle particle, AcceleratorNode node)
     {
         onParticleExit(particle);
-        node.onParticleEnter(particle);
+        if (node != null)
+        {
+            node.onParticleEnter(particle);
+        }
+        else
+        {
+            //TODO exit tube into the world or explode if its a wall
+        }
     }
 
     /**
@@ -223,7 +238,7 @@ public class AcceleratorNode
     {
         this.currentParticles.add(particle);
         particle.setCurrentNode(this);
-        System.out.println(this + "Particle Entered: " + particle);
+        System.out.println(this + " - Particle Entered: " + particle);
     }
 
     /**
@@ -235,7 +250,7 @@ public class AcceleratorNode
     {
         this.currentParticles.remove(particle);
         particle.setCurrentNode(null);
-        System.out.println(this + "Particle Exited: " + particle);
+        System.out.println(this + " - Particle Exited: " + particle);
     }
 
     /**
@@ -312,6 +327,12 @@ public class AcceleratorNode
             return getPos().equals(((AcceleratorNode) object).getPos());
         }
         return false;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "AcceleratorNode[" + pos + ", " + direction + ", " + connectionType + "]";
     }
 }
 
