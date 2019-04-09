@@ -1,30 +1,22 @@
 package com.builtbroken.test.as.accelerator;
 
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.tube.AcceleratorConnectionType;
 import com.builtbroken.test.as.TestHelpers;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * Created by Dark(DarkGuardsman, Robert) on 2019-04-09.
  */
-public class TestPMoveCornerLeft
+public class TestPMoveCornerLeft extends PMoveCommon
 {
-    private static final float SPEED = 0.1f;
 
-    @Test
-    public void northFacing()
+    @Test //Test move forward from center
+    public void northFacingForward()
     {
-        //Create
-        AcceleratorParticle particle = new AcceleratorParticle(new BlockPos(0, 0, 0), EnumFacing.NORTH, 1);
-        particle.setSpeed(SPEED);
-
-        //Create tube
-        particle.setCurrentNode(new AcceleratorNode(new BlockPos(0, 0, 0), EnumFacing.NORTH, AcceleratorConnectionType.CORNER_LEFT));
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, AcceleratorConnectionType.CORNER_LEFT);
 
         //Tick an update so we move
         particle.update(0);
@@ -35,8 +27,49 @@ public class TestPMoveCornerLeft
 
         //Check move
         TestHelpers.compareFloats3Zeros(0.4f, particle.zf(), "Should have only moved -.1f and now be 0.4f");
+    }
 
-        //Set position to edge
+    @Test //Test move forward from left/incoming
+    public void northFacingIncoming()
+    {
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, AcceleratorConnectionType.CORNER_LEFT);
+        particle.setMoveDirection(EnumFacing.EAST);
+        particle.setPos(0f, 0.5f, 0.5f);
+
+        //Tick an update so we move
+        particle.update(0);
+
+        Assertions.assertNotNull(particle.getCurrentNode());
+        Assertions.assertEquals(0.5f, particle.zf(), "Should have not moved in the x");
+        Assertions.assertEquals(0.5f, particle.yf(), "Should have not moved in the y");
+
+        //Check move
+        TestHelpers.compareFloats3Zeros(0.1f, particle.xf(), "Should have only moved .1f and now be 0.1f");
+    }
+
+    @Test //Test move forward from center
+    public void northFacingExit()
+    {
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, AcceleratorConnectionType.CORNER_LEFT);
+        particle.setPos(0.5f, 0.5f, 0f);
+
+        //Tick an update so we move
+        particle.update(0);
+
+        Assertions.assertNotNull(particle.getCurrentNode());
+        Assertions.assertEquals(EnumFacing.NORTH, particle.getMoveDirection());
+        Assertions.assertEquals(0.5f, particle.xf(), "Should have not moved in the x");
+        Assertions.assertEquals(0.5f, particle.yf(), "Should have not moved in the y");
+        Assertions.assertEquals(0.5f, particle.zf(), "Should have not moved in the z");
+        Assertions.assertNull(particle.getCurrentNode());
+
+    }
+
+    @Test
+    public void northFacingFull()
+    {
+        //Init
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, AcceleratorConnectionType.CORNER_LEFT);
         particle.setMoveDirection(EnumFacing.EAST);
         particle.setPos(0f, 0.5f, 0.5f);
 
