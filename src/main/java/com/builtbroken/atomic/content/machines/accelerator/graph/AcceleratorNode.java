@@ -132,9 +132,6 @@ public class AcceleratorNode
         //final float deltaY = particle.yf() - (getPos().getY() + 0.5f);
         final float deltaZ = particle.zf() - (getPos().getZ() + 0.5f);
 
-        float remaining = 0;
-        float moveAmount;
-
         final EnumFacing direction = getDirection();
 
         if (getConnectionType() == AcceleratorConnectionType.NORMAL)
@@ -143,20 +140,26 @@ public class AcceleratorNode
             particle.setMoveDirection(direction); //TODO consider allowing opposite directions
 
             //Get remaining distance til end
-            remaining = remainingDistance(deltaX, deltaZ, 0.5f, direction);
+            final float remaining = remainingDistance(deltaX, deltaZ, 0.5f, direction);
 
             //do move
             return move(particle, direction, remaining, distanceToMove);
         }
-        else if (getConnectionType() == AcceleratorConnectionType.CORNER_LEFT)
+        else if (getConnectionType() == AcceleratorConnectionType.CORNER_LEFT
+                || getConnectionType() == AcceleratorConnectionType.CORNER_RIGHT)
         {
             //Direction of movement not face
             //      north facing turn would have incoming from east on its west face
-            final EnumFacing incomingDirection = direction.rotateY();
+            //      inverse for right corner
+            final EnumFacing incomingDirection = getConnectionType() == AcceleratorConnectionType.CORNER_LEFT
+                    ? direction.rotateY()
+                    : direction.rotateY().getOpposite();
+
+            //If incoming, move towards center
             if (particle.getMoveDirection() == incomingDirection)
             {
                 //Get remaining distance til center
-                remaining = remainingDistanceCenter(deltaX, deltaZ, incomingDirection);
+                final float remaining = remainingDistanceCenter(deltaX, deltaZ, incomingDirection);
 
                 //Turn
                 if (remaining <= ZERO)
@@ -176,14 +179,16 @@ public class AcceleratorNode
                     return move(particle, incomingDirection, remaining, distanceToMove);
                 }
             }
+            //If same direction, move towards edge
             else if (particle.getMoveDirection() == direction)
             {
                 //Get remaining distance til end
-                remaining = remainingDistance(deltaX, deltaZ, 0.5f, direction);
+                final float remaining = remainingDistance(deltaX, deltaZ, 0.5f, direction);
 
                 //do move
                 return move(particle, direction, remaining, distanceToMove);
             }
+            //Shouldn't happen
             else
             {
                 System.out.println("Invalid particle in left turn: " + particle);
@@ -241,7 +246,7 @@ public class AcceleratorNode
             case SOUTH:
                 delta = deltaZ;
                 break;
-                //x
+            //x
             case EAST:
             case WEST:
                 delta = deltaX;
