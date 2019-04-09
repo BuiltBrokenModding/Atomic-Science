@@ -150,11 +150,13 @@ public class AcceleratorNode
         }
         else if (getConnectionType() == AcceleratorConnectionType.CORNER_LEFT)
         {
-            final EnumFacing incomingDirection = direction.rotateY().getOpposite();
+            //Direction of movement not face
+            //      north facing turn would have incoming from east on its west face
+            final EnumFacing incomingDirection = direction.rotateY();
             if (particle.getMoveDirection() == incomingDirection)
             {
                 //Get remaining distance til center
-                remaining = remainingDistance(deltaX, deltaZ, 0, incomingDirection);
+                remaining = remainingDistanceCenter(deltaX, deltaZ, incomingDirection);
 
                 //Turn
                 if (remaining <= ZERO)
@@ -203,7 +205,7 @@ public class AcceleratorNode
         return moveAmount;
     }
 
-    private float remainingDistance(float deltaX, float deltaZ, float goal, EnumFacing facing)
+    private float remainingDistance(float deltaX, float deltaZ, float goal, EnumFacing direction)
     {
         switch (direction)
         {
@@ -221,6 +223,27 @@ public class AcceleratorNode
                 return Math.max(0, goal + deltaX);
         }
         return 0;
+    }
+
+    private float remainingDistanceCenter(float deltaX, float deltaZ, EnumFacing direction)
+    {
+        float delta;
+        switch (direction)
+        {
+            //z
+            case NORTH:
+            case SOUTH:
+                delta = deltaZ;
+                break;
+                //x
+            case EAST:
+            case WEST:
+                delta = deltaX;
+                break;
+            default:
+                delta = 0;
+        }
+        return Math.abs(delta);
     }
 
     /**
