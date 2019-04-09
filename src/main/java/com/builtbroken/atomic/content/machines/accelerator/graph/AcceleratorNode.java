@@ -161,7 +161,13 @@ public class AcceleratorNode
                 //Turn
                 if (remaining <= ZERO)
                 {
+                    //Center particle to avoid it being slightly off center
+                    particle.setPos(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+
+                    //Update facing
                     particle.setMoveDirection(direction);
+
+                    //Call move again with new facing
                     return move(particle, distanceToMove);
                 }
                 //Move towards center

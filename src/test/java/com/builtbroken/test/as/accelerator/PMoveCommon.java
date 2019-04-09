@@ -16,6 +16,11 @@ public class PMoveCommon
 {
 
     public static final float SPEED = 0.1f;
+    public static final float CENTER = 0.5f;
+    public static final float EDGE_NORTH = 0;
+    public static final float EDGE_SOUTH = 1;
+    public static final float EDGE_EAST = 1;
+    public static final float EDGE_WEST = 0;
 
     public static AcceleratorParticle newParticleInTube(EnumFacing facing, AcceleratorConnectionType connectionType)
     {
@@ -29,17 +34,18 @@ public class PMoveCommon
         //Test init so we can fail early if something goes wrong
         Assertions.assertNotNull(particle.getCurrentNode());
         Assertions.assertEquals(facing, particle.getMoveDirection());
-        Assertions.assertEquals(0.5f, particle.xf(), "Should have not moved in the x after init");
-        Assertions.assertEquals(0.5f, particle.yf(), "Should have not moved in the y after init");
-        Assertions.assertEquals(0.5f, particle.zf(), "Should have not moved in the z after init");
+        Assertions.assertEquals(CENTER, particle.xf(), "Should have not moved in the x after init");
+        Assertions.assertEquals(CENTER, particle.yf(), "Should have not moved in the y after init");
+        Assertions.assertEquals(CENTER, particle.zf(), "Should have not moved in the z after init");
 
         return particle;
     }
 
     public static void checkMoveLine(AcceleratorParticle particle, FloatSupplier data, float speed, float start, float end)
     {
-        final float distance = Math.abs(start - end);
-        final int steps = (int) Math.floor(distance / Math.abs(speed));
+        final float distance = Math.round(Math.abs(start - end) * 100) / 100f;
+        float speedAbs = Math.abs(speed);
+        final int steps = (int) Math.floor(distance / speedAbs);
 
         //Check start
         TestHelpers.compareFloats3Zeros(start, data.getAsFloat(),
