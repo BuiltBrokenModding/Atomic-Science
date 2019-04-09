@@ -73,25 +73,8 @@ public class TestPMoveCornerLeft extends PMoveCommon
         particle.setMoveDirection(EnumFacing.EAST);
         particle.setPos(0f, 0.5f, 0.5f);
 
-        //Move 1
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.1f, particle.xf(), "Should have only moved .1f and now be 0.1f");
-
-        //Move 2
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.2f, particle.xf(), "Should have only moved .1f and now be 0.2f");
-
-        //Move 3
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.3f, particle.xf(), "Should have only moved .1f and now be 0.3f");
-
-        //Move 4
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.4f, particle.xf(), "Should have only moved .1f and now be 0.4f");
-
-        //Move 5
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.5f, particle.xf(), "Should have only moved .1f and now be 0.5f");
+        //Move 1 - 5
+        checkMoveLine(particle, () -> particle.xf(), SPEED, 0, 0.5f);
 
         //Move 6, turn point
         particle.update(0);
@@ -99,21 +82,8 @@ public class TestPMoveCornerLeft extends PMoveCommon
         TestHelpers.compareFloats3Zeros(0.5f, particle.xf(), "Should have not moved in x");
         TestHelpers.compareFloats3Zeros(0.4f, particle.zf(), "Should have 0.1 in z");
 
-        //Move 7
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.3f, particle.zf(), "Should have only moved -.1f and now be 0.3f");
-
-        //Move 8
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.2f, particle.zf(), "Should have only moved -.1f and now be 0.2f");
-
-        //Move 9
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0.1f, particle.zf(), "Should have only moved -.1f and now be 0.1f");
-
-        //Move 10
-        particle.update(0);
-        TestHelpers.compareFloats3Zeros(0f, particle.zf(), "Should have only moved -.1f and now be 0f");
+        //Move 7 - 10
+        checkMoveLine(particle, () -> particle.zf(), -SPEED, 0.4f, 0f);
 
         //Check that we exited the tube, previous step we would be at the edge of the tube
         particle.update(0);
