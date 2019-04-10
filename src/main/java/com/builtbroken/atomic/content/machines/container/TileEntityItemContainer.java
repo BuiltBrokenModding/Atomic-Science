@@ -7,9 +7,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -67,6 +71,27 @@ public class TileEntityItemContainer extends TileEntityMachine
     public SPacketUpdateTileEntity getUpdatePacket()
     {
         return new SPacketUpdateTileEntity(pos, 0, getUpdateTag());
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+    {
+        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        {
+            return inventory != null;
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @Nullable
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+    {
+        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        {
+            return (T) inventory;
+        }
+        return super.getCapability(capability, facing);
     }
 
     @Override
