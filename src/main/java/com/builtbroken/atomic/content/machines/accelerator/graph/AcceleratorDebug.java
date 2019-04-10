@@ -2,7 +2,6 @@ package com.builtbroken.atomic.content.machines.accelerator.graph;
 
 import net.minecraft.util.math.BlockPos;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
 
@@ -13,6 +12,11 @@ public class AcceleratorDebug
 {
     public static void printNetwork(AcceleratorNetwork network)
     {
+        if (network == null)
+        {
+            System.out.println("No network");
+            return;
+        }
         final Set<AcceleratorNode> nodes = network.nodes;
 
         //Get grid min-max
@@ -48,14 +52,20 @@ public class AcceleratorDebug
 
             //Output position of connection
             System.out.println(blockPos);
-            System.out.println(x + ", " + z + "  " + grid.length + "x" + grid[0].length);
+            System.out.println(x + ", " + z + "  " + grid.length + "x" + grid[0].length + "\n");
 
             //Output connections
-            Arrays.stream(node.getNodes()).forEach(n -> System.out.println("\t" + n.getNodes()));
+            int count = 0;
+            for (AcceleratorNode n : node.getNodes())
+            {
+               System.out.println(n);
+               if(n != null) {
+                   count++;
+               }
+            }
 
             //Set char for number of connections 0-6
-            int connections = node.getNodes().length;
-            grid[x][z] = Character.forDigit(connections, 10);
+            grid[x][z] = Character.forDigit(count, 10);
         });
 
         //Output grid

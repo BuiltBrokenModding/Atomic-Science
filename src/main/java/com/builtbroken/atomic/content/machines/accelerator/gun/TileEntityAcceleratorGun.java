@@ -52,7 +52,6 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
                 //Connect to fake node
                 ((TileEntityAcceleratorTube) tileEntity).acceleratorNode.connect(fakeNode, getDirection().getOpposite());
 
-
                 //If network null create
                 if (getNetwork() == null)
                 {
@@ -70,7 +69,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
         }
 
         //Find tubes
-        if (getNetwork() != null && getNetwork().nodes.isEmpty())
+        if (getNetwork() != null)
         {
             getNetwork().path(getWorld(), getPos().offset(getDirection()));
         }
@@ -89,7 +88,6 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
         {
             createParticle(heldItem, laserEmitter.boosterCount / container.consumeItems()); //TODO figure out how we are going to do energy
         }
-        System.out.println(this + " on laser fired " + container + "  " + laserEmitter);
     }
 
     /**

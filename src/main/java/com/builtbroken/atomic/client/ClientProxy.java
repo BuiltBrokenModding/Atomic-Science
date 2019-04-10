@@ -158,6 +158,14 @@ public class ClientProxy extends CommonProxy
             {
                 extractorRunning(x, y, z, (int) vx);
             }
+            else if(particle.equalsIgnoreCase(EffectRefs.ACCELERATOR_PARTICLE))
+            {
+                Minecraft.getMinecraft().world.spawnParticle(EnumParticleTypes.HEART,
+                        x + r(0.4),
+                        y + 0.6 + r(0.1),
+                        z + r(0.4),
+                        0, 0, 0);
+            }
         }
     }
 

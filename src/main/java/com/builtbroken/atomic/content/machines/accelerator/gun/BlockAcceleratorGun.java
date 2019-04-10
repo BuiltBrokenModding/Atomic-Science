@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.machines.accelerator.gun;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorDebug;
 import com.builtbroken.atomic.content.prefab.BlockMachine;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -42,7 +43,7 @@ public class BlockAcceleratorGun extends BlockMachine
             {
                 if (!world.isRemote)
                 {
-
+                    AcceleratorDebug.printNetwork(((TileEntityAcceleratorGun)gunTile).getNetwork());
                 }
                 return true;
             }

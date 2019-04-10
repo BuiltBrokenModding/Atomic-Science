@@ -69,7 +69,7 @@ public class AcceleratorHandler
                         PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(world.provider.getDimension(),
                                 acceleratorParticle.xf(), acceleratorParticle.yf(), acceleratorParticle.zf(),
                                 0, 0, 0,
-                                EffectRefs.BOILER_COMPLETE);
+                                EffectRefs.ACCELERATOR_PARTICLE);
 
                         PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle,
                                 new NetworkRegistry.TargetPoint(world.provider.getDimension(),
