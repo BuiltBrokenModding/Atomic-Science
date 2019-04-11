@@ -21,6 +21,9 @@ import java.util.List;
  */
 public class TileEntityItemContainer extends TileEntityMachine
 {
+    public static final String NBT_INVENTORY = "inventory";
+    public static final String NBT_ITEM = "item";
+
     private final ItemStackHandler inventory = new ItemStackHandler(1)
     {
         @Override
@@ -98,13 +101,13 @@ public class TileEntityItemContainer extends TileEntityMachine
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        inventory.deserializeNBT(compound.getCompoundTag("inventory"));
+        inventory.deserializeNBT(compound.getCompoundTag(NBT_INVENTORY));
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
-        compound.setTag("inventory", inventory.serializeNBT());
+        compound.setTag(NBT_INVENTORY, inventory.serializeNBT());
         return super.writeToNBT(compound);
     }
 
@@ -113,17 +116,17 @@ public class TileEntityItemContainer extends TileEntityMachine
     {
         NBTTagCompound tagCompound = new NBTTagCompound();
         writeToNBT(tagCompound);
-        tagCompound.setTag("item", getHeldItem().serializeNBT());
+        tagCompound.setTag(NBT_ITEM, getHeldItem().serializeNBT());
         return tagCompound;
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        if (pkt.getNbtCompound().hasKey("item"))
+        if (pkt.getNbtCompound().hasKey(NBT_ITEM))
         {
             readFromNBT(pkt.getNbtCompound());
-            _cache = new ItemStack(pkt.getNbtCompound().getCompoundTag("item"));
+            _cache = new ItemStack(pkt.getNbtCompound().getCompoundTag(NBT_ITEM));
         }
     }
 }
