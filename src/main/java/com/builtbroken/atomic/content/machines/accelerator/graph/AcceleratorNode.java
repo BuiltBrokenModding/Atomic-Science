@@ -145,14 +145,8 @@ public class AcceleratorNode
         else if (getConnectionType().EXIT_LEFT && tubeDirection.rotateY() == moveDirection
                 || getConnectionType().EXIT_RIGHT && tubeDirection.rotateY().getOpposite() == moveDirection)
         {
-            //Direction of movement not face
-            //      north facing turn would have incoming from east on its west face
-            //      inverse for right corner
-            final EnumFacing incomingDirection = getConnectionType().EXIT_LEFT
-                    ? tubeDirection.rotateY()
-                    : tubeDirection.rotateY().getOpposite();
-
-            return moveToTurn(particle, distanceToMove, deltaX, deltaZ, incomingDirection);
+            //use move direction as we either are moving left or right, doesn't matter as the 'if' above validates
+            return moveToTurn(particle, distanceToMove, deltaX, deltaZ, moveDirection);
         }
         else
         {
