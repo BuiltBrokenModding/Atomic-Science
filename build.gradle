@@ -35,9 +35,10 @@ apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScr
 
 dependencies 
 {
-    testCompile 'junit:junit:4.11'
     // compile against the JEI API
     deobfCompile "mezz.jei:jei_${minecraft.version}:4.12.0.216:api"
+   	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.1'
 }
 
 sourceCompatibility = 1.8
