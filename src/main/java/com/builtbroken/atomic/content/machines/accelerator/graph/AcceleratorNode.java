@@ -132,70 +132,68 @@ public class AcceleratorNode
         //final float deltaY = particle.yf() - (getPos().getY() + 0.5f);
         final float deltaZ = particle.zf() - (getPos().getZ() + 0.5f);
 
-        final EnumFacing direction = getDirection();
+        final EnumFacing tubeDirection = getDirection();
+        final EnumFacing moveDirection = particle.getMoveDirection();
 
-        if (getConnectionType() == AcceleratorConnectionType.NORMAL)
+        //Normal, T, intersection
+        if (getConnectionType().EXIT_FRONT && moveDirection == tubeDirection)
+            //TODO consider allowing opposite directions for tubes that are not powered
+            //TODO validate that it is at center or beyond for turns since we can't enter from back
         {
-            //Force direction
-            particle.setMoveDirection(direction); //TODO consider allowing opposite directions
-
-            //Get remaining distance til end
-            final float remaining = remainingDistance(deltaX, deltaZ, 0.5f, direction);
-
-            //do move
-            return move(particle, direction, remaining, distanceToMove);
+            return moveForward(particle, tubeDirection, deltaX, deltaZ, distanceToMove);
         }
-        else if (getConnectionType() == AcceleratorConnectionType.CORNER_LEFT
-                || getConnectionType() == AcceleratorConnectionType.CORNER_RIGHT)
+        else if (getConnectionType().EXIT_LEFT && tubeDirection.rotateY() == moveDirection
+                || getConnectionType().EXIT_RIGHT && tubeDirection.rotateY().getOpposite() == moveDirection)
         {
             //Direction of movement not face
             //      north facing turn would have incoming from east on its west face
             //      inverse for right corner
-            final EnumFacing incomingDirection = getConnectionType() == AcceleratorConnectionType.CORNER_LEFT
-                    ? direction.rotateY()
-                    : direction.rotateY().getOpposite();
+            final EnumFacing incomingDirection = getConnectionType().EXIT_LEFT
+                    ? tubeDirection.rotateY()
+                    : tubeDirection.rotateY().getOpposite();
 
-            //If incoming, move towards center
-            if (particle.getMoveDirection() == incomingDirection)
-            {
-                //Get remaining distance til center
-                final float remaining = remainingDistanceCenter(deltaX, deltaZ, incomingDirection);
-
-                //Turn
-                if (remaining <= ZERO)
-                {
-                    //Center particle to avoid it being slightly off center
-                    particle.setPos(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
-
-                    //Update facing
-                    particle.setMoveDirection(direction);
-
-                    //Call move again with new facing
-                    return move(particle, distanceToMove);
-                }
-                //Move towards center
-                else
-                {
-                    return move(particle, incomingDirection, remaining, distanceToMove);
-                }
-            }
-            //If same direction, move towards edge
-            else if (particle.getMoveDirection() == direction)
-            {
-                //Get remaining distance til end
-                final float remaining = remainingDistance(deltaX, deltaZ, 0.5f, direction);
-
-                //do move
-                return move(particle, direction, remaining, distanceToMove);
-            }
-            //Shouldn't happen
-            else
-            {
-                System.out.println("Invalid particle in left turn: " + particle);
-                particle.setCurrentNode(null); //TODO destroy as this means a particle entered incorrectly
-            }
+            return moveToTurn(particle, distanceToMove, deltaX, deltaZ, incomingDirection);
+        }
+        else
+        {
+            System.out.println(this + " - Invalid particle direction combo: " + particle);
+            particle.setCurrentNode(null);
+            //TODO destroy tube (or cause damage) as this means a particle entered incorrectly hitting the tube wall
         }
         return 0;
+    }
+
+    private float moveToTurn(AcceleratorParticle particle, float distanceToMove, float deltaX, float deltaZ, EnumFacing incomingDirection)
+    {
+        //Get remaining distance til center
+        final float remaining = remainingDistanceCenter(deltaX, deltaZ, incomingDirection);
+
+        //Turn
+        if (remaining <= ZERO)
+        {
+            //Center particle to avoid it being slightly off center
+            particle.setPos(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+
+            //Update facing
+            particle.setMoveDirection(direction);
+
+            //Call move again with new facing
+            return move(particle, distanceToMove);
+        }
+        //Move towards center TODO check if turn and block particles not coming from turn
+        else
+        {
+            return move(particle, incomingDirection, remaining, distanceToMove);
+        }
+    }
+
+    private float moveForward(AcceleratorParticle particle, EnumFacing direction, float deltaX, float deltaZ, float distanceToMove)
+    {
+        //Get remaining distance til end
+        final float remaining = remainingDistance(deltaX, deltaZ, 0.5f, direction);
+
+        //Do move
+        return move(particle, direction, remaining, distanceToMove);
     }
 
     private float move(AcceleratorParticle particle, EnumFacing direction, float remaining, float distanceToMove)
