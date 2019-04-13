@@ -64,7 +64,7 @@ public class AcceleratorHandler
 
                     acceleratorWorld.particles.forEach(acceleratorParticle -> {
 
-                        System.out.println(acceleratorParticle);
+                        //System.out.println(acceleratorParticle);
 
                         PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(world.provider.getDimension(),
                                 acceleratorParticle.xf(), acceleratorParticle.yf(), acceleratorParticle.zf(),

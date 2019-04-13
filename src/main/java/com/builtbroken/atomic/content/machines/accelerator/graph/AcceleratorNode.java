@@ -2,8 +2,10 @@ package com.builtbroken.atomic.content.machines.accelerator.graph;
 
 import com.builtbroken.atomic.content.machines.accelerator.tube.AcceleratorConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -59,6 +61,35 @@ public class AcceleratorNode
         return network;
     }
 
+    public void checkConnections(IBlockAccess world)
+    {
+        boolean destroyNetwork = false;
+        for (EnumFacing facing : EnumFacing.HORIZONTALS)
+        {
+            final BlockPos sidePos = pos.offset(facing);
+            final TileEntity tileEntity = world.getTileEntity(sidePos);
+            if (tileEntity instanceof TileEntityAcceleratorTube)
+            {
+                connect(((TileEntityAcceleratorTube) tileEntity).acceleratorNode, facing);
+            }
+            else if (nodes[facing.ordinal()] != null)
+            {
+                //Network is likely invalid so rebuild
+                destroyNetwork = true;
+
+                //Clear connections, pathing will likely fix connections but still useful
+                nodes[facing.ordinal()].nodes[facing.getOpposite().ordinal()] = null;
+                nodes[facing.ordinal()] = null;
+            }
+        }
+
+        //Clear network
+        if (destroyNetwork && getNetwork() != null)
+        {
+            getNetwork().destroy();
+        }
+    }
+
     /**
      * Connect a node to this node
      *
@@ -75,6 +106,7 @@ public class AcceleratorNode
             if (getNodes()[index] != acceleratorNode)
             {
                 getNodes()[index] = acceleratorNode;
+                //TODO validate network
             }
 
             //Check other connection
@@ -137,13 +169,13 @@ public class AcceleratorNode
 
         //Normal, T, intersection
         if (getConnectionType().EXIT_FRONT && moveDirection == tubeDirection)
-            //TODO consider allowing opposite directions for tubes that are not powered
-            //TODO validate that it is at center or beyond for turns since we can't enter from back
+        //TODO consider allowing opposite directions for tubes that are not powered
+        //TODO validate that it is at center or beyond for turns since we can't enter from back
         {
             return moveForward(particle, tubeDirection, deltaX, deltaZ, distanceToMove);
         }
-        else if (getConnectionType().EXIT_LEFT && tubeDirection.rotateY() == moveDirection
-                || getConnectionType().EXIT_RIGHT && tubeDirection.rotateY().getOpposite() == moveDirection)
+        else if (getConnectionType().ENTER_LEFT && tubeDirection.rotateY() == moveDirection
+                || getConnectionType().ENTER_RIGHT && tubeDirection.rotateY().getOpposite() == moveDirection)
         {
             //use move direction as we either are moving left or right, doesn't matter as the 'if' above validates
             return moveToTurn(particle, distanceToMove, deltaX, deltaZ, moveDirection);

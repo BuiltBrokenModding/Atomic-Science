@@ -145,7 +145,25 @@ public class BlockAcceleratorTube extends BlockPrefab
         {
             ((TileEntityAcceleratorTube) tile).direction = placer.getHorizontalFacing();
             ((TileEntityAcceleratorTube) tile).updateConnections(true);
+            ((TileEntityAcceleratorTube) tile).acceleratorNode.checkConnections(world);
         }
+    }
+
+    @Override
+    public void onPlayerDestroy(World worldIn, BlockPos pos, IBlockState state)
+    {
+        super.onPlayerDestroy(worldIn, pos, state);
+    }
+
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state)
+    {
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof TileEntityAcceleratorTube && ((TileEntityAcceleratorTube) tile).acceleratorNode.getNetwork() != null)
+        {
+            ((TileEntityAcceleratorTube) tile).acceleratorNode.getNetwork().destroy();
+        }
+        super.breakBlock(world, pos, state);
     }
 
     @Override
@@ -171,6 +189,7 @@ public class BlockAcceleratorTube extends BlockPrefab
                 && !((TileEntityAcceleratorTube) tile).world().isRemote)
         {
             ((TileEntityAcceleratorTube) tile).updateConnections(true);
+            ((TileEntityAcceleratorTube) tile).acceleratorNode.checkConnections(world);
         }
     }
 

@@ -81,7 +81,7 @@ public class AcceleratorParticle implements IPos3D
                 //Check if our direction changed
                 if (prevDirection != moveDirection)
                 {
-                    System.out.println(this + ": Has turned from " + prevDirection + " to " + moveDirection);
+                    //System.out.println(this + ": Has turned from " + prevDirection + " to " + moveDirection);
 
                     //Consume extra energy for turn TODO figure out how much rather than just x2
                     consumeEnergy();
