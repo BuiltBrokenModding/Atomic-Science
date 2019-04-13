@@ -20,7 +20,7 @@ public enum AcceleratorConnectionType implements IStringSerializable
     //Join two inputs to a single output, with only 1 being a turn
     T_LEFT(true, true, false),
     //Join two inputs to a single output, with two turns
-    T_JOIN(false, true, true),
+    T_JOIN(true, true, true),
     //Join 3 inputs to a single output
     INTERSECTION(true, true, true);
 
