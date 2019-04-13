@@ -46,7 +46,7 @@
 		  "particle": "atomicscience:blocks/accelerator/tube_top"
         }
       },
-      "t_left": {
+      "t_join_left": {
         "model": "atomicscience:accelerator_tube/tube-t-left",
         "textures": {
           "0": "atomicscience:blocks/accelerator/tube_top_t_left",
@@ -54,7 +54,7 @@
 		  "particle": "atomicscience:blocks/accelerator/tube_top"
         }
       },
-      "t_right": {
+      "t_join_right": {
         "model": "atomicscience:accelerator_tube/tube-t-right",
         "textures": {
           "0": "atomicscience:blocks/accelerator/tube_top_t_right",

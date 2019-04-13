@@ -190,11 +190,11 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         }
         else if (left && behind)
         {
-            connectionType = AcceleratorConnectionType.T_LEFT;
+            connectionType = AcceleratorConnectionType.T_JOIN_LEFT;
         }
         else if (right && behind)
         {
-            connectionType = AcceleratorConnectionType.T_RIGHT;
+            connectionType = AcceleratorConnectionType.T_JOIN_RIGHT;
         }
         else if (left)
         {

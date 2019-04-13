@@ -16,23 +16,23 @@ public enum AcceleratorConnectionType implements IStringSerializable
     //Turn
     CORNER_LEFT(true, true, false),
     //Join two inputs to a single output, with only 1 being a turn
-    T_RIGHT(true, false, true),
+    T_JOIN_RIGHT(true, false, true),
     //Join two inputs to a single output, with only 1 being a turn
-    T_LEFT(true, true, false),
+    T_JOIN_LEFT(true, true, false),
     //Join two inputs to a single output, with two turns
     T_JOIN(true, true, true),
     //Join 3 inputs to a single output
     INTERSECTION(true, true, true);
 
     public final boolean EXIT_FRONT;
-    public final boolean EXIT_LEFT;
-    public final boolean EXIT_RIGHT;
+    public final boolean ENTER_LEFT;
+    public final boolean ENTER_RIGHT;
 
     AcceleratorConnectionType(boolean strait, boolean left, boolean right)
     {
         EXIT_FRONT = strait;
-        EXIT_LEFT = left;
-        EXIT_RIGHT = right;
+        ENTER_LEFT = left;
+        ENTER_RIGHT = right;
     }
 
     public static AcceleratorConnectionType byIndex(int i)
