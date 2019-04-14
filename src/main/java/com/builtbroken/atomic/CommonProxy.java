@@ -1,6 +1,8 @@
 package com.builtbroken.atomic;
 
+import com.builtbroken.atomic.client.particles.AcceleratorParticleRenderData;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
+import com.builtbroken.atomic.network.packet.client.PacketAcceleratorParticleSync;
 import com.builtbroken.atomic.proxy.ContentProxy;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,8 +15,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+import java.util.HashMap;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public abstract class CommonProxy extends ContentProxy implements IGuiHandler
 {
+    public static final HashMap<UUID, AcceleratorParticleRenderData> PARTICLES_TO_RENDER = new HashMap(); //TODO add fly wheel pattern
+    public static final ConcurrentLinkedQueue<PacketAcceleratorParticleSync> NEW_PARTICLE_PACKETS = new ConcurrentLinkedQueue();
+
     public CommonProxy(String name)
     {
         super(name);

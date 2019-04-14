@@ -1,9 +1,8 @@
 package com.builtbroken.atomic.content.machines.accelerator.graph;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.client.EffectRefs;
 import com.builtbroken.atomic.network.netty.PacketSystem;
-import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
+import com.builtbroken.atomic.network.packet.client.PacketAcceleratorParticleSync;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
@@ -66,12 +65,9 @@ public class AcceleratorHandler
 
                         //System.out.println(acceleratorParticle);
 
-                        PacketSpawnParticle packetSpawnParticle = new PacketSpawnParticle(world.provider.getDimension(),
-                                acceleratorParticle.xf(), acceleratorParticle.yf(), acceleratorParticle.zf(),
-                                0, 0, 0,
-                                EffectRefs.ACCELERATOR_PARTICLE);
+                        PacketAcceleratorParticleSync packet = new PacketAcceleratorParticleSync(acceleratorParticle); //TODO implement flywheel pattern
 
-                        PacketSystem.INSTANCE.sendToAllAround(packetSpawnParticle,
+                        PacketSystem.INSTANCE.sendToAllAround(packet,
                                 new NetworkRegistry.TargetPoint(world.provider.getDimension(),
                                         acceleratorParticle.x(), acceleratorParticle.y(), acceleratorParticle.z(),
                                         30));
@@ -113,7 +109,7 @@ public class AcceleratorHandler
         final AcceleratorWorld acceleratorWorld = getOrCreate(world);
 
         //Create
-        AcceleratorParticle particle = new AcceleratorParticle(node.getPos(), node.getDirection(), energyToStart)
+        AcceleratorParticle particle = new AcceleratorParticle(world.provider.getDimension(), node.getPos(), node.getDirection(), energyToStart)
                 .setCurrentNode(node)
                 .setItem(item.copy());
 

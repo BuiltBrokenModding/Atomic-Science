@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.network.IPacket;
 import com.builtbroken.atomic.network.packet.PacketPlayerItem;
 import com.builtbroken.atomic.network.packet.PacketTile;
+import com.builtbroken.atomic.network.packet.client.PacketAcceleratorParticleSync;
 import com.builtbroken.atomic.network.packet.client.PacketSpawnParticle;
 import com.builtbroken.atomic.network.packet.sync.PacketPlayerRadiation;
 import com.builtbroken.atomic.network.packet.trigger.PacketMouse;
@@ -28,6 +29,7 @@ public class PacketEncoderDecoderHandler extends FMLIndexedMessageToMessageCodec
         addPacket(PacketPlayerRadiation.class);
         addPacket(PacketSpawnParticle.class);
         addPacket(PacketMouse.class);
+        addPacket(PacketAcceleratorParticleSync.class);
     }
 
     public void addPacket(Class<? extends IPacket> clazz)

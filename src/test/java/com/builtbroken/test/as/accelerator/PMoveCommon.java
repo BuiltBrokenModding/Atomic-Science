@@ -20,7 +20,7 @@ public class PMoveCommon
     public static AcceleratorParticle newParticleInTube(EnumFacing facing, TubeConnectionType connectionType)
     {
         //Create
-        AcceleratorParticle particle = new AcceleratorParticle(new BlockPos(0, 0, 0), facing, 1);
+        AcceleratorParticle particle = new AcceleratorParticle(0, new BlockPos(0, 0, 0), facing, 1);
         particle.setSpeed(SPEED);
 
         //Create tube

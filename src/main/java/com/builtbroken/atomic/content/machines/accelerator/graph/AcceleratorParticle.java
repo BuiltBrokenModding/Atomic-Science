@@ -6,11 +6,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.UUID;
+
 /**
  * Created by Dark(DarkGuardsman, Robert) on 4/7/2019.
  */
 public class AcceleratorParticle implements IPos3D
 {
+    public final UUID ID;
+    public final int dim_id;
 
     //How far in meters/blocks can be move per tick of the game
     private float movementPerTick;
@@ -35,8 +39,10 @@ public class AcceleratorParticle implements IPos3D
     //True if we are not in a tube
     private boolean notInTube = false;
 
-    public AcceleratorParticle(BlockPos start, EnumFacing moveDirection, float energy)
+    public AcceleratorParticle(int dim, BlockPos start, EnumFacing moveDirection, float energy)
     {
+        this.ID = UUID.randomUUID();
+        this.dim_id = dim;
         this.x = start.getX() + 0.5f;
         this.y = start.getY() + 0.5f;
         this.z = start.getZ() + 0.5f;
