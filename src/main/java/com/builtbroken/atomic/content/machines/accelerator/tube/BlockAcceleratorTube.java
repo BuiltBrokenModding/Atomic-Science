@@ -77,9 +77,8 @@ public class BlockAcceleratorTube extends BlockPrefab
                 }
                 return true;
             }
-            else if (heldItem.getItem() == ASItems.itemWrench)
+            else if (heldItem.getItem() == Items.REDSTONE)
             {
-
                 AcceleratorTubeType type = state.getValue(TYPE_PROP);
                 AcceleratorTubeType typeToSet = type.next();
 
@@ -100,6 +99,18 @@ public class BlockAcceleratorTube extends BlockPrefab
                 if (!world.isRemote)
                 {
                     playerIn.sendMessage(new TextComponentString("Type changed from '" + type + "' to '" + typeToSet + "'"));
+                }
+                return true;
+            }
+            else if (heldItem.getItem() == ASItems.itemWrench)
+            {
+                if(playerIn.isSneaking())
+                {
+
+                }
+                else
+                {
+
                 }
                 return true;
             }
@@ -198,7 +209,7 @@ public class BlockAcceleratorTube extends BlockPrefab
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        if (getStateFromMeta(meta).getValue(TYPE_PROP) == AcceleratorTubeType.DIRECTION)
+        if (getStateFromMeta(meta).getValue(TYPE_PROP) == AcceleratorTubeType.POWERED)
         {
             return new TileEntityAcceleratorTubePowered();
         }

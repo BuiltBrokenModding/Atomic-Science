@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
 import net.minecraft.block.state.IBlockState;
@@ -177,50 +178,31 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
      */
     public IBlockState updateConnections(boolean updateBlockState)
     {
-        boolean behind = canConnect(direction.getOpposite());
-        boolean left = canConnect(direction.rotateY().getOpposite());
-        boolean right = canConnect(direction.rotateY());
+        final TubeSideType front = canConnect(direction);
+        final TubeSideType left = canConnect(direction.rotateY().getOpposite());
+        final TubeSideType right = canConnect(direction.rotateY());
+        final TubeSideType back = canConnect(direction.getOpposite());
 
-        if (behind && left && right)
-        {
-            connectionType = TubeConnectionType.JOIN;
-        }
-        else if (left && right)
-        {
-            connectionType = TubeConnectionType.T_JOIN;
-        }
-        else if (left && behind)
-        {
-            connectionType = TubeConnectionType.T_JOIN_LEFT;
-        }
-        else if (right && behind)
-        {
-            connectionType = TubeConnectionType.T_JOIN_RIGHT;
-        }
-        else if (left)
-        {
-            connectionType = TubeConnectionType.CORNER_LEFT;
-        }
-        else if (right)
-        {
-            connectionType = TubeConnectionType.CORNER_RIGHT;
-        }
-        else
-        {
-            connectionType = TubeConnectionType.NORMAL;
-        }
+        //Get connection type
+        connectionType = TubeConnectionType.getTypeForLayout(front, left, right, back);
+
         return updateState(false, updateBlockState);
     }
 
-    public boolean canConnect(EnumFacing side)
+    public TubeSideType canConnect(EnumFacing side)
     {
         final BlockPos pos = getPos().offset(side);
         TileEntity tile = world().getTileEntity(pos);
         if (tile instanceof TileEntityAcceleratorTube) //TODO use capability
         {
-            return true;
+            final TileEntityAcceleratorTube tube = ((TileEntityAcceleratorTube) tile);
+            if (tube.getDirection() == side)
+            {
+                return TubeSideType.EXIT;
+            }
+            return TubeSideType.ENTER;
         }
-        return false;
+        return TubeSideType.NONE;
     }
 
 

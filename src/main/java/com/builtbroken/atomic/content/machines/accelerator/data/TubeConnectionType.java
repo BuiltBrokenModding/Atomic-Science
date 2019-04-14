@@ -39,9 +39,9 @@ public enum TubeConnectionType implements IStringSerializable
     //Enters from back, splits left or right
     T_SPLIT(NONE, EXIT, EXIT, ENTER),
     //Enters from back, splits right or continues forward
-    T_SPLIT_RIGHT(NONE, EXIT, EXIT, ENTER),
+    T_SPLIT_RIGHT(EXIT, NONE, EXIT, ENTER),
     //Enter from back, split left or continues forward
-    T_SPLIT_LEFT(NONE, EXIT, EXIT, ENTER),
+    T_SPLIT_LEFT(EXIT, EXIT, NONE, ENTER),
     //Enter from back, split to 3 directions
     SPLIT(EXIT, EXIT, EXIT, ENTER);
 
@@ -99,6 +99,61 @@ public enum TubeConnectionType implements IStringSerializable
             return connections[side.ordinal()];
         }
         return ENTER;
+    }
+
+    public TubeSideType front()
+    {
+        return connections[TubeSide.FRONT.ordinal()];
+    }
+
+    public TubeSideType left()
+    {
+        return connections[TubeSide.LEFT.ordinal()];
+    }
+
+    public TubeSideType right()
+    {
+        return connections[TubeSide.RIGHT.ordinal()];
+    }
+
+    public TubeSideType back()
+    {
+        return connections[TubeSide.BACK.ordinal()];
+    }
+
+    /**
+     * Checks if the connection layout matches the type
+     *
+     * @param front - connection for side
+     * @param left  - connection for side
+     * @param right - connection for side
+     * @param back  - connection for side
+     * @return true if all sides match
+     */
+    public boolean connectionsMatch(TubeSideType front, TubeSideType left, TubeSideType right, TubeSideType back)
+    {
+        return front() == front && back() == back && left() == left && right() == right;
+    }
+
+    /**
+     * Tries to match the connection layout to a tube type
+     *
+     * @param front - connection for side
+     * @param left  - connection for side
+     * @param right - connection for side
+     * @param back  - connection for side
+     * @return type or {@link #NORMAL} as a default
+     */
+    public static TubeConnectionType getTypeForLayout(TubeSideType front, TubeSideType left, TubeSideType right, TubeSideType back)
+    {
+        for (TubeConnectionType type : TubeConnectionType.values())
+        {
+            if (type.connectionsMatch(front, left, right, back))
+            {
+                return type;
+            }
+        }
+        return NORMAL;
     }
 
     @Override

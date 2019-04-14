@@ -223,7 +223,7 @@ public class AcceleratorNode
 
     private int nextTurnIndex()
     {
-        turnIndex = Math.max(0, Math.min(turnIndex++, getPossibleExitCount()));
+        turnIndex = Math.max(0, Math.min(turnIndex + 1, getPossibleExitCount() - 1));
         return turnIndex;
     }
 
