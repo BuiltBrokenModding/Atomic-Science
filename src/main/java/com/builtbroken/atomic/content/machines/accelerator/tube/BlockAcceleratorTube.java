@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.machines.accelerator.tube;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASItems;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.prefab.BlockPrefab;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -35,7 +36,7 @@ import java.util.Arrays;
 public class BlockAcceleratorTube extends BlockPrefab
 {
     public static final PropertyEnum<AcceleratorTubeType> TYPE_PROP = PropertyEnum.create("type", AcceleratorTubeType.class, Arrays.asList(AcceleratorTubeType.values()));
-    public static final PropertyEnum<AcceleratorConnectionType> CONNECTION_PROP = PropertyEnum.create("connection", AcceleratorConnectionType.class, Arrays.asList(AcceleratorConnectionType.values()));
+    public static final PropertyEnum<TubeConnectionType> CONNECTION_PROP = PropertyEnum.create("connection", TubeConnectionType.class, Arrays.asList(TubeConnectionType.values()));
     public static final PropertyDirection ROTATION_PROP = PropertyDirection.create("rotation");
 
     public BlockAcceleratorTube()
@@ -43,7 +44,7 @@ public class BlockAcceleratorTube extends BlockPrefab
         super(Material.IRON);
         setRegistryName(AtomicScience.PREFIX + "accelerator_tube");
         setTranslationKey(AtomicScience.PREFIX + "accelerator.tube");
-        setDefaultState(getDefaultState().withProperty(TYPE_PROP, AcceleratorTubeType.NORMAL).withProperty(CONNECTION_PROP, AcceleratorConnectionType.NORMAL));
+        setDefaultState(getDefaultState().withProperty(TYPE_PROP, AcceleratorTubeType.NORMAL).withProperty(CONNECTION_PROP, TubeConnectionType.NORMAL));
     }
 
     @Override

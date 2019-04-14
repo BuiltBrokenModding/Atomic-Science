@@ -3,7 +3,7 @@ package com.builtbroken.test.as.accelerator;
 import com.builtbroken.atomic.content.effects.effects.FloatSupplier;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
-import com.builtbroken.atomic.content.machines.accelerator.tube.AcceleratorConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.test.as.TestHelpers;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +22,7 @@ public class PMoveCommon
     public static final float EDGE_EAST = 1;
     public static final float EDGE_WEST = 0;
 
-    public static AcceleratorParticle newParticleInTube(EnumFacing facing, AcceleratorConnectionType connectionType)
+    public static AcceleratorParticle newParticleInTube(EnumFacing facing, TubeConnectionType connectionType)
     {
         //Create
         AcceleratorParticle particle = new AcceleratorParticle(new BlockPos(0, 0, 0), facing, 1);

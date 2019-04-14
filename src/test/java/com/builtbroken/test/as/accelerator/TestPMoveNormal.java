@@ -1,12 +1,9 @@
 package com.builtbroken.test.as.accelerator;
 
-import com.builtbroken.atomic.content.effects.effects.FloatSupplier;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
-import com.builtbroken.atomic.content.machines.accelerator.tube.AcceleratorConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.test.as.TestHelpers;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +18,7 @@ public class TestPMoveNormal extends PMoveCommon
     public void northForward()
     {
         //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, AcceleratorConnectionType.NORMAL);
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, TubeConnectionType.NORMAL);
 
         //Tick an update so we move
         particle.update(0);
@@ -38,7 +35,7 @@ public class TestPMoveNormal extends PMoveCommon
     public void northFull()
     {
         //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, AcceleratorConnectionType.NORMAL);
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, TubeConnectionType.NORMAL);
         particle.setPos(0.5f, 0.5f, 1f);
 
         //Move in line
@@ -53,7 +50,7 @@ public class TestPMoveNormal extends PMoveCommon
     public void eastForward()
     {
         //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, AcceleratorConnectionType.NORMAL);
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, TubeConnectionType.NORMAL);
 
         //Tick an update so we move
         particle.update(0);
@@ -70,7 +67,7 @@ public class TestPMoveNormal extends PMoveCommon
     public void eastFull()
     {
         //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, AcceleratorConnectionType.NORMAL);
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, TubeConnectionType.NORMAL);
         particle.setPos(0, 0.5f, 0.5f);
 
         //Move in line
@@ -85,7 +82,7 @@ public class TestPMoveNormal extends PMoveCommon
     public void southForward()
     {
         //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, AcceleratorConnectionType.NORMAL);
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, TubeConnectionType.NORMAL);
 
         //Tick an update so we move
         particle.update(0);
@@ -102,7 +99,7 @@ public class TestPMoveNormal extends PMoveCommon
     public void southFull()
     {
         //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, AcceleratorConnectionType.NORMAL);
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, TubeConnectionType.NORMAL);
         particle.setPos(0.5f, 0.5f, 0f);
 
         //Move in line
@@ -116,7 +113,7 @@ public class TestPMoveNormal extends PMoveCommon
     public void westForward()
     {
         //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, AcceleratorConnectionType.NORMAL);
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, TubeConnectionType.NORMAL);
 
         //Tick an update so we move
         particle.update(0);
@@ -133,7 +130,7 @@ public class TestPMoveNormal extends PMoveCommon
     public void westFull()
     {
         //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, AcceleratorConnectionType.NORMAL);
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, TubeConnectionType.NORMAL);
         particle.setPos(1, 0.5f, 0.5f);
 
         //Move in line

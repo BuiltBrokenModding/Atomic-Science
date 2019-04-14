@@ -71,7 +71,39 @@
           "particle": "atomicscience:blocks/accelerator/tube_top_join"
         }
       },
-      "intersection": {
+      "join": {
+        "model": "atomicscience:accelerator_tube/tube-intersection",
+        "textures": {
+          "0": "atomicscience:blocks/accelerator/tube_top_intersection",
+          "particle": "atomicscience:blocks/accelerator/tube_top_intersection"
+        }
+      },
+      "t_split": {
+        "model": "atomicscience:accelerator_tube/tube-split",
+        "textures": {
+          "0": "atomicscience:blocks/accelerator/tube_top_split",
+          "2": "atomicscience:blocks/accelerator/tube_top_normal",
+          "3": "atomicscience:blocks/accelerator/tube_glass",
+          "particle": "atomicscience:blocks/accelerator/tube_top_join"
+        }
+      },
+      "t_split_left": {
+        "model": "atomicscience:accelerator_tube/tube-t-left",
+        "textures": {
+          "0": "atomicscience:blocks/accelerator/tube_top_t_left",
+          "1": "atomicscience:blocks/accelerator/tube_top",
+          "particle": "atomicscience:blocks/accelerator/tube_top"
+        }
+      },
+      "t_split_right": {
+        "model": "atomicscience:accelerator_tube/tube-t-right",
+        "textures": {
+          "0": "atomicscience:blocks/accelerator/tube_top_t_right",
+          "1": "atomicscience:blocks/accelerator/tube_top",
+          "particle": "atomicscience:blocks/accelerator/tube_top"
+        }
+      },
+      "split": {
         "model": "atomicscience:accelerator_tube/tube-intersection",
         "textures": {
           "0": "atomicscience:blocks/accelerator/tube_top_intersection",

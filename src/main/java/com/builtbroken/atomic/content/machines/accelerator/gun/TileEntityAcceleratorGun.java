@@ -3,7 +3,7 @@ package com.builtbroken.atomic.content.machines.accelerator.gun;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorHandler;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNetwork;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
-import com.builtbroken.atomic.content.machines.accelerator.tube.AcceleratorConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import com.builtbroken.atomic.content.machines.container.TileEntityItemContainer;
 import com.builtbroken.atomic.content.machines.laser.emitter.TileEntityLaserEmitter;
@@ -35,7 +35,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
         //Setup a fake node for connecting to the network and providing the particle a place to spawn
         if (fakeNode == null)
         {
-            fakeNode = new AcceleratorNode(getPos(), getDirection(), AcceleratorConnectionType.NORMAL);
+            fakeNode = new AcceleratorNode(getPos(), getDirection(), TubeConnectionType.NORMAL);
         }
 
         //If we have no network try to locate a tube with a network

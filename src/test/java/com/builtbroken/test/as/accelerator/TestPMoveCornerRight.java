@@ -1,7 +1,7 @@
 package com.builtbroken.test.as.accelerator;
 
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
-import com.builtbroken.atomic.content.machines.accelerator.tube.AcceleratorConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.test.as.TestHelpers;
 import net.minecraft.util.EnumFacing;
 import org.junit.jupiter.api.Assertions;
@@ -16,7 +16,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from center
     public void northFacingForward()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, TubeConnectionType.CORNER_RIGHT);
 
         //Tick an update so we move
         particle.update(0);
@@ -32,7 +32,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from center
     public void eastFacingForward()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, TubeConnectionType.CORNER_RIGHT);
 
         //Tick an update so we move
         particle.update(0);
@@ -48,7 +48,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from center
     public void southFacingForward()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, TubeConnectionType.CORNER_RIGHT);
 
         //Tick an update so we move
         particle.update(0);
@@ -65,7 +65,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from center
     public void westFacingForward()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, TubeConnectionType.CORNER_RIGHT);
 
         //Tick an update so we move
         particle.update(0);
@@ -81,7 +81,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from left/incoming
     public void northFacingIncoming()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, TubeConnectionType.CORNER_RIGHT);
         particle.setMoveDirection(EnumFacing.WEST);
         particle.setPos(EDGE_EAST, CENTER, CENTER);
 
@@ -99,7 +99,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from left/incoming
     public void eastFacingIncoming()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, TubeConnectionType.CORNER_RIGHT);
         particle.setMoveDirection(EnumFacing.NORTH);
         particle.setPos(CENTER, CENTER, EDGE_SOUTH);
 
@@ -117,7 +117,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from left/incoming
     public void southFacingIncoming()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, TubeConnectionType.CORNER_RIGHT);
         particle.setMoveDirection(EnumFacing.EAST);
         particle.setPos(EDGE_WEST, CENTER, CENTER);
 
@@ -135,7 +135,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from left/incoming
     public void westFacingIncoming()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, TubeConnectionType.CORNER_RIGHT);
         particle.setMoveDirection(EnumFacing.SOUTH);
         particle.setPos(CENTER, CENTER, EDGE_NORTH);
 
@@ -153,7 +153,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from center
     public void northFacingExit()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, TubeConnectionType.CORNER_RIGHT);
         particle.setPos(CENTER, CENTER, EDGE_NORTH);
 
         //Tick an update so we move
@@ -169,7 +169,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from center
     public void eastFacingExit()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, TubeConnectionType.CORNER_RIGHT);
         particle.setPos(EDGE_EAST, CENTER, CENTER);
 
         //Tick an update so we move
@@ -185,7 +185,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from center
     public void eastFacingWEST()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, TubeConnectionType.CORNER_RIGHT);
         particle.setPos(EDGE_WEST, CENTER, CENTER);
 
         //Tick an update so we move
@@ -201,7 +201,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     @Test //Test move forward from center
     public void southFacingExit()
     {
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, TubeConnectionType.CORNER_RIGHT);
         particle.setPos(CENTER, CENTER, EDGE_SOUTH);
 
         //Tick an update so we move
@@ -218,7 +218,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     public void northFacingFull()
     {
         //Init
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, TubeConnectionType.CORNER_RIGHT);
         particle.setMoveDirection(EnumFacing.WEST);
         particle.setPos(EDGE_EAST, CENTER, CENTER);
 
@@ -243,7 +243,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     public void eastFacingFull()
     {
         //Init
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, TubeConnectionType.CORNER_RIGHT);
         particle.setMoveDirection(EnumFacing.NORTH);
         particle.setPos(CENTER, CENTER, EDGE_SOUTH);
 
@@ -268,7 +268,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     public void southFacingFull()
     {
         //Init
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, TubeConnectionType.CORNER_RIGHT);
         particle.setMoveDirection(EnumFacing.EAST);
         particle.setPos(EDGE_WEST, CENTER, CENTER);
 
@@ -293,7 +293,7 @@ public class TestPMoveCornerRight extends PMoveCommon
     public void westFacingFull()
     {
         //Init
-        final AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, AcceleratorConnectionType.CORNER_RIGHT);
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, TubeConnectionType.CORNER_RIGHT);
         particle.setMoveDirection(EnumFacing.SOUTH);
         particle.setPos(CENTER, CENTER, EDGE_NORTH);
 

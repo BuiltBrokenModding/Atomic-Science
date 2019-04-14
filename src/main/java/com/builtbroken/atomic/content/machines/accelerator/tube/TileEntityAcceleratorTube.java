@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube;
 
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
 import net.minecraft.block.state.IBlockState;
@@ -22,7 +23,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     public static final String NBT_CONNECTION = "connection";
 
     protected EnumFacing direction;
-    protected AcceleratorConnectionType connectionType = AcceleratorConnectionType.NORMAL;
+    protected TubeConnectionType connectionType = TubeConnectionType.NORMAL;
 
     public final AcceleratorNode acceleratorNode = new AcceleratorNode(this); //TODO turn into capability
 
@@ -81,7 +82,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         }
         if (compound.hasKey(NBT_CONNECTION))
         {
-            connectionType = AcceleratorConnectionType.byIndex(compound.getByte(NBT_CONNECTION));
+            connectionType = TubeConnectionType.byIndex(compound.getByte(NBT_CONNECTION));
         }
     }
 
@@ -182,31 +183,31 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
 
         if (behind && left && right)
         {
-            connectionType = AcceleratorConnectionType.INTERSECTION;
+            connectionType = TubeConnectionType.JOIN;
         }
         else if (left && right)
         {
-            connectionType = AcceleratorConnectionType.T_JOIN;
+            connectionType = TubeConnectionType.T_JOIN;
         }
         else if (left && behind)
         {
-            connectionType = AcceleratorConnectionType.T_JOIN_LEFT;
+            connectionType = TubeConnectionType.T_JOIN_LEFT;
         }
         else if (right && behind)
         {
-            connectionType = AcceleratorConnectionType.T_JOIN_RIGHT;
+            connectionType = TubeConnectionType.T_JOIN_RIGHT;
         }
         else if (left)
         {
-            connectionType = AcceleratorConnectionType.CORNER_LEFT;
+            connectionType = TubeConnectionType.CORNER_LEFT;
         }
         else if (right)
         {
-            connectionType = AcceleratorConnectionType.CORNER_RIGHT;
+            connectionType = TubeConnectionType.CORNER_RIGHT;
         }
         else
         {
-            connectionType = AcceleratorConnectionType.NORMAL;
+            connectionType = TubeConnectionType.NORMAL;
         }
         return updateState(false, updateBlockState);
     }
@@ -232,11 +233,11 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         return direction;
     }
 
-    public AcceleratorConnectionType getConnectionType()
+    public TubeConnectionType getConnectionType()
     {
         if (connectionType == null)
         {
-            connectionType = AcceleratorConnectionType.NORMAL;
+            connectionType = TubeConnectionType.NORMAL;
         }
         return connectionType;
     }
