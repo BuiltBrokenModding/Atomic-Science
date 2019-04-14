@@ -1,7 +1,7 @@
 package com.builtbroken.test.as.accelerator;
 
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import com.builtbroken.test.as.TestHelpers;
 import net.minecraft.util.EnumFacing;
 import org.junit.jupiter.api.Assertions;
@@ -95,7 +95,7 @@ public class TestPMoveNormal extends PMoveCommon
         TestHelpers.compareFloats3Zeros(0.6f, particle.zf(), "Should have only moved .1f and now be 0.6f");
     }
 
-        @Test
+    @Test
     public void southFull()
     {
         //Create
@@ -109,6 +109,7 @@ public class TestPMoveNormal extends PMoveCommon
         particle.update(0);
         Assertions.assertNull(particle.getCurrentNode());
     }
+
     @Test
     public void westForward()
     {

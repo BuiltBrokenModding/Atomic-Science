@@ -21,9 +21,9 @@ public enum TubeConnectionType implements IStringSerializable
 
     //-------------------------------------
     //Enter right, exit front
-    CORNER_RIGHT(EXIT, ENTER, NONE, NONE),
+    CORNER_RIGHT(EXIT, NONE, ENTER, NONE),
     //Enter left, exit front
-    CORNER_LEFT(EXIT, NONE, ENTER, NONE),
+    CORNER_LEFT(EXIT, ENTER, NONE, NONE),
 
     //---------------------------------------------
     //Join two inputs to a single output, with only 1 being a turn

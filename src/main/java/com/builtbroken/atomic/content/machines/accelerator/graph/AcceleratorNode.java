@@ -1,9 +1,9 @@
 package com.builtbroken.atomic.content.machines.accelerator.graph;
 
-import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
-import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
+import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -178,13 +178,9 @@ public class AcceleratorNode
             return 0;
         }
 
-        //Entering tube
-        if(getConnectionType().getTypeForSide(containingSide.getOpposite()) == TubeSideType.ENTER)
-        {
-            return moveToCenter(particle, deltaX, deltaZ, distanceToMove);
-        }
+
         //At center
-        else if(containingSide == TubeSide.CENTER)
+        if (containingSide == TubeSide.CENTER)
         {
             //Center particle to avoid it being slightly off center
             particle.setPos(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
@@ -199,6 +195,11 @@ public class AcceleratorNode
         else if (getConnectionType().getTypeForSide(movingTowardsSide) == TubeSideType.EXIT)
         {
             return moveForward(particle, deltaX, deltaZ, distanceToMove);
+        }
+        //Entering tube
+        else if (getConnectionType().getTypeForSide(containingSide) == TubeSideType.ENTER)
+        {
+            return moveToCenter(particle, deltaX, deltaZ, distanceToMove);
         }
         //Should never happen
         else
@@ -215,7 +216,7 @@ public class AcceleratorNode
         final int exitCount = getConnectionType().outputSides.size();
 
         //TODO add advanced logic callback for tube
-        if(exitCount > 1)
+        if (exitCount > 1)
         {
             TubeSide side = getConnectionType().outputSides.get(MathHelper.getInt(RANDOM, 0, exitCount));
             return side.getFacing(facing);
@@ -250,13 +251,17 @@ public class AcceleratorNode
         {
             return TubeSide.FRONT;
         }
+        else if (side == facing.getOpposite())
+        {
+            return TubeSide.BACK;
+        }
         else if (side.rotateY() == facing)
         {
-            return TubeSide.RIGHT;
+            return TubeSide.LEFT;
         }
         else if (side.rotateY().getOpposite() == facing)
         {
-            return TubeSide.LEFT;
+            return TubeSide.RIGHT;
         }
         return TubeSide.CENTER;
     }
@@ -264,8 +269,8 @@ public class AcceleratorNode
     private EnumFacing getTubePositionSide(float deltaX, float deltaZ)
     {
         //Check if we are near zero
-        final boolean zeroX = deltaX <= ZERO || deltaX >= -ZERO;
-        final boolean zeroZ = deltaZ <= ZERO || deltaZ >= -ZERO;
+        final boolean zeroX = deltaX <= ZERO && deltaX >= -ZERO;
+        final boolean zeroZ = deltaZ <= ZERO && deltaZ >= -ZERO;
 
         //Is zero or invalid
         if (zeroX && zeroZ || !zeroX && !zeroZ)
@@ -279,7 +284,7 @@ public class AcceleratorNode
         return deltaX > 0 ? EnumFacing.EAST : EnumFacing.WEST;
     }
 
-    private float moveToCenter(AcceleratorParticle particle, float distanceToMove, float deltaX, float deltaZ)
+    private float moveToCenter(AcceleratorParticle particle, float deltaX, float deltaZ, float distanceToMove)
     {
         //Get remaining distance til center
         final float remaining = remainingDistanceCenter(deltaX, deltaZ, particle.getMoveDirection());
