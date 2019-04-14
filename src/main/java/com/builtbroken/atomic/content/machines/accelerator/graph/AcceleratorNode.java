@@ -4,16 +4,17 @@ import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionTy
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
+import com.builtbroken.atomic.lib.math.BlockPosHelpers;
+import com.builtbroken.atomic.lib.math.MathConstF;
+import com.builtbroken.atomic.lib.math.SideMathHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -21,9 +22,6 @@ import java.util.Random;
  */
 public class AcceleratorNode
 {
-    private static final Random RANDOM = new Random();
-
-    public static final float ZERO = 0.001f; //WE consider anything under zero due to precision errors
 
     //Connections
     private final AcceleratorNode[] nodes = new AcceleratorNode[6];
@@ -41,6 +39,8 @@ public class AcceleratorNode
 
     //Used to track particles in case we break the node
     private List<AcceleratorParticle> currentParticles = new ArrayList(3);
+
+    private int turnIndex = 0;
 
     public AcceleratorNode(TileEntityAcceleratorTube host)
     {
@@ -165,11 +165,11 @@ public class AcceleratorNode
     public float move(AcceleratorParticle particle, float distanceToMove)
     {
         //Figure out relative position from center of block
-        final float deltaX = getDeltaX(particle);
-        final float deltaZ = getDeltaZ(particle);
+        final float deltaX = BlockPosHelpers.getCenterDeltaX(getPos(), particle);
+        final float deltaZ = BlockPosHelpers.getCenterDeltaZ(getPos(), particle);
 
         final TubeSide movingTowardsSide = getSide(particle.getMoveDirection());
-        final TubeSide containingSide = getSide(getTubePositionSide(deltaX, deltaZ));
+        final TubeSide containingSide = getSide(SideMathHelper.containingSide(deltaX, 0, deltaZ));
 
         //Valid we can have a particle on the side
         if (!isValidSideForParticle(containingSide))
@@ -178,12 +178,11 @@ public class AcceleratorNode
             return 0;
         }
 
-
         //At center
         if (containingSide == TubeSide.CENTER)
         {
             //Center particle to avoid it being slightly off center
-            particle.setPos(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+            BlockPosHelpers.center(getPos(), (x, y, z) -> particle.setPos(x, y, z));
 
             //Update facing
             particle.setMoveDirection(getTurnDirection(particle));
@@ -213,32 +212,29 @@ public class AcceleratorNode
 
     private EnumFacing getTurnDirection(AcceleratorParticle particle)
     {
-        final int exitCount = getConnectionType().outputSides.size();
-
         //TODO add advanced logic callback for tube
-        if (exitCount > 1)
+        if (getPossibleExitCount() > 1)
         {
-            TubeSide side = getConnectionType().outputSides.get(MathHelper.getInt(RANDOM, 0, exitCount));
+            TubeSide side = getConnectionType().outputSides.get(nextTurnIndex());
             return side.getFacing(facing);
         }
         return facing;
     }
 
+    private int nextTurnIndex()
+    {
+        turnIndex = Math.max(0, Math.min(turnIndex++, getPossibleExitCount()));
+        return turnIndex;
+    }
+
+    private int getPossibleExitCount()
+    {
+        return getConnectionType().outputSides.size();
+    }
+
     private boolean isValidSideForParticle(TubeSide side)
     {
         return side == null || getConnectionType().getTypeForSide(side) != TubeSideType.NONE;
-    }
-
-    //Return -0.5 to 0.5
-    private float getDeltaX(AcceleratorParticle particle)
-    {
-        return particle.xf() - (getPos().getX() + 0.5f);
-    }
-
-    //Return -0.5 to 0.5
-    private float getDeltaZ(AcceleratorParticle particle)
-    {
-        return particle.zf() - (getPos().getZ() + 0.5f);
     }
 
     private TubeSide getSide(EnumFacing side)
@@ -266,28 +262,10 @@ public class AcceleratorNode
         return TubeSide.CENTER;
     }
 
-    private EnumFacing getTubePositionSide(float deltaX, float deltaZ)
-    {
-        //Check if we are near zero
-        final boolean zeroX = deltaX <= ZERO && deltaX >= -ZERO;
-        final boolean zeroZ = deltaZ <= ZERO && deltaZ >= -ZERO;
-
-        //Is zero or invalid
-        if (zeroX && zeroZ || !zeroX && !zeroZ)
-        {
-            return null;
-        }
-        else if (zeroX)
-        {
-            return deltaZ > 0 ? EnumFacing.SOUTH : EnumFacing.NORTH;
-        }
-        return deltaX > 0 ? EnumFacing.EAST : EnumFacing.WEST;
-    }
-
     private float moveToCenter(AcceleratorParticle particle, float deltaX, float deltaZ, float distanceToMove)
     {
         //Get remaining distance til center
-        final float remaining = remainingDistanceCenter(deltaX, deltaZ, particle.getMoveDirection());
+        final float remaining = SideMathHelper.remainingDistanceCenter(deltaX, deltaZ, particle.getMoveDirection());
 
         return move(particle, particle.getMoveDirection(), remaining, distanceToMove);
     }
@@ -295,7 +273,7 @@ public class AcceleratorNode
     private float moveForward(AcceleratorParticle particle, float deltaX, float deltaZ, float distanceToMove)
     {
         //Get remaining distance til end
-        final float remaining = remainingDistance(deltaX, deltaZ, particle.getMoveDirection());
+        final float remaining = SideMathHelper.remainingDistanceToSide(deltaX, deltaZ, particle.getMoveDirection());
 
         //Do move
         return move(particle, particle.getMoveDirection(), remaining, distanceToMove);
@@ -307,7 +285,7 @@ public class AcceleratorNode
         float moveAmount = Math.min(remaining, distanceToMove);
 
         //If less then cut off, switch tubes
-        if (moveAmount <= ZERO)
+        if (moveAmount <= MathConstF.ZERO_CUT)
         {
             moveToNextNode(particle, getNodes()[direction.ordinal()]);
         }
@@ -317,49 +295,6 @@ public class AcceleratorNode
             particle.move(moveAmount, direction);
         }
         return moveAmount;
-    }
-
-    /** Gets the remaining distance to the goal */
-    private float remainingDistance(float deltaX, float deltaZ, EnumFacing direction)
-    {
-        switch (direction)
-        {
-            //-z
-            case NORTH:
-                return Math.max(0, 0.5f + deltaZ);
-            //+X
-            case EAST:
-                return Math.max(0, 0.5f - deltaX);
-            //+Z
-            case SOUTH:
-                return Math.max(0, 0.5f - deltaZ);
-            //-X
-            case WEST:
-                return Math.max(0, 0.5f + deltaX);
-        }
-        return 0;
-    }
-
-    /** Gets absolute distance to center based on direction */
-    private float remainingDistanceCenter(float deltaX, float deltaZ, EnumFacing direction)
-    {
-        float delta;
-        switch (direction)
-        {
-            //z
-            case NORTH:
-            case SOUTH:
-                delta = deltaZ;
-                break;
-            //x
-            case EAST:
-            case WEST:
-                delta = deltaX;
-                break;
-            default:
-                delta = 0;
-        }
-        return Math.abs(delta);
     }
 
     /**

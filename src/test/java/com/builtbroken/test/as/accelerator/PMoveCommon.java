@@ -1,9 +1,10 @@
 package com.builtbroken.test.as.accelerator;
 
 import com.builtbroken.atomic.content.effects.effects.FloatSupplier;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
-import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
+import com.builtbroken.atomic.lib.math.MathConstF;
 import com.builtbroken.test.as.TestHelpers;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -14,13 +15,7 @@ import org.junit.jupiter.api.Assertions;
  */
 public class PMoveCommon
 {
-
     public static final float SPEED = 0.1f;
-    public static final float CENTER = 0.5f;
-    public static final float EDGE_NORTH = 0;
-    public static final float EDGE_SOUTH = 1;
-    public static final float EDGE_EAST = 1;
-    public static final float EDGE_WEST = 0;
 
     public static AcceleratorParticle newParticleInTube(EnumFacing facing, TubeConnectionType connectionType)
     {
@@ -34,9 +29,9 @@ public class PMoveCommon
         //Test init so we can fail early if something goes wrong
         Assertions.assertNotNull(particle.getCurrentNode());
         Assertions.assertEquals(facing, particle.getMoveDirection());
-        Assertions.assertEquals(CENTER, particle.xf(), "Should have not moved in the x after init");
-        Assertions.assertEquals(CENTER, particle.yf(), "Should have not moved in the y after init");
-        Assertions.assertEquals(CENTER, particle.zf(), "Should have not moved in the z after init");
+        Assertions.assertEquals(MathConstF.CENTER, particle.xf(), "Should have not moved in the x after init");
+        Assertions.assertEquals(MathConstF.CENTER, particle.yf(), "Should have not moved in the y after init");
+        Assertions.assertEquals(MathConstF.CENTER, particle.zf(), "Should have not moved in the z after init");
 
         return particle;
     }

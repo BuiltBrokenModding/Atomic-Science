@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines.accelerator.graph;
 
+import com.builtbroken.atomic.lib.math.MathConstF;
 import com.builtbroken.jlib.data.vector.IPos3D;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -64,7 +65,7 @@ public class AcceleratorParticle implements IPos3D
         if (currentNode != null)
         {
             //WE can move through several nodes, so loop until done TODO replace with path so we can % locate position and node
-            while (distanceToMove > AcceleratorNode.ZERO && currentNode != null)
+            while (distanceToMove > MathConstF.ZERO_CUT && currentNode != null)
             {
                 final EnumFacing prevDirection = moveDirection;
 
