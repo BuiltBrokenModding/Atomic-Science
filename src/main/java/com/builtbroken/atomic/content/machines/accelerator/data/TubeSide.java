@@ -40,11 +40,11 @@ public enum TubeSide
         }
         else if (this == LEFT)
         {
-            return facing.rotateY();
+            return facing.rotateY().getOpposite();
         }
         else if (this == RIGHT)
         {
-            return facing.rotateY().getOpposite();
+            return facing.rotateY();
         }
         else if (this == BACK)
         {

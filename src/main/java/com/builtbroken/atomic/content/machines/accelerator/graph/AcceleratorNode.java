@@ -168,8 +168,11 @@ public class AcceleratorNode
         final float deltaX = BlockPosHelpers.getCenterDeltaX(getPos(), particle);
         final float deltaZ = BlockPosHelpers.getCenterDeltaZ(getPos(), particle);
 
-        final TubeSide movingTowardsSide = getSide(particle.getMoveDirection());
-        final TubeSide containingSide = getSide(SideMathHelper.containingSide(deltaX, 0, deltaZ));
+        final EnumFacing moveDir = particle.getMoveDirection();
+        final EnumFacing containingDir = SideMathHelper.containingSide(deltaX, 0, deltaZ);
+
+        final TubeSide movingTowardsSide = getSideFacingOut(moveDir);
+        final TubeSide containingSide = getSideFacingOut(containingDir);
 
         //Valid we can have a particle on the side
         if (!isValidSideForParticle(containingSide))
@@ -241,7 +244,7 @@ public class AcceleratorNode
         return side == null || getConnectionType().getTypeForSide(side) != TubeSideType.NONE;
     }
 
-    private TubeSide getSide(EnumFacing side)
+    private TubeSide getSideFacingOut(EnumFacing side)
     {
         if (side == null)
         {
@@ -255,11 +258,11 @@ public class AcceleratorNode
         {
             return TubeSide.BACK;
         }
-        else if (side.rotateY() == facing)
+        else if (facing.rotateY().getOpposite() == side)
         {
             return TubeSide.LEFT;
         }
-        else if (side.rotateY().getOpposite() == facing)
+        else if (facing.rotateY() == side)
         {
             return TubeSide.RIGHT;
         }
