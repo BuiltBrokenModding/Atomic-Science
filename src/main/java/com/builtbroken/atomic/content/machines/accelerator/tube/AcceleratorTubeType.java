@@ -9,8 +9,7 @@ import net.minecraft.util.IStringSerializable;
 public enum AcceleratorTubeType implements IStringSerializable
 {
     NORMAL,
-    JUNCTION,
-    DIRECTION;
+    POWERED;
 
     public static AcceleratorTubeType byIndex(int meta)
     {
