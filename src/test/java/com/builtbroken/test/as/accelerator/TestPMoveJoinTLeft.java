@@ -80,7 +80,7 @@ public class TestPMoveJoinTLeft extends PMoveCommon
     }
 
     @Test //Test move forward from left/incoming
-    public void northFacingIncoming()
+    public void northFacingIncomingLeft()
     {
         final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, TubeConnectionType.T_JOIN_LEFT);
         particle.setMoveDirection(EnumFacing.EAST);
@@ -98,7 +98,7 @@ public class TestPMoveJoinTLeft extends PMoveCommon
     }
 
     @Test //Test move forward from left/incoming
-    public void eastFacingIncoming()
+    public void eastFacingIncomingLeft()
     {
         final AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, TubeConnectionType.T_JOIN_LEFT);
         particle.setMoveDirection(EnumFacing.SOUTH);
@@ -116,7 +116,7 @@ public class TestPMoveJoinTLeft extends PMoveCommon
     }
 
     @Test //Test move forward from left/incoming
-    public void southFacingIncoming()
+    public void southFacingIncomingLeft()
     {
         final AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, TubeConnectionType.T_JOIN_LEFT);
         particle.setMoveDirection(EnumFacing.WEST);
@@ -134,7 +134,7 @@ public class TestPMoveJoinTLeft extends PMoveCommon
     }
 
     @Test //Test move forward from left/incoming
-    public void westFacingIncoming()
+    public void westFacingIncomingLeft()
     {
         final AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, TubeConnectionType.T_JOIN_LEFT);
         particle.setMoveDirection(EnumFacing.NORTH);
@@ -149,6 +149,74 @@ public class TestPMoveJoinTLeft extends PMoveCommon
 
         //Check move
         TestHelpers.compareFloats3Zeros(MathConstF.EDGE_SOUTH - SPEED, particle.zf(), "Should have only moved -.1f and now be 0.9f");
+    }
+
+    @Test //Test move forward from back
+    public void northFacingIncomingBack()
+    {
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, TubeConnectionType.T_JOIN_LEFT);
+        particle.setPos(MathConstF.CENTER, MathConstF.CENTER, MathConstF.EDGE_SOUTH);
+
+        //Tick an update so we move
+        particle.update(0);
+
+        Assertions.assertNotNull(particle.getCurrentNode());
+        Assertions.assertEquals(MathConstF.CENTER, particle.xf(), "Should have not moved in the x");
+        Assertions.assertEquals(MathConstF.CENTER, particle.yf(), "Should have not moved in the y");
+
+        //Check move
+        TestHelpers.compareFloats3Zeros(MathConstF.EDGE_SOUTH - SPEED, particle.zf(), "Should have only moved -.1f and now be 0.9f");
+    }
+
+    @Test //Test move forward from back
+    public void eastFacingIncomingBack()
+    {
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, TubeConnectionType.T_JOIN_LEFT);
+        particle.setPos(MathConstF.EDGE_WEST, MathConstF.CENTER, MathConstF.CENTER);
+
+        //Tick an update so we move
+        particle.update(0);
+
+        Assertions.assertNotNull(particle.getCurrentNode());
+        Assertions.assertEquals(MathConstF.CENTER, particle.zf(), "Should have not moved in the z");
+        Assertions.assertEquals(MathConstF.CENTER, particle.yf(), "Should have not moved in the y");
+
+        //Check move
+        TestHelpers.compareFloats3Zeros(MathConstF.EDGE_WEST + SPEED, particle.xf(), "Should have only moved -1f and now be 0.1f");
+    }
+
+    @Test //Test move forward from back
+    public void southFacingIncomingBack()
+    {
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, TubeConnectionType.T_JOIN_LEFT);
+        particle.setPos(MathConstF.CENTER, MathConstF.CENTER, MathConstF.EDGE_NORTH);
+
+        //Tick an update so we move
+        particle.update(0);
+
+        Assertions.assertNotNull(particle.getCurrentNode());
+        Assertions.assertEquals(MathConstF.CENTER, particle.xf(), "Should have not moved in the x");
+        Assertions.assertEquals(MathConstF.CENTER, particle.yf(), "Should have not moved in the y");
+
+        //Check move
+        TestHelpers.compareFloats3Zeros(MathConstF.EDGE_NORTH + SPEED, particle.zf(), "Should have only moved .1f and now be 0.1f");
+    }
+
+    @Test //Test move forward from back
+    public void westFacingIncomingBack()
+    {
+        final AcceleratorParticle particle = newParticleInTube(EnumFacing.WEST, TubeConnectionType.T_JOIN_LEFT);
+        particle.setPos(MathConstF.EDGE_EAST, MathConstF.CENTER, MathConstF.CENTER);
+
+        //Tick an update so we move
+        particle.update(0);
+
+        Assertions.assertNotNull(particle.getCurrentNode());
+        Assertions.assertEquals(MathConstF.CENTER, particle.zf(), "Should have not moved in the z");
+        Assertions.assertEquals(MathConstF.CENTER, particle.yf(), "Should have not moved in the y");
+
+        //Check move
+        TestHelpers.compareFloats3Zeros(MathConstF.EDGE_EAST - SPEED, particle.xf(), "Should have only moved -.1f and now be 0.9f");
     }
 
     @Test //Test move forward from center
