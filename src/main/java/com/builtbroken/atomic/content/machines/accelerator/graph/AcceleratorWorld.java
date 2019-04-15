@@ -51,7 +51,7 @@ public class AcceleratorWorld
             if (particle.isInvalid())
             {
                 iterator.remove();
-                System.out.println("Removed particle: " + particle);
+                //System.out.println("Removed particle: " + particle);
             }
             else
             {

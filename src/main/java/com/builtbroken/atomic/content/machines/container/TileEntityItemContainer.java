@@ -27,6 +27,12 @@ public class TileEntityItemContainer extends TileEntityMachine
     private final ItemStackHandler inventory = new ItemStackHandler(1)
     {
         @Override
+        public int getSlotLimit(int slot)
+        {
+            return 1;
+        }
+
+        @Override
         protected void onContentsChanged(int slot)
         {
             TileEntityItemContainer.this.syncClientNextTick();
@@ -79,7 +85,7 @@ public class TileEntityItemContainer extends TileEntityMachine
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
     {
-        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
             return inventory != null;
         }
@@ -90,7 +96,7 @@ public class TileEntityItemContainer extends TileEntityMachine
     @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
     {
-        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
             return (T) inventory;
         }

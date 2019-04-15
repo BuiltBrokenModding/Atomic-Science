@@ -116,7 +116,7 @@ public class AcceleratorHandler
         //Add
         acceleratorWorld.particles.add(particle);
 
-        System.out.println("Created particle " + particle);
+        //System.out.println("Created particle " + particle);
 
         //TODO fire events
         //TODO sanity check

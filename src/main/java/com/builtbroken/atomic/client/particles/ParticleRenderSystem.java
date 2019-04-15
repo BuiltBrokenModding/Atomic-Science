@@ -39,7 +39,7 @@ public class ParticleRenderSystem
             CommonProxy.PARTICLES_TO_RENDER.values().forEach(p -> p.keepAlive++);
 
             //Cleanup
-            CommonProxy.PARTICLES_TO_RENDER.values().removeIf(p -> p.dim != world.provider.getDimension() || p.keepAlive > 1000);
+            CommonProxy.PARTICLES_TO_RENDER.values().removeIf(p -> p.dim != world.provider.getDimension() || p.keepAlive > 10);
         }
         else
         {
