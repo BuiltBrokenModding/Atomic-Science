@@ -32,21 +32,6 @@ public class TestPMoveNormal extends PMoveCommon
     }
 
     @Test
-    public void northFull()
-    {
-        //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, TubeConnectionType.NORMAL);
-        particle.setPos(0.5f, 0.5f, 1f);
-
-        //Move in line
-        checkMoveLine(particle, () -> particle.zf(), -SPEED, 1, 0);
-
-        //Check that we exited the tube, previous step we would be at the edge of the tube
-        particle.update(0);
-        Assertions.assertNull(particle.getCurrentNode());
-    }
-
-    @Test
     public void eastForward()
     {
         //Create
@@ -61,21 +46,6 @@ public class TestPMoveNormal extends PMoveCommon
 
         //Check move
         TestHelpers.compareFloats3Zeros(0.6f, particle.xf(), "Should have only moved .1f and now be 0.6f");
-    }
-
-    @Test
-    public void eastFull()
-    {
-        //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, TubeConnectionType.NORMAL);
-        particle.setPos(0, 0.5f, 0.5f);
-
-        //Move in line
-        checkMoveLine(particle, () -> particle.xf(), SPEED, 0, 1);
-
-        //Check that we exited the tube, previous step we would be at the edge of the tube
-        particle.update(0);
-        Assertions.assertNull(particle.getCurrentNode());
     }
 
     @Test
@@ -96,21 +66,6 @@ public class TestPMoveNormal extends PMoveCommon
     }
 
     @Test
-    public void southFull()
-    {
-        //Create
-        AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, TubeConnectionType.NORMAL);
-        particle.setPos(0.5f, 0.5f, 0f);
-
-        //Move in line
-        checkMoveLine(particle, () -> particle.zf(), SPEED, 0, 1);
-
-        //Check that we exited the tube, previous step we would be at the edge of the tube
-        particle.update(0);
-        Assertions.assertNull(particle.getCurrentNode());
-    }
-
-    @Test
     public void westForward()
     {
         //Create
@@ -125,6 +80,51 @@ public class TestPMoveNormal extends PMoveCommon
 
         //Check move
         TestHelpers.compareFloats3Zeros(0.4f, particle.xf(), "Should have only moved -.1f and now be 0.4f");
+    }
+
+    @Test
+    public void northFull()
+    {
+        //Create
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.NORTH, TubeConnectionType.NORMAL);
+        particle.setPos(0.5f, 0.5f, 1f);
+
+        //Move in line
+        checkMoveLine(particle, () -> particle.zf(), -SPEED, 1, 0);
+
+        //Check that we exited the tube, previous step we would be at the edge of the tube
+        particle.update(0);
+        Assertions.assertNull(particle.getCurrentNode());
+    }
+
+    @Test
+    public void eastFull()
+    {
+        //Create
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.EAST, TubeConnectionType.NORMAL);
+        particle.setPos(0, 0.5f, 0.5f);
+
+        //Move in line
+        checkMoveLine(particle, () -> particle.xf(), SPEED, 0, 1);
+
+        //Check that we exited the tube, previous step we would be at the edge of the tube
+        particle.update(0);
+        Assertions.assertNull(particle.getCurrentNode());
+    }
+
+    @Test
+    public void southFull()
+    {
+        //Create
+        AcceleratorParticle particle = newParticleInTube(EnumFacing.SOUTH, TubeConnectionType.NORMAL);
+        particle.setPos(0.5f, 0.5f, 0f);
+
+        //Move in line
+        checkMoveLine(particle, () -> particle.zf(), SPEED, 0, 1);
+
+        //Check that we exited the tube, previous step we would be at the edge of the tube
+        particle.update(0);
+        Assertions.assertNull(particle.getCurrentNode());
     }
 
     @Test
