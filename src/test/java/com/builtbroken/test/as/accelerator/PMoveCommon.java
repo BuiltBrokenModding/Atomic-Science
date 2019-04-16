@@ -81,11 +81,29 @@ public class PMoveCommon
         return particle;
     }
 
+    /**
+     * Checks if the particle moves in a lien between start and end.
+     * <p>
+     * Will calculate the number of steps it takes to move from start to finish. Then loop
+     * moving the particle each step checking if it moved the correct amount. This test
+     * does not match exact due to rounding/precision errors in floats.
+     * <p>
+     * Test validates start and end position in addition to each steps. This is to ensure
+     * that both cases are accounted for before considering step movement valid.
+     *
+     * @param particle - particle that will move
+     * @param data     - function to access the data TODO replace with movement direction
+     * @param speed    - speed to move at TODO replace with movement direction
+     * @param start    - start value, Ex: 0.0
+     * @param end      - end value, Ex: 0.5
+     */
     public static void checkMoveLine(AcceleratorParticle particle, FloatSupplier data, float speed, float start, float end)
     {
         final float distance = Math.round(Math.abs(start - end) * 100) / 100f;
         float speedAbs = Math.abs(speed);
         final int steps = (int) Math.floor(distance / speedAbs);
+
+        final EnumFacing moveDir = particle.getMoveDirection();
 
         //Check start
         TestHelpers.compareFloats3Zeros(start, data.getAsFloat(),
@@ -99,7 +117,13 @@ public class PMoveCommon
             //Move
             particle.update(i);
 
-            //Assert
+            //Make sure we didn't change direction
+            Assertions.assertEquals(moveDir, particle.getMoveDirection());
+
+            //Make sure we only moved in a strait line
+            testMoveOnlyAxis(moveDir, particle);
+
+            //Make sure we moved by expected amount
             TestHelpers.compareFloats3Zeros(expected, data.getAsFloat(),
                     String.format("[" + i + "]Should have only moved %.2f and now be %.2f", speed, expected));
         }
