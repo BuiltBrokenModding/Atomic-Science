@@ -9,6 +9,99 @@ public class SideMathHelper
 {
 
     /**
+     * Gets the edge as a float
+     *
+     * @param facing - side
+     * @return value 0.0 or 1.0 for the side, returns 0.5 for null
+     */
+    public static float getEdge(EnumFacing facing)
+    {
+        switch (facing)
+        {
+            case UP:
+                return MathConstF.EDGE_UP;
+            case DOWN:
+                return MathConstF.EDGE_DOWN;
+            case NORTH:
+                return MathConstF.EDGE_NORTH;
+            case SOUTH:
+                return MathConstF.EDGE_SOUTH;
+            case EAST:
+                return MathConstF.EDGE_EAST;
+            case WEST:
+                return MathConstF.EDGE_WEST;
+            default:
+                return MathConstF.CENTER;
+        }
+    }
+
+    /**
+     * Gets the value to use to center a position on the edge.
+     * <p>
+     * If the facing is the edge then it returns 0.0 or 1.0. Other
+     * wise it will return 0.5
+     *
+     * @param facing - side
+     * @return 0.0 or 1.0 if edge, 0.5 otherwise
+     */
+    public static float getEdgeOrCenterX(EnumFacing facing)
+    {
+        switch (facing)
+        {
+            case EAST:
+                return MathConstF.EDGE_EAST;
+            case WEST:
+                return MathConstF.EDGE_WEST;
+            default:
+                return MathConstF.CENTER;
+        }
+    }
+
+    /**
+     * Gets the value to use to center a position on the edge.
+     * <p>
+     * If the facing is the edge then it returns 0.0 or 1.0. Other
+     * wise it will return 0.5
+     *
+     * @param facing - side
+     * @return 0.0 or 1.0 if edge, 0.5 otherwise
+     */
+    public static float getEdgeOrCenterZ(EnumFacing facing)
+    {
+        switch (facing)
+        {
+            case NORTH:
+                return MathConstF.EDGE_NORTH;
+            case SOUTH:
+                return MathConstF.EDGE_SOUTH;
+            default:
+                return MathConstF.CENTER;
+        }
+    }
+
+    /**
+     * Gets the value to use to center a position on the edge.
+     * <p>
+     * If the facing is the edge then it returns 0.0 or 1.0. Other
+     * wise it will return 0.5
+     *
+     * @param facing - side
+     * @return 0.0 or 1.0 if edge, 0.5 otherwise
+     */
+    public static float getEdgeOrCenterY(EnumFacing facing)
+    {
+        switch (facing)
+        {
+            case UP:
+                return MathConstF.EDGE_UP;
+            case DOWN:
+                return MathConstF.EDGE_DOWN;
+            default:
+                return MathConstF.CENTER;
+        }
+    }
+
+    /**
      * Remaining distance to side of the block
      *
      * @param deltaX    - delta from center on X axis (-0.5 to 0.5)
