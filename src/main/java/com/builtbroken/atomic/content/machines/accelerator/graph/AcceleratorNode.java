@@ -40,7 +40,7 @@ public class AcceleratorNode
     //Used to track particles in case we break the node
     private List<AcceleratorParticle> currentParticles = new ArrayList(3);
 
-    private int turnIndex = 0;
+    public int turnIndex = 0;
 
     public AcceleratorNode(TileEntityAcceleratorTube host)
     {
@@ -188,7 +188,7 @@ public class AcceleratorNode
             BlockPosHelpers.center(getPos(), (x, y, z) -> particle.setPos(x, y, z));
 
             //Update facing
-            particle.setMoveDirection(getTurnDirection(particle));
+            doTurn(particle);
 
             //Move forward
             return moveForward(particle, deltaX, deltaZ, distanceToMove);
@@ -213,21 +213,46 @@ public class AcceleratorNode
         return 0;
     }
 
-    private EnumFacing getTurnDirection(AcceleratorParticle particle)
+    /**
+     * Called to do the turn for the particle.
+     * @param particle
+     */
+    public void doTurn(AcceleratorParticle particle)
+    {
+        //Set turn
+        particle.setMoveDirection(getExpectedTurnResult(particle));
+
+        //Increment index for turn
+        incrementTurnIndex();
+    }
+
+    /**
+     * Gets the current expect turn. Will not change unless conditions
+     * for the turn change. This includes the tube alterating turns
+     * and a particle takes a turn. As well properties on the particle
+     * changing such as energy and speed.
+     *
+     * @param particle
+     * @return expected turn
+     */
+    public EnumFacing getExpectedTurnResult(AcceleratorParticle particle)
     {
         //TODO add advanced logic callback for tube
         if (getPossibleExitCount() > 1)
         {
-            TubeSide side = getConnectionType().outputSides.get(nextTurnIndex());
+            final TubeSide side = getConnectionType().outputSides.get(turnIndex);
             return side.getFacing(facing);
         }
         return facing;
     }
 
-    private int nextTurnIndex()
+    private int incrementTurnIndex()
     {
+        //Increase
         turnIndex += 1;
-        if(turnIndex >= getPossibleExitCount() || turnIndex < 0)
+
+        //Loop around
+        if (turnIndex >= getPossibleExitCount() || turnIndex < 0)
         {
             turnIndex = 0;
         }
