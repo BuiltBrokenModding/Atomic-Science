@@ -1,4 +1,4 @@
-package com.builtbroken.test.as.accelerator;
+package com.builtbroken.test.as.accelerator.movement;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
