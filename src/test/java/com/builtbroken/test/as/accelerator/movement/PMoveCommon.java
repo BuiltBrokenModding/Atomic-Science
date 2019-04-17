@@ -8,6 +8,7 @@ import com.builtbroken.atomic.lib.math.BlockPosHelpers;
 import com.builtbroken.atomic.lib.math.MathConstF;
 import com.builtbroken.atomic.lib.math.SideMathHelper;
 import com.builtbroken.test.as.TestHelpers;
+import com.builtbroken.test.as.accelerator.connections.ConnectionCommon;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.junit.jupiter.api.Assertions;
@@ -37,7 +38,7 @@ public class PMoveCommon
         particle.setSpeed(SPEED);
 
         //Create tube
-        particle.setCurrentNode(new AcceleratorNode(BLOCK_POS_ZERO, facing, connectionType));
+        particle.setCurrentNode(ConnectionCommon.newNode(BLOCK_POS_ZERO, facing, connectionType));
 
         //Test init so we can fail early if something goes wrong
         Assertions.assertNotNull(particle.getCurrentNode());

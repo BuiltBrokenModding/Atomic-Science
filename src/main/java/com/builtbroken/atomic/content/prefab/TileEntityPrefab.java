@@ -7,9 +7,12 @@ import com.builtbroken.atomic.network.IPacketIDReceiver;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.PacketTile;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ import java.util.List;
  */
 public abstract class TileEntityPrefab extends TileEntity implements IPacketIDReceiver, IPosWorld, IPlayerUsing
 {
+
     public static final int DESC_PACKET_ID = -1;
     public static final int GUI_PACKET_ID = -2;
 
@@ -249,5 +253,44 @@ public abstract class TileEntityPrefab extends TileEntity implements IPacketIDRe
     public int yi()
     {
         return pos.getY();
+    }
+
+    //-----------------------------------------------
+    //---------- Helpers ----------------------------
+    //-----------------------------------------------
+
+    public TileEntity getTileEntity(BlockPos pos)
+    {
+        return world != null ? world.getTileEntity(pos) : null;
+    }
+
+    public TileEntity getTileEntity(BlockPos pos, EnumFacing side)
+    {
+        return getTileEntity(pos.offset(side));
+    }
+
+    public TileEntity getTileEntity(EnumFacing side)
+    {
+        return getTileEntity(getPos().offset(side));
+    }
+
+    public IBlockState getState(BlockPos pos)
+    {
+        return world != null ? world.getBlockState(pos) : null;
+    }
+
+    public IBlockState getState()
+    {
+        return getState(getPos());
+    }
+
+    public IBlockState getState(BlockPos pos, EnumFacing side)
+    {
+        return getState(pos.offset(side));
+    }
+
+    public IBlockState getState(EnumFacing side)
+    {
+        return getState(getPos(), side);
     }
 }

@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
  */
 public class TileEntityAcceleratorTube extends TileEntityPrefab
 {
+
     public static final String NBT_ROTATION = "rotation";
     public static final String NBT_CONNECTION = "connection";
 
@@ -57,7 +58,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     @Override
     public void onLoad()
     {
-        if (!world().isRemote)
+        if (isServer())
         {
             updateState(false, true);
         }
@@ -111,7 +112,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     public IBlockState updateState(boolean doBlockUpdate, boolean setBlock)
     {
         //Build state
-        IBlockState state = world().getBlockState(getPos());
+        IBlockState state = getState();
         if (direction != null)
         {
             state = state.withProperty(BlockAcceleratorTube.ROTATION_PROP, direction);
@@ -122,7 +123,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         acceleratorNode.updateCache();
 
         //Update actual block
-        if (setBlock)
+        if (setBlock && world != null) //JUnit world may be null
         {
             //Set state
             world.setBlockState(getPos(), state, doBlockUpdate ? 3 : 2);
@@ -178,24 +179,26 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
      */
     public IBlockState updateConnections(boolean updateBlockState)
     {
+        connectionType = calcConnectionType();
+        return updateState(false, updateBlockState);
+    }
+
+    public TubeConnectionType calcConnectionType()
+    {
         final TubeSideType front = canConnect(direction);
         final TubeSideType left = canConnect(direction.rotateY().getOpposite());
         final TubeSideType right = canConnect(direction.rotateY());
         final TubeSideType back = canConnect(direction.getOpposite());
 
         //Get connection type
-        connectionType = TubeConnectionType.getTypeForLayout(front, left, right, back);
-
-        return updateState(false, updateBlockState);
+        return TubeConnectionType.getTypeForLayout(front, left, right, back);
     }
 
     public TubeSideType canConnect(EnumFacing side)
     {
-        final BlockPos pos = getPos().offset(side);
-        TileEntity tile = world().getTileEntity(pos);
-        if (tile instanceof TileEntityAcceleratorTube) //TODO use capability
+        final TileEntityAcceleratorTube tube = getTubeSide(side); //TODO use capability
+        if (tube != null)
         {
-            final TileEntityAcceleratorTube tube = ((TileEntityAcceleratorTube) tile);
             if (tube.getDirection() == side)
             {
                 return TubeSideType.EXIT;
@@ -205,6 +208,15 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         return TubeSideType.NONE;
     }
 
+    protected TileEntityAcceleratorTube getTubeSide(EnumFacing side)
+    {
+        final TileEntity tile = getTileEntity(side);
+        if (tile instanceof TileEntityAcceleratorTube) //TODO use capability
+        {
+            return (TileEntityAcceleratorTube) tile;
+        }
+        return null;
+    }
 
     public EnumFacing getDirection()
     {
