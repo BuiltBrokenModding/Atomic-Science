@@ -45,6 +45,13 @@ public class ConnectionCommon
         //Create
         AcceleratorNode node = new AcceleratorNode(pos, facing, connectionType);
 
+        validateNodeInit(node, pos, facing, connectionType);
+
+        return node;
+    }
+
+    public static void validateNodeInit(AcceleratorNode node, BlockPos pos, EnumFacing facing, TubeConnectionType connectionType)
+    {
         //Test init so we can fail early if something goes wrong
         Assertions.assertEquals(pos, node.getPos());
         Assertions.assertNull(node.getNetwork());
@@ -60,8 +67,6 @@ public class ConnectionCommon
         {
             Assertions.assertNull(node.getNodes()[side.ordinal()]);
         }
-
-        return node;
     }
 
     public static ATestTube newTube()
@@ -76,6 +81,8 @@ public class ConnectionCommon
         Assertions.assertNull(tube.world());
 
         Assertions.assertNotNull(tube.acceleratorNode);
+
+        validateNodeInit(tube.acceleratorNode, BLOCK_POS_ZERO, EnumFacing.NORTH, TubeConnectionType.NORMAL);
 
         return tube;
     }

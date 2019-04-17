@@ -11,6 +11,7 @@ public class TestNormalConnections extends ConnectionCommon
     public void normalFacing()
     {
         final ATestTube tube = newTube();
+        tube.setDirection()
     }
 
 }
