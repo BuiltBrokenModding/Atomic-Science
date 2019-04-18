@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Created by Dark(DarkGuardsman, Robert) on 2019-04-17.
  */
-public class TestJoinTConnections extends ConnectionCommon
+public class TestSplitTConnections extends ConnectionCommon
 {
     @Test
     public void normalNorth()
@@ -39,20 +39,20 @@ public class TestJoinTConnections extends ConnectionCommon
         //Setup conditions
         final ATestTube tube = newTube(direction, BLOCK_POS_ZERO);
 
-        //FRONT, North -> north side, north facing
-        addTube(tube, direction, direction);
+        //BACK, North -> south side, north facing
+        addTube(tube, direction.getOpposite(), direction);
 
-        //LEFT, North -> west side, facing east
-        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY());
+        //LEFT, North -> west side, facing west
+        addTube(tube, direction.rotateY(), direction.rotateY());
 
-        //RIGHT, North -> east side, facing west
-        addTube(tube, direction.rotateY(), direction.rotateY().getOpposite());
+        //RIGHT, North -> east side, facing east
+        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY().getOpposite());
 
         //Run method
         TubeConnectionType connectionType = tube.calcConnectionType();
 
         //Test
-        Assertions.assertEquals(TubeConnectionType.T_JOIN, connectionType);
+        Assertions.assertEquals(TubeConnectionType.T_SPLIT, connectionType);
     }
 
     @Test
@@ -84,23 +84,23 @@ public class TestJoinTConnections extends ConnectionCommon
         //Setup conditions
         final ATestTube tube = newTube(direction, BLOCK_POS_ZERO);
 
-        //FRONT, North -> north side, north facing
-        addTube(tube, direction, direction);
+        //FRONT, shouldn't connect, North -> north side, east facing
+        addTube(tube, direction, direction.rotateY());
 
-        //BACK, Shouldn't connect, NORTH -> south side, east facing
-        addTube(tube, direction.getOpposite(), direction.rotateY());
+        //BACK, NORTH -> south side, north facing
+        addTube(tube, direction.getOpposite(), direction);
 
-        //LEFT, North -> west side, facing east
-        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY());
+        //LEFT, North -> west side, facing west
+        addTube(tube, direction.rotateY(), direction.rotateY());
 
-        //RIGHT, North -> east side, facing west
-        addTube(tube, direction.rotateY(), direction.rotateY().getOpposite());
+        //RIGHT, North -> east side, facing east
+        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY().getOpposite());
 
         //Run method
         TubeConnectionType connectionType = tube.calcConnectionType();
 
         //Test
-        Assertions.assertEquals(TubeConnectionType.T_JOIN, connectionType);
+        Assertions.assertEquals(TubeConnectionType.T_SPLIT, connectionType);
     }
 
     @Test
@@ -132,22 +132,22 @@ public class TestJoinTConnections extends ConnectionCommon
         //Setup conditions
         final ATestTube tube = newTube(direction, BLOCK_POS_ZERO);
 
-        //FRONT, North -> north side, north facing
-        addTube(tube, direction, direction);
+        //FRONT, shouldn't connect, North -> north side, west facing
+        addTube(tube, direction, direction.rotateY().getOpposite());
 
-        //BACK, Shouldn't connect, NORTH -> south side, west facing
-        addTube(tube, direction.getOpposite(), direction.rotateY().getOpposite());
+        //BACK, NORTH -> south side, north facing
+        addTube(tube, direction.getOpposite(), direction);
 
-        //LEFT, North -> west side, facing east
-        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY());
+        //LEFT, North -> west side, facing west
+        addTube(tube, direction.rotateY(), direction.rotateY());
 
-        //RIGHT, North -> east side, facing west
-        addTube(tube, direction.rotateY(), direction.rotateY().getOpposite());
+        //RIGHT, North -> east side, facing east
+        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY().getOpposite());
 
         //Run method
         TubeConnectionType connectionType = tube.calcConnectionType();
 
         //Test
-        Assertions.assertEquals(TubeConnectionType.T_JOIN, connectionType);
+        Assertions.assertEquals(TubeConnectionType.T_SPLIT, connectionType);
     }
 }
