@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Created by Dark(DarkGuardsman, Robert) on 2019-04-17.
  */
-public class TestJoinConnections extends ConnectionCommon
+public class TestSplitConnections extends ConnectionCommon
 {
-    //Join only has 1 valid state, as it needs all 4 connections to work
-    //Meaning invalid states are not possible since it wouldn't be a join
+    //Split only has 1 valid state, as it needs all 4 connections to work
+    //Meaning invalid states are not possible since it wouldn't be a split
 
     @Test
     public void normalNorth()
@@ -48,16 +48,16 @@ public class TestJoinConnections extends ConnectionCommon
         //BACK, North -> south side, facing north
         addTube(tube, direction.getOpposite(), direction);
 
-        //LEFT, North -> west side, facing east
-        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY());
+        //LEFT, North -> west side, facing west
+        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY().getOpposite());
 
-        //RIGHT, North -> east side, facing west
-        addTube(tube, direction.rotateY(), direction.rotateY().getOpposite());
+        //RIGHT, North -> east side, facing east
+        addTube(tube, direction.rotateY(), direction.rotateY());
 
         //Run method
         TubeConnectionType connectionType = tube.calcConnectionType();
 
         //Test
-        Assertions.assertEquals(TubeConnectionType.JOIN, connectionType);
+        Assertions.assertEquals(TubeConnectionType.SPLIT, connectionType);
     }
 }
