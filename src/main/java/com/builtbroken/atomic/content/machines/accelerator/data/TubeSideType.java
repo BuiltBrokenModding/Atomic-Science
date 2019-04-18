@@ -7,5 +7,18 @@ public enum TubeSideType
 {
     ENTER,
     EXIT,
-    NONE
+    NONE;
+
+    public TubeSideType getOpposite()
+    {
+        if(this == ENTER)
+        {
+            return EXIT;
+        }
+        else if(this == EXIT)
+        {
+            return ENTER;
+        }
+        return NONE;
+    }
 }

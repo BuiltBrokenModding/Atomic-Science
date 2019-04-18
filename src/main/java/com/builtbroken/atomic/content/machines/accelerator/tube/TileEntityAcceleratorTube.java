@@ -187,22 +187,44 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     public TubeConnectionType calcConnectionType()
     {
         //TODO if we have no connections that are valid, default to current type
-        final TubeSideType front = canConnect(TubeSide.FRONT);
-        final TubeSideType left = canConnect(TubeSide.LEFT);
-        final TubeSideType right = canConnect(TubeSide.RIGHT);
-        final TubeSideType back = canConnect(TubeSide.BACK);
+        final TubeSideType front = getConnectState(TubeSide.FRONT);
+        final TubeSideType left = getConnectState(TubeSide.LEFT);
+        final TubeSideType right = getConnectState(TubeSide.RIGHT);
+        final TubeSideType back = getConnectState(TubeSide.BACK);
 
         //Get connection type
         return TubeConnectionType.getTypeForLayout(front, left, right, back);
     }
 
-    public TubeSideType canConnect(TubeSide tubeSide)
+    /**
+     * Gets the expect connection state based on our relation
+     * to the tube connected to our side.
+     * <p>
+     * If we have a tube entering from our left. It will
+     * tell us that its side is an exit. To our tube this
+     * means we expect to see particles enter from that
+     * left.
+     *
+     * @param localSide - side of our tube
+     * @return expected state for our side
+     */
+    public TubeSideType getConnectState(TubeSide localSide)
     {
-        final EnumFacing side = tubeSide.getFacing(getDirection());
-        final TileEntityAcceleratorTube tube = getTubeSide(side); //TODO use capability
+        //Get tube on side
+        final EnumFacing facingSide = localSide.getFacing(getDirection());
+        final TileEntityAcceleratorTube tube = getTubeSide(facingSide); //TODO use capability
         if (tube != null)
         {
-            return tube.getConnectionType().getTypeForSide(tubeSide.getOpposite());
+            //Get target tube's side, this will not match out side
+            //  Ex: We are facing north, checking  our left connection
+            //      target is on our west facing east, we need to check it's front connection status
+            final TubeSide targetSide = TubeSide.getSideFacingOut(tube.getDirection(), facingSide.getOpposite());
+
+            //status for the tube's connection type on its side connecting to our side
+            final TubeSideType targetState = tube.getConnectionType().getTypeForSide(targetSide);
+
+            //We want the opposite state, if a target is an exit then its an enter for our tube
+            return targetState.getOpposite();
         }
         return TubeSideType.NONE;
     }

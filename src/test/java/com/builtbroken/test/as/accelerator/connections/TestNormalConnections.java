@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
  */
 public class TestNormalConnections extends ConnectionCommon
 {
-
     @Test
     public void normalNorth()
     {
