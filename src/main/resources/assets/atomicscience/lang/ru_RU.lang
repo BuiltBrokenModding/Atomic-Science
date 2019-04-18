@@ -1,0 +1,282 @@
+## Creative Tabs
+itemGroup.atomicscience=Atomic Science
+itemGroup.fluid.cells=[Dev] Fluid Cells
+
+## Blocks
+tile.atomicscience:ore.uranium.name=Урановая руда
+
+## Sensor
+tile.atomicscience:sensor.thermal.redstone.name=Термодатчик редстоун
+gui.atomicscience:sensor.thermal.redstone.button.set=Установить
+gui.atomicscience:sensor.thermal.redstone.button.get=Показатель 
+gui.atomicscience:sensor.thermal.redstone.label.title=Термодатчик редстоун
+gui.atomicscience:sensor.thermal.redstone.label.min=Мин.
+gui.atomicscience:sensor.thermal.redstone.label.max=Макс.
+gui.atomicscience:sensor.thermal.redstone.label.heat.value=Нагрев:
+gui.atomicscience:sensor.thermal.redstone.label.heat.none=Нагрев: Нажмите кнопку, чтобы получить
+gui.atomicscience:sensor.thermal.redstone.label.error=§cОшибка:
+gui.atomicscience:sensor.thermal.redstone.label.info=Инфо:
+gui.atomicscience:sensor.thermal.redstone.label.redstone=Редстоун:
+
+## Machines
+tile.atomicscience:reactor.cell.name=Ядро реактора деления
+tile.atomicscience:reactor.controller.name=Контроллер реактора деления
+
+tile.atomicscience:steam.funnel.name=Паровая воронка
+
+tile.atomicscience:steam.generator.name=Паровая турбина
+tile.atomicscience:steam.generator.0.name=Паровая турбина UE
+tile.atomicscience:steam.generator.1.name=Паровая турбина RF
+tile.atomicscience:steam.generator.2.name=Паровая турбина EU
+
+tile.atomicscience:chem.centrifuge.name=Химическая центрифуга
+tile.atomicscience:chem.centrifuge.gui=Химическая центрифуга
+
+tile.atomicscience:chem.boiler.name=Химический котел
+tile.atomicscience:chem.boiler.gui=Химический котел
+
+tile.atomicscience:chem.extractor.name=Химический экстрактор
+tile.atomicscience:chem.extractor.gui=Химический экстрактор
+
+tile.atomicscience:pipe.rod.name=Конвейер реакторного стержня
+tile.atomicscience:pipe.rod.info=Позволяет легко контролировать, перемещая стержни в реакторы, без непосредственного хранения предметов
+
+tile.atomicscience:pipe.rod.inv.name=Конвейер хранения реакторного стержня
+tile.atomicscience:pipe.rod.inv.info=Работает как отдельная предметная воронка, позволяя легко контролировать, перемещая стержни в реакторы
+
+tile.atomicscience:magnet.name=Электромагнит
+tile.atomicscience:magnet.info=Опорный блок для строительных машин
+
+tile.atomicscience:accelerator.tube.name=Ускорительная труба
+tile.atomicscience:accelerator.tube.info=Вакуумная герметичная трука для ускорения частиц, поддерживает силовые соединения для магнитов, может быть настроена как направляющая и соединительная труба
+
+tile.atomicscience:laser.emitter.name=Лазерный излучатель
+tile.atomicscience:laser.emitter.info=Излучает лазер для использования в других процессах, таких как выталкивание частиц
+
+tile.atomicscience:laser.booster.name=Лазерный усилитель
+tile.atomicscience:laser.booster.info=Используется для питания лазерного излучателя, сложите для увеличения мощности
+
+tile.atomicscience:item.container.name=Предметный держатель
+tile.atomicscience:item.container.info=Используется для удержания предметов на месте, в сочетании с лазером, для генерации частиц
+
+tile.atomicscience:accelerator.gun.name=Наконечник пистолета-ускорителя
+tile.atomicscience:accelerator.gun.info=Конец ускорительного пистолета, используемого в качестве начала частиц
+
+## Items
+item.atomicscience:hazmat.mask.name=Химзащитная маска M1A
+item.atomicscience:hazmat.body.name=Химзащита верхней части тела M1A
+item.atomicscience:hazmat.leggings.name=Химзащита нижней части тела M1A
+item.atomicscience:hazmat.boots.name=Химзащитные ботинки M1A
+
+item.atomicscience:hazmat.mask.color.name=Химзащитная маска M1B
+item.atomicscience:hazmat.body.color.name=Химзащита верхней части тела M1B
+item.atomicscience:hazmat.leggings.color.name=Химзащита нижней части тела M1B
+item.atomicscience:hazmat.boots.color.name=Химзащитные ботинки M1B
+
+item.atomicscience:hazmat.color.info=Модифицированная версия костюма M1A, позволяет менять цвет с помощью красителей
+
+item.atomicscience:cell.fluid.name=Жидкостная ячейка
+item.atomicscience:cell.fluid.water.name=Водяная ячейка
+item.atomicscience:cell.fluid.deuterium.name=Дейтериевая ячейка
+
+item.atomicscience:cell.powered.name=Энергетическая ячейка
+item.atomicscience:cell.powered.antimatter.name=Ячейка антиматерии
+item.atomicscience:cell.powered.strange_matter.name=Ячейка странной материи
+
+item.atomicscience:cell.fuel.fissile.name=Топливный стержень деления
+item.atomicscience:cell.fuel.fissile.info.fuel=Топливо: -time- / -maxTime-
+
+item.atomicscience:cell.fuel.breeder.name=Производственный стержень деления
+item.atomicscience:cell.fuel.breeder.info.fuel=Топливо: -time- / -maxTime-
+
+item.atomicscience:cell.empty.name=Пустая ячейка
+
+item.atomicscience:cake.yellow.name=Желтый торт
+item.atomicscience:cake.yellow.info=Урановая пыль, переработанная в гексафторид урана
+
+item.atomicscience:uranium.234.name=Уран-234
+item.atomicscience:uranium.234.info=Изотоп урана, в настоящее время не используется
+
+item.atomicscience:uranium.235.name=Уран-235
+item.atomicscience:uranium.235.info=Изотоп урана, используемый в качестве делящегося топлива
+
+item.atomicscience:uranium.238.name=Уран-238
+item.atomicscience:uranium.238.info=Изотоп урана, в настоящее время не используется
+
+item.atomicscience:processing.waste.name=Токсичные минеральные отходы
+item.atomicscience:processing.waste.info=Отходы переработки ресурсов, содержащие некоторые микроматериалы
+
+item.atomicscience:toxic.waste.name=Токсичные отходы
+item.atomicscience:toxic.waste.info=Твердые урановые отходы, в настоящее время бесполезны
+
+## Tools
+item.atomicscience:heat.probe.name=Термальный зонд
+item.atomicscience:heat.probe.info=Может использоваться для измерения тепловой энергии, §bПКМ§r, чтобы измерить, §bShift§r для смещения к поверхности блока
+
+## Fluids
+fluid.atomicscience:antimatter=Антиматерия
+fluid.atomicscience:strange_matter=Странная материя
+fluid.atomicscience:deuterium=Дейтерий
+fluid.atomicscience:steam=Пар
+fluid.atomicscience:reactor_waste=Реакторные отходы
+fluid.atomicscience:mineral_waste=Загрязненный минеральный шлам
+fluid.atomicscience:contaminated_mineral_water=Загрязненный минеральный раствор
+fluid.atomicscience:contaminated_water=Загрязненная вода
+fluid.atomicscience:uranium_hexafluoride=Гексафторид урана
+
+## Wrench
+item.atomicscience:wrench.name=Настройщик
+item.atomicscience:wrench.rotation.name=Настройщик вращения
+item.atomicscience:wrench.item.name=Настройщик предмета
+item.atomicscience:wrench.fluid.name=Настройщик жидкости
+item.atomicscience:wrench.redstone.name=Настройщик редстоуна
+
+item.atomicscience:wrench.rotation.green.name=Зеленый настройщик вращения
+item.atomicscience:wrench.rotation.yellow.name=Желтый настройщик вращения
+item.atomicscience:wrench.rotation.red.name=Красный настройщик вращения
+item.atomicscience:wrench.rotation.blue.name=Синий настройщик вращения
+item.atomicscience:wrench.rotation.purple.name=Фиолетовый настройщик вращения
+item.atomicscience:wrench.rotation.orange.name=Оранжевый настройщик вращения
+
+item.atomicscience:wrench.item.green.name=Зеленый настройщик предмета
+item.atomicscience:wrench.item.yellow.name=Желтый настройщик предмета
+item.atomicscience:wrench.item.red.name=Красный настройщик предмета
+item.atomicscience:wrench.item.blue.name=Синий настройщик предмета
+item.atomicscience:wrench.item.purple.name=Фиолетовый настройщик предмета
+item.atomicscience:wrench.item.orange.name=Оранжевый настройщик предмета
+
+item.atomicscience:wrench.fluid.green.name=Зеленый настройщик жидкости
+item.atomicscience:wrench.fluid.yellow.name=Желтый настройщик жидкости
+item.atomicscience:wrench.fluid.red.name=Красный настройщик жидкости
+item.atomicscience:wrench.fluid.blue.name=Синий настройщик жидкости
+item.atomicscience:wrench.fluid.purple.name=Фиолетовый настройщик жидкости
+item.atomicscience:wrench.fluid.orange.name=Оранжевый настройщик жидкости
+
+item.atomicscience:wrench.redstone.green.name=Зеленый настройщик редстоуна
+item.atomicscience:wrench.redstone.yellow.name=Желтый настройщик редстоуна
+item.atomicscience:wrench.redstone.red.name=Красный настройщик редстоуна
+item.atomicscience:wrench.redstone.blue.name=Синий настройщик редстоуна
+item.atomicscience:wrench.redstone.purple.name=Фиолетовый настройщик редстоуна
+item.atomicscience:wrench.redstone.orange.name=Оранжевый настройщик редстоуна
+
+## Wrench Info
+item.atomicscience:wrench.mode.rotation.info=Режим: §bВращение
+item.atomicscience:wrench.mode.item.info=Режим: §eПредмет
+item.atomicscience:wrench.mode.fluid.info=Режим: §9Жидкость
+item.atomicscience:wrench.mode.redstone.info=Режим: §4Редстоун
+
+item.atomicscience:wrench.color.green.info=Цвет: Зеленый
+item.atomicscience:wrench.color.yellow.info=Цвет: Желтый
+item.atomicscience:wrench.color.red.info=Цвет: Красный
+item.atomicscience:wrench.color.blue.info=Цвет: Синий
+item.atomicscience:wrench.color.purple.info=Цвет: Фиолетовый
+
+item.atomicscience:wrench.more.info=Зажмите §bShift§f для инфо
+
+item.atomicscience:wrench.info=Регулирует настройки машины
+item.atomicscience:wrench.use.info=§5Удерживая §bShift:
+item.atomicscience:wrench.ctrl.info=§bCtrl + §bКолесо §5мыши для переключения режимов
+item.atomicscience:wrench.wheel.info=§bКолесо мыши §5для переключения цвета
+
+## Gui
+gui.tank.tooltip=-fluid-;-vol-/-cap-
+gui.tank.tooltip.empty=Пусто
+
+gui.tooltip.slot.tank.input.blue=Вход синего резервуара
+
+gui.tooltip.slot.tank.output.green=Выход зеленого резервуара
+gui.tooltip.slot.tank.output.yellow=Выход желтого резервуара
+
+gui.tooltip.slot.energy.input=Энергия
+
+gui.tooltip.slot.input=Вход
+gui.tooltip.slot.output=Выход
+
+## Info
+tile.atomicscience:reactor.controller.error.state=Ошибка контроллера, это, вероятно, вызвано слишком большим количеством процессоров в стаке ядра. Только 1 контроллер может быть подключен к стаку ядер по оси Y. Если вы хотите иметь несколько стаков по оси Y, отделите каждый стак прокладкой. Если вы хотите поддерживать соединение инвентаря, используйте воронку или трубу между слоями стака.
+tile.atomicscience:reactor.controller.cell.count=Контроллер в настоящее время управляет %s реакторной(ыми) ячейкой(ами)
+
+## Misc
+error.translation.empty=Перевод отсутствует для ' %s '
+error.translation.null=Ключ перевода был нулевым
+
+## Config
+
+#### Content
+config.atomicscience:content.title=Содержание
+
+###### Uranium Ore
+config.atomicscience:content.ore.uranium.title=Урановая руда
+config.atomicscience:content.ore.uranium.enable.title=Включить генерацию
+config.atomicscience:content.ore.uranium.min.title=Мин. высота появления
+config.atomicscience:content.ore.uranium.max.title=Макс. высота появления
+config.atomicscience:content.ore.uranium.count.title=Появление на чанк
+config.atomicscience:content.ore.uranium.branch.title=Появление на ветку
+config.atomicscience:content.ore.uranium.harvest.title=Уровень добычи инструмента
+
+###### Power Usage
+config.atomicscience:content.power.usage.title=Использование энергии
+config.atomicscience:content.power.usage.enable.title=Включить
+config.atomicscience:content.power.usage.boiler.title=Химический котел
+config.atomicscience:content.power.usage.extractor.title=Химический экстрактор
+config.atomicscience:content.power.usage.centrifuge.title=Химическая центрифуга
+
+###### Reactor
+config.atomicscience:content.reactor.title=Реактор
+config.atomicscience:content.reactor.fuel.rod.time.title=Время горения топливного стержня
+config.atomicscience:content.reactor.breeder.rod.time.title=Время горения производственного стержня
+config.atomicscience:content.reactor.fuel.rod.heat.title=Тепловыделение топливного стержня
+config.atomicscience:content.reactor.breeder.rod.heat.title=Тепловыделение производственного стержня
+
+#### Logic
+config.atomicscience:logic.title=Логика
+
+###### Steam
+config.atomicscience:thermal.steam.title=Пар
+config.atomicscience:thermal.steam.energy.title=Коэффицент пара в энергию
+config.atomicscience:thermal.steam.water.vapor.title=Скорость испарения воды
+config.atomicscience:thermal.steam.water.flowing.vapor.title=Расход пара воды
+config.atomicscience:thermal.steam.water.max.vapor.title=Макс. скорость испарения воды
+
+#### Server
+config.atomicscience:server.title=Сервер
+config.atomicscience:server.network.title=Сеть
+config.atomicscience:server.network.boiling.title=Включить пакет кипящего эффекта
+config.atomicscience:server.network.steam.title=Включить пакет эффекта пара
+
+#### Client
+config.atomicscience:client.title=Клиент
+
+###### Particles
+config.atomicscience:client.particles.title=Частицы
+config.atomicscience:client.particles.boiling.title=Кипящий эффект
+config.atomicscience:client.particles.machine.complete.title=Машина завершена
+config.atomicscience:client.particles.machine.running.title=Машина работает
+config.atomicscience:client.particles.reactor.running.title=Реактор работает
+config.atomicscience:client.particles.steam.title=Паровой эффект пара
+
+###### Radiation Display
+config.atomicscience:client.radiation.display.title=Графический интерфейс радиации
+config.atomicscience:client.radiation.display.enable.title=Включить
+
+#### Mods
+config.atomicscience:mods.title=Модификации
+
+###### IC2
+config.atomicscience:mods.ic2.title=IndustrialCraft
+config.atomicscience:mods.ic2.power.title=Включить использование энергии
+config.atomicscience:mods.ic2.fe_per_eu.title=Коэффициент конверсии FE в EU
+config.atomicscience:mods.ic2.recipes.title=Включить рецепты
+
+###### Buildcraft
+config.atomicscience:mods.buildcraft.title=BuildCraft
+config.atomicscience:mods.buildcraft.fe_per_mj.title=Коэффициент конверсии FE в MJ
+config.atomicscience:mods.buildcraft.power.title=Включить использование энергии
+
+###### Actually Additions
+config.atomicscience:mods.actually.additions.title=Actually Additions
+config.atomicscience:mods.actually.additions.recipes.title=Включить рецепты
+
+###### Thermal Expansion
+config.atomicscience:mods.thermal.expansion.title=Thermal Expansion
+config.atomicscience:mods.thermal.expansion.recipes.title=Включить рецепты
