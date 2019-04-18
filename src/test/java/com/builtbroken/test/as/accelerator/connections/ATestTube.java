@@ -16,4 +16,14 @@ public class ATestTube extends TileEntityAcceleratorTube
     {
         return tiles[side.ordinal()];
     }
+
+    public void setDirection(EnumFacing direction)
+    {
+        this.direction = direction;
+    }
+
+    public void setTiles(EnumFacing side, TileEntity tile)
+    {
+        tiles[side.ordinal()] = tile;
+    }
 }

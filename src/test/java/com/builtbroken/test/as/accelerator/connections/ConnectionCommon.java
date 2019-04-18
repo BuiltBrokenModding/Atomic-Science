@@ -69,20 +69,21 @@ public class ConnectionCommon
         }
     }
 
-    public static ATestTube newTube()
+    public static ATestTube newTube(EnumFacing facing, BlockPos pos)
     {
         final ATestTube tube = new ATestTube();
-        tube.setPos(BLOCK_POS_ZERO);
+        tube.setDirection(facing);
+        tube.setPos(pos);
 
-        Assertions.assertEquals(0, tube.xi());
-        Assertions.assertEquals(0, tube.yi());
-        Assertions.assertEquals(0, tube.zi());
+        Assertions.assertEquals(pos.getX(), tube.xi());
+        Assertions.assertEquals(pos.getY(), tube.yi());
+        Assertions.assertEquals(pos.getZ(), tube.zi());
 
         Assertions.assertNull(tube.world());
 
         Assertions.assertNotNull(tube.acceleratorNode);
 
-        validateNodeInit(tube.acceleratorNode, BLOCK_POS_ZERO, EnumFacing.NORTH, TubeConnectionType.NORMAL);
+        validateNodeInit(tube.acceleratorNode, pos, facing, TubeConnectionType.NORMAL);
 
         return tube;
     }

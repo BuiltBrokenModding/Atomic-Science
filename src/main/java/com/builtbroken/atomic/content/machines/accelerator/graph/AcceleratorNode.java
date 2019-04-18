@@ -271,27 +271,7 @@ public class AcceleratorNode
 
     private TubeSide getSideFacingOut(EnumFacing side)
     {
-        if (side == null)
-        {
-            return TubeSide.CENTER;
-        }
-        else if (side == facing)
-        {
-            return TubeSide.FRONT;
-        }
-        else if (side == facing.getOpposite())
-        {
-            return TubeSide.BACK;
-        }
-        else if (facing.rotateY().getOpposite() == side)
-        {
-            return TubeSide.LEFT;
-        }
-        else if (facing.rotateY() == side)
-        {
-            return TubeSide.RIGHT;
-        }
-        return TubeSide.CENTER;
+        return TubeSide.getSideFacingOut(facing, side);
     }
 
     private float moveToCenter(AcceleratorParticle particle, float deltaX, float deltaZ, float distanceToMove)

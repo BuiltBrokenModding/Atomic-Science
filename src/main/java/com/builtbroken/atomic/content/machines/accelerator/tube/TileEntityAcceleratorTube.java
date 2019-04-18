@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
@@ -185,25 +186,23 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
 
     public TubeConnectionType calcConnectionType()
     {
-        final TubeSideType front = canConnect(direction);
-        final TubeSideType left = canConnect(direction.rotateY().getOpposite());
-        final TubeSideType right = canConnect(direction.rotateY());
-        final TubeSideType back = canConnect(direction.getOpposite());
+        //TODO if we have no connections that are valid, default to current type
+        final TubeSideType front = canConnect(TubeSide.FRONT);
+        final TubeSideType left = canConnect(TubeSide.LEFT);
+        final TubeSideType right = canConnect(TubeSide.RIGHT);
+        final TubeSideType back = canConnect(TubeSide.BACK);
 
         //Get connection type
         return TubeConnectionType.getTypeForLayout(front, left, right, back);
     }
 
-    public TubeSideType canConnect(EnumFacing side)
+    public TubeSideType canConnect(TubeSide tubeSide)
     {
+        final EnumFacing side = tubeSide.getFacing(getDirection());
         final TileEntityAcceleratorTube tube = getTubeSide(side); //TODO use capability
         if (tube != null)
         {
-            if (tube.getDirection() == side)
-            {
-                return TubeSideType.EXIT;
-            }
-            return TubeSideType.ENTER;
+            return tube.getConnectionType().getTypeForSide(tubeSide.getOpposite());
         }
         return TubeSideType.NONE;
     }
