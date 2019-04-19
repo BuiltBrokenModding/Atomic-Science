@@ -1,6 +1,8 @@
 package com.builtbroken.test.as.accelerator.layout;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
+import com.builtbroken.test.as.accelerator.ATestTube;
+import com.builtbroken.test.as.accelerator.ATubeTestCommon;
 import net.minecraft.util.EnumFacing;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -8,7 +10,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Created by Dark(DarkGuardsman, Robert) on 2019-04-17.
  */
-public class TestJoinTConnections extends ConnectionCommon
+public class TestJoinTConnections extends ATubeTestCommon
 {
     @Test
     public void normalNorth()

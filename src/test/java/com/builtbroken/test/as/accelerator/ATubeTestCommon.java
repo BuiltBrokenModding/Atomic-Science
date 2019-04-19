@@ -1,17 +1,18 @@
-package com.builtbroken.test.as.accelerator.layout;
+package com.builtbroken.test.as.accelerator;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
+import com.builtbroken.test.as.accelerator.ATestTube;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.junit.jupiter.api.Assertions;
 
 /**
+ * Set of common helper methods for testing accelerator tubes
  * Created by Dark(DarkGuardsman, Robert) on 2019-04-17.
  */
-public class ConnectionCommon
+public class ATubeTestCommon
 {
-
     public static final BlockPos BLOCK_POS_ZERO = new BlockPos(0, 0, 0);
 
     /**
@@ -80,6 +81,7 @@ public class ConnectionCommon
     {
         return newTube(facing, pos, null);
     }
+
     /**
      * Creates a new tube at the position facing the direction given
      * <p>
