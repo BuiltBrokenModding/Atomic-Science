@@ -25,9 +25,6 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
  */
 public class TestNormalTubeExit extends ATubeTestCommon
 {
-    //https://www.baeldung.com/parameterized-tests-junit-5
-
-    //Test that we can accept any exit side of a tube into the back as an entry
     @ParameterizedTest
     @ArgumentsSource(ExitIntoArgumentsProvider.class)
     public void testExitFront(EnumFacing facing, TubeSide side, TubeConnectionType type)
@@ -42,7 +39,6 @@ public class TestNormalTubeExit extends ATubeTestCommon
         Assertions.assertEquals(TubeSideType.EXIT, tube.getConnectState(TubeSide.FRONT));
     }
 
-    //Test that we can't take exit points as entries into the front
     @ParameterizedTest
     @ArgumentsSource(ExitIntoArgumentsProvider.class)
     public void testNoExitBack(EnumFacing facing, TubeSide side, TubeConnectionType type)
@@ -57,7 +53,6 @@ public class TestNormalTubeExit extends ATubeTestCommon
         Assertions.assertEquals(TubeSideType.NONE, tube.getConnectState(TubeSide.FRONT));
     }
 
-    //Test that we can't take exit points as entries into the front
     @ParameterizedTest
     @ArgumentsSource(ExitIntoArgumentsProvider.class)
     public void testNoExitLeft(EnumFacing facing, TubeSide side, TubeConnectionType type)
@@ -72,7 +67,6 @@ public class TestNormalTubeExit extends ATubeTestCommon
         Assertions.assertEquals(TubeSideType.NONE, tube.getConnectState(TubeSide.FRONT));
     }
 
-    //Test that we can't take exit points as entries into the front
     @ParameterizedTest
     @ArgumentsSource(ExitIntoArgumentsProvider.class)
     public void testNoExitRight(EnumFacing facing, TubeSide side, TubeConnectionType type)
