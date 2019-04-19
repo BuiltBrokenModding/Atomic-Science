@@ -1,4 +1,4 @@
-package com.builtbroken.test.as.accelerator.connections;
+package com.builtbroken.test.as.accelerator.layout;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import net.minecraft.util.EnumFacing;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Created by Dark(DarkGuardsman, Robert) on 2019-04-17.
  */
-public class TestRightConnections extends ConnectionCommon
+public class TestLeftConnections extends ConnectionCommon
 {
     @Test
     public void normalNorth()
@@ -39,13 +39,13 @@ public class TestRightConnections extends ConnectionCommon
         //Setup conditions
         final ATestTube tube = newTube(direction, BLOCK_POS_ZERO);
         addTube(tube, direction, direction); //North -> north side, north facing
-        addTube(tube, direction.rotateY(), direction.rotateY().getOpposite()); //North -> east side, west facing
+        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY()); //North -> west side, east facing
 
         //Run method
         TubeConnectionType connectionType = tube.calcConnectionType();
 
         //Test
-        Assertions.assertEquals(TubeConnectionType.CORNER_RIGHT, connectionType);
+        Assertions.assertEquals(TubeConnectionType.CORNER_LEFT, connectionType);
     }
 
     @Test
@@ -79,17 +79,17 @@ public class TestRightConnections extends ConnectionCommon
 
         //Tubes we expect to connect with
         addTube(tube, direction, direction); //North -> north side, north facing
-        addTube(tube, direction.rotateY(), direction.rotateY().getOpposite()); //North -> east side, west facing
+        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY()); //North -> west side, east facing
 
         //Tubes running in parallel that should be ignored
-        addTube(tube, direction.rotateY().getOpposite(), direction.getOpposite());  //North -> west side, south facing
+        addTube(tube, direction.rotateY(), direction.getOpposite());  //North -> east side, south facing
         addTube(tube, direction.getOpposite(), direction.rotateY()); //North -> south side, east facing
 
         //Run method
         TubeConnectionType connectionType = tube.calcConnectionType();
 
         //Test
-        Assertions.assertEquals(TubeConnectionType.CORNER_RIGHT, connectionType);
+        Assertions.assertEquals(TubeConnectionType.CORNER_LEFT, connectionType);
     }
 
     @Test
@@ -124,16 +124,16 @@ public class TestRightConnections extends ConnectionCommon
 
         //Tubes we expect to connect with
         addTube(tube, direction, direction); //North -> north side, north facing
-        addTube(tube, direction.rotateY(), direction.rotateY().getOpposite()); //North -> east side, west facing
+        addTube(tube, direction.rotateY().getOpposite(), direction.rotateY()); //North -> west side, east facing
 
         //Tubes running in parallel that should be ignored
-        addTube(tube, direction.rotateY().getOpposite(), direction);  //North -> west side, north facing
+        addTube(tube, direction.rotateY(), direction);  //North -> east side, north facing
         addTube(tube, direction.getOpposite(), direction.rotateY().getOpposite()); //North -> south side, west facing
 
         //Run method
         TubeConnectionType connectionType = tube.calcConnectionType();
 
         //Test
-        Assertions.assertEquals(TubeConnectionType.CORNER_RIGHT, connectionType);
+        Assertions.assertEquals(TubeConnectionType.CORNER_LEFT, connectionType);
     }
 }

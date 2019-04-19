@@ -1,4 +1,4 @@
-package com.builtbroken.test.as.accelerator.connections;
+package com.builtbroken.test.as.accelerator.connection;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;

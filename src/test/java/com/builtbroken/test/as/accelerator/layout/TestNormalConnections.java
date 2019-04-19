@@ -1,8 +1,9 @@
-package com.builtbroken.test.as.accelerator.connections;
+package com.builtbroken.test.as.accelerator.layout;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
+import com.builtbroken.test.as.accelerator.connection.EntryTubeArgumentsProvider;
 import net.minecraft.util.EnumFacing;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

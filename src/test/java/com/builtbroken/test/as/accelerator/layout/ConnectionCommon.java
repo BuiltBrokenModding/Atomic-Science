@@ -1,9 +1,7 @@
-package com.builtbroken.test.as.accelerator.connections;
+package com.builtbroken.test.as.accelerator.layout;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
-import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
-import com.sun.source.tree.AssertTree;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.junit.jupiter.api.Assertions;
