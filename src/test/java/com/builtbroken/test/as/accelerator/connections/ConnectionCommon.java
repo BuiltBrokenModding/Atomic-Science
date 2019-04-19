@@ -80,7 +80,24 @@ public class ConnectionCommon
      */
     public static ATestTube newTube(EnumFacing facing, BlockPos pos)
     {
+        return newTube(facing, pos, null);
+    }
+    /**
+     * Creates a new tube at the position facing the direction given
+     * <p>
+     * Does some basic validation to ensure the tube setup with the right data.
+     *
+     * @param facing - direction to face
+     * @param pos    - position to exist
+     * @return new tube
+     */
+    public static ATestTube newTube(EnumFacing facing, BlockPos pos, TubeConnectionType type)
+    {
         final ATestTube tube = new ATestTube();
+        if (type != null)
+        {
+            tube.setConnectionType(type);
+        }
         tube.setDirection(facing);
         tube.setPos(pos);
 
@@ -92,7 +109,7 @@ public class ConnectionCommon
 
         Assertions.assertNotNull(tube.acceleratorNode);
 
-        validateNodeInit(tube.acceleratorNode, pos, facing, TubeConnectionType.NORMAL);
+        validateNodeInit(tube.acceleratorNode, pos, facing, type != null ? type : TubeConnectionType.NORMAL);
 
         return tube;
     }
@@ -110,6 +127,18 @@ public class ConnectionCommon
     }
 
     /**
+     * Helper to add a new tube to the center tube for testing on the side and facing a direction
+     *
+     * @param center     - tube to act as both a center and the target to add
+     * @param sideOffset - side to move the tube towards and place in the tile map
+     * @param facing     - direction for the tube to face
+     */
+    public static void addTube(ATestTube center, EnumFacing sideOffset, EnumFacing facing, TubeConnectionType type)
+    {
+        center.setTiles(sideOffset, newTube(center.getPos(), sideOffset, facing, type));
+    }
+
+    /**
      * Called to make a new tube on the side with a facing and position
      *
      * @param pos        - position to create the tube
@@ -120,5 +149,18 @@ public class ConnectionCommon
     public static ATestTube newTube(BlockPos pos, EnumFacing sideOffset, EnumFacing facing)
     {
         return newTube(facing, pos.offset(sideOffset));
+    }
+
+    /**
+     * Called to make a new tube on the side with a facing and position
+     *
+     * @param pos        - position to create the tube
+     * @param sideOffset - side to place the tube from the position, acts as an offset for pos
+     * @param facing     - direction to face the tube
+     * @return new tube
+     */
+    public static ATestTube newTube(BlockPos pos, EnumFacing sideOffset, EnumFacing facing, TubeConnectionType type)
+    {
+        return newTube(facing, pos.offset(sideOffset), type);
     }
 }

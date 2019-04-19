@@ -1,5 +1,6 @@
 package com.builtbroken.test.as.accelerator.connections;
 
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -25,5 +26,10 @@ public class ATestTube extends TileEntityAcceleratorTube
     public void setTiles(EnumFacing side, TileEntity tile)
     {
         tiles[side.ordinal()] = tile;
+    }
+
+    public void setConnectionType(TubeConnectionType type)
+    {
+        this.connectionType = type;
     }
 }
