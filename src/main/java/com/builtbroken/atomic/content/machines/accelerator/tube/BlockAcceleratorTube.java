@@ -3,6 +3,7 @@ package com.builtbroken.atomic.content.machines.accelerator.tube;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.prefab.BlockPrefab;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -71,9 +72,22 @@ public class BlockAcceleratorTube extends BlockPrefab
                 if (!world.isRemote)
                 {
                     playerIn.sendMessage(new TextComponentString("Block Debug:"));
+                    playerIn.sendMessage(new TextComponentString("---Pos: " + pos));
                     playerIn.sendMessage(new TextComponentString("---Dir: " + ((TileEntityAcceleratorTube) tile).getDirection() + "==" + state.getValue(ROTATION_PROP)));
                     playerIn.sendMessage(new TextComponentString("---Type: " + state.getValue(TYPE_PROP)));
                     playerIn.sendMessage(new TextComponentString("---Connection: " + state.getValue(CONNECTION_PROP)));
+                }
+                return true;
+            }
+            else if (heldItem.getItem() == Items.BLAZE_ROD)
+            {
+                if (!world.isRemote)
+                {
+                    playerIn.sendMessage(new TextComponentString("Connection State:"));
+                    for(TubeSide side : TubeSide.SIDES)
+                    {
+                        playerIn.sendMessage(new TextComponentString("---" + side.name() + ": " + ((TileEntityAcceleratorTube) tile).getConnectState(side)));
+                    }
                 }
                 return true;
             }
@@ -153,7 +167,7 @@ public class BlockAcceleratorTube extends BlockPrefab
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
     {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityAcceleratorTube)
+        if (tile instanceof TileEntityAcceleratorTube && !world.isRemote)
         {
             ((TileEntityAcceleratorTube) tile).direction = placer.getHorizontalFacing();
             ((TileEntityAcceleratorTube) tile).updateConnections(true);
@@ -200,7 +214,7 @@ public class BlockAcceleratorTube extends BlockPrefab
                 && tile.getWorld() != null
                 && !((TileEntityAcceleratorTube) tile).world().isRemote)
         {
-            ((TileEntityAcceleratorTube) tile).updateConnections(true);
+            //((TileEntityAcceleratorTube) tile).updateConnections(true); - breaks connections
             ((TileEntityAcceleratorTube) tile).acceleratorNode.checkConnections(world);
         }
     }

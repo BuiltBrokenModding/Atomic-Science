@@ -22,7 +22,6 @@ import java.util.List;
  */
 public class AcceleratorNode
 {
-
     //Connections
     private final AcceleratorNode[] nodes = new AcceleratorNode[6];
 

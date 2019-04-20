@@ -79,7 +79,7 @@ public enum TubeConnectionType implements IStringSerializable
 
     public static TubeConnectionType byIndex(int i)
     {
-        if (i > 0 && i < values().length)
+        if (i >= 0 && i < values().length)
         {
             return values()[i];
         }

@@ -5,7 +5,9 @@ import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -14,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -26,7 +29,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     public static final String NBT_CONNECTION = "connection";
 
     protected EnumFacing direction;
-    protected TubeConnectionType connectionType = TubeConnectionType.NORMAL;
+    private TubeConnectionType _connectionType = TubeConnectionType.NORMAL;
 
     public final AcceleratorNode acceleratorNode = new AcceleratorNode(this); //TODO turn into capability
 
@@ -85,7 +88,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         }
         if (compound.hasKey(NBT_CONNECTION))
         {
-            connectionType = TubeConnectionType.byIndex(compound.getByte(NBT_CONNECTION));
+            setConnectionType(TubeConnectionType.byIndex(compound.getByte(NBT_CONNECTION)));
         }
     }
 
@@ -173,6 +176,20 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         this.readFromNBT(tag);
     }
 
+    @Override
+    protected void writeDescPacket(List<Object> dataList, EntityPlayer player)
+    {
+        dataList.add((byte) getDirection().ordinal());
+        dataList.add((byte) getConnectionType().ordinal());
+    }
+
+    @Override
+    protected void readDescPacket(ByteBuf buf, EntityPlayer player)
+    {
+        direction = EnumFacing.byIndex(buf.readByte());
+        setConnectionType(TubeConnectionType.byIndex(buf.readByte()));
+    }
+
     /**
      * Updates the connection data and updates the block state
      *
@@ -180,7 +197,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
      */
     public IBlockState updateConnections(boolean updateBlockState)
     {
-        connectionType = calcConnectionType();
+        setConnectionType(calcConnectionType());
         return updateState(false, updateBlockState);
     }
 
@@ -191,6 +208,8 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         final TubeSideType left = getConnectState(TubeSide.LEFT);
         final TubeSideType right = getConnectState(TubeSide.RIGHT);
         final TubeSideType back = getConnectState(TubeSide.BACK);
+
+        System.out.println(direction + " F:" + front + " L:" + left + " R:" + right + " B:" + back);
 
         //Get connection type
         return TubeConnectionType.getTypeForLayout(front, left, right, back);
@@ -250,10 +269,19 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
 
     public TubeConnectionType getConnectionType()
     {
-        if (connectionType == null)
+        if (_connectionType == null)
         {
-            connectionType = TubeConnectionType.NORMAL;
+            setConnectionType(TubeConnectionType.NORMAL);
         }
-        return connectionType;
+        return _connectionType;
+    }
+
+    public void setConnectionType(TubeConnectionType type)
+    {
+        TubeConnectionType prev = getConnectionType();
+        if (prev != type)
+        {
+            this._connectionType = type;
+        }
     }
 }

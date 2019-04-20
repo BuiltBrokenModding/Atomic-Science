@@ -60,14 +60,17 @@ public abstract class TileEntityPrefab extends TileEntity implements IPacketIDRe
      */
     protected void sendDescPacket()
     {
-        PacketTile packetTile = new PacketTile("reactor_desc", DESC_PACKET_ID, this);
+        if(isServer())
+        {
+            PacketTile packetTile = new PacketTile("reactor_desc", DESC_PACKET_ID, this);
 
-        //Collect data
-        List<Object> list = new ArrayList();
-        writeDescPacket(list, null); //TODO get list of players, then send
-        packetTile.addData(list);
+            //Collect data
+            List<Object> list = new ArrayList();
+            writeDescPacket(list, null); //TODO get list of players, then send
+            packetTile.addData(list);
 
-        PacketSystem.INSTANCE.sendToAllAround(packetTile, this);
+            PacketSystem.INSTANCE.sendToAllAround(packetTile, this);
+        }
     }
 
     protected void sendGuiPacket()
