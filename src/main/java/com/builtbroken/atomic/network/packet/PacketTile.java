@@ -120,9 +120,8 @@ public class PacketTile extends PacketBase
             {
                 AtomicScience.logger.error("PacketTile#handle(" + player + ", " + name  + ") - world is null for player while handling packet. ", new RuntimeException());
             }
-            return;
         }
-        if (player.getEntityWorld().provider.getDimension() != dim)
+        else if (player.getEntityWorld().provider.getDimension() != dim)
         {
             if (AtomicScience.runningAsDev)
             {
@@ -135,7 +134,7 @@ public class PacketTile extends PacketBase
         }
         else if (AtomicScience.runningAsDev)
         {
-            AtomicScience.logger.error("PacketTile#handle(" + player + ", " + name + ") - block is not loaded for player while handling packet. ");
+            AtomicScience.logger.error("PacketTile#handle(" + player + ", " + name + ") - block at " + pos + " is not loaded for player while handling packet. ");
         }
     }
 
