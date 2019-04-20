@@ -198,6 +198,11 @@ public class ThreadRadExposure extends ThreadDataChange
             int yi = (int) Math.floor(y);
             int zi = (int) Math.floor(z);
 
+            if(y < 0 || y > world.getHeight()) //TODO hook into config to allow increase for cubic chunk maps
+            {
+                return;
+            }
+
             //Ignore center block
             if (!(xi == cx && yi == cy && zi == cz))
             {
