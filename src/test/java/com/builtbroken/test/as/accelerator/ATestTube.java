@@ -1,5 +1,6 @@
 package com.builtbroken.test.as.accelerator;
 
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -20,13 +21,13 @@ public class ATestTube extends TileEntityAcceleratorTube
         return tiles[side.ordinal()];
     }
 
-    public void setDirection(EnumFacing direction)
-    {
-        this.direction = direction;
-    }
-
     public void setTiles(EnumFacing side, TileEntity tile)
     {
         tiles[side.ordinal()] = tile;
+    }
+
+    public AcceleratorNode getNode()
+    {
+        return acceleratorNode;
     }
 }

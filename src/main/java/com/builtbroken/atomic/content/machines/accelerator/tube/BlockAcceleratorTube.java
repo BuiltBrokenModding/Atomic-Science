@@ -167,7 +167,7 @@ public class BlockAcceleratorTube extends BlockPrefab
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
     {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityAcceleratorTube && !world.isRemote)
+        if (tile instanceof TileEntityAcceleratorTube)
         {
             ((TileEntityAcceleratorTube) tile).direction = placer.getHorizontalFacing();
             ((TileEntityAcceleratorTube) tile).updateConnections(true);

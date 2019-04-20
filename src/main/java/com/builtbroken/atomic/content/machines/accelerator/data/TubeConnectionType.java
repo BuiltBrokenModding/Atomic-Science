@@ -43,16 +43,42 @@ public enum TubeConnectionType implements IStringSerializable
     //Enter from back, split left or continues forward
     T_SPLIT_LEFT(EXIT, EXIT, NONE, ENTER),
     //Enter from back, split to 3 directions
-    SPLIT(EXIT, EXIT, EXIT, ENTER);
+    SPLIT(EXIT, EXIT, EXIT, ENTER),
+
+    //-----------------------------------------------
+    START_CAP(false, EXIT, NONE, NONE, NONE), //Accelerator gun
+    END_CAP(false, NONE, NONE, NONE, ENTER), //Accelerator exit
+    INVALID(false, NONE, NONE, NONE, NONE); //Error state
 
     public final TubeSideType[] connections;
 
     public final ImmutableList<TubeSide> outputSides;
     public final ImmutableList<TubeSide> inputSides;
 
+    public final boolean canUserPlace;
+
+    public static TubeConnectionType[] VALID = new TubeConnectionType[]{
+            NORMAL,
+            CORNER_RIGHT,
+            CORNER_LEFT,
+            T_JOIN_RIGHT,
+            T_JOIN_LEFT,
+            T_JOIN,
+            JOIN,
+            T_SPLIT,
+            T_SPLIT_RIGHT,
+            T_SPLIT_LEFT,
+            SPLIT,
+    };
 
     TubeConnectionType(TubeSideType front, TubeSideType left, TubeSideType right, TubeSideType back)
     {
+        this(true, front, left, right, back);
+    }
+
+    TubeConnectionType(boolean canPlace, TubeSideType front, TubeSideType left, TubeSideType right, TubeSideType back)
+    {
+        this.canUserPlace = canPlace;
         this.connections = new TubeSideType[]{front, left, right, back};
 
         //Collect sides
@@ -144,16 +170,16 @@ public enum TubeConnectionType implements IStringSerializable
      * @param back  - connection for side
      * @return type or {@link #NORMAL} as a default
      */
-    public static TubeConnectionType getTypeForLayout(TubeSideType front, TubeSideType left, TubeSideType right, TubeSideType back)
+    public static TubeConnectionType getTypeForLayout(TubeSideType front, TubeSideType left, TubeSideType right, TubeSideType back, boolean canPlaceOnly)
     {
         for (TubeConnectionType type : TubeConnectionType.values())
         {
-            if (type.connectionsMatch(front, left, right, back))
+            if (type.connectionsMatch(front, left, right, back) && (type.canUserPlace || !canPlaceOnly))
             {
                 return type;
             }
         }
-        return NORMAL;
+        return INVALID;
     }
 
     @Override

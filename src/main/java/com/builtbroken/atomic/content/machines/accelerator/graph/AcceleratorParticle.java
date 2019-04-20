@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines.accelerator.graph;
 
+import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.lib.math.MathConstF;
 import com.builtbroken.jlib.data.vector.IPos3D;
 import net.minecraft.item.ItemStack;
@@ -31,7 +32,7 @@ public class AcceleratorParticle implements IPos3D
     private EnumFacing moveDirection;
 
     //Current pathing node, can be null if we are not in a accelerator
-    private AcceleratorNode node;
+    private IAcceleratorNode node;
 
     //Stack that was used to make the particle, used for mass and recipes
     private ItemStack itemStack = ItemStack.EMPTY;
@@ -67,7 +68,7 @@ public class AcceleratorParticle implements IPos3D
         float distanceToMove = movementPerTick;
 
         //Get current node we are pathing
-        AcceleratorNode currentNode = getCurrentNode();
+        IAcceleratorNode currentNode = getCurrentNode();
         if (currentNode != null)
         {
             //WE can move through several nodes, so loop until done TODO replace with path so we can % locate position and node
@@ -187,7 +188,7 @@ public class AcceleratorParticle implements IPos3D
         this.z = z;
     }
 
-    public AcceleratorNode getCurrentNode()
+    public IAcceleratorNode getCurrentNode()
     {
         return node;
     }

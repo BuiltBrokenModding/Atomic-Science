@@ -3,8 +3,6 @@ package com.builtbroken.atomic.content.machines.accelerator.tube;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
-import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,7 +20,7 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 11/10/2018.
  */
-public class TileEntityAcceleratorTube extends TileEntityPrefab
+public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
 {
 
     public static final String NBT_ROTATION = "rotation";
@@ -31,32 +29,12 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     protected EnumFacing direction;
     private TubeConnectionType _connectionType = TubeConnectionType.NORMAL;
 
-    public final AcceleratorNode acceleratorNode = new AcceleratorNode(this); //TODO turn into capability
+
 
     @Override
     public void markDirty()
     {
         super.markDirty();
-    }
-
-    @Override
-    public void invalidate()
-    {
-        super.invalidate();
-        if (acceleratorNode.getNetwork() != null)
-        {
-            acceleratorNode.getNetwork().destroy();
-        }
-    }
-
-    @Override
-    public void onChunkUnload()
-    {
-        //TODO mark node as unloaded, find way to restore node
-        if (acceleratorNode.getNetwork() != null)
-        {
-            acceleratorNode.getNetwork().destroy();
-        }
     }
 
     @Override
@@ -124,7 +102,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         state = state.withProperty(BlockAcceleratorTube.CONNECTION_PROP, getConnectionType());
 
         //Update node in network
-        acceleratorNode.updateCache();
+        acceleratorNode.setData(getPos(), direction, getConnectionType());
 
         //Update actual block
         if (setBlock && world != null) //JUnit world may be null
@@ -212,7 +190,7 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         System.out.println(direction + " F:" + front + " L:" + left + " R:" + right + " B:" + back);
 
         //Get connection type
-        return TubeConnectionType.getTypeForLayout(front, left, right, back);
+        return TubeConnectionType.getTypeForLayout(front, left, right, back, true);
     }
 
     /**
@@ -267,6 +245,20 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
         return direction;
     }
 
+    @Override
+    public void setDirection(EnumFacing direction)
+    {
+        this.direction = direction;
+        super.setDirection(direction);
+    }
+
+    @Override
+    public void setPos(BlockPos posIn)
+    {
+       super.setPos(posIn);
+       acceleratorNode.setPos(pos);
+    }
+
     public TubeConnectionType getConnectionType()
     {
         if (_connectionType == null)
@@ -279,9 +271,10 @@ public class TileEntityAcceleratorTube extends TileEntityPrefab
     public void setConnectionType(TubeConnectionType type)
     {
         TubeConnectionType prev = getConnectionType();
-        if (prev != type)
+        if (prev != type && type != TubeConnectionType.INVALID)
         {
             this._connectionType = type;
+            acceleratorNode.setConnectionType(_connectionType);
         }
     }
 }

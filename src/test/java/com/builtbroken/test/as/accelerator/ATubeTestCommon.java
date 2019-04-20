@@ -2,7 +2,6 @@ package com.builtbroken.test.as.accelerator;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
-import com.builtbroken.test.as.accelerator.ATestTube;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +41,7 @@ public class ATubeTestCommon
     public static AcceleratorNode newNode(BlockPos pos, EnumFacing facing, TubeConnectionType connectionType)
     {
         //Create
-        AcceleratorNode node = new AcceleratorNode(pos, facing, connectionType);
+        AcceleratorNode node = new AcceleratorNode().setData(pos, facing, connectionType);
 
         validateNodeInit(node, pos, facing, connectionType);
 
@@ -93,7 +92,19 @@ public class ATubeTestCommon
      */
     public static ATestTube newTube(EnumFacing facing, BlockPos pos, TubeConnectionType type)
     {
+        //Init
         final ATestTube tube = new ATestTube();
+
+        //Check that we have a node
+        Assertions.assertNotNull(tube.getNode());
+
+        //Set node data
+        tube.getNode().setData(pos, facing, type != null ? type : TubeConnectionType.NORMAL);
+
+        //Do normal validations for nodes
+        validateNodeInit(tube.getNode(), pos, facing, type != null ? type : TubeConnectionType.NORMAL);
+
+        //Set tube data
         if (type != null)
         {
             tube.setConnectionType(type);
@@ -101,15 +112,13 @@ public class ATubeTestCommon
         tube.setDirection(facing);
         tube.setPos(pos);
 
+        //Test position
         Assertions.assertEquals(pos.getX(), tube.xi());
         Assertions.assertEquals(pos.getY(), tube.yi());
         Assertions.assertEquals(pos.getZ(), tube.zi());
 
+        //Test for null world, if not null we need to update tests
         Assertions.assertNull(tube.world());
-
-        Assertions.assertNotNull(tube.acceleratorNode);
-
-        validateNodeInit(tube.acceleratorNode, pos, facing, type != null ? type : TubeConnectionType.NORMAL);
 
         return tube;
     }

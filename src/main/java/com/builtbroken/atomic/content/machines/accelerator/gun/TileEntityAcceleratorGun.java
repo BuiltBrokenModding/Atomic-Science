@@ -1,10 +1,13 @@
 package com.builtbroken.atomic.content.machines.accelerator.gun;
 
+import com.builtbroken.atomic.api.AtomicScienceAPI;
+import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorHandler;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNetwork;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
-import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
-import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.tube.AcceleratorTubeCap;
 import com.builtbroken.atomic.content.machines.container.TileEntityItemContainer;
 import com.builtbroken.atomic.content.machines.laser.emitter.TileEntityLaserEmitter;
 import com.builtbroken.atomic.content.prefab.TileEntityMachine;
@@ -12,6 +15,9 @@ import com.builtbroken.atomic.lib.timer.TickTimerTileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+
+import javax.annotation.Nullable;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -19,11 +25,10 @@ import net.minecraft.util.EnumFacing;
  */
 public class TileEntityAcceleratorGun extends TileEntityMachine
 {
-
     private AcceleratorNetwork network;
 
-    //Fake node for particle to place inside
-    private AcceleratorNode fakeNode;
+    private final AcceleratorNode acceleratorNode = new AcceleratorNode();
+    private final IAcceleratorTube tubeCap = new AcceleratorTubeCap(() -> getPos(), () -> acceleratorNode);
 
     public TileEntityAcceleratorGun()
     {
@@ -32,11 +37,8 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
 
     private void validateNetwork()
     {
-        //Setup a fake node for connecting to the network and providing the particle a place to spawn
-        if (fakeNode == null)
-        {
-            fakeNode = new AcceleratorNode(getPos(), getDirection(), TubeConnectionType.NORMAL);
-        }
+        //Set node state TODO update with any changes to pos or direction
+        acceleratorNode.setData(getPos(), getDirection(), TubeConnectionType.START_CAP);
 
         //If we have no network try to locate a tube with a network
         if (getNetwork() == null)
@@ -44,26 +46,27 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
             final EnumFacing facing = getDirection();
 
             final TileEntity tileEntity = world.getTileEntity(getPos().offset(facing));
-            if (tileEntity instanceof TileEntityAcceleratorTube)
+            final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, null);
+            if (tube != null)
             {
                 //Set network
-                setNetwork(((TileEntityAcceleratorTube) tileEntity).acceleratorNode.getNetwork());
+                setNetwork(tube.getNode().getNetwork());
 
                 //Connect to fake node
-                ((TileEntityAcceleratorTube) tileEntity).acceleratorNode.connect(fakeNode, getDirection().getOpposite());
+                tube.getNode().connect(acceleratorNode, getDirection().getOpposite());
 
                 //If network null create
                 if (getNetwork() == null)
                 {
                     setNetwork(new AcceleratorNetwork());
-                    getNetwork().connect(((TileEntityAcceleratorTube) tileEntity).acceleratorNode);
+                    getNetwork().connect(tube.getNode());
                 }
 
                 //Link to network
                 if (getNetwork() != null)
                 {
                     getNetwork().guns.add(this);
-                    getNetwork().connect(fakeNode);
+                    getNetwork().connect(acceleratorNode);
                 }
             }
         }
@@ -98,7 +101,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
      */
     public void createParticle(ItemStack item, int energyToStart)
     {
-        AcceleratorHandler.newParticle(world, fakeNode, item, energyToStart);
+        AcceleratorHandler.newParticle(world, acceleratorNode, item, energyToStart);
     }
 
     /**
@@ -143,5 +146,22 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
     public void setNetwork(AcceleratorNetwork network)
     {
         this.network = network;
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
+    {
+        return capability == AtomicScienceAPI.ACCELERATOR_TUBE_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    @Nullable
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
+    {
+        if(capability == AtomicScienceAPI.ACCELERATOR_TUBE_CAPABILITY)
+        {
+            return (T) tubeCap;
+        }
+        return super.getCapability(capability, facing);
     }
 }

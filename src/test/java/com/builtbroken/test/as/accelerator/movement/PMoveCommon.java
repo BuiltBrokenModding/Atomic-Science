@@ -65,7 +65,7 @@ public class PMoveCommon extends ATubeTestCommon
         particle.setSpeed(SPEED);
 
         //Create tube
-        particle.setCurrentNode(new AcceleratorNode(BLOCK_POS_ZERO, facing, type));
+        particle.setCurrentNode(new AcceleratorNode().setData(BLOCK_POS_ZERO, facing, type));
 
         //Set position
         BlockPosHelpers.centerOnEdge(BLOCK_POS_ZERO, startSide,
@@ -280,8 +280,9 @@ public class PMoveCommon extends ATubeTestCommon
         checkMoveLine(particle, SideMathHelper.getEdge(enterFace), MathConstF.CENTER);
 
         //Pre validate turn
-        particle.getCurrentNode().turnIndex = turnIndex;
-        Assertions.assertEquals(exitFace, particle.getCurrentNode().getExpectedTurnResult(particle));
+        Assertions.assertTrue(particle.getCurrentNode().getClass() == AcceleratorNode.class, "Turn test expects node to be of class AcceleratorNode.class");
+        ((AcceleratorNode) particle.getCurrentNode()).turnIndex = turnIndex;
+        Assertions.assertEquals(exitFace, ((AcceleratorNode) particle.getCurrentNode()).getExpectedTurnResult(particle));
 
         //Move 6, turn point
         particle.update(0);

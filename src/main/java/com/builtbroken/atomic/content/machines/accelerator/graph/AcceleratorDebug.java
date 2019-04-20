@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines.accelerator.graph;
 
+import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.Comparator;
@@ -17,7 +18,7 @@ public class AcceleratorDebug
             System.out.println("No network");
             return;
         }
-        final Set<AcceleratorNode> nodes = network.nodes;
+        final Set<IAcceleratorNode> nodes = network.nodes;
 
         //Get grid min-max
         int minX = nodes.stream().min(Comparator.comparingInt(node -> node.getPos().getX())).get().getPos().getX();
@@ -56,7 +57,7 @@ public class AcceleratorDebug
 
             //Output connections
             int count = 0;
-            for (AcceleratorNode n : node.getNodes())
+            for (IAcceleratorNode n : node.getNodes())
             {
                System.out.println(n);
                if(n != null) {

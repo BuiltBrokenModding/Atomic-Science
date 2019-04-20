@@ -296,4 +296,14 @@ public abstract class TileEntityPrefab extends TileEntity implements IPacketIDRe
     {
         return getState(getPos(), side);
     }
+
+    public EnumFacing getDirection()
+    {
+        IBlockState state = world.getBlockState(getPos());
+        if(state.getPropertyKeys().contains(BlockMachine.ROTATION_PROP))
+        {
+            return state.getValue(BlockMachine.ROTATION_PROP);
+        }
+        return EnumFacing.UP;
+    }
 }

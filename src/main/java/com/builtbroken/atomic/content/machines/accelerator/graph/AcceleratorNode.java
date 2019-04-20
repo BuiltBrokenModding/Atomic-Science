@@ -1,9 +1,11 @@
 package com.builtbroken.atomic.content.machines.accelerator.graph;
 
+import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
-import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import com.builtbroken.atomic.lib.math.BlockPosHelpers;
 import com.builtbroken.atomic.lib.math.MathConstF;
 import com.builtbroken.atomic.lib.math.SideMathHelper;
@@ -12,7 +14,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,40 +21,23 @@ import java.util.List;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 12/15/2018.
  */
-public class AcceleratorNode
+public class AcceleratorNode implements IAcceleratorNode
 {
     //Connections
-    private final AcceleratorNode[] nodes = new AcceleratorNode[6];
+    private final IAcceleratorNode[] nodes = new IAcceleratorNode[6];
 
     //direction and connection data
     private EnumFacing facing;
-    private BlockPos pos;
+    private BlockPos pos = BlockPos.ORIGIN;
     private TubeConnectionType connectionType;
 
     //Current network
     private AcceleratorNetwork network;
 
-    //Reference to host, used for realtime data
-    private WeakReference<TileEntityAcceleratorTube> host;
-
     //Used to track particles in case we break the node
     private List<AcceleratorParticle> currentParticles = new ArrayList(3);
 
     public int turnIndex = 0;
-
-    public AcceleratorNode(TileEntityAcceleratorTube host)
-    {
-        this(host.getPos(), host.getDirection(), host.getConnectionType());
-        this.host = new WeakReference(host);
-
-    }
-
-    public AcceleratorNode(BlockPos pos, EnumFacing facing, TubeConnectionType connectionType)
-    {
-        this.pos = pos;
-        this.facing = facing;
-        this.connectionType = connectionType;
-    }
 
     public void setNetwork(AcceleratorNetwork network)
     {
@@ -72,9 +56,10 @@ public class AcceleratorNode
         {
             final BlockPos sidePos = pos.offset(facing);
             final TileEntity tileEntity = world.getTileEntity(sidePos);
-            if (tileEntity instanceof TileEntityAcceleratorTube)
+            final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, facing.getOpposite());
+            if (tube != null)
             {
-                connect(((TileEntityAcceleratorTube) tileEntity).acceleratorNode, facing);
+                connect(tube.getNode(), facing);
             }
             else if (nodes[facing.ordinal()] != null)
             {
@@ -82,7 +67,7 @@ public class AcceleratorNode
                 destroyNetwork = true;
 
                 //Clear connections, pathing will likely fix connections but still useful
-                nodes[facing.ordinal()].nodes[facing.getOpposite().ordinal()] = null;
+                nodes[facing.ordinal()].getNodes()[facing.getOpposite().ordinal()] = null; //TODO add set side
                 nodes[facing.ordinal()] = null;
             }
         }
@@ -99,7 +84,7 @@ public class AcceleratorNode
      *
      * @param acceleratorNode
      */
-    public void connect(AcceleratorNode acceleratorNode, EnumFacing facing)
+    public void connect(IAcceleratorNode acceleratorNode, EnumFacing facing)
     {
         if (acceleratorNode != null && facing != null)
         {
@@ -109,7 +94,7 @@ public class AcceleratorNode
             //Check our connection
             if (getNodes()[index] != acceleratorNode)
             {
-                getNodes()[index] = acceleratorNode;
+                getNodes()[index] = acceleratorNode; //TODO add set side
                 //TODO validate network
             }
 
@@ -141,19 +126,14 @@ public class AcceleratorNode
     }
 
     /**
-     * Called to update the internal cache of the node. This
-     * is often called when the tube is updated in a way
-     * that it's state changes.
+     * Sets the data of the node
      */
-    public void updateCache()
+    public AcceleratorNode setData(BlockPos pos, EnumFacing facing, TubeConnectionType type)
     {
-        final TileEntityAcceleratorTube host = getHost();
-        if (host != null)
-        {
-            this.pos = host.getPos();
-            this.facing = host.getDirection();
-            this.connectionType = host.getConnectionType();
-        }
+        setPos(pos);
+        setDirection(facing);
+        setConnectionType(type);
+        return this;
     }
 
     /**
@@ -214,6 +194,7 @@ public class AcceleratorNode
 
     /**
      * Called to do the turn for the particle.
+     *
      * @param particle
      */
     public void doTurn(AcceleratorParticle particle)
@@ -314,7 +295,7 @@ public class AcceleratorNode
      * @param particle - particle to move
      * @param node     - next node, can be null if there is no next
      */
-    protected void moveToNextNode(AcceleratorParticle particle, AcceleratorNode node)
+    protected void moveToNextNode(AcceleratorParticle particle, IAcceleratorNode node)
     {
         onParticleExit(particle);
         if (node != null)
@@ -332,7 +313,7 @@ public class AcceleratorNode
      *
      * @return
      */
-    public AcceleratorNode[] getNodes()
+    public IAcceleratorNode[] getNodes()
     {
         return nodes;
     }
@@ -359,19 +340,15 @@ public class AcceleratorNode
         particle.setCurrentNode(null);
     }
 
-    /**
-     * Facing direction of the node
-     *
-     * @return
-     */
+    @Override
     public EnumFacing getDirection()
     {
-        TileEntityAcceleratorTube host = getHost();
-        if (host != null)
-        {
-            return host.getDirection();
-        }
         return facing;
+    }
+
+    public void setDirection(EnumFacing facing)
+    {
+        this.facing = facing;
     }
 
     /**
@@ -381,12 +358,12 @@ public class AcceleratorNode
      */
     public BlockPos getPos()
     {
-        TileEntityAcceleratorTube host = getHost();
-        if (host != null)
-        {
-            return host.getPos();
-        }
         return pos;
+    }
+
+    public void setPos(BlockPos pos)
+    {
+        this.pos = pos;
     }
 
     /**
@@ -397,22 +374,12 @@ public class AcceleratorNode
      */
     public TubeConnectionType getConnectionType()
     {
-        TileEntityAcceleratorTube host = getHost();
-        if (host != null)
-        {
-            return host.getConnectionType();
-        }
         return connectionType;
     }
 
-    /**
-     * Actual tube that this node represents
-     *
-     * @return tube or null if not in world
-     */
-    public TileEntityAcceleratorTube getHost()
+    public void setConnectionType(TubeConnectionType type)
     {
-        return host != null ? host.get() : null;
+        this.connectionType = type;
     }
 
     @Override
@@ -428,9 +395,9 @@ public class AcceleratorNode
         {
             return true;
         }
-        else if (object instanceof AcceleratorNode)
+        else if (object instanceof IAcceleratorNode)
         {
-            return getPos().equals(((AcceleratorNode) object).getPos());
+            return getPos().equals(((IAcceleratorNode) object).getPos());
         }
         return false;
     }

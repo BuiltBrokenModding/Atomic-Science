@@ -108,6 +108,27 @@
           "0": "atomicscience:blocks/accelerator/tube_top_intersection",
           "particle": "atomicscience:blocks/accelerator/tube_top_intersection"
         }
+      },
+      "start_cap": {
+        "model": "atomicscience:accelerator_tube/tube-normal",
+        "textures": {
+          "0": "atomicscience:blocks/accelerator/tube_top",
+          "particle": "atomicscience:blocks/accelerator/tube_top"
+        }
+      },
+      "end_cap": {
+        "model": "atomicscience:accelerator_tube/tube-normal",
+        "textures": {
+          "0": "atomicscience:blocks/accelerator/tube_top",
+          "particle": "atomicscience:blocks/accelerator/tube_top"
+        }
+      },
+      "invalid": {
+        "model": "atomicscience:accelerator_tube/tube-normal",
+        "textures": {
+          "0": "atomicscience:blocks/accelerator/tube_top",
+          "particle": "atomicscience:blocks/accelerator/tube_top"
+        }
       }
     },
     "rotation": {

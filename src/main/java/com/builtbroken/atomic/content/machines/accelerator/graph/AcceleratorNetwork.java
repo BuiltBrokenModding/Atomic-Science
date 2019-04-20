@@ -1,7 +1,9 @@
 package com.builtbroken.atomic.content.machines.accelerator.graph;
 
+import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.gun.TileEntityAcceleratorGun;
-import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -19,7 +21,7 @@ public class AcceleratorNetwork
     public final UUID uuid;
 
     /** All nodes in the network */
-    public final Set<AcceleratorNode> nodes = new HashSet();
+    public final Set<IAcceleratorNode> nodes = new HashSet();
 
     /** Any guns in the network */
     public final Set<TileEntityAcceleratorGun> guns = new HashSet();
@@ -66,7 +68,7 @@ public class AcceleratorNetwork
      *
      * @param acceleratorNode
      */
-    public void connect(AcceleratorNode acceleratorNode)
+    public void connect(IAcceleratorNode acceleratorNode)
     {
         nodes.add(acceleratorNode);
         acceleratorNode.setNetwork(this);
@@ -109,7 +111,7 @@ public class AcceleratorNetwork
         positionsToPath.push(start);
 
         //Map of positions to nodes
-        final HashMap<BlockPos, AcceleratorNode> posToNode = new HashMap();
+        final HashMap<BlockPos, IAcceleratorNode> posToNode = new HashMap();
 
         //Loop until we run out of blocks to path
         while (!positionsToPath.isEmpty())
@@ -122,11 +124,11 @@ public class AcceleratorNetwork
 
             //Check for tube at position
             final TileEntity tileEntity = world.getTileEntity(pos);
-            if (tileEntity instanceof TileEntityAcceleratorTube)
+            final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, null);
+            if (tube != null)
             {
-                final TileEntityAcceleratorTube tube = (TileEntityAcceleratorTube) tileEntity;
-                posToNode.put(pos, tube.acceleratorNode);
-                tube.acceleratorNode.setNetwork(this);
+                tube.getNode().setNetwork(this);
+                posToNode.put(pos, tube.getNode());
 
                 //Get all possible directions
                 for (EnumFacing facing : EnumFacing.HORIZONTALS)
@@ -144,7 +146,7 @@ public class AcceleratorNetwork
                         //If we have pathed, check for connection
                         else if (posToNode.containsKey(nextPos))
                         {
-                            tube.acceleratorNode.connect(posToNode.get(nextPos), facing);
+                            tube.getNode().connect(posToNode.get(nextPos), facing);
                         }
                     }
                     //If not ignore, we will handle this later
