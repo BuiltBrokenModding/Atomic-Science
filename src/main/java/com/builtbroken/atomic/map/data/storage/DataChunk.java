@@ -108,7 +108,10 @@ public class DataChunk
         }
         else if (AtomicScience.runningAsDev)
         {
-            AtomicScience.logger.error("DataChunk[" + xPosition + "," + zPosition + "]: Something tried to remove a block outside map", new RuntimeException("trace"));
+            AtomicScience.logger.error(
+                    "DataChunk[" + xPosition + "," + zPosition + "]: " +
+                            "Something tried to remove a block outside map, pos(" + cx + ", " + y + ", " + cz + ")",
+                    new DataMapException());
         }
         return false;
     }

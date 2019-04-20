@@ -55,4 +55,16 @@ public abstract class ThermalSource<E> extends MapNodeSource<E, IThermalNode> im
         }
         return saveState == null || saveState.getInteger(NBT_HEAT) != heat;
     }
+
+    @Override
+    protected String addDebugInfo()
+    {
+        return "HEAT: " + canGeneratingHeat() + "-" + getHeatGenerated() + ", ";
+    }
+
+    @Override
+    protected String getDebugName()
+    {
+        return "RadiationSource";
+    }
 }

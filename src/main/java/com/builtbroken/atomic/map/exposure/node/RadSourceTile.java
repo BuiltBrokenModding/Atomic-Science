@@ -101,8 +101,8 @@ public class RadSourceTile<E extends TileEntity> extends RadiationSource<E>
     }
 
     @Override
-    public String toString()
+    protected String getDebugName()
     {
-        return "RadSourceTile[W: " + world().getWorldInfo().getWorldName() + " | D: " + dim() + " | Pos(" + xi() + ", " + yi() + ", " + zi() + ")]@" + hashCode();
+        return "RadSourceTile";
     }
 }

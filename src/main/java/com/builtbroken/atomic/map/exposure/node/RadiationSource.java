@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
  * Created by Dark(DarkGuardsman, Robert) on 9/21/2018.
  */
-public abstract class RadiationSource<E>  extends MapNodeSource<E, IRadiationNode> implements IRadiationSource
+public abstract class RadiationSource<E> extends MapNodeSource<E, IRadiationNode> implements IRadiationSource
 {
     public static final String NBT_RAD = "rad";
 
@@ -49,10 +49,22 @@ public abstract class RadiationSource<E>  extends MapNodeSource<E, IRadiationNod
     public boolean shouldQueueForUpdate(NBTTagCompound saveState)
     {
         final int material = getRadioactiveMaterial();
-        if(material > 0 && !hasNodes())
+        if (material > 0 && !hasNodes())
         {
             return true;
         }
         return saveState == null || saveState.getInteger(NBT_RAD) != material;
+    }
+
+    @Override
+    protected String addDebugInfo()
+    {
+        return "RAD: " + isRadioactive() + "-" + getRadioactiveMaterial() + ", ";
+    }
+
+    @Override
+    protected String getDebugName()
+    {
+        return "RadiationSource";
     }
 }

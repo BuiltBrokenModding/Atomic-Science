@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.map.data.storage;
 
+import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.map.IDataMapNode;
 import com.builtbroken.atomic.api.map.IDataMapSource;
@@ -221,7 +222,21 @@ public class DataMap
      */
     public boolean removeData(int x, int y, int z, @Nonnull IDataMapSource source)
     {
-        DataChunk chunk = getChunkFromPosition(x, z, false);
+        if (y < 0 || y > source.world().getHeight())
+        {
+            if(AtomicScience.runningAsDev)
+            {
+                AtomicScience.logger.error(
+                        "DataMap[" + dim + "]: " +
+                                "Something tried to remove a block outside map, " +
+                                "pos(" + x + ", " + y + ", " + z + ") " +
+                                "source(" + source + ")",
+                        new DataMapException());
+            }
+            return false;
+        }
+
+        final DataChunk chunk = getChunkFromPosition(x, z, false);
         if (chunk != null)
         {
             int prev = source.getType().getValue(getData(x, y, z));

@@ -49,4 +49,10 @@ public abstract class RadSourceEntity<E extends Entity> extends RadiationSource<
     {
         return host.posY;
     }
+
+    @Override
+    protected String getDebugName()
+    {
+        return "RadSourceEntity";
+    }
 }

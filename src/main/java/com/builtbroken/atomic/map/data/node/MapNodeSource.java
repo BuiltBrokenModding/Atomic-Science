@@ -33,6 +33,11 @@ public abstract class MapNodeSource<E, N extends IDataMapNode> implements IDataM
         return nodes;
     }
 
+    public int getNodeCount()
+    {
+        return nodes != null ? nodes.size() : -1;
+    }
+
     protected boolean hasNodes()
     {
         return nodes != null && !nodes.isEmpty();
@@ -127,4 +132,24 @@ public abstract class MapNodeSource<E, N extends IDataMapNode> implements IDataM
     {
         return world().provider.getDimension();
     }
+
+    @Override
+    public String toString()
+    {
+        return getDebugName() + "[H: " + host + ", " +
+                "N: " + getNodeCount() + ", " +
+                "D: " + dim() + ", " +
+                "P: (" + xi() + ", " + yi() + ", " + zi() + ")," +
+                " V: " + isStillValid() + ", " +
+                "E: " + doesSourceExist() +
+                addDebugInfo() +
+                "]@" + hashCode();
+    }
+
+    protected String addDebugInfo()
+    {
+        return "";
+    }
+
+    protected abstract String getDebugName();
 }

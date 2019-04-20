@@ -101,8 +101,8 @@ public class ThermalSourceTile<E extends TileEntity> extends ThermalSource<E>
     }
 
     @Override
-    public String toString()
+    protected String getDebugName()
     {
-        return "ThermalSourceTile[W: " + world().getWorldInfo().getWorldName() + " | D: " + dim() + " | Pos(" + xi() + ", " + yi() + ", " + zi() + ")]@" + hashCode();
+        return "ThermalSourceTile";
     }
 }
