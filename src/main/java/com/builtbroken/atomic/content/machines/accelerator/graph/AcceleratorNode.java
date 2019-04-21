@@ -16,6 +16,7 @@ import net.minecraft.world.IBlockAccess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
@@ -39,6 +40,9 @@ public class AcceleratorNode implements IAcceleratorNode
 
     public int turnIndex = 0;
 
+    public Consumer<AcceleratorParticle> onExitCallback;
+    public Consumer<AcceleratorParticle> onEnterCallback;
+
     public void setNetwork(AcceleratorNetwork network)
     {
         this.network = network;
@@ -52,7 +56,7 @@ public class AcceleratorNode implements IAcceleratorNode
     public void checkConnections(IBlockAccess world)
     {
         boolean destroyNetwork = false;
-        for (EnumFacing facing : EnumFacing.HORIZONTALS)
+        for (EnumFacing facing : EnumFacing.HORIZONTALS) //TODO fix connection checks so we only connect to tubes we can use
         {
             final BlockPos sidePos = pos.offset(facing);
             final TileEntity tileEntity = world.getTileEntity(sidePos);
@@ -327,6 +331,11 @@ public class AcceleratorNode implements IAcceleratorNode
     {
         this.currentParticles.add(particle);
         particle.setCurrentNode(this);
+
+        if(onEnterCallback != null)
+        {
+            onEnterCallback.accept(particle);
+        }
     }
 
     /**
@@ -338,6 +347,11 @@ public class AcceleratorNode implements IAcceleratorNode
     {
         this.currentParticles.remove(particle);
         particle.setCurrentNode(null);
+
+        if(onExitCallback != null)
+        {
+            onExitCallback.accept(particle);
+        }
     }
 
     @Override
@@ -356,6 +370,7 @@ public class AcceleratorNode implements IAcceleratorNode
      *
      * @return
      */
+    @Override
     public BlockPos getPos()
     {
         return pos;
@@ -372,6 +387,7 @@ public class AcceleratorNode implements IAcceleratorNode
      *
      * @return
      */
+    @Override
     public TubeConnectionType getConnectionType()
     {
         return connectionType;

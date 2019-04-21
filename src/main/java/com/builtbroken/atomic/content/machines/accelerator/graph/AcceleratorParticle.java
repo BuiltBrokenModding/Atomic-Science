@@ -40,6 +40,8 @@ public class AcceleratorParticle implements IPos3D
     //True if we are not in a tube
     private boolean notInTube = false;
 
+    private boolean isAlive = true;
+
     public AcceleratorParticle(int dim, BlockPos start, EnumFacing moveDirection, float energy)
     {
         this.ID = UUID.randomUUID();
@@ -221,7 +223,12 @@ public class AcceleratorParticle implements IPos3D
 
     public boolean isInvalid()
     {
-        return notInTube;
+        return notInTube || !isAlive;
+    }
+
+    public void setDead()
+    {
+        this.isAlive = false;
     }
 
     //TODO entity version

@@ -1,5 +1,7 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube;
 
+import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
@@ -209,16 +211,16 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     {
         //Get tube on side
         final EnumFacing facingSide = localSide.getFacing(getDirection());
-        final TileEntityAcceleratorTube tube = getTubeSide(facingSide); //TODO use capability
+        final IAcceleratorTube tube = getTubeSide(facingSide); //TODO use capability
         if (tube != null)
         {
             //Get target tube's side, this will not match out side
             //  Ex: We are facing north, checking  our left connection
             //      target is on our west facing east, we need to check it's front connection status
-            final TubeSide targetSide = TubeSide.getSideFacingOut(tube.getDirection(), facingSide.getOpposite());
+            final TubeSide targetSide = TubeSide.getSideFacingOut(tube.getNode().getDirection(), facingSide.getOpposite());
 
             //status for the tube's connection type on its side connecting to our side
-            final TubeSideType targetState = tube.getConnectionType().getTypeForSide(targetSide);
+            final TubeSideType targetState = tube.getNode().getConnectionType().getTypeForSide(targetSide);
 
             //We want the opposite state, if a target is an exit then its an enter for our tube
             return targetState.getOpposite();
@@ -226,14 +228,10 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         return TubeSideType.NONE;
     }
 
-    protected TileEntityAcceleratorTube getTubeSide(EnumFacing side)
+    protected IAcceleratorTube getTubeSide(EnumFacing side)
     {
         final TileEntity tile = getTileEntity(side);
-        if (tile instanceof TileEntityAcceleratorTube) //TODO use capability
-        {
-            return (TileEntityAcceleratorTube) tile;
-        }
-        return null;
+        return AcceleratorHelpers.getAcceleratorTube(tile, side.getOpposite());
     }
 
     public EnumFacing getDirection()

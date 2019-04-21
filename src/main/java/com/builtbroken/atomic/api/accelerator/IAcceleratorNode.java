@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.api.accelerator;
 
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNetwork;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import net.minecraft.util.EnumFacing;
@@ -79,4 +80,10 @@ public interface IAcceleratorNode
      * @return
      */
     EnumFacing getDirection();
+
+    /**
+     * Gets the connection layout of the tube
+     * @return
+     */
+    TubeConnectionType getConnectionType();
 }

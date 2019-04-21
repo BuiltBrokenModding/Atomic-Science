@@ -57,6 +57,11 @@ public class TileEntityItemContainer extends TileEntityMachine
         return inventory.getStackInSlot(0);
     }
 
+    public void setHeldItem(ItemStack stack)
+    {
+        inventory.setStackInSlot(0, stack);
+    }
+
     public int consumeItems()
     {
         int count = getHeldItem().getCount();
