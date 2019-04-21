@@ -86,10 +86,17 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
      */
     public void onLaserFiredInto(TileEntityItemContainer container, TileEntityLaserEmitter laserEmitter)
     {
-        final ItemStack heldItem = container.getHeldItem();
-        if (!heldItem.isEmpty())
+        if(laserEmitter.getDirection() == getDirection())
         {
-            createParticle(heldItem, laserEmitter.boosterCount / container.consumeItems()); //TODO figure out how we are going to do energy
+            final ItemStack heldItem = container.getHeldItem();
+            if (!heldItem.isEmpty())
+            {
+                createParticle(heldItem, laserEmitter.boosterCount / container.consumeItems()); //TODO figure out how we are going to do energy
+            }
+        }
+        else
+        {
+            //Explode
         }
     }
 
