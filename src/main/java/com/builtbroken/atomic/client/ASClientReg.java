@@ -114,6 +114,7 @@ public class ASClientReg
         //Accelerator
         newBlockModel(ASBlocks.blockAcceleratorTube);
         newBlockModel(ASBlocks.blockAcceleratorGun);
+        newBlockModel(ASBlocks.blockAcceleratorExit);
 
         //Laser
         newBlockModel(ASBlocks.blockLaserEmitter);

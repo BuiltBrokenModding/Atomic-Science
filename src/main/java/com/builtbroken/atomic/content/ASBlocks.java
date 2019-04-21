@@ -3,6 +3,8 @@ package com.builtbroken.atomic.content;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.blocks.BlockUraniumOre;
 import com.builtbroken.atomic.content.fluid.BlockSimpleFluid;
+import com.builtbroken.atomic.content.machines.accelerator.exit.BlockAcceleratorExit;
+import com.builtbroken.atomic.content.machines.accelerator.exit.TileEntityAcceleratorExit;
 import com.builtbroken.atomic.content.machines.accelerator.gun.BlockAcceleratorGun;
 import com.builtbroken.atomic.content.machines.accelerator.gun.TileEntityAcceleratorGun;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.BlockMagnet;
@@ -69,6 +71,7 @@ public final class ASBlocks
     public static Block blockMagnet;
     public static Block blockAcceleratorTube;
     public static Block blockAcceleratorGun;
+    public static Block blockAcceleratorExit;
 
     public static Block blockLaserEmitter;
     public static Block blockLaserBooster;
@@ -119,6 +122,9 @@ public final class ASBlocks
 
         event.getRegistry().register(blockAcceleratorGun = new BlockAcceleratorGun());
         GameRegistry.registerTileEntity(TileEntityAcceleratorGun.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_gun"));
+
+        event.getRegistry().register(blockAcceleratorExit = new BlockAcceleratorExit());
+        GameRegistry.registerTileEntity(TileEntityAcceleratorExit.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_exit"));
 
         event.getRegistry().register(blockLaserEmitter = new BlockLaserEmitter());
         GameRegistry.registerTileEntity(TileEntityLaserEmitter.class, new ResourceLocation(AtomicScience.PREFIX + "laser_emitter"));

@@ -11,9 +11,6 @@ public class TileEntityAcceleratorExit extends TileEntityAcceleratorTubePrefab
     @Override
     public void onLoad()
     {
-        if (isServer())
-        {
-            acceleratorNode.setData(getPos(), getDirection(), TubeConnectionType.END_CAP);
-        }
+        acceleratorNode.setData(getPos(), getDirection(), TubeConnectionType.END_CAP);
     }
 }
