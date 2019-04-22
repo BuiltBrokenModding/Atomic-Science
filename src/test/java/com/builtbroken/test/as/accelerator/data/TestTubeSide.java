@@ -17,6 +17,15 @@ public class TestTubeSide
 {
 
     @Test
+    public void testSides()
+    {
+        Assertions.assertEquals(TubeSide.FRONT, TubeSide.SIDES[0]);
+        Assertions.assertEquals(TubeSide.LEFT, TubeSide.SIDES[1]);
+        Assertions.assertEquals(TubeSide.RIGHT, TubeSide.SIDES[2]);
+        Assertions.assertEquals(TubeSide.BACK, TubeSide.SIDES[3]);
+    }
+
+    @Test
     public void testInvertBack()
     {
         Assertions.assertEquals(TubeSide.FRONT, TubeSide.BACK.getOpposite());

@@ -39,7 +39,7 @@ public class TestNormalTubeEntry extends ATubeTestCommon
         final ATestTube tube = ATubeTestCommon.newTube(facing, BLOCK_POS_ZERO, TubeConnectionType.NORMAL);
 
         //Add tube of facing side and type
-        addTube(tube, facing.getOpposite(), side.getFacing(facing), type);
+        addTube(tube, TubeSide.BACK.getFacing(facing), TubeSide.BACK.getRotationRelative(facing, side), type);
 
         //Test that we can connect
         Assertions.assertEquals(TubeSideType.ENTER, tube.getConnectState(TubeSide.BACK));
@@ -55,7 +55,7 @@ public class TestNormalTubeEntry extends ATubeTestCommon
         final ATestTube tube = newTube(facing, BLOCK_POS_ZERO, TubeConnectionType.NORMAL);
 
         //Add tube of facing side and type
-        addTube(tube, facing, side.getFacing(facing.getOpposite()), type);
+        addTube(tube, TubeSide.FRONT.getFacing(facing), TubeSide.FRONT.getRotationRelative(facing, side), type);
 
         //Test that we can connect
         Assertions.assertEquals(TubeSideType.ENTER, tube.getConnectState(TubeSide.FRONT));
@@ -71,7 +71,7 @@ public class TestNormalTubeEntry extends ATubeTestCommon
         final ATestTube tube = newTube(facing, BLOCK_POS_ZERO, TubeConnectionType.NORMAL);
 
         //Add tube of facing side and type
-        addTube(tube, facing.rotateY().getOpposite(), side.getFacing(facing.rotateY()), type);
+        addTube(tube, TubeSide.LEFT.getFacing(facing), TubeSide.LEFT.getRotationRelative(facing, side), type);
 
         //Test that we can connect
         Assertions.assertEquals(TubeSideType.ENTER, tube.getConnectState(TubeSide.LEFT));
@@ -87,7 +87,7 @@ public class TestNormalTubeEntry extends ATubeTestCommon
         final ATestTube tube = newTube(facing, BLOCK_POS_ZERO, TubeConnectionType.NORMAL);
 
         //Add tube of facing side and type
-        addTube(tube, facing.rotateY(), side.getFacing(facing.rotateY().getOpposite()), type);
+        addTube(tube, TubeSide.RIGHT.getFacing(facing), TubeSide.RIGHT.getRotationRelative(facing, side), type);
 
         //Test that we can connect
         Assertions.assertEquals(TubeSideType.ENTER, tube.getConnectState(TubeSide.RIGHT));

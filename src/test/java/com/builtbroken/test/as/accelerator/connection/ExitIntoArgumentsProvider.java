@@ -27,7 +27,10 @@ public class ExitIntoArgumentsProvider implements ArgumentsProvider
             //Arguments: rotation, relative rotation, tube type
             for (Object[] data : getExitData())
             {
-                list.add(newArg(new Object[]{facing}, data));
+                final TubeSide targetSide = (TubeSide) data[0];
+                final TubeConnectionType targetType = (TubeConnectionType) data[1];
+
+                list.add(Arguments.of(facing, targetSide, targetType));
             }
         }
 
@@ -46,45 +49,27 @@ public class ExitIntoArgumentsProvider implements ArgumentsProvider
         //1:1, 1 connection per tube
         matrix[0] = new Object[]{TubeSide.RIGHT, TubeConnectionType.CORNER_RIGHT};
         matrix[1] = new Object[]{TubeSide.LEFT, TubeConnectionType.CORNER_LEFT};
-        matrix[2] = new Object[]{TubeSide.FRONT, TubeConnectionType.NORMAL};
-        matrix[3] = new Object[]{TubeSide.FRONT, TubeConnectionType.T_SPLIT};
-        matrix[4] = new Object[]{TubeSide.FRONT, TubeConnectionType.T_SPLIT_LEFT};
-        matrix[5] = new Object[]{TubeSide.FRONT, TubeConnectionType.T_SPLIT_RIGHT};
-        matrix[6] = new Object[]{TubeSide.FRONT, TubeConnectionType.SPLIT};
+        matrix[2] = new Object[]{TubeSide.BACK, TubeConnectionType.NORMAL};
+        matrix[3] = new Object[]{TubeSide.BACK, TubeConnectionType.T_SPLIT};
+        matrix[4] = new Object[]{TubeSide.BACK, TubeConnectionType.T_SPLIT_LEFT};
+        matrix[5] = new Object[]{TubeSide.BACK, TubeConnectionType.T_SPLIT_RIGHT};
+        matrix[6] = new Object[]{TubeSide.BACK, TubeConnectionType.SPLIT};
 
         //2:1
-        matrix[7] = new Object[]{TubeSide.FRONT, TubeConnectionType.T_JOIN_RIGHT};
+        matrix[7] = new Object[]{TubeSide.BACK, TubeConnectionType.T_JOIN_RIGHT};
         matrix[8] = new Object[]{TubeSide.RIGHT, TubeConnectionType.T_JOIN_RIGHT};
 
-        matrix[9] = new Object[]{TubeSide.FRONT, TubeConnectionType.T_JOIN_LEFT};
+        matrix[9] = new Object[]{TubeSide.BACK, TubeConnectionType.T_JOIN_LEFT};
         matrix[10] = new Object[]{TubeSide.LEFT, TubeConnectionType.T_JOIN_LEFT};
 
         matrix[11] = new Object[]{TubeSide.LEFT, TubeConnectionType.T_JOIN};
         matrix[12] = new Object[]{TubeSide.RIGHT, TubeConnectionType.T_JOIN};
 
         //3:1
-        matrix[13] = new Object[]{TubeSide.FRONT, TubeConnectionType.JOIN};
+        matrix[13] = new Object[]{TubeSide.BACK, TubeConnectionType.JOIN};
         matrix[14] = new Object[]{TubeSide.LEFT, TubeConnectionType.JOIN};
         matrix[15] = new Object[]{TubeSide.RIGHT, TubeConnectionType.JOIN};
 
         return matrix;
-    }
-
-    public static Arguments newArg(Object[] prefix, Object[] data)
-    {
-        if (prefix != null)
-        {
-            final Object[] re = new Object[prefix.length + 2];
-            for (int i = 0; i < prefix.length; i++)
-            {
-                re[i] = prefix[i];
-            }
-            for (int i = 0; i < data.length; i++)
-            {
-                re[i + prefix.length] = data[i];
-            }
-            return Arguments.of(re);
-        }
-        return Arguments.of(data);
     }
 }

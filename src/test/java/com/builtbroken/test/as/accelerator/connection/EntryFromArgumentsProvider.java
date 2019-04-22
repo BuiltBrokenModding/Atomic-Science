@@ -27,7 +27,10 @@ public class EntryFromArgumentsProvider implements ArgumentsProvider
             //Arguments: rotation, relative rotation, tube type
             for (Object[] data : getEntryData())
             {
-                list.add(newArg(new Object[]{facing}, data));
+                final TubeSide targetSide = (TubeSide) data[0];
+                final TubeConnectionType targetType = (TubeConnectionType) data[1];
+
+                list.add(Arguments.of(facing, targetSide, targetType));
             }
         }
 
@@ -56,10 +59,10 @@ public class EntryFromArgumentsProvider implements ArgumentsProvider
         matrix[7] = new Object[]{TubeSide.RIGHT, TubeConnectionType.T_SPLIT};
 
         matrix[8] = new Object[]{TubeSide.FRONT, TubeConnectionType.T_SPLIT_RIGHT};
-        matrix[9] = new Object[]{TubeSide.LEFT, TubeConnectionType.T_SPLIT_RIGHT};
+        matrix[9] = new Object[]{TubeSide.RIGHT, TubeConnectionType.T_SPLIT_RIGHT};
 
         matrix[10] = new Object[]{TubeSide.FRONT, TubeConnectionType.T_SPLIT_LEFT};
-        matrix[11] = new Object[]{TubeSide.RIGHT, TubeConnectionType.T_SPLIT_LEFT};
+        matrix[11] = new Object[]{TubeSide.LEFT, TubeConnectionType.T_SPLIT_LEFT};
 
         //3:1
         matrix[12] = new Object[]{TubeSide.FRONT, TubeConnectionType.SPLIT};
@@ -67,23 +70,5 @@ public class EntryFromArgumentsProvider implements ArgumentsProvider
         matrix[14] = new Object[]{TubeSide.LEFT, TubeConnectionType.SPLIT};
 
         return matrix;
-    }
-
-    public static Arguments newArg(Object[] prefix, Object[] data)
-    {
-        if (prefix != null)
-        {
-            final Object[] re = new Object[prefix.length + 2];
-            for (int i = 0; i < prefix.length; i++)
-            {
-                re[i] = prefix[i];
-            }
-            for (int i = 0; i < data.length; i++)
-            {
-                re[i + prefix.length] = data[i];
-            }
-            return Arguments.of(re);
-        }
-        return Arguments.of(data);
     }
 }
