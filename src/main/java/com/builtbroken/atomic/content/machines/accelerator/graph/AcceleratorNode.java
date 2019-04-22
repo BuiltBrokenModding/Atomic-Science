@@ -24,6 +24,7 @@ import java.util.function.Consumer;
  */
 public class AcceleratorNode implements IAcceleratorNode
 {
+
     //Connections
     private final IAcceleratorNode[] nodes = new IAcceleratorNode[6];
 
@@ -53,33 +54,38 @@ public class AcceleratorNode implements IAcceleratorNode
         return network;
     }
 
-    public void checkConnections(IBlockAccess world)
+    @Override
+    public void updateConnections(IBlockAccess world)
     {
-        boolean destroyNetwork = false;
-        for (EnumFacing facing : EnumFacing.HORIZONTALS) //TODO fix connection checks so we only connect to tubes we can use
+        //Find tubes
+        for (EnumFacing facing : EnumFacing.HORIZONTALS)
         {
             final BlockPos sidePos = pos.offset(facing);
             final TileEntity tileEntity = world.getTileEntity(sidePos);
             final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, facing.getOpposite());
-            if (tube != null)
+            if (getNode(facing) != null)
             {
-                connect(tube.getNode(), facing);
+                getNetwork().destroy();
+                return;
             }
-            else if (nodes[facing.ordinal()] != null)
-            {
-                //Network is likely invalid so rebuild
-                destroyNetwork = true;
-
-                //Clear connections, pathing will likely fix connections but still useful
-                nodes[facing.ordinal()].getNodes()[facing.getOpposite().ordinal()] = null; //TODO add set side
-                nodes[facing.ordinal()] = null;
-            }
+            nodes[facing.ordinal()] = tube.getNode();
         }
 
-        //Clear network
-        if (destroyNetwork && getNetwork() != null)
+        //Map connections
+        for (EnumFacing facing : EnumFacing.HORIZONTALS)
         {
-            getNetwork().destroy();
+            IAcceleratorNode node = getNode(facing);
+            if (node != null)
+            {
+                if(canConnectToTubeOnSide(TubeSide.getSideFacingOut(getDirection(), facing)))
+                {
+                    connect(node, facing);
+                }
+                else
+                {
+                    nodes[facing.ordinal()] = null;
+                }
+            }
         }
     }
 
@@ -127,6 +133,49 @@ public class AcceleratorNode implements IAcceleratorNode
                 acceleratorNode.getNetwork().connect(this);
             }
         }
+    }
+
+
+    /**
+     * Gets the expect connection state based on our relation
+     * to the tube connected to our side.
+     * <p>
+     * If we have a tube entering from our left. It will
+     * tell us that its side is an exit. To our tube this
+     * means we expect to see particles enter from that
+     * left.
+     *
+     * @param localSide - side of our tube
+     * @return expected state for our side
+     */
+    public TubeSideType getConnectedTubeState(TubeSide localSide)
+    {
+        //Get tube on side
+        final EnumFacing facingSide = localSide.getFacing(getDirection());
+        final IAcceleratorNode tube = getNode(facingSide);
+        if (tube != null)
+        {
+            return tube.getConnectionState(facingSide.getOpposite()).getOpposite();
+        }
+        return TubeSideType.NONE;
+    }
+
+    protected IAcceleratorNode getNode(EnumFacing side)
+    {
+        return nodes[side.ordinal()];
+    }
+
+    /**
+     * Checks if our current {@link #getConnectionType()} can support a
+     * connection on the given side
+     *
+     * @param localSide - localized side based on facing of the tube
+     * @return true if can connect, false if can't
+     */
+    public boolean canConnectToTubeOnSide(TubeSide localSide)
+    {
+        final TubeSideType state = getConnectedTubeState(localSide);
+        return state != TubeSideType.NONE && getConnectionType().getTypeForSide(localSide) == state;
     }
 
     /**
@@ -332,7 +381,7 @@ public class AcceleratorNode implements IAcceleratorNode
         this.currentParticles.add(particle);
         particle.setCurrentNode(this);
 
-        if(onEnterCallback != null)
+        if (onEnterCallback != null)
         {
             onEnterCallback.accept(particle);
         }
@@ -348,7 +397,7 @@ public class AcceleratorNode implements IAcceleratorNode
         this.currentParticles.remove(particle);
         particle.setCurrentNode(null);
 
-        if(onExitCallback != null)
+        if (onExitCallback != null)
         {
             onExitCallback.accept(particle);
         }

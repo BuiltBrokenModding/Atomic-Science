@@ -27,16 +27,16 @@ public class TestAllTubeConnections extends ATubeTestCommon
         addTube(tube, centerSide.getFacing(centerRotation), targetRotation, targetTube);
 
         //Get result of connection
-        TubeSideType result = tube.getConnectState(centerSide);
+        TubeSideType result = tube.getNode().getConnectedTubeState(centerSide);
         Assertions.assertEquals(expected, result);
 
         if(match)
         {
-            Assertions.assertTrue(tube.canConnect(centerSide), "Should support connection on side. " + result);
+            Assertions.assertTrue(tube.getNode().canConnectToTubeOnSide(centerSide), "Should support connection on side. " + result);
         }
         else
         {
-            Assertions.assertFalse(tube.canConnect(centerSide), "Should not support connection on side. " + result);
+            Assertions.assertFalse(tube.getNode().canConnectToTubeOnSide(centerSide), "Should not support connection on side. " + result);
         }
     }
 }

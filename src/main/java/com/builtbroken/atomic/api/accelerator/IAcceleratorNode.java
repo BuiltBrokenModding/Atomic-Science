@@ -1,16 +1,20 @@
 package com.builtbroken.atomic.api.accelerator;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNetwork;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 /**
  * Created by Dark(DarkGuardsman, Robert) on 4/20/2019.
  */
 public interface IAcceleratorNode
 {
+
     /**
      * Gets the connected nodes as an array of {@link net.minecraft.util.EnumFacing}
      *
@@ -40,6 +44,13 @@ public interface IAcceleratorNode
      * @return
      */
     AcceleratorNetwork getNetwork(); //TODO interface for network
+
+    /**
+     * Called to update connections to nearby tubes
+     *
+     * @param world - world to access
+     */
+    void updateConnections(IBlockAccess world);
 
     /**
      * Called to connect the node to the side
@@ -83,7 +94,26 @@ public interface IAcceleratorNode
 
     /**
      * Gets the connection layout of the tube
+     *
      * @return
      */
     TubeConnectionType getConnectionType();
+
+
+
+    /**
+     * Gets the connection state for the side
+     *
+     * @param facing - side of the block
+     * @return state
+     */
+    default TubeSideType getConnectionState(EnumFacing facing)
+    {
+        return getConnectionState(TubeSide.getSideFacingOut(getDirection(), facing));
+    }
+
+    default TubeSideType getConnectionState(TubeSide side)
+    {
+        return getConnectionType().getTypeForSide(side);
+    }
 }

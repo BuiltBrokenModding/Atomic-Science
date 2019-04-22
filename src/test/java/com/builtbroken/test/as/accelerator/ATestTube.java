@@ -24,6 +24,10 @@ public class ATestTube extends TileEntityAcceleratorTube
     public void setTiles(EnumFacing side, TileEntity tile)
     {
         tiles[side.ordinal()] = tile;
+        if(tile instanceof TileEntityAcceleratorTube)
+        {
+            acceleratorNode.connect(((TileEntityAcceleratorTube)tile).getNode(), side);
+        }
     }
 
     public AcceleratorNode getNode()

@@ -27,6 +27,6 @@ public class TestNoConnections extends ATubeTestCommon
         final ATestTube tube = ATubeTestCommon.newTube(facing, BLOCK_POS_ZERO, type);
 
         //Test that we can connect
-        Assertions.assertEquals(TubeSideType.NONE, tube.getConnectState(side));
+        Assertions.assertEquals(TubeSideType.NONE, tube.getNode().getConnectedTubeState(side));
     }
 }

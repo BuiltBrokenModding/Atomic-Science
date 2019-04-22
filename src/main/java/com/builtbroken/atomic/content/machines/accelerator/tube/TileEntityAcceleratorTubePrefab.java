@@ -18,6 +18,11 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
     protected final AcceleratorNode acceleratorNode = new AcceleratorNode();
     protected final IAcceleratorTube tubeCap = new AcceleratorTubeCap(() -> getPos(), () -> acceleratorNode);
 
+    public AcceleratorNode getNode()
+    {
+        return acceleratorNode;
+    }
+
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
     {

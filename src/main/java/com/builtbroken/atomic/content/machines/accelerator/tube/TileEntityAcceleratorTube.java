@@ -176,6 +176,10 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
      */
     public IBlockState updateConnections(boolean updateBlockState)
     {
+        //Update connections on node
+        acceleratorNode.updateConnections(world);
+
+        //Calculate layout
         TubeConnectionType type = calcConnectionType();
         if (type != TubeConnectionType.INVALID)
         {
@@ -189,15 +193,17 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
                 setConnectionType(type);
             }
         }
+
+        //Update block state
         return updateState(false, updateBlockState);
     }
 
     public TubeConnectionType calcConnectionType()
     {
-        final TubeSideType front = getConnectState(TubeSide.FRONT);
-        final TubeSideType left = getConnectState(TubeSide.LEFT);
-        final TubeSideType right = getConnectState(TubeSide.RIGHT);
-        final TubeSideType back = getConnectState(TubeSide.BACK);
+        final TubeSideType front = acceleratorNode.getConnectedTubeState(TubeSide.FRONT);
+        final TubeSideType left = acceleratorNode.getConnectedTubeState(TubeSide.LEFT);
+        final TubeSideType right = acceleratorNode.getConnectedTubeState(TubeSide.RIGHT);
+        final TubeSideType back = acceleratorNode.getConnectedTubeState(TubeSide.BACK);
 
         //Get connection type
         return TubeConnectionType.getTypeForLayout(front, left, right, back, true);
@@ -205,64 +211,12 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
 
     public TubeConnectionType guessConnectionType()
     {
-        final TubeSideType left = getConnectState(TubeSide.LEFT);
-        final TubeSideType right = getConnectState(TubeSide.RIGHT);
-        final TubeSideType back = getConnectState(TubeSide.BACK);
+        final TubeSideType left = acceleratorNode.getConnectedTubeState(TubeSide.LEFT);
+        final TubeSideType right = acceleratorNode.getConnectedTubeState(TubeSide.RIGHT);
+        final TubeSideType back = acceleratorNode.getConnectedTubeState(TubeSide.BACK);
 
         //Get connection type
         return TubeConnectionType.getTypeForLayout(TubeSideType.EXIT, left, right, back, true);
-    }
-
-    /**
-     * Gets the expect connection state based on our relation
-     * to the tube connected to our side.
-     * <p>
-     * If we have a tube entering from our left. It will
-     * tell us that its side is an exit. To our tube this
-     * means we expect to see particles enter from that
-     * left.
-     *
-     * @param localSide - side of our tube
-     * @return expected state for our side
-     */
-    public TubeSideType getConnectState(TubeSide localSide)
-    {
-        //Get tube on side
-        final EnumFacing facingSide = localSide.getFacing(getDirection());
-        final IAcceleratorTube tube = getTubeSide(facingSide);
-        if (tube != null)
-        {
-            //Get target tube's side, this will not match out side
-            //  Ex: We are facing north, checking  our left connection
-            //      target is on our west facing east, we need to check it's front connection status
-            final TubeSide targetSide = TubeSide.getSideFacingOut(tube.getNode().getDirection(), facingSide.getOpposite());
-
-            //status for the tube's connection type on its side connecting to our side
-            final TubeSideType targetState = tube.getNode().getConnectionType().getTypeForSide(targetSide);
-
-            //We want the opposite state, if a target is an exit then its an enter for our tube
-            return targetState.getOpposite();
-        }
-        return TubeSideType.NONE;
-    }
-
-    /**
-     * Checks if our current {@link #getConnectionType()} can support a
-     * connection on the given side
-     *
-     * @param localSide - localized side based on facing of the tube
-     * @return true if can connect, false if can't
-     */
-    public boolean canConnect(TubeSide localSide)
-    {
-        final TubeSideType state = getConnectState(localSide);
-        return state != TubeSideType.NONE && getConnectionType().getTypeForSide(localSide) == state;
-    }
-
-    protected IAcceleratorTube getTubeSide(EnumFacing side)
-    {
-        final TileEntity tile = getTileEntity(side);
-        return AcceleratorHelpers.getAcceleratorTube(tile, side.getOpposite());
     }
 
     public EnumFacing getDirection()

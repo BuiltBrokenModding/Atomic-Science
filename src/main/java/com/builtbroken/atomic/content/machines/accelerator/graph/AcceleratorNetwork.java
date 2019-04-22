@@ -18,12 +18,17 @@ import java.util.*;
  */
 public class AcceleratorNetwork
 {
+
     public final UUID uuid;
 
-    /** All nodes in the network */
+    /**
+     * All nodes in the network
+     */
     public final Set<IAcceleratorNode> nodes = new HashSet();
 
-    /** Any guns in the network */
+    /**
+     * Any guns in the network
+     */
     public final Set<TileEntityAcceleratorGun> guns = new HashSet();
 
     public AcceleratorNetwork()
@@ -127,32 +132,29 @@ public class AcceleratorNetwork
             final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, null);
             if (tube != null)
             {
+                //Set network and update connections
                 tube.getNode().setNetwork(this);
+                tube.getNode().updateConnections(world);
+
+                //Store tube
                 posToNode.put(pos, tube.getNode());
 
                 //Get all possible directions
                 for (EnumFacing facing : EnumFacing.HORIZONTALS)
                 {
-                    final BlockPos nextPos = pos.offset(facing);
-
-                    //Check if is inside the map
-                    if (world.isBlockLoaded(nextPos))
+                    final IAcceleratorNode connection = tube.getNode().getNodes()[facing.ordinal()];
+                    if (connection != null)
                     {
+                        final BlockPos nextPos = connection.getPos();
                         //If we have not pathed, add to path list
                         if (!pathedPositions.contains(nextPos))
                         {
                             positionsToPath.add(nextPos);
                         }
-                        //If we have pathed, check for connection
-                        else if (posToNode.containsKey(nextPos))
-                        {
-                            tube.getNode().connect(posToNode.get(nextPos), facing);
-                        }
                     }
-                    //If not ignore, we will handle this later
                     else
                     {
-                        pathedPositions.add(nextPos);
+                        pathedPositions.add(pos.offset(facing));
                     }
                 }
             }

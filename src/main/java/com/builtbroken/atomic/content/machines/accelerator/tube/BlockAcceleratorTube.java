@@ -86,7 +86,7 @@ public class BlockAcceleratorTube extends BlockPrefab
                     playerIn.sendMessage(new TextComponentString("Connection State:"));
                     for(TubeSide side : TubeSide.SIDES)
                     {
-                        playerIn.sendMessage(new TextComponentString("---" + side.name() + ": " + ((TileEntityAcceleratorTube) tile).getConnectState(side)));
+                        playerIn.sendMessage(new TextComponentString("---" + side.name() + ": " + ((TileEntityAcceleratorTube) tile).acceleratorNode.getConnectedTubeState(side)));
                     }
                 }
                 return true;
@@ -171,7 +171,7 @@ public class BlockAcceleratorTube extends BlockPrefab
         {
             ((TileEntityAcceleratorTube) tile).direction = placer.getHorizontalFacing();
             ((TileEntityAcceleratorTube) tile).updateConnections(true);
-            ((TileEntityAcceleratorTube) tile).acceleratorNode.checkConnections(world);
+            ((TileEntityAcceleratorTube) tile).acceleratorNode.updateConnections(world);
         }
     }
 
@@ -215,7 +215,7 @@ public class BlockAcceleratorTube extends BlockPrefab
                 && !((TileEntityAcceleratorTube) tile).world().isRemote)
         {
             //((TileEntityAcceleratorTube) tile).updateConnections(true); - breaks connections
-            ((TileEntityAcceleratorTube) tile).acceleratorNode.checkConnections(world);
+            ((TileEntityAcceleratorTube) tile).acceleratorNode.updateConnections(world);
         }
     }
 
