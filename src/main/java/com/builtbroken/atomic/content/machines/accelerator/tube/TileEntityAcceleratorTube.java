@@ -235,7 +235,7 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     public boolean canConnect(TubeSide localSide)
     {
         final TubeSideType state = getConnectState(localSide);
-        return getConnectionType().getTypeForSide(localSide) == state;
+        return state != TubeSideType.NONE && getConnectionType().getTypeForSide(localSide) == state;
     }
 
     protected IAcceleratorTube getTubeSide(EnumFacing side)
@@ -279,7 +279,7 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     public void setConnectionType(TubeConnectionType type)
     {
         TubeConnectionType prev = getConnectionType();
-        if (prev != type && type != TubeConnectionType.INVALID)
+        if (prev != type)
         {
             this._connectionType = type;
             acceleratorNode.setConnectionType(_connectionType);

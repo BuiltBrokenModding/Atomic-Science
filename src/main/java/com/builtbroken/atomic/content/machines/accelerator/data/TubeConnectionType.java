@@ -124,7 +124,7 @@ public enum TubeConnectionType implements IStringSerializable
         {
             return connections[side.ordinal()];
         }
-        return ENTER;
+        return NONE;
     }
 
     public TubeSideType front()
