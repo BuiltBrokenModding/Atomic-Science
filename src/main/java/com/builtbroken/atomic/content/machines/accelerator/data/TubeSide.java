@@ -32,6 +32,23 @@ public enum TubeSide
         }
     }
 
+    /**
+     * Finds the rotation of a second side based on the position of the first side facing.
+     * <p>
+     * This is used to allow relative rotation of objects based on a side. Say you have a east facing tube
+     * and wanted to place a left facing tube based on your right side. This would mean the tube needs
+     * to be on the south of your position. Then would need to face east in order to be
+     * relative left of the attachment side.
+     *
+     * @param centerFace       - facing direction of the center tube
+     * @param relativeRotation - relative side of the second tube
+     * @return facing direction of second tube
+     */
+    public EnumFacing getRotationRelative(EnumFacing centerFace, TubeSide relativeRotation)
+    {
+        return relativeRotation.getFacing(this.getFacing(centerFace));
+    }
+
     public static TubeSide getSideFacingOut(EnumFacing facing, EnumFacing side)
     {
         if (side == null)
@@ -59,7 +76,11 @@ public enum TubeSide
 
     public EnumFacing getFacing(EnumFacing facing)
     {
-        if (this == FRONT)
+        if(facing == null)
+        {
+            return null;
+        }
+        else if (this == FRONT)
         {
             return facing;
         }
