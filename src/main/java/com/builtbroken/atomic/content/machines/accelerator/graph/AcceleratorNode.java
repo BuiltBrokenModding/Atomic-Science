@@ -63,12 +63,15 @@ public class AcceleratorNode implements IAcceleratorNode
             final BlockPos sidePos = pos.offset(facing);
             final TileEntity tileEntity = world.getTileEntity(sidePos);
             final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, facing.getOpposite());
-            if (getNode(facing) != null)
+            if (tube == null && getNode(facing) != null)
             {
                 getNetwork().destroy();
                 return;
             }
-            nodes[facing.ordinal()] = tube.getNode();
+            else if (tube != null)
+            {
+                nodes[facing.ordinal()] = tube.getNode();
+            }
         }
 
         //Map connections
@@ -77,7 +80,7 @@ public class AcceleratorNode implements IAcceleratorNode
             IAcceleratorNode node = getNode(facing);
             if (node != null)
             {
-                if(canConnectToTubeOnSide(TubeSide.getSideFacingOut(getDirection(), facing)))
+                if (canConnectToTubeOnSide(TubeSide.getSideFacingOut(getDirection(), facing)))
                 {
                     connect(node, facing);
                 }
