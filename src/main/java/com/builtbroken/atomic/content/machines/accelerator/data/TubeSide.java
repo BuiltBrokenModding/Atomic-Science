@@ -33,20 +33,33 @@ public enum TubeSide
     }
 
     /**
-     * Finds the rotation of a second side based on the position of the first side facing.
+     * Finds the facing direction of a second side based on the position of the first side and it's facing direction.
      * <p>
-     * This is used to allow relative rotation of objects based on a side. Say you have a east facing tube
-     * and wanted to place a left facing tube based on your right side. This would mean the tube needs
-     * to be on the south of your position. Then would need to face east in order to be
-     * relative left of the attachment side.
+     * This is used to allow relative rotation of objects based on a target side of another tube.
+     * Say you want to connect a tube on left of an existing tube facing east. This would place the
+     * tube on the north face of the existing tube. If the tube you were placing happened to be a right
+     * corner and needed to connect with its right side to the existing tube left. This would then mean
+     * that the tube needs to also face east for its placement to match.
      *
-     * @param centerFace       - facing direction of the center tube
-     * @param relativeRotation - relative side of the second tube
+     * This method works by first getting the facing direction of exiting tube's side. Then using this
+     * direction it gets the facing direction using the target side.
+     *
+     * Ex: North facing tube, left side, target right connection
+     *          left of north is west
+     *          right of west is north
+     *
+     * @param centerFace - facing direction of the center tube
+     * @param targetSide - local side of the second tube
      * @return facing direction of second tube
      */
-    public EnumFacing getRotationRelative(EnumFacing centerFace, TubeSide relativeRotation)
+    public EnumFacing getRotationRelative(EnumFacing centerFace, TubeSide targetSide)
     {
-        return relativeRotation.getFacing(this.getFacing(centerFace));
+        final EnumFacing sideFace = this.getFacing(centerFace);
+        if(targetSide == FRONT || targetSide == BACK)
+        {
+            return targetSide.getFacing(sideFace.getOpposite());
+        }
+        return targetSide.getFacing(sideFace);
     }
 
     /**

@@ -124,4 +124,117 @@ public class TestTubeSide
                 Arguments.of(EnumFacing.WEST, EnumFacing.NORTH, TubeSide.RIGHT)
         );
     }
+
+
+    @ParameterizedTest
+    @MethodSource("provideGetRotationRelativeData")
+    public void checkGetRotationRelative(TubeSide centerSide, EnumFacing centerFacing,
+                                         TubeSide targetSide, EnumFacing expected)
+    {
+        Assertions.assertEquals(expected, centerSide.getRotationRelative(centerFacing, targetSide));
+    }
+
+    private static Stream<Arguments> provideGetRotationRelativeData()
+    {
+        return Stream.of(
+                //Front -> Back
+                Arguments.of(TubeSide.FRONT, EnumFacing.NORTH, TubeSide.BACK, EnumFacing.NORTH),
+                Arguments.of(TubeSide.FRONT, EnumFacing.SOUTH, TubeSide.BACK, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.FRONT, EnumFacing.EAST, TubeSide.BACK, EnumFacing.EAST),
+                Arguments.of(TubeSide.FRONT, EnumFacing.WEST, TubeSide.BACK, EnumFacing.WEST),
+
+                //Back -> Front
+                Arguments.of(TubeSide.BACK, EnumFacing.NORTH, TubeSide.FRONT, EnumFacing.NORTH),
+                Arguments.of(TubeSide.BACK, EnumFacing.SOUTH, TubeSide.FRONT, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.BACK, EnumFacing.EAST, TubeSide.FRONT, EnumFacing.EAST),
+                Arguments.of(TubeSide.BACK, EnumFacing.WEST, TubeSide.FRONT, EnumFacing.WEST),
+
+
+                //Front -> Front
+                Arguments.of(TubeSide.FRONT, EnumFacing.NORTH, TubeSide.FRONT, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.FRONT, EnumFacing.SOUTH, TubeSide.FRONT, EnumFacing.NORTH),
+                Arguments.of(TubeSide.FRONT, EnumFacing.EAST, TubeSide.FRONT, EnumFacing.WEST),
+                Arguments.of(TubeSide.FRONT, EnumFacing.WEST, TubeSide.FRONT, EnumFacing.EAST),
+
+                //Back -> Back
+                Arguments.of(TubeSide.BACK, EnumFacing.NORTH, TubeSide.BACK, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.BACK, EnumFacing.SOUTH, TubeSide.BACK, EnumFacing.NORTH),
+                Arguments.of(TubeSide.BACK, EnumFacing.EAST, TubeSide.BACK, EnumFacing.WEST),
+                Arguments.of(TubeSide.BACK, EnumFacing.WEST, TubeSide.BACK, EnumFacing.EAST),
+
+                //Front -> Left
+                Arguments.of(TubeSide.FRONT, EnumFacing.NORTH, TubeSide.LEFT, EnumFacing.WEST),
+                Arguments.of(TubeSide.FRONT, EnumFacing.SOUTH, TubeSide.LEFT, EnumFacing.EAST),
+                Arguments.of(TubeSide.FRONT, EnumFacing.EAST, TubeSide.LEFT, EnumFacing.NORTH),
+                Arguments.of(TubeSide.FRONT, EnumFacing.WEST, TubeSide.LEFT, EnumFacing.SOUTH),
+
+                //Left -> Front
+                Arguments.of(TubeSide.LEFT, EnumFacing.NORTH, TubeSide.FRONT, EnumFacing.EAST),
+                Arguments.of(TubeSide.LEFT, EnumFacing.SOUTH, TubeSide.FRONT, EnumFacing.WEST),
+                Arguments.of(TubeSide.LEFT, EnumFacing.EAST, TubeSide.FRONT, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.LEFT, EnumFacing.WEST, TubeSide.FRONT, EnumFacing.NORTH),
+
+                //Front -> Right
+                Arguments.of(TubeSide.FRONT, EnumFacing.NORTH, TubeSide.RIGHT, EnumFacing.EAST),
+                Arguments.of(TubeSide.FRONT, EnumFacing.SOUTH, TubeSide.RIGHT, EnumFacing.WEST),
+                Arguments.of(TubeSide.FRONT, EnumFacing.EAST, TubeSide.RIGHT, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.FRONT, EnumFacing.WEST, TubeSide.RIGHT, EnumFacing.NORTH),
+
+                //Right -> Front
+                Arguments.of(TubeSide.RIGHT, EnumFacing.NORTH, TubeSide.FRONT, EnumFacing.WEST),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.SOUTH, TubeSide.FRONT, EnumFacing.EAST),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.EAST, TubeSide.FRONT, EnumFacing.NORTH),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.WEST, TubeSide.FRONT, EnumFacing.SOUTH),
+
+                //Back -> Left
+                Arguments.of(TubeSide.BACK, EnumFacing.NORTH, TubeSide.LEFT, EnumFacing.EAST),
+                Arguments.of(TubeSide.BACK, EnumFacing.SOUTH, TubeSide.LEFT, EnumFacing.WEST),
+                Arguments.of(TubeSide.BACK, EnumFacing.EAST, TubeSide.LEFT, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.BACK, EnumFacing.WEST, TubeSide.LEFT, EnumFacing.NORTH),
+
+                //Left -> Back
+                Arguments.of(TubeSide.LEFT, EnumFacing.NORTH, TubeSide.BACK, EnumFacing.WEST),
+                Arguments.of(TubeSide.LEFT, EnumFacing.SOUTH, TubeSide.BACK, EnumFacing.EAST),
+                Arguments.of(TubeSide.LEFT, EnumFacing.EAST, TubeSide.BACK, EnumFacing.NORTH),
+                Arguments.of(TubeSide.LEFT, EnumFacing.WEST, TubeSide.BACK, EnumFacing.SOUTH),
+
+                //Back -> Right
+                Arguments.of(TubeSide.BACK, EnumFacing.NORTH, TubeSide.RIGHT, EnumFacing.WEST),
+                Arguments.of(TubeSide.BACK, EnumFacing.SOUTH, TubeSide.RIGHT, EnumFacing.EAST),
+                Arguments.of(TubeSide.BACK, EnumFacing.EAST, TubeSide.RIGHT, EnumFacing.NORTH),
+                Arguments.of(TubeSide.BACK, EnumFacing.WEST, TubeSide.RIGHT, EnumFacing.SOUTH),
+
+                //Right -> Back
+                Arguments.of(TubeSide.RIGHT, EnumFacing.NORTH, TubeSide.BACK, EnumFacing.EAST),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.SOUTH, TubeSide.BACK, EnumFacing.WEST),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.EAST, TubeSide.BACK, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.WEST, TubeSide.BACK, EnumFacing.NORTH),
+
+                //Left -> Right
+                Arguments.of(TubeSide.LEFT, EnumFacing.NORTH, TubeSide.RIGHT, EnumFacing.NORTH),
+                Arguments.of(TubeSide.LEFT, EnumFacing.SOUTH, TubeSide.RIGHT, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.LEFT, EnumFacing.EAST, TubeSide.RIGHT, EnumFacing.EAST),
+                Arguments.of(TubeSide.LEFT, EnumFacing.WEST, TubeSide.RIGHT, EnumFacing.WEST),
+
+                //Right -> Left
+                Arguments.of(TubeSide.RIGHT, EnumFacing.NORTH, TubeSide.LEFT, EnumFacing.NORTH),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.SOUTH, TubeSide.LEFT, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.EAST, TubeSide.LEFT, EnumFacing.EAST),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.WEST, TubeSide.LEFT, EnumFacing.WEST),
+
+
+                //Left -> Left
+                Arguments.of(TubeSide.LEFT, EnumFacing.NORTH, TubeSide.LEFT, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.LEFT, EnumFacing.SOUTH, TubeSide.LEFT, EnumFacing.NORTH),
+                Arguments.of(TubeSide.LEFT, EnumFacing.EAST, TubeSide.LEFT, EnumFacing.WEST),
+                Arguments.of(TubeSide.LEFT, EnumFacing.WEST, TubeSide.LEFT, EnumFacing.EAST),
+
+                //Right -> Right
+                Arguments.of(TubeSide.RIGHT, EnumFacing.NORTH, TubeSide.RIGHT, EnumFacing.SOUTH),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.SOUTH, TubeSide.RIGHT, EnumFacing.NORTH),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.EAST, TubeSide.RIGHT, EnumFacing.WEST),
+                Arguments.of(TubeSide.RIGHT, EnumFacing.WEST, TubeSide.RIGHT, EnumFacing.EAST)
+
+        );
+    }
 }
