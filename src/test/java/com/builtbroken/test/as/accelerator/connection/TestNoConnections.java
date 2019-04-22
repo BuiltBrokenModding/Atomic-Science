@@ -5,7 +5,6 @@ import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.test.as.accelerator.ATestTube;
 import com.builtbroken.test.as.accelerator.ATubeTestCommon;
-import com.builtbroken.test.as.accelerator.TubeFaceArgumentsProvider;
 import com.builtbroken.test.as.accelerator.TubeFaceSideArgumentsProvider;
 import net.minecraft.util.EnumFacing;
 import org.junit.jupiter.api.Assertions;

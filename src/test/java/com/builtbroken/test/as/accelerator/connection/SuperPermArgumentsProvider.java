@@ -17,8 +17,6 @@ import java.util.stream.Stream;
  */
 public class SuperPermArgumentsProvider implements ArgumentsProvider
 {
-
-    //https://www.baeldung.com/parameterized-tests-junit-5
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext)
     {

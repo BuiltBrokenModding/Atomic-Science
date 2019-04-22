@@ -182,7 +182,6 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
 
     public TubeConnectionType calcConnectionType()
     {
-        //TODO if we have no connections that are valid, default to current type
         final TubeSideType front = getConnectState(TubeSide.FRONT);
         final TubeSideType left = getConnectState(TubeSide.LEFT);
         final TubeSideType right = getConnectState(TubeSide.RIGHT);
@@ -208,7 +207,7 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     {
         //Get tube on side
         final EnumFacing facingSide = localSide.getFacing(getDirection());
-        final IAcceleratorTube tube = getTubeSide(facingSide); //TODO use capability
+        final IAcceleratorTube tube = getTubeSide(facingSide);
         if (tube != null)
         {
             //Get target tube's side, this will not match out side
