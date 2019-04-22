@@ -1,7 +1,5 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube;
 
-import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
-import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
@@ -10,7 +8,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -41,6 +38,7 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     @Override
     public void onLoad()
     {
+        acceleratorNode.setData(getPos(), getDirection(), getConnectionType());
         if (isServer())
         {
             updateState(false, true);

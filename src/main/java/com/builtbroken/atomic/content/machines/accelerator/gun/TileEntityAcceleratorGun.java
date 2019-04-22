@@ -35,11 +35,14 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
         tickServer.add(TickTimerTileEntity.newConditional(20, (tick) -> validateNetwork(), () -> getNetwork() == null || getNetwork().nodes.isEmpty()));
     }
 
+    @Override
+    public void onLoad()
+    {
+        acceleratorNode.setData(getPos(), getDirection(), TubeConnectionType.START_CAP);
+    }
+
     private void validateNetwork()
     {
-        //Set node state TODO update with any changes to pos or direction
-        acceleratorNode.setData(getPos(), getDirection(), TubeConnectionType.START_CAP);
-
         //If we have no network try to locate a tube with a network
         if (getNetwork() == null)
         {
