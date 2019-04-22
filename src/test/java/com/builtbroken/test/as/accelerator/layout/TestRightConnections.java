@@ -15,6 +15,24 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
  */
 public class TestRightConnections extends ATubeTestCommon
 {
+    //Tests the guessing code
+    @ParameterizedTest
+    @ArgumentsSource(EnumFacingSideArgumentsProvider.class)
+    public void checkSideOnly(EnumFacing direction)
+    {
+        //Setup conditions
+        final ATestTube tube = newTube(direction, BLOCK_POS_ZERO);
+        addTube(tube, direction.rotateY(), direction.rotateY().getOpposite()); //North -> east side, west facing
+
+        //Run method A
+        TubeConnectionType connectionType = tube.calcConnectionType();
+        Assertions.assertEquals(TubeConnectionType.INVALID, connectionType);
+
+        //Run method B
+        connectionType = tube.guessConnectionType();
+        Assertions.assertEquals(TubeConnectionType.CORNER_RIGHT, connectionType);
+    }
+
     @ParameterizedTest
     @ArgumentsSource(EnumFacingSideArgumentsProvider.class)
     public void checkSameFacing(EnumFacing direction)

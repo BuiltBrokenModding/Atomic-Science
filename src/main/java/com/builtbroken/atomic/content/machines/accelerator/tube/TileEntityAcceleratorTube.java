@@ -176,7 +176,19 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
      */
     public IBlockState updateConnections(boolean updateBlockState)
     {
-        setConnectionType(calcConnectionType());
+        TubeConnectionType type = calcConnectionType();
+        if (type != TubeConnectionType.INVALID)
+        {
+            setConnectionType(type);
+        }
+        else
+        {
+            type = guessConnectionType();
+            if (type != TubeConnectionType.INVALID)
+            {
+                setConnectionType(type);
+            }
+        }
         return updateState(false, updateBlockState);
     }
 
@@ -189,6 +201,16 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
 
         //Get connection type
         return TubeConnectionType.getTypeForLayout(front, left, right, back, true);
+    }
+
+    public TubeConnectionType guessConnectionType()
+    {
+        final TubeSideType left = getConnectState(TubeSide.LEFT);
+        final TubeSideType right = getConnectState(TubeSide.RIGHT);
+        final TubeSideType back = getConnectState(TubeSide.BACK);
+
+        //Get connection type
+        return TubeConnectionType.getTypeForLayout(TubeSideType.EXIT, left, right, back, true);
     }
 
     /**
