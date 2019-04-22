@@ -2,8 +2,8 @@ package com.builtbroken.test.as.accelerator.data;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import net.minecraft.util.EnumFacing;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,7 +15,6 @@ import java.util.stream.Stream;
  */
 public class TestTubeSide
 {
-
     @Test
     public void testSides()
     {
