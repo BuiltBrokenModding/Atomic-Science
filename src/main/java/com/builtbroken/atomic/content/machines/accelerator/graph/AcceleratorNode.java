@@ -250,7 +250,7 @@ public class AcceleratorNode implements IAcceleratorNode
 
     private boolean isValidSideForParticle(TubeSide side)
     {
-        return side == null || getConnectionType().getTypeForSide(side) != TubeSideType.NONE;
+        return side == null || side == TubeSide.CENTER || getConnectionType().getTypeForSide(side) != TubeSideType.NONE;
     }
 
     private TubeSide getSideFacingOut(EnumFacing side)
