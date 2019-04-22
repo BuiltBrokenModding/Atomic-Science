@@ -48,7 +48,7 @@ public class TestTubeSide
 
     @ParameterizedTest
     @MethodSource("provideGetFacingData")
-    public void testGetFacing(TubeSide side, EnumFacing facing, EnumFacing expected)
+    public void checkGetFacing(TubeSide side, EnumFacing facing, EnumFacing expected)
     {
         Assertions.assertEquals(expected, side.getFacing(facing));
     }
@@ -90,6 +90,38 @@ public class TestTubeSide
                 Arguments.of(TubeSide.CENTER, EnumFacing.SOUTH, null),
                 Arguments.of(TubeSide.CENTER, EnumFacing.EAST, null),
                 Arguments.of(TubeSide.CENTER, EnumFacing.WEST, null)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideGetSideFacingOutData")
+    public void checkGetSideFacingOut(EnumFacing facing, EnumFacing side, TubeSide expected)
+    {
+        Assertions.assertEquals(expected, TubeSide.getSideFacingOut(facing, side));
+    }
+
+    private static Stream<Arguments> provideGetSideFacingOutData()
+    {
+        return Stream.of(
+                Arguments.of(EnumFacing.NORTH, EnumFacing.NORTH, TubeSide.FRONT),
+                Arguments.of(EnumFacing.SOUTH, EnumFacing.SOUTH, TubeSide.FRONT),
+                Arguments.of(EnumFacing.EAST, EnumFacing.EAST, TubeSide.FRONT),
+                Arguments.of(EnumFacing.WEST, EnumFacing.WEST, TubeSide.FRONT),
+
+                Arguments.of(EnumFacing.NORTH, EnumFacing.SOUTH, TubeSide.BACK),
+                Arguments.of(EnumFacing.SOUTH, EnumFacing.NORTH, TubeSide.BACK),
+                Arguments.of(EnumFacing.EAST, EnumFacing.WEST, TubeSide.BACK),
+                Arguments.of(EnumFacing.WEST, EnumFacing.EAST, TubeSide.BACK),
+
+                Arguments.of(EnumFacing.NORTH, EnumFacing.WEST, TubeSide.LEFT),
+                Arguments.of(EnumFacing.SOUTH, EnumFacing.EAST, TubeSide.LEFT),
+                Arguments.of(EnumFacing.EAST, EnumFacing.NORTH, TubeSide.LEFT),
+                Arguments.of(EnumFacing.WEST, EnumFacing.SOUTH, TubeSide.LEFT),
+
+                Arguments.of(EnumFacing.NORTH, EnumFacing.EAST, TubeSide.RIGHT),
+                Arguments.of(EnumFacing.SOUTH, EnumFacing.WEST, TubeSide.RIGHT),
+                Arguments.of(EnumFacing.EAST, EnumFacing.SOUTH, TubeSide.RIGHT),
+                Arguments.of(EnumFacing.WEST, EnumFacing.NORTH, TubeSide.RIGHT)
         );
     }
 }

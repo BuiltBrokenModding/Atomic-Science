@@ -49,6 +49,13 @@ public enum TubeSide
         return relativeRotation.getFacing(this.getFacing(centerFace));
     }
 
+    /**
+     * Used to get the TubeSide localized based on the facing rotation and side
+     *
+     * @param facing - rotation to use for localizing to TubeSide
+     * @param side   - direction/side to localize
+     * @return localized TubeSide based on facing
+     */
     public static TubeSide getSideFacingOut(EnumFacing facing, EnumFacing side)
     {
         if (side == null)
@@ -74,9 +81,16 @@ public enum TubeSide
         return TubeSide.CENTER;
     }
 
+    /**
+     * Gets the facing side that would represent
+     * this localized side based on the rotation
+     *
+     * @param facing - rotation used for localized side
+     * @return unlocalized side
+     */
     public EnumFacing getFacing(EnumFacing facing)
     {
-        if(facing == null)
+        if (facing == null)
         {
             return null;
         }
