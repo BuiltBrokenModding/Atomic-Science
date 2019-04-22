@@ -25,6 +25,10 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
  */
 public class TestNormalTubeExit extends ATubeTestCommon
 {
+
+    //Note: No matter what the tube will detect exit on a side even if it can't connect on that side.
+    //      As the code is setup to detect the connecting tube's state not our own tube's state.
+
     @ParameterizedTest
     @ArgumentsSource(ExitIntoArgumentsProvider.class)
     public void testExitFront(EnumFacing facing, TubeSide side, TubeConnectionType type)
@@ -37,6 +41,7 @@ public class TestNormalTubeExit extends ATubeTestCommon
 
         //Test that we can connect
         Assertions.assertEquals(TubeSideType.EXIT, tube.getConnectState(TubeSide.FRONT));
+        Assertions.assertTrue(tube.canConnect(TubeSide.FRONT));
     }
 
     @ParameterizedTest
@@ -50,7 +55,8 @@ public class TestNormalTubeExit extends ATubeTestCommon
         addTube(tube, facing.getOpposite(), side.getFacing(facing.getOpposite()), type);
 
         //Test that we can connect
-        Assertions.assertEquals(TubeSideType.NONE, tube.getConnectState(TubeSide.FRONT));
+        Assertions.assertEquals(TubeSideType.EXIT, tube.getConnectState(TubeSide.BACK));
+        Assertions.assertFalse(tube.canConnect(TubeSide.BACK));
     }
 
     @ParameterizedTest
@@ -64,7 +70,8 @@ public class TestNormalTubeExit extends ATubeTestCommon
         addTube(tube, facing.rotateY().getOpposite(), side.getFacing(facing.rotateY().getOpposite()), type);
 
         //Test that we can connect
-        Assertions.assertEquals(TubeSideType.NONE, tube.getConnectState(TubeSide.FRONT));
+        Assertions.assertEquals(TubeSideType.EXIT, tube.getConnectState(TubeSide.LEFT));
+        Assertions.assertFalse(tube.canConnect(TubeSide.LEFT));
     }
 
     @ParameterizedTest
@@ -78,6 +85,7 @@ public class TestNormalTubeExit extends ATubeTestCommon
         addTube(tube, facing.rotateY(), side.getFacing(facing.rotateY()), type);
 
         //Test that we can connect
-        Assertions.assertEquals(TubeSideType.NONE, tube.getConnectState(TubeSide.FRONT));
+        Assertions.assertEquals(TubeSideType.EXIT, tube.getConnectState(TubeSide.RIGHT));
+        Assertions.assertFalse(tube.canConnect(TubeSide.RIGHT));
     }
 }

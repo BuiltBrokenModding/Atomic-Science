@@ -32,7 +32,6 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     private TubeConnectionType _connectionType = TubeConnectionType.NORMAL;
 
 
-
     @Override
     public void markDirty()
     {
@@ -189,8 +188,6 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         final TubeSideType right = getConnectState(TubeSide.RIGHT);
         final TubeSideType back = getConnectState(TubeSide.BACK);
 
-        System.out.println(direction + " F:" + front + " L:" + left + " R:" + right + " B:" + back);
-
         //Get connection type
         return TubeConnectionType.getTypeForLayout(front, left, right, back, true);
     }
@@ -228,6 +225,19 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         return TubeSideType.NONE;
     }
 
+    /**
+     * Checks if our current {@link #getConnectionType()} can support a
+     * connection on the given side
+     *
+     * @param localSide - localized side based on facing of the tube
+     * @return true if can connect, false if can't
+     */
+    public boolean canConnect(TubeSide localSide)
+    {
+        final TubeSideType state = getConnectState(localSide);
+        return getConnectionType().getTypeForSide(localSide) == state;
+    }
+
     protected IAcceleratorTube getTubeSide(EnumFacing side)
     {
         final TileEntity tile = getTileEntity(side);
@@ -253,8 +263,8 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     @Override
     public void setPos(BlockPos posIn)
     {
-       super.setPos(posIn);
-       acceleratorNode.setPos(pos);
+        super.setPos(posIn);
+        acceleratorNode.setPos(pos);
     }
 
     public TubeConnectionType getConnectionType()
