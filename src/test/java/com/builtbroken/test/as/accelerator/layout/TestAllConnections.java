@@ -7,6 +7,8 @@ import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import com.builtbroken.test.as.accelerator.ATestTube;
 import com.builtbroken.test.as.accelerator.ATubeTestCommon;
+import com.builtbroken.test.as.accelerator.connection.EntryFromArgumentsProvider;
+import com.builtbroken.test.as.accelerator.connection.ExitIntoArgumentsProvider;
 import com.builtbroken.test.as.world.FakeWorldAccess;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -95,6 +97,7 @@ public class TestAllConnections extends ATubeTestCommon
     {
         final TestSide[] testSides = new TestSide[4];
 
+        //Init test data so we have a tube to start with on each valid side
         for (TubeSide side : TubeSide.SIDES)
         {
             testSides[side.ordinal()] = new TestSide();
@@ -116,17 +119,78 @@ public class TestAllConnections extends ATubeTestCommon
             }
         }
 
-        permutations.add(Arguments.of(centerFacing, centerType, testSides));
+        //Generate test permutations 1 at a time
+        for (TubeSide side : TubeSide.SIDES) //TODO generate permutations per side of side instead of only 1 side at a time
+        {
+            final TestSide testSide = testSides[side.ordinal()];
+            if (testSide.connectionType == TubeSideType.ENTER)
+            {
+                for(Object[] data : EntryFromArgumentsProvider.getEntryData())
+                {
+                    final TubeSide targetSide = (TubeSide) data[0];
+                    final TubeConnectionType targetType = (TubeConnectionType) data[1];
+
+                    permutations.add(buildTest(centerFacing, centerType, side, testSides, targetSide, targetType));
+                }
+            }
+            else if(testSide.connectionType == TubeSideType.EXIT)
+            {
+                for(Object[] data : ExitIntoArgumentsProvider.getExitData())
+                {
+                    final TubeSide targetSide = (TubeSide) data[0];
+                    final TubeConnectionType targetType = (TubeConnectionType) data[1];
+
+                    permutations.add(buildTest(centerFacing, centerType, side, testSides, targetSide, targetType));
+                }
+            }
+        }
+    }
+
+    private static Arguments buildTest(EnumFacing centerFacing, TubeConnectionType centerType, TubeSide side,
+                                TestSide[] testSides,
+                                TubeSide targetSide, TubeConnectionType targetType)
+    {
+        //Calculated facing direction of tube
+        final EnumFacing targetRotation = side.getRotationRelative(centerFacing, targetSide);
+
+        //Clone test sides
+        TestSide[] copySides = copy(testSides);
+
+        //Set side with new tube data
+        copySides[side.ordinal()].tubeType = targetType;
+        copySides[side.ordinal()].tubeFacing = targetRotation;
+
+        return Arguments.of(centerFacing, centerType, copySides);
+    }
+
+    private static TestSide[] copy(TestSide[] sides)
+    {
+        TestSide[] newSides = new TestSide[sides.length];
+        for(int i = 0; i < sides.length; i++)
+        {
+            newSides[i] = sides[i].copy();
+        }
+        return newSides;
     }
 
     private static class TestSide
     {
-
         TubeSide connectionSide;
         TubeSideType connectionType;
 
         EnumFacing tubeFacing;
         TubeConnectionType tubeType;
+
+        public TestSide copy()
+        {
+            TestSide side = new TestSide();
+            side.connectionSide = connectionSide;
+            side.connectionType = connectionType;
+            side.tubeFacing = tubeFacing;
+            side.tubeType = tubeType;
+
+            return side;
+        }
 
         @Override
         public String toString()
