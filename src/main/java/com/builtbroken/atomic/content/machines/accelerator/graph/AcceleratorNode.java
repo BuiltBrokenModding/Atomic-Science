@@ -60,17 +60,15 @@ public class AcceleratorNode implements IAcceleratorNode
         //Find tubes
         for (EnumFacing facing : EnumFacing.HORIZONTALS)
         {
-            final BlockPos sidePos = pos.offset(facing);
-            final TileEntity tileEntity = world.getTileEntity(sidePos);
-            final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, facing.getOpposite());
-            if (tube == null && getNode(facing) != null)
+            final IAcceleratorNode node = getNode(world, facing);
+            if (node == null && getNode(facing) != null)
             {
                 getNetwork().destroy();
                 return;
             }
-            else if (tube != null)
+            else if (node != null)
             {
-                nodes[facing.ordinal()] = tube.getNode();
+                nodes[facing.ordinal()] = node;
             }
         }
 
@@ -151,16 +149,27 @@ public class AcceleratorNode implements IAcceleratorNode
      * @param localSide - side of our tube
      * @return expected state for our side
      */
-    public TubeSideType getConnectedTubeState(TubeSide localSide)
+    public TubeSideType getConnectedTubeState(IBlockAccess access, TubeSide localSide)
     {
         //Get tube on side
         final EnumFacing facingSide = localSide.getFacing(getDirection());
-        final IAcceleratorNode tube = getNode(facingSide);
+        final IAcceleratorNode tube = access == null ? getNode(facingSide) : getNode(access, facingSide);
         if (tube != null)
         {
             return tube.getConnectionState(facingSide.getOpposite()).getOpposite();
         }
         return TubeSideType.NONE;
+    }
+
+    public IAcceleratorNode getNode(IBlockAccess access, EnumFacing facing)
+    {
+        final TileEntity tileEntity = access.getTileEntity(getPos().offset(facing));
+        final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, facing.getOpposite());
+        if(tube != null)
+        {
+            return tube.getNode();
+        }
+        return null;
     }
 
     protected IAcceleratorNode getNode(EnumFacing side)
@@ -177,7 +186,7 @@ public class AcceleratorNode implements IAcceleratorNode
      */
     public boolean canConnectToTubeOnSide(TubeSide localSide)
     {
-        final TubeSideType state = getConnectedTubeState(localSide);
+        final TubeSideType state = getConnectedTubeState(null, localSide);
         return state != TubeSideType.NONE && getConnectionType().getTypeForSide(localSide) == state;
     }
 

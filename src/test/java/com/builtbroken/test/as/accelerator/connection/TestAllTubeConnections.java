@@ -27,7 +27,7 @@ public class TestAllTubeConnections extends ATubeTestCommon
         addTube(tube, centerSide.getFacing(centerRotation), targetRotation, targetTube);
 
         //Get result of connection
-        TubeSideType result = tube.getNode().getConnectedTubeState(centerSide);
+        TubeSideType result = tube.getNode().getConnectedTubeState(null, centerSide);
         Assertions.assertEquals(expected, result);
 
         if(match)

@@ -14,11 +14,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- *
+ * Prefab used for any machine with an inventory
  * Created by Dark(DarkGuardsman, Robert) on 5/8/2018.
  */
 public abstract class TileEntityInventoryMachine<I extends IItemHandlerModifiable> extends TileEntityMachine
 {
+
     public static final String NBT_INVENTORY = "inventory";
 
     private IItemHandlerModifiable inventory;

@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -172,46 +173,46 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
      *
      * @param updateBlockState - change the block state in the world when true
      */
-    public IBlockState updateConnections(boolean updateBlockState)
+    public IBlockState updateConnections(IBlockAccess access, boolean updateBlockState, boolean updateState)
     {
-        //Update connections on node
-        acceleratorNode.updateConnections(world);
-
         //Calculate layout
-        TubeConnectionType type = calcConnectionType();
+        TubeConnectionType type = calcConnectionType(access);
         if (type != TubeConnectionType.INVALID)
         {
             setConnectionType(type);
         }
         else
         {
-            type = guessConnectionType();
+            type = guessConnectionType(access);
             if (type != TubeConnectionType.INVALID)
             {
                 setConnectionType(type);
             }
         }
 
+        //Update connections on node
+        acceleratorNode.updateConnections(access);
+
         //Update block state
-        return updateState(false, updateBlockState);
+        return updateState ? updateState(false, updateBlockState) : null;
     }
 
-    public TubeConnectionType calcConnectionType()
+    public TubeConnectionType calcConnectionType(IBlockAccess access)
     {
-        final TubeSideType front = acceleratorNode.getConnectedTubeState(TubeSide.FRONT);
-        final TubeSideType left = acceleratorNode.getConnectedTubeState(TubeSide.LEFT);
-        final TubeSideType right = acceleratorNode.getConnectedTubeState(TubeSide.RIGHT);
-        final TubeSideType back = acceleratorNode.getConnectedTubeState(TubeSide.BACK);
+        final TubeSideType front = acceleratorNode.getConnectedTubeState(access, TubeSide.FRONT);
+        final TubeSideType left = acceleratorNode.getConnectedTubeState(access, TubeSide.LEFT);
+        final TubeSideType right = acceleratorNode.getConnectedTubeState(access, TubeSide.RIGHT);
+        final TubeSideType back = acceleratorNode.getConnectedTubeState(access, TubeSide.BACK);
 
         //Get connection type
         return TubeConnectionType.getTypeForLayout(front, left, right, back, true);
     }
 
-    public TubeConnectionType guessConnectionType()
+    public TubeConnectionType guessConnectionType(IBlockAccess access)
     {
-        final TubeSideType left = acceleratorNode.getConnectedTubeState(TubeSide.LEFT);
-        final TubeSideType right = acceleratorNode.getConnectedTubeState(TubeSide.RIGHT);
-        final TubeSideType back = acceleratorNode.getConnectedTubeState(TubeSide.BACK);
+        final TubeSideType left = acceleratorNode.getConnectedTubeState(access, TubeSide.LEFT);
+        final TubeSideType right = acceleratorNode.getConnectedTubeState(access, TubeSide.RIGHT);
+        final TubeSideType back = acceleratorNode.getConnectedTubeState(access, TubeSide.BACK);
 
         //Get connection type
         return TubeConnectionType.getTypeForLayout(TubeSideType.EXIT, left, right, back, true);

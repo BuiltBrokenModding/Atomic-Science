@@ -25,7 +25,7 @@ public class TestNormalConnections extends ATubeTestCommon
         addTube(tube, direction.getOpposite(), direction);
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.NORMAL, connectionType);
@@ -47,7 +47,7 @@ public class TestNormalConnections extends ATubeTestCommon
         addTube(tube, direction.rotateY().getOpposite(), direction);
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.NORMAL, connectionType);

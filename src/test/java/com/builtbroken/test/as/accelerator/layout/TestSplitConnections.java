@@ -38,7 +38,7 @@ public class TestSplitConnections extends ATubeTestCommon
         addTube(tube, direction.rotateY(), direction.rotateY());
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.SPLIT, connectionType);

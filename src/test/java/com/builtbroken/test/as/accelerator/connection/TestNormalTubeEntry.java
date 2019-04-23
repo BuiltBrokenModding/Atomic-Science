@@ -42,7 +42,7 @@ public class TestNormalTubeEntry extends ATubeTestCommon
         addTube(tube, TubeSide.BACK.getFacing(facing), TubeSide.BACK.getRotationRelative(facing, side), type);
 
         //Test that we can connect
-        Assertions.assertEquals(TubeSideType.ENTER, tube.getNode().getConnectedTubeState(TubeSide.BACK));
+        Assertions.assertEquals(TubeSideType.ENTER, tube.getNode().getConnectedTubeState(null, TubeSide.BACK));
         Assertions.assertTrue(tube.getNode().canConnectToTubeOnSide(TubeSide.BACK));
     }
 
@@ -58,7 +58,7 @@ public class TestNormalTubeEntry extends ATubeTestCommon
         addTube(tube, TubeSide.FRONT.getFacing(facing), TubeSide.FRONT.getRotationRelative(facing, side), type);
 
         //Test that we can connect
-        Assertions.assertEquals(TubeSideType.ENTER, tube.getNode().getConnectedTubeState(TubeSide.FRONT));
+        Assertions.assertEquals(TubeSideType.ENTER, tube.getNode().getConnectedTubeState(null, TubeSide.FRONT));
         Assertions.assertFalse(tube.getNode().canConnectToTubeOnSide(TubeSide.FRONT));
     }
 
@@ -74,7 +74,7 @@ public class TestNormalTubeEntry extends ATubeTestCommon
         addTube(tube, TubeSide.LEFT.getFacing(facing), TubeSide.LEFT.getRotationRelative(facing, side), type);
 
         //Test that we can connect
-        Assertions.assertEquals(TubeSideType.ENTER, tube.getNode().getConnectedTubeState(TubeSide.LEFT));
+        Assertions.assertEquals(TubeSideType.ENTER, tube.getNode().getConnectedTubeState(null, TubeSide.LEFT));
         Assertions.assertFalse(tube.getNode().canConnectToTubeOnSide(TubeSide.LEFT));
     }
 
@@ -90,7 +90,7 @@ public class TestNormalTubeEntry extends ATubeTestCommon
         addTube(tube, TubeSide.RIGHT.getFacing(facing), TubeSide.RIGHT.getRotationRelative(facing, side), type);
 
         //Test that we can connect
-        Assertions.assertEquals(TubeSideType.ENTER, tube.getNode().getConnectedTubeState(TubeSide.RIGHT));
+        Assertions.assertEquals(TubeSideType.ENTER, tube.getNode().getConnectedTubeState(null, TubeSide.RIGHT));
         Assertions.assertFalse(tube.getNode().canConnectToTubeOnSide(TubeSide.RIGHT));
     }
 }

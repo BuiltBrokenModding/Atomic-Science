@@ -25,11 +25,11 @@ public class TestRightConnections extends ATubeTestCommon
         addTube(tube, direction.rotateY(), direction.rotateY().getOpposite()); //North -> east side, west facing
 
         //Run method A
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
         Assertions.assertEquals(TubeConnectionType.INVALID, connectionType);
 
         //Run method B
-        connectionType = tube.guessConnectionType();
+        connectionType = tube.guessConnectionType(null);
         Assertions.assertEquals(TubeConnectionType.CORNER_RIGHT, connectionType);
     }
 
@@ -43,7 +43,7 @@ public class TestRightConnections extends ATubeTestCommon
         addTube(tube, direction.rotateY(), direction.rotateY().getOpposite()); //North -> east side, west facing
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.CORNER_RIGHT, connectionType);
@@ -65,7 +65,7 @@ public class TestRightConnections extends ATubeTestCommon
         addTube(tube, direction.getOpposite(), direction.rotateY()); //North -> south side, east facing
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.CORNER_RIGHT, connectionType);
@@ -88,7 +88,7 @@ public class TestRightConnections extends ATubeTestCommon
         addTube(tube, direction.getOpposite(), direction.rotateY().getOpposite()); //North -> south side, west facing
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.CORNER_RIGHT, connectionType);

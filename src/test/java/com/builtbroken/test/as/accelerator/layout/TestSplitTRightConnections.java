@@ -32,7 +32,7 @@ public class TestSplitTRightConnections extends ATubeTestCommon
         addTube(tube, direction.rotateY(), direction.rotateY());
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.T_SPLIT_RIGHT, connectionType);
@@ -58,7 +58,7 @@ public class TestSplitTRightConnections extends ATubeTestCommon
         addTube(tube, direction.rotateY(), direction.rotateY());
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.T_SPLIT_RIGHT, connectionType);
@@ -83,7 +83,7 @@ public class TestSplitTRightConnections extends ATubeTestCommon
         addTube(tube, direction.rotateY(), direction.rotateY());
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.T_SPLIT_RIGHT, connectionType);

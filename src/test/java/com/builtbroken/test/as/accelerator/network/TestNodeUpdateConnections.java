@@ -83,7 +83,5 @@ public class TestNodeUpdateConnections extends ATubeTestCommon
     public void createTube(FakeWorldAccess worldAccess, EnumFacing offset, EnumFacing facing)
     {
         worldAccess.addTile(BLOCK_POS_ZERO.offset(offset), newTube(facing, BLOCK_POS_ZERO.offset(offset)));
-
     }
-
 }

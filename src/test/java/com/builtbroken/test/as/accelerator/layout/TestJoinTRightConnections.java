@@ -32,7 +32,7 @@ public class TestJoinTRightConnections extends ATubeTestCommon
         addTube(tube, direction.rotateY(), direction.rotateY().getOpposite());
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.T_JOIN_RIGHT, connectionType);
@@ -58,7 +58,7 @@ public class TestJoinTRightConnections extends ATubeTestCommon
         addTube(tube, direction.rotateY(), direction.rotateY().getOpposite());
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.T_JOIN_RIGHT, connectionType);
@@ -83,7 +83,7 @@ public class TestJoinTRightConnections extends ATubeTestCommon
         addTube(tube, direction.rotateY(), direction.rotateY().getOpposite());
 
         //Run method
-        TubeConnectionType connectionType = tube.calcConnectionType();
+        TubeConnectionType connectionType = tube.calcConnectionType(null);
 
         //Test
         Assertions.assertEquals(TubeConnectionType.T_JOIN_RIGHT, connectionType);
