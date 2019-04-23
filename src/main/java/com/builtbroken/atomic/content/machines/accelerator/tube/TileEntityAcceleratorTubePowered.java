@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube;
 
 import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -24,6 +25,13 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
     protected float magnetPower;
 
     @Override
+    public void onLoad()
+    {
+        super.onLoad();
+        acceleratorNode.onMoveCallback = (particle) -> accelerate(particle);
+    }
+
+    @Override
     public void update() //TODO replace with chunk update event and block update event to reduce tick lag
     {
         if (timer-- <= 0)
@@ -32,6 +40,21 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
             timer = 100 + world.rand.nextInt(100);
             updateLayout();
         }
+    }
+
+    /**
+     * Called each tick the particle moves inside the tube
+     * @param particle
+     */
+    protected void accelerate(AcceleratorParticle particle)
+    {
+        particle.addEnergy(magnetPower);
+        particle.addVelocity(getAcceleration());
+    }
+
+    protected float getAcceleration()
+    {
+        return Math.min(.1f, magnetPower / 10f);
     }
 
     protected void updateLayout()

@@ -43,6 +43,7 @@ public class AcceleratorNode implements IAcceleratorNode
 
     public Consumer<AcceleratorParticle> onExitCallback;
     public Consumer<AcceleratorParticle> onEnterCallback;
+    public Consumer<AcceleratorParticle> onMoveCallback;
 
     public void setNetwork(AcceleratorNetwork network)
     {
@@ -338,6 +339,11 @@ public class AcceleratorNode implements IAcceleratorNode
 
     private float move(AcceleratorParticle particle, EnumFacing direction, float remaining, float distanceToMove)
     {
+        if(onMoveCallback != null)
+        {
+            onMoveCallback.accept(particle);
+        }
+
         //calculate actual move, we are limited by tube size for now
         float moveAmount = Math.min(remaining, distanceToMove);
 

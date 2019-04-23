@@ -32,7 +32,7 @@ public class PMoveCommon extends ATubeTestCommon
     {
         //Create
         AcceleratorParticle particle = new AcceleratorParticle(0, BLOCK_POS_ZERO, facing, 1);
-        particle.setSpeed(SPEED);
+        particle.setVelocity(SPEED);
 
         //Create tube
         particle.setCurrentNode(ATubeTestCommon.newNode(BLOCK_POS_ZERO, facing, connectionType));
@@ -62,7 +62,7 @@ public class PMoveCommon extends ATubeTestCommon
     {
         //Create tube and particle
         AcceleratorParticle particle = new AcceleratorParticle(0, BLOCK_POS_ZERO, moveDir, 1);
-        particle.setSpeed(SPEED);
+        particle.setVelocity(SPEED);
 
         //Create tube
         particle.setCurrentNode(new AcceleratorNode().setData(BLOCK_POS_ZERO, facing, type));

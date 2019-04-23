@@ -135,6 +135,12 @@ public class AcceleratorParticle implements IPos3D
     protected void consumeEnergy()
     {
         //TODO slowly eat energy
+        energy -= 1;
+    }
+
+    public void addEnergy(float magnetPower)
+    {
+        energy += magnetPower;
     }
 
     public void setMoveDirection(EnumFacing direction)
@@ -142,9 +148,14 @@ public class AcceleratorParticle implements IPos3D
         this.moveDirection = direction;
     }
 
-    public void setSpeed(float v)
+    public void setVelocity(float v)
     {
         this.movementPerTick = v;
+    }
+
+    public void addVelocity(float acceleration)
+    {
+        setVelocity(movementPerTick + acceleration);
     }
 
     @Override
