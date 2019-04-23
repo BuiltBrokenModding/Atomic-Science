@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * Generic thread used for calculating actions based on data changes in the main game world.
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 4/28/2018.
  */
 public abstract class ThreadDataChange extends Thread

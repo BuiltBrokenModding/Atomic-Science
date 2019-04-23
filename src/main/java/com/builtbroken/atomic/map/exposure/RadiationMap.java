@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 /**
  * Handles radiation exposure map. Is not saved and only cached to improve runtime.
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 4/24/2018.
  */
 public class RadiationMap implements IRadiationExposureSystem

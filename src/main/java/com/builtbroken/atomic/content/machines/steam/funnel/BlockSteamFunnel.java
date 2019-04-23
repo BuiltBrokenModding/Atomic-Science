@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 /**
  * Simple block that collects steam
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 5/16/2018.
  */
 public class BlockSteamFunnel extends BlockContainer

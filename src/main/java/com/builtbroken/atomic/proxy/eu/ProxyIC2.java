@@ -11,7 +11,7 @@ import com.builtbroken.atomic.proxy.Mods;
  * <p>
  * Handles seperate from mod interaction due to the API being broadly used by several mods.
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 5/17/2018.
  */
 public class ProxyIC2 extends ModProxy

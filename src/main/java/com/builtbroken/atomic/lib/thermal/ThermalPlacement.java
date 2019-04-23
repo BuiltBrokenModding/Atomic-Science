@@ -6,7 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 5/12/2018.
  */
 public class ThermalPlacement extends BlockPlacement

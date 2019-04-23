@@ -18,7 +18,7 @@ import java.util.HashMap;
  * If the source
  * becomes radioactive again. It will need to be registered again to the map to work.
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 5/8/2018.
  */
 public interface IRadiationSource extends IPosWorld, IDataMapSource

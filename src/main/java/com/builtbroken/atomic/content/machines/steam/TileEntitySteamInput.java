@@ -8,7 +8,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
 /**
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 5/15/2018.
  */
 public class TileEntitySteamInput extends TileEntityActive

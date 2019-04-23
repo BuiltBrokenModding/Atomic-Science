@@ -2,7 +2,6 @@ package com.builtbroken.test.as.accelerator.network;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
-import com.builtbroken.test.as.accelerator.ATestTube;
 import com.builtbroken.test.as.accelerator.ATubeTestCommon;
 import com.builtbroken.test.as.providers.EnumFacingSideArgumentsProvider;
 import com.builtbroken.test.as.world.FakeWorldAccess;

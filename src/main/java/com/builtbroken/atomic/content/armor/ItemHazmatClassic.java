@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Simple hazmat suit that takes damage as its used
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) & Calclavia
  */
 public class ItemHazmatClassic extends ItemArmor implements IAntiPoisonArmor

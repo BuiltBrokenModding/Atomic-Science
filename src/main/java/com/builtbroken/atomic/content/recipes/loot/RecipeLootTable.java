@@ -14,7 +14,7 @@ import java.util.function.Function;
 /**
  * Handles loot tables for processing machines
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 5/25/2018.
  */
 public class RecipeLootTable extends ContentProxy

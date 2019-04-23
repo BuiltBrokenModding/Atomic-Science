@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Applied to Item to note that it is part of a set of armor
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert)
  */
 @Deprecated //Being replaced with a capability system

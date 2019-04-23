@@ -5,7 +5,7 @@ package com.builtbroken.atomic.content.armor;
  * <p>
  * Only 1 level is used at the time. This will be the level less than current radiation value but greater than any other values lower than the radiation value.
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 9/24/2018.
  */
 public class ArmorRadLevelData implements Comparable<ArmorRadLevelData>

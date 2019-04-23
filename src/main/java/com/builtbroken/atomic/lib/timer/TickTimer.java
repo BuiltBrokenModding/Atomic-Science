@@ -7,7 +7,7 @@ import java.util.function.IntSupplier;
  * Object used to count ticks for a tile or other logic. Uses lambda functions to operate the result of the tick. Allowing
  * code to be reduced at near zero cost of performance.
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 10/10/2018.
  */
 public class TickTimer implements ITickTimer

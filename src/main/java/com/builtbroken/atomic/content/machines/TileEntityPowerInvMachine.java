@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Prefab for machines that consume power
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 5/20/2018.
  */
 public abstract class TileEntityPowerInvMachine<I extends IItemHandlerModifiable> extends TileEntityInventoryMachine<I>

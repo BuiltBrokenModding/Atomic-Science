@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  * Simple internal interface to note that a TileEntity has a GUI
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 1/8/2015
  * <p>
  * copied from VoltzEngine and merged with IPlayerUsing also from VoltzEngine

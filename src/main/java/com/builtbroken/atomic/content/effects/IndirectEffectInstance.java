@@ -7,7 +7,7 @@ import com.builtbroken.atomic.api.effect.IIndirectEffectType;
 /**
  * Similar in function to {@link net.minecraft.util.DamageSource} but used for indirect effects that do not cause damage.
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 4/19/2018.
  */
 public class IndirectEffectInstance implements IIndirectEffectInstance

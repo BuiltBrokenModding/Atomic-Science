@@ -9,7 +9,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 /**
  * Implementation for Forge Energy {@link net.minecraftforge.energy.IEnergyStorage}
  *
- * @see <a href="https://github.com/BuiltBrokenModding/VoltzEngine/blob/development/license.md">License</a> for what you can and can't do with the code.
+ *
  * Created by Dark(DarkGuardsman, Robert) on 9/14/2018.
  */
 public class PowerHandlerFE extends PowerHandler
