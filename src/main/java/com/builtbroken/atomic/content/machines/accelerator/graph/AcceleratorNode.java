@@ -42,8 +42,14 @@ public class AcceleratorNode implements IAcceleratorNode
     public int turnIndex = 0;
 
     public Consumer<AcceleratorParticle> onExitCallback;
+    public Consumer<AcceleratorParticle> onLeaveCallback;
     public Consumer<AcceleratorParticle> onEnterCallback;
     public Consumer<AcceleratorParticle> onMoveCallback;
+
+    public AcceleratorNode()
+    {
+        onLeaveCallback = (particle) -> AcceleratorHandler.spawnParticleInWorld(particle);
+    }
 
     public void setNetwork(AcceleratorNetwork network)
     {
@@ -375,6 +381,10 @@ public class AcceleratorNode implements IAcceleratorNode
         }
         else
         {
+            if(onLeaveCallback != null)
+            {
+                onLeaveCallback.accept(particle);
+            }
             //TODO exit tube into the world or explode if its a wall
         }
     }

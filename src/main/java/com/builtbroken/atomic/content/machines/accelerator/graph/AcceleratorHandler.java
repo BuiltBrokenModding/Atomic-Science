@@ -122,4 +122,13 @@ public class AcceleratorHandler
         //TODO sanity check
 
     }
+
+    public static void spawnParticleInWorld(AcceleratorParticle particle)
+    {
+        //TODO spawn entity in world
+        //TODO make entity bounce off walls
+        //TODO make it consume energy over time
+        //TODO explode if hits some materials
+        //TODO cause a lot of entity damage
+    }
 }
