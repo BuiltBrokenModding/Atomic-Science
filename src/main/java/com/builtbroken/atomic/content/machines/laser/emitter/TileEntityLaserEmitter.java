@@ -2,7 +2,7 @@ package com.builtbroken.atomic.content.machines.laser.emitter;
 
 import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.content.machines.accelerator.gun.TileEntityAcceleratorGun;
-import com.builtbroken.atomic.content.machines.container.TileEntityItemContainer;
+import com.builtbroken.atomic.content.machines.container.item.TileEntityItemContainer;
 import com.builtbroken.atomic.content.machines.laser.booster.TileEntityLaserBooster;
 import com.builtbroken.atomic.content.prefab.TileEntityMachine;
 import com.builtbroken.atomic.lib.power.Battery;

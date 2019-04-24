@@ -10,10 +10,10 @@ import com.builtbroken.atomic.content.machines.accelerator.gun.TileEntityAcceler
 import com.builtbroken.atomic.content.machines.accelerator.magnet.BlockMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
-import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
-import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTubePowered;
-import com.builtbroken.atomic.content.machines.container.BlockItemContainer;
-import com.builtbroken.atomic.content.machines.container.TileEntityItemContainer;
+import com.builtbroken.atomic.content.machines.accelerator.tube.normal.TileEntityAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.tube.powered.TileEntityAcceleratorTubePowered;
+import com.builtbroken.atomic.content.machines.container.item.BlockItemContainer;
+import com.builtbroken.atomic.content.machines.container.item.TileEntityItemContainer;
 import com.builtbroken.atomic.content.machines.laser.booster.BlockLaserBooster;
 import com.builtbroken.atomic.content.machines.laser.booster.TileEntityLaserBooster;
 import com.builtbroken.atomic.content.machines.laser.emitter.BlockLaserEmitter;

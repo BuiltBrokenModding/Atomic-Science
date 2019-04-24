@@ -1,10 +1,8 @@
 package com.builtbroken.test.as.accelerator.layout;
 
-import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
-import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
 import com.builtbroken.test.as.accelerator.ATestTube;
 import com.builtbroken.test.as.accelerator.ATubeTestCommon;
 import com.builtbroken.test.as.accelerator.connection.EntryFromArgumentsProvider;
@@ -19,7 +17,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**

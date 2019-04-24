@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.accelerator.tube;
+package com.builtbroken.atomic.content.machines.accelerator.tube.imp;
 
 import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;

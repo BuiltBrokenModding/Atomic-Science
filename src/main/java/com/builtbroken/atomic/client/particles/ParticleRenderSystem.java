@@ -2,7 +2,7 @@ package com.builtbroken.atomic.client.particles;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.CommonProxy;
-import com.builtbroken.atomic.content.machines.container.RenderEntityItem2;
+import com.builtbroken.atomic.client.RenderEntityItem2;
 import com.builtbroken.atomic.network.packet.client.PacketAcceleratorParticleSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

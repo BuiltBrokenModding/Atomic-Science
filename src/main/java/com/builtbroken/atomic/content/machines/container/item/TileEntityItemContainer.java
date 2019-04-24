@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.container;
+package com.builtbroken.atomic.content.machines.container.item;
 
 import com.builtbroken.atomic.content.prefab.TileEntityMachine;
 import io.netty.buffer.ByteBuf;

@@ -7,8 +7,8 @@ import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionTy
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorHandler;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNetwork;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
-import com.builtbroken.atomic.content.machines.accelerator.tube.AcceleratorTubeCap;
-import com.builtbroken.atomic.content.machines.container.TileEntityItemContainer;
+import com.builtbroken.atomic.content.machines.accelerator.tube.imp.AcceleratorTubeCap;
+import com.builtbroken.atomic.content.machines.container.item.TileEntityItemContainer;
 import com.builtbroken.atomic.content.machines.laser.emitter.TileEntityLaserEmitter;
 import com.builtbroken.atomic.content.prefab.TileEntityMachine;
 import com.builtbroken.atomic.lib.timer.TickTimerTileEntity;

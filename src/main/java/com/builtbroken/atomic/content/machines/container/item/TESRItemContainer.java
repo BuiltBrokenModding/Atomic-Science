@@ -1,5 +1,6 @@
-package com.builtbroken.atomic.content.machines.container;
+package com.builtbroken.atomic.content.machines.container.item;
 
+import com.builtbroken.atomic.client.RenderEntityItem2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

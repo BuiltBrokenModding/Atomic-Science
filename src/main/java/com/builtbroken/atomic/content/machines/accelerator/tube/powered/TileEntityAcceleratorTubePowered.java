@@ -1,21 +1,23 @@
-package com.builtbroken.atomic.content.machines.accelerator.tube;
+package com.builtbroken.atomic.content.machines.accelerator.tube.powered;
 
 import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
+import com.builtbroken.atomic.content.machines.accelerator.tube.normal.TileEntityAcceleratorTube;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 import java.util.*;
 
 /**
- *
  * Created by Dark(DarkGuardsman, Robert) on 12/9/2018.
  */
 public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube implements ITickable
 {
+
     private int timer = 0;
 
     protected final List<MagnetPos> magnetPosList = new ArrayList();
@@ -38,33 +40,45 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         {
             //Start timer
             timer = 100 + world.rand.nextInt(100);
-            updateLayout();
+            updateLayout(world);
         }
     }
 
     /**
      * Called each tick the particle moves inside the tube
+     *
      * @param particle
      */
-    protected void accelerate(AcceleratorParticle particle)
+    public void accelerate(AcceleratorParticle particle)
     {
         particle.addEnergy(magnetPower);
         particle.addVelocity(getAcceleration());
     }
 
-    protected float getAcceleration()
+    /**
+     * Calculates the acceleration to apply to particles passing through the tube
+     *
+     * @return acceleration, max of 0.1f currently
+     */
+    public float getAcceleration()
     {
         return Math.min(.1f, magnetPower / 10f);
     }
 
-    protected void updateLayout()
+    /**
+     * Called to update the layout of magnet
+     *
+     * @param worldAccess - world to use for checking layout
+     */
+    public void updateLayout(final IBlockAccess worldAccess)
     {
         //Check layout
-        if (isLayoutInvalid = scanForMagnets())
+        if (isLayoutInvalid = scanForMagnets(worldAccess))
         {
             //If invalid layout, clear magnet ownership
-            magnetPosList.forEach(pos -> {
-                TileEntity tile = world.getTileEntity(pos.pos);
+            magnetPosList.forEach(magnet ->
+            {
+                TileEntity tile = worldAccess.getTileEntity(magnet.pos());
                 if (tile instanceof TileEntityMagnet)
                 {
                     ((TileEntityMagnet) tile).setOwner(null);
@@ -77,18 +91,35 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         magnetPower = calculateMagnetPower();
     }
 
-    protected float calculateMagnetPower()
+    /**
+     * Calculates the power of the magnets
+     *
+     * @return power of magnets
+     */
+    public float calculateMagnetPower()
     {
         float power = 0;
         for (MagnetPos magnetPos : magnetPosList)
         {
-            power += magnetPos.power;
+            power += magnetPos.power();
         }
 
         return power;
     }
 
-    protected boolean scanForMagnets()
+    /**
+     * Called by {@link #updateLayout(IBlockAccess)} to scan for
+     * magnets connected to the tube. Either directly connected
+     * or indirectly connected via another magnet.
+     * <p>
+     * Uses a pathfinder to get magnets and forces magnets
+     * to be in the same axis as the tube. This means
+     * that magnets in front or behind of the tube are ignored.
+     *
+     * @param worldAccess - world to use for scanning
+     * @return true if current scan does not match last scan
+     */
+    public boolean scanForMagnets(final IBlockAccess worldAccess)
     {
         magnetPosList.clear();
 
@@ -100,7 +131,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         alreadySearched.add(getPos());
 
         //Get directions to path
-        List<EnumFacing> directions = new ArrayList(4);
+        final List<EnumFacing> directions = new ArrayList(4);
         for (EnumFacing enumFacing : EnumFacing.VALUES)
         {
             if (enumFacing != getDirection() && enumFacing != getDirection().getOpposite())
@@ -112,20 +143,20 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         //Loop until we run out of things to path
         while (queue.peek() != null)
         {
-            BlockPos pos = queue.poll();
+            final BlockPos pos = queue.poll();
 
             //Loop direction per post
             for (EnumFacing direction : directions)
             {
                 //Check that we have not already pathed
-                BlockPos next = pos.offset(direction);
+                final BlockPos next = pos.offset(direction);
                 if (!alreadySearched.contains(next))
                 {
                     //Mark as already pathed
                     alreadySearched.add(next);
 
                     //Get Tile
-                    final TileEntity tile = world.getTileEntity(next);
+                    final TileEntity tile = worldAccess.getTileEntity(next);
 
                     //Get power
                     final float power = AcceleratorHelpers.getMagnetPower(tubeCap, tile, direction);
@@ -141,15 +172,4 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         return true;
     }
 
-    public static class MagnetPos //TODO add flywheel pattern
-    {
-        public final BlockPos pos;
-        public final float power;
-
-        public MagnetPos(BlockPos pos, float power)
-        {
-            this.pos = pos;
-            this.power = power;
-        }
-    }
 }

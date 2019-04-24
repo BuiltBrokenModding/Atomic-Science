@@ -1,7 +1,7 @@
 package com.builtbroken.test.as.accelerator;
 
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
-import com.builtbroken.atomic.content.machines.accelerator.tube.TileEntityAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.tube.normal.TileEntityAcceleratorTube;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import org.junit.jupiter.api.Assertions;

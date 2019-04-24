@@ -6,6 +6,7 @@ import net.minecraft.util.IStringSerializable;
  *
  * Created by Dark(DarkGuardsman, Robert) on 11/10/2018.
  */
+@Deprecated //TODO convert to a boolean state
 public enum AcceleratorTubeType implements IStringSerializable
 {
     NORMAL,

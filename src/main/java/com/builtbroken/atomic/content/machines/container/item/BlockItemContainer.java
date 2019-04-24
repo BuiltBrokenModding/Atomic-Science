@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.container;
+package com.builtbroken.atomic.content.machines.container.item;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.prefab.BlockMachine;

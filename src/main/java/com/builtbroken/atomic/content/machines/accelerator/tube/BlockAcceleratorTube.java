@@ -4,6 +4,8 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
+import com.builtbroken.atomic.content.machines.accelerator.tube.normal.TileEntityAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.tube.powered.TileEntityAcceleratorTubePowered;
 import com.builtbroken.atomic.content.prefab.BlockPrefab;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -61,7 +63,7 @@ public class BlockAcceleratorTube extends BlockPrefab
                 {
                     if (!world.isRemote)
                     {
-                        ((TileEntityAcceleratorTubePowered) tile).scanForMagnets();
+                        ((TileEntityAcceleratorTubePowered) tile).scanForMagnets(world);
                         playerIn.sendMessage(new TextComponentString("Power: " + ((TileEntityAcceleratorTubePowered) tile).calculateMagnetPower()));
                     }
                     return true;
@@ -86,7 +88,7 @@ public class BlockAcceleratorTube extends BlockPrefab
                     playerIn.sendMessage(new TextComponentString("Connection State:"));
                     for(TubeSide side : TubeSide.SIDES)
                     {
-                        playerIn.sendMessage(new TextComponentString("---" + side.name() + ": " + ((TileEntityAcceleratorTube) tile).acceleratorNode.getConnectedTubeState(null, side)));
+                        playerIn.sendMessage(new TextComponentString("---" + side.name() + ": " + ((TileEntityAcceleratorTube) tile).getNode().getConnectedTubeState(null, side)));
                     }
                 }
                 return true;
@@ -169,9 +171,9 @@ public class BlockAcceleratorTube extends BlockPrefab
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileEntityAcceleratorTube)
         {
-            ((TileEntityAcceleratorTube) tile).direction = placer.getHorizontalFacing();
+            ((TileEntityAcceleratorTube) tile).setDirection(placer.getHorizontalFacing());
             ((TileEntityAcceleratorTube) tile).updateConnections(world,true, true);
-            ((TileEntityAcceleratorTube) tile).acceleratorNode.updateConnections(world);
+            ((TileEntityAcceleratorTube) tile).getNode().updateConnections(world);
         }
     }
 
@@ -185,9 +187,9 @@ public class BlockAcceleratorTube extends BlockPrefab
     public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityAcceleratorTube && ((TileEntityAcceleratorTube) tile).acceleratorNode.getNetwork() != null)
+        if (tile instanceof TileEntityAcceleratorTube && ((TileEntityAcceleratorTube) tile).getNode().getNetwork() != null)
         {
-            ((TileEntityAcceleratorTube) tile).acceleratorNode.getNetwork().destroy();
+            ((TileEntityAcceleratorTube) tile).getNode().getNetwork().destroy();
         }
         super.breakBlock(world, pos, state);
     }
@@ -215,7 +217,7 @@ public class BlockAcceleratorTube extends BlockPrefab
                 && !((TileEntityAcceleratorTube) tile).world().isRemote)
         {
             //((TileEntityAcceleratorTube) tile).updateConnections(true); - breaks connections
-            ((TileEntityAcceleratorTube) tile).acceleratorNode.updateConnections(world);
+            ((TileEntityAcceleratorTube) tile).getNode().updateConnections(world);
         }
     }
 

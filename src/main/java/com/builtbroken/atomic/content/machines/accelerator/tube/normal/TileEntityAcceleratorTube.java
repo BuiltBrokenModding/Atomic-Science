@@ -1,8 +1,10 @@
-package com.builtbroken.atomic.content.machines.accelerator.tube;
+package com.builtbroken.atomic.content.machines.accelerator.tube.normal;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
+import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.tube.imp.TileEntityAcceleratorTubePrefab;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
