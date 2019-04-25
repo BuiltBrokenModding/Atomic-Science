@@ -24,7 +24,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
 
     protected boolean isLayoutInvalid = false;
 
-    protected float magnetPower;
+    protected float _magnetPower;
 
     @Override
     public void onLoad()
@@ -44,6 +44,11 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         }
     }
 
+    public float getMagnetPower()
+    {
+        return _magnetPower;
+    }
+
     /**
      * Called each tick the particle moves inside the tube
      *
@@ -51,7 +56,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
      */
     public void accelerate(AcceleratorParticle particle)
     {
-        particle.addEnergy(magnetPower);
+        particle.addEnergy(getMagnetPower());
         particle.addVelocity(getAcceleration());
     }
 
@@ -62,7 +67,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
      */
     public float getAcceleration()
     {
-        return Math.min(.1f, magnetPower / 10f);
+        return Math.min(.1f, getMagnetPower() / 10f);
     }
 
     /**
@@ -88,7 +93,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
         }
 
         //Calculate power
-        magnetPower = calculateMagnetPower();
+        _magnetPower = calculateMagnetPower();
     }
 
     /**
