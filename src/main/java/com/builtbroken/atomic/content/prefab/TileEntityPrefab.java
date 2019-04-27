@@ -267,6 +267,11 @@ public abstract class TileEntityPrefab extends TileEntity implements IPacketIDRe
         return world != null ? world.getTileEntity(pos) : null;
     }
 
+    public TileEntity getTileEntityIfLoaded(BlockPos pos)
+    {
+        return world != null && world.isBlockLoaded(pos) ? getTileEntity(pos) : null;
+    }
+
     public TileEntity getTileEntity(BlockPos pos, EnumFacing side)
     {
         return getTileEntity(pos.offset(side));

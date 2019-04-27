@@ -67,7 +67,8 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
      */
     public float getAcceleration()
     {
-        return Math.min(.1f, getMagnetPower() / 10f);
+        float baseScale = 0.005f * (getMagnetPower() / 60f); //Scale for default 8 magnet setup -> 8 magnets produce 60 power
+        return Math.min(.1f, baseScale);
     }
 
     /**
@@ -89,7 +90,6 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
                     ((TileEntityMagnet) tile).setOwner(null);
                 }
             });
-            magnetPosList.clear();
         }
 
         //Calculate power

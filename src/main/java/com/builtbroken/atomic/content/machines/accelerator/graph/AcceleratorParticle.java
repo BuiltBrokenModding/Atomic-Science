@@ -158,6 +158,11 @@ public class AcceleratorParticle implements IPos3D
         setVelocity(movementPerTick + acceleration);
     }
 
+    public float getVelocity()
+    {
+        return movementPerTick;
+    }
+
     @Override
     public double z()
     {

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- *
  * Created by Dark(DarkGuardsman, Robert) on 12/15/2018.
  */
 public class AcceleratorNode implements IAcceleratorNode
@@ -70,7 +69,10 @@ public class AcceleratorNode implements IAcceleratorNode
             final IAcceleratorNode node = getNode(world, facing);
             if (node == null && getNode(facing) != null)
             {
-                getNetwork().destroy();
+                if (getNetwork() != null)
+                {
+                    getNetwork().destroy();
+                }
                 return;
             }
             else if (node != null)
@@ -172,7 +174,7 @@ public class AcceleratorNode implements IAcceleratorNode
     {
         final TileEntity tileEntity = access.getTileEntity(getPos().offset(facing));
         final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, facing.getOpposite());
-        if(tube != null)
+        if (tube != null)
         {
             return tube.getNode();
         }
@@ -345,7 +347,7 @@ public class AcceleratorNode implements IAcceleratorNode
 
     private float move(AcceleratorParticle particle, EnumFacing direction, float remaining, float distanceToMove)
     {
-        if(onMoveCallback != null)
+        if (onMoveCallback != null)
         {
             onMoveCallback.accept(particle);
         }
@@ -381,7 +383,7 @@ public class AcceleratorNode implements IAcceleratorNode
         }
         else
         {
-            if(onLeaveCallback != null)
+            if (onLeaveCallback != null)
             {
                 onLeaveCallback.accept(particle);
             }

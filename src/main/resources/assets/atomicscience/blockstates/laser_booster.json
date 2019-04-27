@@ -1,7 +1,8 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "atomicscience:laser/laser_booster"
+    "model": "atomicscience:laser/laser_booster",
+    "particle": "atomicscience:blocks/accelerator/tube_top"
   },
   "variants": {
     "normal": [

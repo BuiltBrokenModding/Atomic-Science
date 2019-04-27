@@ -1,7 +1,8 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "atomicscience:accelerator_tube/tube-gun"
+    "model": "atomicscience:accelerator_tube/tube-gun",
+    "particle": "atomicscience:blocks/accelerator/tube_top"
   },
   "variants": {
     "normal": [

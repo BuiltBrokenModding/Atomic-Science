@@ -11,6 +11,7 @@ import com.builtbroken.atomic.content.machines.accelerator.magnet.BlockMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.tube.normal.TileEntityAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.tube.powered.BlockAcceleratorTubePowered;
 import com.builtbroken.atomic.content.machines.accelerator.tube.powered.TileEntityAcceleratorTubePowered;
 import com.builtbroken.atomic.content.machines.container.item.BlockItemContainer;
 import com.builtbroken.atomic.content.machines.container.item.TileEntityItemContainer;
@@ -70,6 +71,7 @@ public final class ASBlocks
 
     public static Block blockMagnet;
     public static Block blockAcceleratorTube;
+    public static Block blockAcceleratorTubePowered;
     public static Block blockAcceleratorGun;
     public static Block blockAcceleratorExit;
 
@@ -118,6 +120,8 @@ public final class ASBlocks
 
         event.getRegistry().register(blockAcceleratorTube = new BlockAcceleratorTube());
         GameRegistry.registerTileEntity(TileEntityAcceleratorTube.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_tube"));
+
+        event.getRegistry().register(blockAcceleratorTubePowered = new BlockAcceleratorTubePowered());
         GameRegistry.registerTileEntity(TileEntityAcceleratorTubePowered.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_tube_powered"));
 
         event.getRegistry().register(blockAcceleratorGun = new BlockAcceleratorGun());

@@ -3,15 +3,20 @@ package com.builtbroken.atomic.content.machines.accelerator.tube.normal;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.tube.imp.TileEntityAcceleratorTubePrefab;
+import com.builtbroken.jlib.data.science.units.UnitDisplay;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -31,6 +36,9 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     protected EnumFacing direction;
     private TubeConnectionType _connectionType = TubeConnectionType.NORMAL;
 
+    private static final UnitDisplay.Unit SPEED = new UnitDisplay.Unit("Meters per Tick", "m/t");
+    private static final UnitDisplay SPEED_DISPLAY = new UnitDisplay(SPEED, 0, false).symbol(true);
+
 
     @Override
     public void markDirty()
@@ -42,19 +50,46 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     public void onLoad()
     {
         acceleratorNode.setData(getPos(), getDirection(), getConnectionType());
+        acceleratorNode.onMoveCallback = (particle) -> debugSpeed(particle);
         if (isServer())
         {
             updateState(false, true);
         }
     }
 
+    public void debugSpeed(AcceleratorParticle particle)
+    {
+        final float vel = particle.getVelocity();
+        SPEED_DISPLAY.value = vel;
+
+        final String speed = SPEED_DISPLAY.toString();
+        setSign(getPos().offset(getDirection().rotateY()), speed);
+        setSign(getPos().offset(getDirection().rotateY().getOpposite()), speed);
+    }
+
+    public void setSign(BlockPos pos, String speed)
+    {
+        if(world.isBlockLoaded(pos))
+        {
+            TileEntity tile = getTileEntityIfLoaded(pos);
+            IBlockState iblockstate = world.getBlockState(pos);
+            if(tile instanceof TileEntitySign)
+            {
+                TileEntitySign sign = (TileEntitySign) tile;
+                String signText1 = sign.signText[0] != null ? sign.signText[0].getUnformattedText() : null;
+                if(signText1 != null && signText1.trim().equalsIgnoreCase("[SPEED]"))
+                {
+                    sign.signText[1] = new TextComponentString(speed);
+                    sign.markDirty();
+                    world.notifyBlockUpdate(pos, iblockstate, iblockstate, 3);
+                }
+            }
+        }
+    }
+
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate)
     {
-        if (oldState.getBlock() instanceof BlockAcceleratorTube && oldState.getBlock() == newSate.getBlock())
-        {
-            return oldState.getValue(BlockAcceleratorTube.TYPE_PROP) != newSate.getValue(BlockAcceleratorTube.TYPE_PROP);
-        }
         return oldState.getBlock() != newSate.getBlock();
     }
 

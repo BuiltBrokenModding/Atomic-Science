@@ -174,7 +174,7 @@ public class UnitDisplay
 		public final String name;
 		public final String symbol;
 
-		private Unit(String name, String symbol)
+		public Unit(String name, String symbol)
 		{
 			this.name = name;
 			this.symbol = symbol;

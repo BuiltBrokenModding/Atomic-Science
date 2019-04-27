@@ -1,7 +1,8 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "atomicscience:accelerator_tube/tube-exit"
+    "model": "atomicscience:accelerator_tube/tube-exit",
+    "particle": "atomicscience:blocks/accelerator/tube_top"
   },
   "variants": {
     "normal": [

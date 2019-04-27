@@ -18,8 +18,8 @@
       "normal": {
         "model": "atomicscience:accelerator_tube/tube-normal",
         "textures": {
-          "0": "atomicscience:blocks/accelerator/tube_top",
-          "particle": "atomicscience:blocks/accelerator/tube_top"
+          "0": "atomicscience:blocks/accelerator/tube_top_powered",
+          "particle": "atomicscience:blocks/accelerator/tube_top_powered"
         }
       },
       "corner_left": {
