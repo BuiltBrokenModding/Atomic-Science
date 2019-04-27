@@ -3,7 +3,7 @@ package com.builtbroken.atomic.content.machines.accelerator.tube.powered;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASItems;
-import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.tube.normal.BlockAcceleratorTube;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;

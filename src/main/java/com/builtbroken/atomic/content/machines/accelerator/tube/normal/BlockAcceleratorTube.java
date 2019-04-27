@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.accelerator.tube;
+package com.builtbroken.atomic.content.machines.accelerator.tube.normal;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.ASBlocks;

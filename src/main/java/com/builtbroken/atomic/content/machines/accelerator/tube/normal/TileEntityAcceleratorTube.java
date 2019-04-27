@@ -4,7 +4,6 @@ import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionTy
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
-import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.tube.imp.TileEntityAcceleratorTubePrefab;
 import com.builtbroken.jlib.data.science.units.UnitDisplay;
 import io.netty.buffer.ByteBuf;

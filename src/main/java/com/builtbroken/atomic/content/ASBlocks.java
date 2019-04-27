@@ -9,7 +9,7 @@ import com.builtbroken.atomic.content.machines.accelerator.gun.BlockAcceleratorG
 import com.builtbroken.atomic.content.machines.accelerator.gun.TileEntityAcceleratorGun;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.BlockMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
-import com.builtbroken.atomic.content.machines.accelerator.tube.BlockAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.tube.normal.BlockAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.tube.normal.TileEntityAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.tube.powered.BlockAcceleratorTubePowered;
 import com.builtbroken.atomic.content.machines.accelerator.tube.powered.TileEntityAcceleratorTubePowered;
