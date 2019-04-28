@@ -1,9 +1,11 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube.powered;
 
 import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
+import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.tube.normal.TileEntityAcceleratorTube;
+import com.builtbroken.atomic.lib.power.Battery;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -17,14 +19,17 @@ import java.util.*;
  */
 public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube implements ITickable
 {
-
-    private int timer = 0;
+    private int layoutScanTimer = 0;
 
     protected final List<MagnetPos> magnetPosList = new ArrayList();
 
     protected boolean isLayoutInvalid = false;
 
     protected float _magnetPower;
+
+    public final Battery battery = new Battery(() -> (int) (ConfigContent.ACCELERATOR.ENERGY_PER_MAGNET * magnetPosList.size() * 1.5));
+
+    float powerScale = 0;
 
     @Override
     public void onLoad()
@@ -36,17 +41,33 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
     @Override
     public void update() //TODO replace with chunk update event and block update event to reduce tick lag
     {
-        if (timer-- <= 0)
+        if (isServer())
         {
-            //Start timer
-            timer = 100 + world.rand.nextInt(100);
-            updateLayout(world);
+            //Consume power, scale based on power consumed
+            powerScale = battery.extractEnergy(getPowerConsumption(), false) / (float) getPowerConsumption();
+
+            //Check layout TODO only do on changes to chunks
+            if (layoutScanTimer-- <= 0)
+            {
+                //Start timer
+                layoutScanTimer = 100 + world.rand.nextInt(100);
+                updateLayout(world);
+            }
+        }
+        else
+        {
+            //TODO effects
         }
     }
 
     public float getMagnetPower()
     {
         return _magnetPower;
+    }
+
+    public int getPowerConsumption()
+    {
+        return ConfigContent.ACCELERATOR.ENERGY_PER_MAGNET * magnetPosList.size();
     }
 
     /**
@@ -56,8 +77,8 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
      */
     public void accelerate(AcceleratorParticle particle)
     {
-        particle.addEnergy(getMagnetPower());
-        particle.addVelocity(getAcceleration());
+        particle.addEnergy(getMagnetPower() * powerScale);
+        particle.addVelocity(getAcceleration() * powerScale);
     }
 
     /**
@@ -87,7 +108,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
                 TileEntity tile = worldAccess.getTileEntity(magnet.pos());
                 if (tile instanceof TileEntityMagnet)
                 {
-                    ((TileEntityMagnet) tile).setOwner(null);
+                    ((TileEntityMagnet) tile).setOwner(this);
                 }
             });
         }
@@ -127,6 +148,14 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
     public boolean scanForMagnets(final IBlockAccess worldAccess)
     {
         magnetPosList.clear();
+        magnetPosList.forEach(magnet ->
+        {
+            TileEntity tile = worldAccess.getTileEntity(magnet.pos());
+            if (tile instanceof TileEntityMagnet)
+            {
+                ((TileEntityMagnet) tile).setOwner(null);
+            }
+        });
 
         final Set<BlockPos> alreadySearched = new HashSet();
         final Queue<BlockPos> queue = new LinkedList();

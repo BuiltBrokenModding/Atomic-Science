@@ -21,6 +21,7 @@ public class PacketAcceleratorParticleSync implements IPacket
     public UUID ID;
     public int dim;
     public float cx, cy, cz;
+    public float speed;
 
     public ItemStack renderItem = ItemStack.EMPTY;
 
@@ -36,6 +37,7 @@ public class PacketAcceleratorParticleSync implements IPacket
         cx = particle.xf();
         cy = particle.yf();
         cz = particle.zf();
+        speed = particle.getVelocity();
         renderItem = particle.getItem();
     }
 
@@ -48,6 +50,7 @@ public class PacketAcceleratorParticleSync implements IPacket
         buffer.writeFloat(cx);
         buffer.writeFloat(cy);
         buffer.writeFloat(cz);
+        buffer.writeFloat(speed);
         ByteBufUtils.writeItemStack(buffer, renderItem);
     }
 
@@ -59,6 +62,7 @@ public class PacketAcceleratorParticleSync implements IPacket
         cx = buffer.readFloat();
         cy = buffer.readFloat();
         cz = buffer.readFloat();
+        speed = buffer.readFloat();
         renderItem = ByteBufUtils.readItemStack(buffer);
     }
 

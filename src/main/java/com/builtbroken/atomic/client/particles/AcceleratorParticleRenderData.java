@@ -20,5 +20,8 @@ public class AcceleratorParticleRenderData
     public float energy;
     public float speed;
 
+    public float yawRotation = 0;
+    public float pitchRotation = 0;
+
     public int keepAlive = 0;
 }

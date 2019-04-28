@@ -58,8 +58,10 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
 
     public void debugSpeed(AcceleratorParticle particle)
     {
+        //TODO add config to disable
         final float vel = particle.getVelocity();
         SPEED_DISPLAY.value = vel;
+        SPEED_DISPLAY.decimalPlaces = 4;
 
         final String speed = SPEED_DISPLAY.toString();
         setSign(getPos().offset(getDirection().rotateY()), speed);

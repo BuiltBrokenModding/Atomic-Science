@@ -5,7 +5,6 @@ import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
-import com.builtbroken.atomic.content.machines.accelerator.tube.normal.TileEntityAcceleratorTube;
 import com.builtbroken.atomic.content.prefab.BlockPrefab;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -85,16 +84,13 @@ public class BlockAcceleratorTube extends BlockPrefab
             }
             else if (heldItem.getItem() == Items.REDSTONE)
             {
-                if (!world.isRemote)
+                if (((TileEntityAcceleratorTube) tile).getConnectionType() == TubeConnectionType.NORMAL)
                 {
-                    if (((TileEntityAcceleratorTube) tile).getConnectionType() == TubeConnectionType.NORMAL)
-                    {
-                        switchType(world, pos, state, tile); //TODO consume resources
-                    }
-                    else
-                    {
-                        playerIn.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".error.normal.conversion"), true);
-                    }
+                    switchType(world, pos, state, tile); //TODO consume resources
+                }
+                else if (!world.isRemote)
+                {
+                    playerIn.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".error.normal.conversion"), true);
                 }
                 return true;
             }
@@ -124,6 +120,7 @@ public class BlockAcceleratorTube extends BlockPrefab
 
         //Place new block
         world.setBlockState(pos, getSwitchState(currentState));
+        currentState = world.getBlockState(pos);
 
         //Restore data
         tile = world.getTileEntity(pos);
@@ -132,6 +129,9 @@ public class BlockAcceleratorTube extends BlockPrefab
             tile.readFromNBT(save);
             ((TileEntityAcceleratorTube) tile).updateConnections(world, false, true);
             ((TileEntityAcceleratorTube) tile).updateState(true, true);
+
+            tile.markDirty();
+            world.notifyBlockUpdate(pos, currentState, world.getBlockState(pos), 3);
         }
     }
 

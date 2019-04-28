@@ -84,7 +84,13 @@ public class ParticleRenderSystem
             entityItem.setItem(data.renderItem == null || data.renderItem.isEmpty() ? brokenItem : data.renderItem);
             entityItem.hoverStart = 0;
 
+            data.yawRotation += partialTicks * 50 * Math.max(0.1, Math.min(15, data.speed / 10));
+            data.pitchRotation += partialTicks * 50 * Math.max(0.1, Math.min(15, data.speed / 10));
+            entityItem.rotationYaw = data.yawRotation;
+            entityItem.rotationPitch = data.pitchRotation;
+
             //Render
+            //GlStateManager.scale(0.8, 0.8, 0.8);
             renderEntityItem.doRender(entityItem, data.cx, data.cy, data.cz, 0, 0);
 
             GlStateManager.popMatrix();
@@ -113,6 +119,7 @@ public class ParticleRenderSystem
             data.cx = packet.cx;
             data.cy = packet.cy;
             data.cz = packet.cz;
+            data.speed = packet.speed;
             data.renderItem = packet.renderItem;
             data.keepAlive = 0;
         }

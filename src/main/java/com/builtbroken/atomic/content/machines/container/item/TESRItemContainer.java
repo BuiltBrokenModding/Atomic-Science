@@ -46,10 +46,11 @@ public class TESRItemContainer extends TileEntitySpecialRenderer<TileEntityItemC
             //render
             GlStateManager.pushMatrix();
             entityItem.rotationYaw = tile.rotation;
+            entityItem.rotationPitch = tile.rotation;
             float bob = (float)(Math.sin((tile.getTicks() + partialTicks) / 10f) * 0.025 - 0.0125);
             if(stackToRender.getItem() instanceof ItemBlock)
             {
-                renderEntityItem.doRender(entityItem, x + 0.5, y + 0.3 + bob, z + 0.5, 0, 0);
+                renderEntityItem.doRender(entityItem, x + 0.5, y + 0.5 + bob, z + 0.5, 0, 0);
             }
             else
             {
