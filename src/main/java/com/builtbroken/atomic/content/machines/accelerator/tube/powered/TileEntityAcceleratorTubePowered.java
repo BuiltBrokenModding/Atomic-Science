@@ -19,6 +19,8 @@ import java.util.*;
  */
 public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube implements ITickable
 {
+    public static final float BASE_MAGNET_POWER = 60f;
+
     private int layoutScanTimer = 0;
 
     protected final List<MagnetPos> magnetPosList = new ArrayList();
@@ -88,8 +90,8 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
      */
     public float getAcceleration()
     {
-        float baseScale = 0.005f * (getMagnetPower() / 60f); //Scale for default 8 magnet setup -> 8 magnets produce 60 power
-        return Math.min(.1f, baseScale);
+        float baseScale = ConfigContent.ACCELERATOR.ACCELERATION_SCALE * (getMagnetPower() / BASE_MAGNET_POWER); //Scale for default 8 magnet setup -> 8 magnets produce 60 power
+        return Math.min(ConfigContent.ACCELERATOR.ACCELERATION_MAX, baseScale);
     }
 
     /**

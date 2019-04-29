@@ -1,5 +1,6 @@
 package com.builtbroken.test.as.accelerator.acc;
 
+import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.tube.powered.TileEntityAcceleratorTubePowered;
 import com.builtbroken.test.as.TestHelpers;
@@ -20,7 +21,7 @@ public class TestAcceleration
             @Override
             public float getMagnetPower()
             {
-                return 0.5f;
+                return BASE_MAGNET_POWER;
             }
         };
 
@@ -30,7 +31,7 @@ public class TestAcceleration
         AcceleratorParticle particle = new AcceleratorParticle(0, BlockPos.ORIGIN, EnumFacing.NORTH, 1);
         particle.setVelocity(0.5f);
 
-        TestHelpers.compareFloats3Zeros(0.5f / 10f, tube.getAcceleration());
+        TestHelpers.compareFloats3Zeros(ConfigContent.ACCELERATOR.ACCELERATION_SCALE, tube.getAcceleration());
 
     }
 }

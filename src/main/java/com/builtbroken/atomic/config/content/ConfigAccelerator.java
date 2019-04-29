@@ -12,4 +12,14 @@ public class ConfigAccelerator
     @Config.LangKey("config.atomicscience:content.accelerator.magnet.power.title")
     @Config.RangeInt(min = 0, max = Integer.MAX_VALUE / 100)
     public int ENERGY_PER_MAGNET = 100;
+
+    @Config.Name("acceleration_scale")
+    @Config.Comment("Acceleration to use for a basic setup, scales with ring size. Default ring is 8 magnets around a tube in a box shape.")
+    @Config.LangKey("config.atomicscience:content.accelerator.scale.title")
+    public float ACCELERATION_SCALE = 0.005f;
+
+    @Config.Name("acceleration_max")
+    @Config.Comment("Largest amount of acceleration a single ring can produce")
+    @Config.LangKey("config.atomicscience:content.accelerator.max.title")
+    public float ACCELERATION_MAX = 0.1f;
 }
