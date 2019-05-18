@@ -8,6 +8,7 @@ import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.armor.ArmorRadData;
 import com.builtbroken.atomic.content.armor.ArmorRadLevelData;
 import com.builtbroken.atomic.content.armor.ArmorRadiationHandler;
+import com.builtbroken.atomic.content.machines.laser.emitter.LaserModes;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.network.packet.trigger.PacketMouse;
 import net.minecraft.block.state.IBlockState;
@@ -27,6 +28,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
+import java.util.HashMap;
 
 public class ClientProxy extends CommonProxy
 {
@@ -42,6 +44,10 @@ public class ClientProxy extends CommonProxy
     /** Client Cache: Amount of rads the player has taken */
     public static float PREV_RAD_PLAYER = 0;
 
+    public static final HashMap<String, ParticleSpawnFunction> PARTICLE_HANDLERS = new HashMap();
+
+    private final float[] colorGetArray = new float[4];
+
     public ClientProxy()
     {
         super("ClientProxy");
@@ -52,6 +58,12 @@ public class ClientProxy extends CommonProxy
     {
         OBJLoader.INSTANCE.addDomain(AtomicScience.DOMAIN);
         MinecraftForge.EVENT_BUS.register(this);
+
+        //Register particles
+        PARTICLE_HANDLERS.put(EffectRefs.LAZER_NORMAL, (x, y, z, vx, vy, vz) -> lazer(x, y, z, LaserModes.NORMAL));
+        PARTICLE_HANDLERS.put(EffectRefs.LAZER_FIELD, (x, y, z, vx, vy, vz) -> lazer(x, y, z, LaserModes.FIELD));
+        PARTICLE_HANDLERS.put(EffectRefs.LAZER_NORMAL_FIRE, (x, y, z, vx, vy, vz) -> lazerFire(x, y, z, vx, vy, vz, LaserModes.NORMAL));
+        PARTICLE_HANDLERS.put(EffectRefs.LAZER_FIELD_FIRE, (x, y, z, vx, vy, vz) -> lazerFire(x, y, z, vx, vy, vz, LaserModes.FIELD));
     }
 
     @Override
@@ -94,7 +106,7 @@ public class ClientProxy extends CommonProxy
             {
                 ArmorRadLevelData armorRadLevelData = armorRadData.radiationLevels.get(i);
                 String prefx = "[" + i + "] ";
-                event.getToolTip().add(prefx  + armorRadLevelData.levelStart + "rads");
+                event.getToolTip().add(prefx + armorRadLevelData.levelStart + "rads");
                 event.getToolTip().add(padLeft("  -" + armorRadLevelData.protection_percent + "%  -" + armorRadLevelData.protection_flat, prefx.length() + 1));
             }
         }
@@ -121,7 +133,14 @@ public class ClientProxy extends CommonProxy
         //TODO build an effect system to register effects
         if (Minecraft.getMinecraft().world != null)
         {
-            if (particle.startsWith(EffectRefs.STEAM))
+            if (PARTICLE_HANDLERS.containsKey(particle))
+            {
+                PARTICLE_HANDLERS.get(particle).spawn(x, y, z, vx, vy, vz);
+            }
+
+
+            //TODO convert to handlers
+            else if (particle.startsWith(EffectRefs.STEAM))
             {
                 //TODO implement
             }
@@ -158,7 +177,7 @@ public class ClientProxy extends CommonProxy
             {
                 extractorRunning(x, y, z, (int) vx);
             }
-            else if(particle.equalsIgnoreCase(EffectRefs.ACCELERATOR_PARTICLE))
+            else if (particle.equalsIgnoreCase(EffectRefs.ACCELERATOR_PARTICLE))
             {
                 Minecraft.getMinecraft().world.spawnParticle(EnumParticleTypes.HEART,
                         x + r(0.4),
@@ -365,6 +384,63 @@ public class ClientProxy extends CommonProxy
                     (float) (1f - r(0.2) + r(0.2)));
             Minecraft.getMinecraft().effectRenderer.addEffect(smoke.setColor(Color.GREEN));
         }
+    }
+
+    private void lazer(double x, double y, double z, LaserModes laserModes)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            spawnParticle(EnumParticleTypes.REDSTONE,
+                    x + 0.05 * Math.random(),
+                    y + 0.05 * Math.random(),
+                    z + 0.05 * Math.random(),
+                    laserModes.color);
+        }
+    }
+
+    private void lazerFire(double sx, double sy, double sz, double ex, double ey, double ez, LaserModes laserModes)
+    {
+        //Get difference in start and end
+        final double deltaX = ex - sx;
+        final double deltaY = ey - sy;
+        final double deltaZ = ez - sz;
+
+        //Get distance
+        final double distance = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY) + (deltaZ * deltaZ));
+
+        //Normalize
+        final double vx = deltaX / distance;
+        final double vy = deltaY / distance;
+        final double vz = deltaZ / distance;
+
+        //Get steps
+        final int steps = (int) Math.ceil(distance / 0.2);
+        final double dStep = distance / steps;
+
+        //Spawn particles
+        for (int step = 0; step < steps; step++)
+        {
+            final double px = sx + dStep * step * vx;
+            final double py = sy + dStep * step * vy;
+            final double pz = sz + dStep * step * vz;
+            spawnParticle(EnumParticleTypes.REDSTONE, px, py, pz, laserModes.color);
+        }
+    }
+
+    private void spawnParticle(EnumParticleTypes type, double x, double y, double z)
+    {
+        spawnParticle(type, x, y, z, 0, 0, 0);
+    }
+
+    private void spawnParticle(EnumParticleTypes type, double x, double y, double z, Color color)
+    {
+        float[] colors = color.getRGBComponents(colorGetArray);
+        spawnParticle(type, x, y, z, colors[0], colors[1], colors[2]);
+    }
+
+    private void spawnParticle(EnumParticleTypes type, double x, double y, double z, double vx, double vy, double vz, int... nums)
+    {
+        Minecraft.getMinecraft().effectRenderer.spawnEffectParticle(type.getParticleID(), x, y, z, vx, vy, vz, nums);
     }
 
     private void reactorRunning(double x, double y, double z)

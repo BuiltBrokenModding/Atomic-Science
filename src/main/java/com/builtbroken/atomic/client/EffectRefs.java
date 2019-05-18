@@ -21,4 +21,10 @@ public final class EffectRefs
     public static final String REACTOR_RUNNING = "reactor:running";
 
     public static final String ACCELERATOR_PARTICLE = "accelerator:particle";
+
+    public static final String LAZER_NORMAL = "laser:normal";
+    public static final String LAZER_FIELD = "laser:field";
+
+    public static final String LAZER_NORMAL_FIRE = "laser:normal.fire";
+    public static final String LAZER_FIELD_FIRE = "laser:field.fire";
 }

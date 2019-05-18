@@ -57,6 +57,7 @@ tile.atomicscience:accelerator.tube.error.normal.conversion=Can only convert nor
 
 tile.atomicscience:laser.emitter.name=Laser Emitter
 tile.atomicscience:laser.emitter.info=Emittes a laser for use, in other process such as, pushing particles
+tile.atomicscience:laser.emitter.laser.mode.set.field=Laser Upgraded to field projector mode
 
 tile.atomicscience:laser.booster.name=Laser Booster
 tile.atomicscience:laser.booster.info=Used to power the laser emitter, stack to increase power
@@ -225,6 +226,8 @@ config.atomicscience:content.power.usage.enable.title=Enable
 config.atomicscience:content.power.usage.boiler.title=Chem Boiler
 config.atomicscience:content.power.usage.extractor.title=Chem Extractor
 config.atomicscience:content.power.usage.centrifuge.title=Chem Centrifuge
+config.atomicscience:content.power.usage.particle.capture.title=Particle Capture
+config.atomicscience:content.power.usage.particle.contain.title=Particle Containment
 
 ###### Reactor
 config.atomicscience:content.reactor.title=Reactor
@@ -232,6 +235,15 @@ config.atomicscience:content.reactor.fuel.rod.time.title=Fuel Rod Burn Time
 config.atomicscience:content.reactor.breeder.rod.time.title=Breeder Rod Burn Time
 config.atomicscience:content.reactor.fuel.rod.heat.title=Fuel Rod Heat Generation
 config.atomicscience:content.reactor.breeder.rod.heat.title=Breeder Rod Heat Generation
+
+###### Laser
+config.atomicscience:content.laser.booster.count.title=Max Boosters
+config.atomicscience:content.laser.fire.cost.single.title=Energy Cost Burst
+config.atomicscience:content.laser.fire.cost.constant.title=Energy Cost Constant
+config.atomicscience:content.laser.field.output.title=Field Energy Output
+config.atomicscience:content.laser.booster.buffer.title=Booster Energy Capacity
+config.atomicscience:content.laser.cooldown.title=Burst Cooldown
+config.atomicscience:content.laser.firing.delay.title=Burst Delay
 
 #### Logic
 config.atomicscience:logic.title=Logic

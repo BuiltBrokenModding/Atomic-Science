@@ -1,6 +1,8 @@
 package com.builtbroken.atomic.content.machines.container.item;
 
+import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.content.prefab.TileEntityMachine;
+import com.builtbroken.atomic.lib.power.Battery;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -42,6 +44,9 @@ public class TileEntityItemContainer extends TileEntityMachine
     private ItemStack _cache;
 
     public float rotation = 0;
+
+    //do not expose, used for internal energy checks... feed from lasers
+    public Battery internalBattery = new Battery(() -> ConfigContent.POWER_USAGE.PARTICLE_CAPTURE_COST + ConfigContent.POWER_USAGE.PARTICLE_CONTAINMENT_COST * 10);
 
     public ItemStackHandler getInventory()
     {

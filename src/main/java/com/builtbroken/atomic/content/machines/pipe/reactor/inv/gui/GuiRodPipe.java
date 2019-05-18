@@ -1,6 +1,6 @@
-package com.builtbroken.atomic.content.machines.reactor.pipe.inv.gui;
+package com.builtbroken.atomic.content.machines.pipe.reactor.inv.gui;
 
-import com.builtbroken.atomic.content.machines.reactor.pipe.inv.TileEntityRodPipeInv;
+import com.builtbroken.atomic.content.machines.pipe.reactor.inv.TileEntityRodPipeInv;
 import com.builtbroken.atomic.lib.gui.GuiContainerBase;
 import net.minecraft.entity.player.EntityPlayer;
 

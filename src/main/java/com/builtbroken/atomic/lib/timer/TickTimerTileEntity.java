@@ -27,6 +27,11 @@ public class TickTimerTileEntity implements ITickTimer<TileEntity>
         return new TickTimerTileEntity(triggerTime, consumer, () -> true);
     }
 
+    public static TickTimerTileEntity newSimple(IntConsumer consumer)
+    {
+        return new TickTimerTileEntity(0, consumer, () -> true);
+    }
+
     public static TickTimerTileEntity newConditional(int triggerTime, IntConsumer consumer, BooleanSupplier shouldRun)
     {
         return new TickTimerTileEntity(triggerTime, consumer, shouldRun);
@@ -35,7 +40,7 @@ public class TickTimerTileEntity implements ITickTimer<TileEntity>
     @Override
     public void tick(TileEntity host, int systemTick)
     {
-        if (shouldRun.getAsBoolean() && systemTick % triggerTime == 0)
+        if (shouldRun.getAsBoolean() && (triggerTime <= 0 || systemTick % triggerTime == 0))
         {
             function.accept(systemTick);
         }

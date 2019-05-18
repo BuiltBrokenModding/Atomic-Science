@@ -118,7 +118,7 @@ public abstract class TileEntityPowerInvMachine<I extends IItemHandlerModifiable
      */
     public int getMaxEnergyStored()
     {
-        return getEnergyUsage() * 10;
+        return getEnergyUsage() * 10; //TODO allow to be configured
     }
 
     /**

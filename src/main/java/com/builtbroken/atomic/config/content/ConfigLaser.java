@@ -15,9 +15,21 @@ public class ConfigLaser
 
     @Config.Name("fire_cost")
     @Config.Comment("Amount of energy to consume to fire the laser in a single burst per booster")
-    @Config.LangKey("config.atomicscience:content.laser.fire.cost.title")
+    @Config.LangKey("config.atomicscience:content.laser.fire.cost.single.title")
     @Config.RangeInt(min = 0, max = (Integer.MAX_VALUE / 2))
     public int FIRING_COST = 100000;
+
+    @Config.Name("fire_cost_constant")
+    @Config.Comment("Amount of energy to consume to keep a laser running constantly (per tick, 20 ticks a second)")
+    @Config.LangKey("config.atomicscience:content.laser.fire.cost.constant.title")
+    @Config.RangeInt(min = 0, max = (Integer.MAX_VALUE / 2))
+    public int FIRING_COST_CONSTANT = 100;
+
+    @Config.Name("field_transfer_power")
+    @Config.Comment("Amount of energy to send to the field container to hold particles (per tick, 20 ticks a second)")
+    @Config.LangKey("config.atomicscience:content.laser.field.output.title")
+    @Config.RangeInt(min = 0, max = (Integer.MAX_VALUE / 2))
+    public int FIELD_TRANSFER_POWER = 50;
 
     @Config.Name("booster_energy_buffer")
     @Config.Comment("Amount of energy to store per booster")

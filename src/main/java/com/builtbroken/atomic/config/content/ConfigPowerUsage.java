@@ -30,4 +30,16 @@ public class ConfigPowerUsage
     @Config.LangKey("config.atomicscience:content.power.usage.centrifuge.title")
     @Config.RangeInt(min = 1)
     public int CENTRIFUGE = 100;
+
+    @Config.Name("power_particle_capture_cost")
+    @Config.Comment("Power FE (Forge Energy) used to capture a created particle")
+    @Config.LangKey("config.atomicscience:content.power.usage.particle.capture.title")
+    @Config.RangeInt(min = 1)
+    public int PARTICLE_CAPTURE_COST = 10000;
+
+    @Config.Name("power_particle_contain_cost")
+    @Config.Comment("Power FE (Forge Energy) used to hold a particle")
+    @Config.LangKey("config.atomicscience:content.power.usage.particle.contain.title")
+    @Config.RangeInt(min = 1)
+    public int PARTICLE_CONTAINMENT_COST = 100;
 }
