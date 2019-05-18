@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.lib.LanguageUtility;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.InventoryHelper;
@@ -26,6 +27,8 @@ import java.util.List;
  */
 public abstract class BlockPrefab extends BlockContainer
 {
+    public static final PropertyDirection ROTATION_PROP = PropertyDirection.create("rotation");
+
     protected BlockPrefab(Material materialIn)
     {
         super(materialIn);

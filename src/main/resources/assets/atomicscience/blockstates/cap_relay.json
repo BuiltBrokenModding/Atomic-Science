@@ -1,0 +1,47 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "cube_all",
+    "textures": {
+      "up": "atomicscience:blocks/pipe/top",
+      "down": "atomicscience:blocks/pipe/bottom",
+      "east": "atomicscience:blocks/pipe/sides",
+      "west": "atomicscience:blocks/pipe/sides",
+      "north": "atomicscience:blocks/pipe/sides",
+      "south": "atomicscience:blocks/pipe/sides",
+      "particle": "atomicscience:blocks/pipe/sides"
+    }
+  },
+  "variants": {
+    "normal": [
+      {}
+    ],
+    "inventory": [
+      {}
+    ],
+    "rotation": {
+      "up": {
+        "x": 180
+      },
+      "down": {
+
+      },
+      "north": {
+        "y": 0,
+        "x": 90
+      },
+      "south": {
+        "y": 180,
+        "x": 90
+      },
+      "east": {
+        "y": 90,
+        "x": 90
+      },
+      "west": {
+        "y": 270,
+        "x": 90
+      }
+    }
+  }
+}

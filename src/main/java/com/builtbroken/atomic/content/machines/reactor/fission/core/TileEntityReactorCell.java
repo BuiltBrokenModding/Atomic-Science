@@ -10,7 +10,7 @@ import com.builtbroken.atomic.client.EffectRefs;
 import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.machines.TileEntityInventoryMachine;
 import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
-import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipe;
+import com.builtbroken.atomic.content.machines.pipe.reactor.pass.TileEntityRodPipe;
 import com.builtbroken.atomic.lib.inventory.ItemStackHandlerWrapper;
 import com.builtbroken.atomic.map.data.node.MapDataSources;
 import com.builtbroken.atomic.map.exposure.node.RadSourceTile;

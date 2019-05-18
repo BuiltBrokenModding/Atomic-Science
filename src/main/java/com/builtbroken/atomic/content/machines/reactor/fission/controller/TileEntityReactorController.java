@@ -1,8 +1,8 @@
 package com.builtbroken.atomic.content.machines.reactor.fission.controller;
 
 import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
-import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipe;
-import com.builtbroken.atomic.content.machines.reactor.pipe.inv.TileEntityRodPipeInv;
+import com.builtbroken.atomic.content.machines.pipe.reactor.pass.TileEntityRodPipe;
+import com.builtbroken.atomic.content.machines.pipe.reactor.inv.TileEntityRodPipeInv;
 import com.builtbroken.atomic.content.prefab.TileEntityActive;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;

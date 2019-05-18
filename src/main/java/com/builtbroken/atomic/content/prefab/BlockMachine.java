@@ -1,7 +1,6 @@
 package com.builtbroken.atomic.content.prefab;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,8 +15,6 @@ import net.minecraft.world.World;
  */
 public abstract class BlockMachine extends BlockPrefab
 {
-    public static final PropertyDirection ROTATION_PROP = PropertyDirection.create("rotation");
-
     public BlockMachine(Material mat)
     {
         super(mat);

@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.reactor.pipe.inv;
+package com.builtbroken.atomic.content.machines.pipe.reactor.inv;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.prefab.BlockPrefab;

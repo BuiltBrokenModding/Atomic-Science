@@ -82,6 +82,7 @@ public final class ASItems
 
     public static ItemBlock blockRodPipe;
     public static ItemBlock blockRodPipeInv;
+    public static ItemBlock blockCapRelay;
 
     public static ItemBlock blockThermalSensorRedstone;
 
@@ -181,6 +182,7 @@ public final class ASItems
 
         blockRodPipe = addItemBlock(event.getRegistry(), ASBlocks.blockRodPipe);
         blockRodPipeInv = addItemBlock(event.getRegistry(), ASBlocks.blockRodPipeInv);
+        blockCapRelay = addItemBlock(event.getRegistry(), ASBlocks.blockCapRelay);
 
         blockMagnet = addItemBlock(event.getRegistry(), ASBlocks.blockMagnet);
         blockAcceleratorTube = addItemBlock(event.getRegistry(), ASBlocks.blockAcceleratorTube);

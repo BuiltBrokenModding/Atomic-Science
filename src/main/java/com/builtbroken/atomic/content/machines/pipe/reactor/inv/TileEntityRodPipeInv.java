@@ -1,8 +1,9 @@
-package com.builtbroken.atomic.content.machines.reactor.pipe.inv;
+package com.builtbroken.atomic.content.machines.pipe.reactor.inv;
 
-import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipe;
-import com.builtbroken.atomic.content.machines.reactor.pipe.inv.gui.ContainerRodPipe;
-import com.builtbroken.atomic.content.machines.reactor.pipe.inv.gui.GuiRodPipe;
+import com.builtbroken.atomic.api.item.IFuelRodItem;
+import com.builtbroken.atomic.content.machines.pipe.reactor.pass.TileEntityRodPipe;
+import com.builtbroken.atomic.content.machines.pipe.reactor.inv.gui.ContainerRodPipe;
+import com.builtbroken.atomic.content.machines.pipe.reactor.inv.gui.GuiRodPipe;
 import com.builtbroken.atomic.lib.timer.TickTimer;
 import com.builtbroken.atomic.lib.gui.IGuiTile;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +17,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,10 +50,10 @@ public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiT
 
     protected void moveItems()
     {
-        TileEntity tile = world.getTileEntity(getPos().down());
-        if (tile != null && TileEntityRodPipe.canSupport(tile) && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP))
+        final TileEntity tile = world.getTileEntity(getPos().down());
+        if (tile != null && TileEntityRodPipe.canPipeSupport(tile) && tile.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP))
         {
-            IItemHandler inventory = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
+            final IItemHandler inventory = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
             if (inventory != null)
             {
                 ItemStack stackToInsert = getItem().copy();
@@ -84,6 +86,12 @@ public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiT
             inventory = new ItemStackHandler(1)
             {
                 @Override
+                public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+                {
+                    return stack.getItem() instanceof IFuelRodItem; //TODO open up to all fuel rods, including other mod's items
+                }
+
+                @Override
                 public int getSlotLimit(int slot)
                 {
                     return 1;
@@ -102,7 +110,7 @@ public class TileEntityRodPipeInv extends TileEntity implements ITickable, IGuiT
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
     {
-        if (facing == EnumFacing.UP && TileEntityRodPipe.canSupport(capability))
+        if (facing == EnumFacing.UP && TileEntityRodPipe.canPipeSupport(capability))
         {
             return true;
         }

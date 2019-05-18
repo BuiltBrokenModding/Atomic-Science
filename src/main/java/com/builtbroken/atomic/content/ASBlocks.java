@@ -19,6 +19,12 @@ import com.builtbroken.atomic.content.machines.laser.booster.BlockLaserBooster;
 import com.builtbroken.atomic.content.machines.laser.booster.TileEntityLaserBooster;
 import com.builtbroken.atomic.content.machines.laser.emitter.BlockLaserEmitter;
 import com.builtbroken.atomic.content.machines.laser.emitter.TileEntityLaserEmitter;
+import com.builtbroken.atomic.content.machines.pipe.item.BlockCapRelay;
+import com.builtbroken.atomic.content.machines.pipe.item.TileEntityCapRelay;
+import com.builtbroken.atomic.content.machines.pipe.reactor.inv.BlockRodPipeInv;
+import com.builtbroken.atomic.content.machines.pipe.reactor.inv.TileEntityRodPipeInv;
+import com.builtbroken.atomic.content.machines.pipe.reactor.pass.BlockRodPipe;
+import com.builtbroken.atomic.content.machines.pipe.reactor.pass.TileEntityRodPipe;
 import com.builtbroken.atomic.content.machines.processing.boiler.BlockChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.boiler.TileEntityChemBoiler;
 import com.builtbroken.atomic.content.machines.processing.centrifuge.BlockChemCentrifuge;
@@ -29,10 +35,6 @@ import com.builtbroken.atomic.content.machines.reactor.fission.controller.BlockR
 import com.builtbroken.atomic.content.machines.reactor.fission.controller.TileEntityReactorController;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.BlockReactorCell;
 import com.builtbroken.atomic.content.machines.reactor.fission.core.TileEntityReactorCell;
-import com.builtbroken.atomic.content.machines.reactor.pipe.BlockRodPipe;
-import com.builtbroken.atomic.content.machines.reactor.pipe.TileEntityRodPipe;
-import com.builtbroken.atomic.content.machines.reactor.pipe.inv.BlockRodPipeInv;
-import com.builtbroken.atomic.content.machines.reactor.pipe.inv.TileEntityRodPipeInv;
 import com.builtbroken.atomic.content.machines.sensors.thermal.BlockThermalRedstone;
 import com.builtbroken.atomic.content.machines.sensors.thermal.TileEntityThermalRedstone;
 import com.builtbroken.atomic.content.machines.steam.funnel.BlockSteamFunnel;
@@ -40,6 +42,7 @@ import com.builtbroken.atomic.content.machines.steam.funnel.TileEntitySteamFunne
 import com.builtbroken.atomic.content.machines.steam.generator.BlockSteamGenerator;
 import com.builtbroken.atomic.content.machines.steam.generator.TileEntitySteamGenerator;
 import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -66,6 +69,7 @@ public final class ASBlocks
 
     public static Block blockRodPipe;
     public static Block blockRodPipeInv;
+    public static Block blockCapRelay;
 
     public static Block blockThermalSensorRedstone;
 
@@ -109,6 +113,8 @@ public final class ASBlocks
         event.getRegistry().register(blockRodPipe = new BlockRodPipe());
         GameRegistry.registerTileEntity(TileEntityRodPipe.class, new ResourceLocation(AtomicScience.PREFIX + "rod_pipe"));
 
+        blockCapRelay = registerBlock(event, new BlockCapRelay(), TileEntityCapRelay.class);
+
         event.getRegistry().register(blockRodPipeInv = new BlockRodPipeInv());
         GameRegistry.registerTileEntity(TileEntityRodPipeInv.class, new ResourceLocation(AtomicScience.PREFIX + "rod_pipe_inv"));
 
@@ -146,6 +152,13 @@ public final class ASBlocks
                 event.getRegistry().register(createFluidBlock(value));
             }
         }
+    }
+
+    static <B extends Block> B registerBlock(RegistryEvent.Register<Block> reg, B block, Class<? extends TileEntity> tileEntity)
+    {
+        reg.getRegistry().register(block);
+        GameRegistry.registerTileEntity(tileEntity, block.getRegistryName());
+        return block;
     }
 
     static Block createFluidBlock(ASFluids fluid)

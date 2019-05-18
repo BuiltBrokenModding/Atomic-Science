@@ -104,6 +104,7 @@ public class ASClientReg
         //Reactor rods
         newBlockModel(ASBlocks.blockRodPipe);
         newBlockModel(ASBlocks.blockRodPipeInv);
+        newBlockModel(ASBlocks.blockCapRelay);
 
         //Sensors
         newBlockModel(ASBlocks.blockThermalSensorRedstone);

@@ -302,6 +302,10 @@ public abstract class TileEntityPrefab extends TileEntity implements IPacketIDRe
         return getState(getPos(), side);
     }
 
+    /**
+     * Gets the direction from the block state or other data
+     * @return direction, or UP if not supported
+     */
     public EnumFacing getDirection()
     {
         IBlockState state = world.getBlockState(getPos());
@@ -310,5 +314,14 @@ public abstract class TileEntityPrefab extends TileEntity implements IPacketIDRe
             return state.getValue(BlockMachine.ROTATION_PROP);
         }
         return EnumFacing.UP;
+    }
+
+    /**
+     * Called when the direction changes
+     * @param direction
+     */
+    public void onDirectionChanged(EnumFacing direction)
+    {
+
     }
 }
