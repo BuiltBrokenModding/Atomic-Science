@@ -425,6 +425,19 @@ public class ClientProxy extends CommonProxy
             final double pz = sz + dStep * step * vz;
             spawnParticle(EnumParticleTypes.REDSTONE, px, py, pz, laserModes.color);
         }
+
+        if (laserModes == LaserModes.FIELD)
+        //Spawn particles
+        {
+            final float rd = 0.3f;
+            for (int i = 0; i < 2; i++)
+            {
+                final double px = ex + Math.random() * rd - Math.random() * rd;
+                final double py = ey + Math.random() * rd - Math.random() * rd;
+                final double pz = ez + Math.random() * rd - Math.random() * rd;
+                spawnParticle(EnumParticleTypes.REDSTONE, px, py, pz, laserModes.color);
+            }
+        }
     }
 
     private void spawnParticle(EnumParticleTypes type, double x, double y, double z)

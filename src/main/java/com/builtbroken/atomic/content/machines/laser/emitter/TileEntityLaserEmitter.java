@@ -117,14 +117,6 @@ public class TileEntityLaserEmitter extends TileEntityMachine
             x = impactPos.getX() + 0.5;
             y = impactPos.getY() + 0.5;
             z = impactPos.getZ() + 0.5;
-
-            TileEntity tileEntity = getTileEntity(impactPos);
-            if(tileEntity instanceof TileEntityItemContainer)
-            {
-                x -= 0.2 * facing.getXOffset();
-                y -= 0.2 * facing.getYOffset();
-                z -= 0.2 * facing.getZOffset();
-            }
         }
         else
         {
