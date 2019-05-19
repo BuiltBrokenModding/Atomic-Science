@@ -95,7 +95,7 @@ public abstract class TileEntityActive extends TileEntityPrefab implements IPack
     /**
      * Will send a description packet to the client next tick
      */
-    protected void syncClientNextTick()
+    public void syncClientNextTick()
     {
         _syncClientNextTick = true;
     }

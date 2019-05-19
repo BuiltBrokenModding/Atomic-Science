@@ -14,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -280,6 +281,17 @@ public abstract class TileEntityPrefab extends TileEntity implements IPacketIDRe
     public TileEntity getTileEntity(EnumFacing side)
     {
         return getTileEntity(getPos().offset(side));
+    }
+
+    public <T> T getCapabilityOnSide(Capability<T> cap, EnumFacing side)
+    {
+        final TileEntity tileEntity = getTileEntity(side);
+        if(tileEntity != null && tileEntity.hasCapability(cap, side.getOpposite()))
+        {
+            return tileEntity.getCapability(cap, side.getOpposite());
+        }
+
+        return null;
     }
 
     public IBlockState getState(BlockPos pos)

@@ -23,18 +23,20 @@ public abstract class TileEntityDirectionalPipe extends TileEntityPrefab
             //Get inverse side of connection
             //      EX: connection top is passed to bottom
             final EnumFacing outputDirection = getOutDirection(facing);
+            final EnumFacing sideToAccess = outputDirection.getOpposite();
             TileEntity tile = world.getTileEntity(getPos().offset(outputDirection));
 
             //Find target tile, prevents looping to self
             if (tile instanceof TileEntityDirectionalPipe)
             {
-                tile = ((TileEntityDirectionalPipe) tile).getTargetTile(capability, facing, this);
+                tile = ((TileEntityDirectionalPipe) tile).getTargetTile(capability, sideToAccess, this);
             }
 
             //Check if machine is supported
-            if (tile != null && canSupport(tile) && tile.hasCapability(capability, facing))
+            if (tile != null && canSupport(tile))
             {
-                return true;
+                boolean hasCap = tile.hasCapability(capability, sideToAccess);
+                return hasCap;
             }
         }
         return super.hasCapability(capability, facing);
@@ -49,18 +51,20 @@ public abstract class TileEntityDirectionalPipe extends TileEntityPrefab
             //Get inverse side of connection
             //      EX: connection top is passed to bottom
             final EnumFacing outputDirection = getOutDirection(facing);
+            final EnumFacing sideToAccess = outputDirection.getOpposite();
             TileEntity tile = world.getTileEntity(getPos().offset(outputDirection));
 
             //Find target tile, prevents looping to self
             if (tile instanceof TileEntityDirectionalPipe)
             {
-                tile = ((TileEntityDirectionalPipe) tile).getTargetTile(capability, facing, this);
+                tile = ((TileEntityDirectionalPipe) tile).getTargetTile(capability, sideToAccess, this);
             }
 
             //Get capability
             if (tile != null && canSupport(tile))
             {
-                T r = tile.getCapability(capability, facing);
+
+                T r = tile.getCapability(capability, sideToAccess);
                 if (r != null)
                 {
                     return r;
@@ -74,19 +78,19 @@ public abstract class TileEntityDirectionalPipe extends TileEntityPrefab
      * Look for target of pipe path
      *
      * @param capability - capability being searched for
-     * @param facing     - direction being accessed
+     * @param sideAccessed     - direction being accessed
      * @param source     - source of the path start
      * @return tile found that is not a pipe, or null for end of path
      */
-    protected TileEntity getTargetTile(Capability capability, EnumFacing facing, TileEntity source)
+    protected TileEntity getTargetTile(Capability capability, EnumFacing sideAccessed, TileEntity source)
     {
         //Check if we can support the connection
-        if (canSupportDirection(facing) && canSupport(capability))
+        if (canSupportDirection(sideAccessed) && canSupport(capability))
         {
             //Change direction
-            facing = getOutDirection(facing);
+            final EnumFacing outDirection = getOutDirection(sideAccessed);
 
-            final TileEntity tile = world.getTileEntity(getPos().offset(facing));
+            final TileEntity tile = world.getTileEntity(getPos().offset(outDirection));
             if (canSupport(tile))
             {
                 //Loop prevention
@@ -102,7 +106,8 @@ public abstract class TileEntityDirectionalPipe extends TileEntityPrefab
                 //Next pipe
                 if (tile instanceof TileEntityDirectionalPipe)
                 {
-                    return ((TileEntityDirectionalPipe) tile).getTargetTile(capability, facing, this);
+                    final EnumFacing sideToAccess = outDirection.getOpposite();
+                    return ((TileEntityDirectionalPipe) tile).getTargetTile(capability, sideToAccess, this);
                 }
 
                 //End condition
@@ -114,7 +119,7 @@ public abstract class TileEntityDirectionalPipe extends TileEntityPrefab
 
     protected EnumFacing getOutDirection(EnumFacing input)
     {
-        return getDirection().getOpposite();
+        return getDirection();
     }
 
     /**

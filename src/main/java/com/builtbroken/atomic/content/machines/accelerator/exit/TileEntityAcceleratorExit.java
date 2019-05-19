@@ -52,22 +52,15 @@ public class TileEntityAcceleratorExit extends TileEntityAcceleratorTubePrefab
                         //Consume item
                         ((TileEntityItemContainer) tileEntity).setHeldItem(ItemStack.EMPTY);
 
-                        int amount = (int) (Math.random() * 100);
+                        //Add antimatter
+                        int amount = 3 + (int) (Math.random() * 10); //TODO add recipe and config
+                        int taken = ((TileEntityItemContainer) tileEntity).addAntimatter(amount, false, true, true);
+                        int remains = amount - taken;
 
-                        TileEntity tileUnder = world.getTileEntity(pos.offset(EnumFacing.DOWN));
-                        if (tileUnder.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP))
+                        //If any left over cause explosion
+                        if(remains > 1)
                         {
-                            IFluidHandler handler = tileUnder.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP);
-                            if (handler != null)
-                            {
-                                int filled = handler.fill(new FluidStack(ASFluids.ANTIMATTER.fluid, amount), true);
-                                int remains = amount - filled;
-                                if (remains > 1)
-                                {
-                                    System.out.println(this + " Failed to store all antimater into " + tileUnder);
-                                    //TODO let particle bounce around with remaining antimatter damaging walls
-                                }
-                            }
+                            world.newExplosion(null, x(), y(), zi(), remains / 5, true, false);
                         }
                     }
                     else

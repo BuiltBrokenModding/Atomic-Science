@@ -161,7 +161,7 @@ public class TileEntityLaserEmitter extends TileEntityMachine
     private boolean canLaserPassThrough(IBlockState blockState, BlockPos pos)
     {
         Block block = blockState.getBlock();
-        if (block == Blocks.GLASS || block == Blocks.GLASS_PANE || block == Blocks.IRON_BARS)
+        if (block == Blocks.GLASS || block == Blocks.STAINED_GLASS || block == Blocks.STAINED_GLASS_PANE || block == Blocks.GLASS_PANE || block == Blocks.IRON_BARS)
         {
             return true;
         }

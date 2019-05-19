@@ -33,7 +33,7 @@ public class TileEntityCapRelay extends TileEntityDirectionalPipe
     public boolean canSupportDirection(EnumFacing facing)
     {
         //All but output side
-        return getDirection().getOpposite() != facing;
+        return getDirection() != facing;
     }
 
     @Override

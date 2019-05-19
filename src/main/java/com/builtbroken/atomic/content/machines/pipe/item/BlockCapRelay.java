@@ -14,6 +14,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
@@ -44,10 +45,9 @@ public class BlockCapRelay extends BlockMachine implements ITileEntityProvider
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
                 if (tileEntity instanceof TileEntityCapRelay)
                 {
-                    playerIn.sendStatusMessage(new TextComponentString(
-                            "Direction: " + ((TileEntityCapRelay) tileEntity).getDirection()
-                                    + " Target: " + tileEntity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing)
-                    ), true);
+                    playerIn.sendMessage(new TextComponentString( "Direction: " + ((TileEntityCapRelay) tileEntity).getDirection()));
+                    playerIn.sendMessage(new TextComponentString(" I: " + tileEntity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing) ));
+                    playerIn.sendMessage(new TextComponentString(" F: " + tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing) ));
                 }
             }
             return true;
@@ -72,13 +72,6 @@ public class BlockCapRelay extends BlockMachine implements ITileEntityProvider
                 //return normal facing
                 placeDirection = placeDirection.getOpposite();
             }
-        }
-
-        //Try to place normal
-        //Invert up/down by default
-        if(facing.getAxis() == EnumFacing.Axis.Y)
-        {
-            placeDirection = placeDirection.getOpposite();
         }
 
         //invert if sneaking
