@@ -1,8 +1,7 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "atomicscience:container_item2",
-    "particle": "atomicscience:blocks/accelerator/tube_top"
+    "model": "atomicscience:item_frame"
   },
   "variants": {
     "normal": [
@@ -11,6 +10,14 @@
     "inventory": [
       {}
     ],
+    "model": {
+      "normal": {
+        "model": "atomicscience:item_frame"
+      },
+      "glass": {
+        "model": "atomicscience:glass_tube"
+      }
+    },
     "rotation": {
       "up": {},
       "down": {},

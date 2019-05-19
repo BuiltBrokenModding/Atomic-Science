@@ -3,6 +3,8 @@ package com.builtbroken.atomic.content.machines.container.item;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.prefab.BlockMachine;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -10,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -21,12 +24,20 @@ import javax.annotation.Nullable;
  */
 public class BlockItemContainer extends BlockMachine
 {
+    public static final PropertyEnum<ModelType> MODEL_TYPE = PropertyEnum.create("model", ModelType.class);
+
     public BlockItemContainer()
     {
         super(Material.IRON);
         setRegistryName(AtomicScience.PREFIX + "item_container");
         setTranslationKey(AtomicScience.PREFIX + "item.container");
-        setDefaultState(getDefaultState().withProperty(ROTATION_PROP, EnumFacing.NORTH));
+        setDefaultState(getDefaultState().withProperty(ROTATION_PROP, EnumFacing.NORTH).withProperty(MODEL_TYPE, ModelType.NORMAL));
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, ROTATION_PROP, MODEL_TYPE);
     }
 
     @Override
@@ -93,5 +104,17 @@ public class BlockItemContainer extends BlockMachine
     public boolean isNormalCube(IBlockState state)
     {
         return false;
+    }
+
+    public static enum ModelType implements IStringSerializable
+    {
+        NORMAL,
+        GLASS;
+
+        @Override
+        public String getName()
+        {
+            return name().toLowerCase();
+        }
     }
 }
