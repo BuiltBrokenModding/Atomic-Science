@@ -116,6 +116,9 @@ public class AcceleratorParticle implements IPos3D
             //TODO destroy or fire off into world
             notInTube = true;
         }
+
+        //Fix precision problems
+        normalizePosition();
     }
 
     public void move(float x, float y, float z)
@@ -123,6 +126,13 @@ public class AcceleratorParticle implements IPos3D
         this.x += x;
         this.y += y;
         this.z += z;
+    }
+
+    public void normalizePosition()
+    {
+        x = Math.round(x * 1000) / 1000f;
+        y = Math.round(y * 1000) / 1000f;
+        z = Math.round(z * 1000) / 1000f;
     }
 
     public void move(float moveAmount, EnumFacing direction)
