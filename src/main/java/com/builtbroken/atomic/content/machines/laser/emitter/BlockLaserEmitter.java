@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.prefab.BlockMachine;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
@@ -30,6 +31,88 @@ public class BlockLaserEmitter extends BlockMachine
         setRegistryName(AtomicScience.PREFIX + "laser_emitter");
         setTranslationKey(AtomicScience.PREFIX + "laser.emitter");
         setDefaultState(getDefaultState().withProperty(ROTATION_PROP, EnumFacing.NORTH));
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+    {
+        final float spacing = 0.3f;
+
+        if (!world.isRemote && placer instanceof EntityPlayer)
+        {
+            placer.sendMessage(new TextComponentString(String.format("Click: %.2fx %.2fy %.2fz", hitX, hitY, hitZ)));
+        }
+
+
+        EnumFacing direction;
+
+        if (facing == EnumFacing.UP || facing == EnumFacing.DOWN)
+        {
+            //WEST
+            boolean left = hitX <= spacing;
+            //EAST
+            boolean right = hitX >= (1 - spacing);
+            //NORTH
+            boolean up = hitZ <= spacing;
+            //SOUTH
+            boolean down = hitZ >= (1 - spacing);
+
+            if (!up && !down && (left || right))
+            {
+                direction = left ? EnumFacing.WEST : EnumFacing.EAST;
+            }
+            else if (!left && !right && (up || down))
+            {
+                direction = up ? EnumFacing.NORTH : EnumFacing.SOUTH;
+            }
+            else if (!left && !right && !up && !down)
+            {
+                direction = facing;
+            }
+            else
+            {
+                direction = facing.getOpposite();
+            }
+        }
+        else
+        {
+            boolean z = facing.getAxis() == EnumFacing.Axis.Z;
+            boolean left = (z ? hitX : hitZ) <= spacing;
+            boolean right = (z ? hitX : hitZ) >= (1 - spacing);
+
+            boolean down = hitY <= spacing;
+            boolean up = hitY >= (1 - spacing);
+
+            if (!up && !down && (left || right))
+            {
+                if (z)
+                {
+                    direction = left ? EnumFacing.WEST : EnumFacing.EAST;
+                }
+                else
+                {
+                    direction = left ? EnumFacing.NORTH : EnumFacing.SOUTH;
+                }
+            }
+            else if (!left && !right && (up || down))
+            {
+                direction = up ? EnumFacing.UP : EnumFacing.DOWN;
+            }
+            else if (!left && !right && !up && !down)
+            {
+                direction = facing;
+            }
+            else
+            {
+                direction = facing.getOpposite();
+            }
+        }
+
+        if (!world.isRemote && placer instanceof EntityPlayer)
+        {
+            placer.sendMessage(new TextComponentString("Facing: " + direction));
+        }
+        return getDefaultState().withProperty(ROTATION_PROP, direction);
     }
 
     @Override
