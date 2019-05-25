@@ -9,6 +9,7 @@ import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.lib.math.BlockPosHelpers;
 import com.builtbroken.atomic.lib.math.MathConstF;
 import com.builtbroken.atomic.lib.math.SideMathHelper;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -16,6 +17,7 @@ import net.minecraft.world.IBlockAccess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
@@ -44,6 +46,7 @@ public class AcceleratorNode implements IAcceleratorNode
     public Consumer<AcceleratorParticle> onLeaveCallback;
     public Consumer<AcceleratorParticle> onEnterCallback;
     public Consumer<AcceleratorParticle> onMoveCallback;
+    public BiFunction<AcceleratorParticle, ImmutableList<TubeSide>, TubeSide> turnController;
 
     public AcceleratorNode()
     {
@@ -291,9 +294,19 @@ public class AcceleratorNode implements IAcceleratorNode
      */
     public EnumFacing getExpectedTurnResult(AcceleratorParticle particle)
     {
-        //TODO add advanced logic callback for tube
         if (getPossibleExitCount() > 1)
         {
+            //Advanced logic controller
+            if(turnController != null)
+            {
+                final TubeSide side = turnController.apply(particle, getConnectionType().outputSides);
+                if(side != null)
+                {
+                    return side.getFacing(facing);
+                }
+            }
+
+            //Default index picker
             final TubeSide side = getConnectionType().outputSides.get(turnIndex);
             return side.getFacing(facing);
         }

@@ -3,6 +3,8 @@ package com.builtbroken.atomic.content;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.blocks.BlockUraniumOre;
 import com.builtbroken.atomic.content.fluid.BlockSimpleFluid;
+import com.builtbroken.atomic.content.machines.accelerator.detector.BlockParticleDetector;
+import com.builtbroken.atomic.content.machines.accelerator.detector.TileEntityParticleDetector;
 import com.builtbroken.atomic.content.machines.accelerator.exit.BlockAcceleratorExit;
 import com.builtbroken.atomic.content.machines.accelerator.exit.TileEntityAcceleratorExit;
 import com.builtbroken.atomic.content.machines.accelerator.gun.BlockAcceleratorGun;
@@ -78,6 +80,7 @@ public final class ASBlocks
     public static Block blockAcceleratorTubePowered;
     public static Block blockAcceleratorGun;
     public static Block blockAcceleratorExit;
+    public static Block blockParticleDetector;
 
     public static Block blockLaserEmitter;
     public static Block blockLaserBooster;
@@ -144,6 +147,8 @@ public final class ASBlocks
 
         event.getRegistry().register(blockItemContainer = new BlockItemContainer());
         GameRegistry.registerTileEntity(TileEntityItemContainer.class, new ResourceLocation(AtomicScience.PREFIX + "item_container"));
+
+        blockParticleDetector = registerBlock(event, new BlockParticleDetector(), TileEntityParticleDetector.class);
 
         for (ASFluids value : ASFluids.values())
         {

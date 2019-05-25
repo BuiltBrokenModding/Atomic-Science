@@ -32,6 +32,15 @@ public enum TubeSide
         }
     }
 
+    public static TubeSide byIndex(int index)
+    {
+        if(index >= 0 && index < values().length)
+        {
+            return values()[index];
+        }
+        return CENTER;
+    }
+
     /**
      * Finds the facing direction of a second side based on the position of the first side and it's facing direction.
      * <p>

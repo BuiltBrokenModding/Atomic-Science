@@ -46,6 +46,11 @@ public class TickTimerConditional extends TickTimer
         return new TickTimerConditional(triggerTime, consumer);
     }
 
+    public static TickTimerConditional newTrigger(IntConsumer consumer, BooleanSupplier triggerCondition)
+    {
+        return new TickTimerConditional(1, consumer).setShouldTickFunction(triggerCondition).setShouldResetFunction(() -> !triggerCondition.getAsBoolean());
+    }
+
     public static TickTimerConditional newTrigger(IntSupplier triggerTime, IntConsumer consumer, BooleanSupplier triggerCondition)
     {
         return new TickTimerConditional(triggerTime, consumer).setShouldTickFunction(triggerCondition).setShouldResetFunction(() -> !triggerCondition.getAsBoolean());

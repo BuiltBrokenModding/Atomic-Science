@@ -91,6 +91,8 @@ public final class ASItems
     public static ItemBlock blockAcceleratorGun;
     public static ItemBlock blockAcceleratorExit;
 
+    public static ItemBlock blockParticleDetector;
+
     public static ItemBlock blockLaserEmitter;
     public static ItemBlock blockLaserBooster;
 
@@ -188,6 +190,7 @@ public final class ASItems
         blockAcceleratorTube = addItemBlock(event.getRegistry(), ASBlocks.blockAcceleratorTube);
         blockAcceleratorGun = addItemBlock(event.getRegistry(), ASBlocks.blockAcceleratorGun);
         blockAcceleratorExit = addItemBlock(event.getRegistry(), ASBlocks.blockAcceleratorExit);
+        blockParticleDetector = addItemBlock(event.getRegistry(), ASBlocks.blockParticleDetector);
 
         blockLaserEmitter = addItemBlock(event.getRegistry(), ASBlocks.blockLaserEmitter);
         blockLaserBooster = addItemBlock(event.getRegistry(), ASBlocks.blockLaserBooster);
