@@ -227,7 +227,7 @@ public class AcceleratorNode implements IAcceleratorNode
         final EnumFacing moveDir = particle.getMoveDirection();
         final EnumFacing containingDir = SideMathHelper.containingSide(deltaX, 0, deltaZ);
 
-        final TubeSide movingTowardsSide = getSideFacingOut(moveDir);
+        //final TubeSide movingTowardsSide = getSideFacingOut(moveDir);
         final TubeSide containingSide = getSideFacingOut(containingDir);
 
         //Valid we can have a particle on the side
@@ -250,7 +250,7 @@ public class AcceleratorNode implements IAcceleratorNode
             return moveForward(particle, deltaX, deltaZ, distanceToMove);
         }
         //Exiting tube
-        else if (getConnectionType().getTypeForSide(movingTowardsSide) == TubeSideType.EXIT)
+        else if (getConnectionType().getTypeForSide(containingSide) == TubeSideType.EXIT)
         {
             return moveForward(particle, deltaX, deltaZ, distanceToMove);
         }
