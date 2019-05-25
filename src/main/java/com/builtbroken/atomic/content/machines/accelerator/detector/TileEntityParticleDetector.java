@@ -85,7 +85,7 @@ public class TileEntityParticleDetector extends TileEntityMachine
     public TubeSide getTurn(ImmutableList<TubeSide> possibleOutputs, AcceleratorParticle particle)
     {
         TubeSide out = null;
-        float highestSpeedMatch = 0;
+        float highestSpeedMatch = -1;
         for (TubeSide side : possibleOutputs)
         {
             if (speedSettings.containsKey(side))
