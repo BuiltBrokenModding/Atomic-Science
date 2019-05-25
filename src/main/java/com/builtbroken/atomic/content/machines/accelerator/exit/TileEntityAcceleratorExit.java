@@ -1,6 +1,5 @@
 package com.builtbroken.atomic.content.machines.accelerator.exit;
 
-import com.builtbroken.atomic.content.ASFluids;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.tube.imp.TileEntityAcceleratorTubePrefab;
@@ -11,9 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
  * Created by Dark(DarkGuardsman, Robert) on 4/20/2019.
