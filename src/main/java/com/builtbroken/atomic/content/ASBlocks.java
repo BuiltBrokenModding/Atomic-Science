@@ -92,61 +92,43 @@ public final class ASBlocks
     {
         event.getRegistry().register(blockUraniumOre = new BlockUraniumOre());
 
-        event.getRegistry().register(blockReactorCell = new BlockReactorCell());
-        GameRegistry.registerTileEntity(TileEntityReactorCell.class, new ResourceLocation(AtomicScience.PREFIX + "reactor_cell"));
+        blockReactorCell = registerBlock(event, new BlockReactorCell(), TileEntityReactorCell.class);
 
-        event.getRegistry().register(blockReactorController = new BlockReactorController());
-        GameRegistry.registerTileEntity(TileEntityReactorController.class, new ResourceLocation(AtomicScience.PREFIX + "reactor_controller"));
+        blockReactorController = registerBlock(event, new BlockReactorController(), TileEntityReactorController.class);
 
-        event.getRegistry().register(blockSteamFunnel = new BlockSteamFunnel());
-        GameRegistry.registerTileEntity(TileEntitySteamFunnel.class, new ResourceLocation(AtomicScience.PREFIX + "steam_funnel"));
+        blockSteamFunnel = registerBlock(event, new BlockSteamFunnel(), TileEntitySteamFunnel.class);
 
-        event.getRegistry().register(blockSteamTurbine = new BlockSteamGenerator());
-        GameRegistry.registerTileEntity(TileEntitySteamGenerator.class, new ResourceLocation(AtomicScience.PREFIX + "steam_turbine"));
+        blockSteamTurbine = registerBlock(event, new BlockSteamGenerator(), TileEntitySteamGenerator.class);
 
-        event.getRegistry().register(blockChemExtractor = new BlockChemExtractor());
-        GameRegistry.registerTileEntity(TileEntityChemExtractor.class, new ResourceLocation(AtomicScience.PREFIX + "chem_extractor"));
+        blockChemExtractor = registerBlock(event, new BlockChemExtractor(), TileEntityChemExtractor.class);
 
-        event.getRegistry().register(blockChemBoiler = new BlockChemBoiler());
-        GameRegistry.registerTileEntity(TileEntityChemBoiler.class, new ResourceLocation(AtomicScience.PREFIX + "chem_boiler"));
+        blockChemBoiler = registerBlock(event, new BlockChemBoiler(), TileEntityChemBoiler.class);
 
-        event.getRegistry().register(blockChemCentrifuge = new BlockChemCentrifuge());
-        GameRegistry.registerTileEntity(TileEntityChemCentrifuge.class, new ResourceLocation(AtomicScience.PREFIX + "chem_centrifuge"));
+        blockChemCentrifuge = registerBlock(event, new BlockChemCentrifuge(), TileEntityChemCentrifuge.class);
 
-        event.getRegistry().register(blockRodPipe = new BlockRodPipe());
-        GameRegistry.registerTileEntity(TileEntityRodPipe.class, new ResourceLocation(AtomicScience.PREFIX + "rod_pipe"));
+        blockRodPipe = registerBlock(event, new BlockRodPipe(), TileEntityRodPipe.class);
 
         blockCapRelay = registerBlock(event, new BlockCapRelay(), TileEntityCapRelay.class);
 
-        event.getRegistry().register(blockRodPipeInv = new BlockRodPipeInv());
-        GameRegistry.registerTileEntity(TileEntityRodPipeInv.class, new ResourceLocation(AtomicScience.PREFIX + "rod_pipe_inv"));
+        blockRodPipeInv = registerBlock(event, new BlockRodPipeInv(), TileEntityRodPipeInv.class);
 
-        event.getRegistry().register(blockThermalSensorRedstone = new BlockThermalRedstone());
-        GameRegistry.registerTileEntity(TileEntityThermalRedstone.class, new ResourceLocation(AtomicScience.PREFIX + "sensor_thermal_redstone"));
+        blockThermalSensorRedstone = registerBlock(event, new BlockThermalRedstone(), TileEntityThermalRedstone.class);
 
-        event.getRegistry().register(blockMagnet = new BlockMagnet());
-        GameRegistry.registerTileEntity(TileEntityMagnet.class, new ResourceLocation(AtomicScience.PREFIX + "magnet"));
+        blockMagnet = registerBlock(event, new BlockMagnet(), TileEntityMagnet.class);
 
-        event.getRegistry().register(blockAcceleratorTube = new BlockAcceleratorTube());
-        GameRegistry.registerTileEntity(TileEntityAcceleratorTube.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_tube"));
+        blockAcceleratorTube = registerBlock(event, new BlockAcceleratorTube(), TileEntityAcceleratorTube.class);
 
-        event.getRegistry().register(blockAcceleratorTubePowered = new BlockAcceleratorTubePowered());
-        GameRegistry.registerTileEntity(TileEntityAcceleratorTubePowered.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_tube_powered"));
+        blockAcceleratorTubePowered = registerBlock(event, new BlockAcceleratorTubePowered(), TileEntityAcceleratorTubePowered.class);
 
-        event.getRegistry().register(blockAcceleratorGun = new BlockAcceleratorGun());
-        GameRegistry.registerTileEntity(TileEntityAcceleratorGun.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_gun"));
+        blockAcceleratorGun = registerBlock(event, new BlockAcceleratorGun(), TileEntityAcceleratorGun.class);
 
-        event.getRegistry().register(blockAcceleratorExit = new BlockAcceleratorExit());
-        GameRegistry.registerTileEntity(TileEntityAcceleratorExit.class, new ResourceLocation(AtomicScience.PREFIX + "accelerator_exit"));
+        blockAcceleratorExit = registerBlock(event, new BlockAcceleratorExit(), TileEntityAcceleratorExit.class);
 
-        event.getRegistry().register(blockLaserEmitter = new BlockLaserEmitter());
-        GameRegistry.registerTileEntity(TileEntityLaserEmitter.class, new ResourceLocation(AtomicScience.PREFIX + "laser_emitter"));
+        blockLaserEmitter = registerBlock(event, new BlockLaserEmitter(), TileEntityLaserEmitter.class);
 
-        event.getRegistry().register(blockLaserBooster = new BlockLaserBooster());
-        GameRegistry.registerTileEntity(TileEntityLaserBooster.class, new ResourceLocation(AtomicScience.PREFIX + "laser_booster"));
+        blockLaserBooster = registerBlock(event, new BlockLaserBooster(), TileEntityLaserBooster.class);
 
-        event.getRegistry().register(blockItemContainer = new BlockItemContainer());
-        GameRegistry.registerTileEntity(TileEntityItemContainer.class, new ResourceLocation(AtomicScience.PREFIX + "item_container"));
+        blockItemContainer = registerBlock(event, new BlockItemContainer(), TileEntityItemContainer.class);
 
         blockParticleDetector = registerBlock(event, new BlockParticleDetector(), TileEntityParticleDetector.class);
 
