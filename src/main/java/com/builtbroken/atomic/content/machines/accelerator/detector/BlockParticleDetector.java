@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 /**
  * Created by Dark(DarkGuardsman, Robert) on 5/25/2019.
  */
-public class BlockParticleDetector extends BlockPrefab
+public class BlockParticleDetector extends BlockMachine
 {
     public BlockParticleDetector()
     {

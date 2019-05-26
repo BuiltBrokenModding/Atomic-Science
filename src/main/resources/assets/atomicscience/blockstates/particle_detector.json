@@ -1,16 +1,8 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "cube_all",
-    "textures": {
-      "up": "atomicscience:blocks/accelerator/electromagnet_top",
-      "down": "atomicscience:blocks/accelerator/electromagnet_top",
-      "east": "atomicscience:blocks/accelerator/electromagnet",
-      "west": "atomicscience:blocks/accelerator/electromagnet",
-      "north": "atomicscience:blocks/accelerator/electromagnet",
-      "south": "atomicscience:blocks/accelerator/electromagnet",
-      "particle": "atomicscience:blocks/accelerator/electromagnet"
-    }
+    "model": "atomicscience:particle_detector",
+    "particle": "atomicscience:blocks/machine_case"
   },
   "variants": {
     "normal": [
@@ -18,6 +10,22 @@
     ],
     "inventory": [
       {}
-    ]
+    ],
+    "rotation": {
+      "up": {},
+      "down": {},
+      "north": {
+        "y": 0
+      },
+      "south": {
+        "y": 180
+      },
+      "east": {
+        "y": 90
+      },
+      "west": {
+        "y": 270
+      }
+    }
   }
 }
