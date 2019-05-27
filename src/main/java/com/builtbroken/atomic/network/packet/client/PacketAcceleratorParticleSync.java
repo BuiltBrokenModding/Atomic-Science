@@ -32,8 +32,8 @@ public class PacketAcceleratorParticleSync implements IPacket
 
     public PacketAcceleratorParticleSync(AcceleratorParticle particle)
     {
-        ID = particle.ID;
-        dim = particle.dim_id;
+        ID = particle.unique_id;
+        dim = particle.dim();
         cx = particle.xf();
         cy = particle.yf();
         cz = particle.zf();

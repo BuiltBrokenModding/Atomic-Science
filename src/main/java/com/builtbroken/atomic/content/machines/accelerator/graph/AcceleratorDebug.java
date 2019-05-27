@@ -18,7 +18,7 @@ public class AcceleratorDebug
             System.out.println("No network");
             return;
         }
-        final Set<IAcceleratorNode> nodes = network.nodes;
+        final Set<IAcceleratorNode> nodes = network.getNodes();
 
         //Get grid min-max
         int minX = nodes.stream().min(Comparator.comparingInt(node -> node.getPos().getX())).get().getPos().getX();

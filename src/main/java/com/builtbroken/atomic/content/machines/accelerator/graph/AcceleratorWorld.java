@@ -2,24 +2,24 @@ package com.builtbroken.atomic.content.machines.accelerator.graph;
 
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by Dark(DarkGuardsman, Robert) on 4/7/2019.
  */
 public class AcceleratorWorld
 {
-
     public final int dim;
 
-    public final List<AcceleratorParticle> particles = new ArrayList();
-    public final List<AcceleratorNetwork> networks = new ArrayList();
+    public final HashMap<UUID, AcceleratorNetwork> networks = new HashMap();
+
+    private final Queue<AcceleratorNetwork> addList = new LinkedList();
 
     private int _tick = 0;
-
-    private final List<AcceleratorParticle> removeList = new ArrayList();
 
     public AcceleratorWorld(int dimension)
     {
@@ -44,20 +44,22 @@ public class AcceleratorWorld
      */
     public void update(World world)
     {
-        final Iterator<AcceleratorParticle> iterator = particles.iterator();
-        while (iterator.hasNext())
+        while(addList.peek() != null)
         {
-            final AcceleratorParticle particle = iterator.next();
-            if (particle.isInvalid())
+            AcceleratorNetwork network = addList.poll();
+            if(!network.isDead() && !networks.containsKey(network.uuid))
             {
-                iterator.remove();
-                //System.out.println("Removed particle: " + particle);
-            }
-            else
-            {
-                particle.update(_tick);
+                networks.put(network.uuid, network); //TODO join if networks share same ID but are different
             }
         }
+        networks.values().stream().filter(network -> network.isDead()).collect(Collectors.toList()).forEach(this::doRemove);
+        networks.values().forEach(network -> network.update(world, _tick));
+    }
+
+    private void doRemove(AcceleratorNetwork network)
+    {
+        network.onNetworkRemoved();
+        networks.remove(network.uuid);
     }
 
     /**
@@ -67,7 +69,11 @@ public class AcceleratorWorld
      */
     public void unload(World world)
     {
-        particles.clear(); //These are saved by accelerator guns currently
         networks.clear();
+    }
+
+    public void add(AcceleratorNetwork acceleratorNetwork)
+    {
+        addList.offer(acceleratorNetwork);
     }
 }

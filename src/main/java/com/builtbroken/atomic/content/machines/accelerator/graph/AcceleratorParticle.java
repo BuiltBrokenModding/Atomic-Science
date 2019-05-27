@@ -1,9 +1,11 @@
 package com.builtbroken.atomic.content.machines.accelerator.graph;
 
 import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorParticle;
 import com.builtbroken.atomic.lib.math.MathConstF;
-import com.builtbroken.jlib.data.vector.IPos3D;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
@@ -12,18 +14,30 @@ import java.util.UUID;
 /**
  * Created by Dark(DarkGuardsman, Robert) on 4/7/2019.
  */
-public class AcceleratorParticle implements IPos3D
+public class AcceleratorParticle implements IAcceleratorParticle
 {
-    public final UUID ID;
-    public final int dim_id;
+    public static final String NBT_ID = "id";
+    public static final String NBT_DIM = "dim";
+    public static final String NBT_VELOCITY = "velocity";
+    public static final String NBT_ENERGY = "energy";
+    public static final String NBT_X = "x";
+    public static final String NBT_Y = "y";
+    public static final String NBT_Z = "z";
+    public static final String NBT_DIR = "direction";
+    public static final String NBT_STACK = "item";
+    public static final String NBT_IN_TUBE = "in_tube";
+    public static final String NBT_ALIVE = "alive";
+
+    public final UUID unique_id;
 
     //How far in meters/blocks can be move per tick of the game
-    private float movementPerTick;
+    private float velocity;
 
     //Energy stored
     private float energy;
 
     //Position data
+    private int dim;
     private float x;
     private float y;
     private float z;
@@ -42,16 +56,22 @@ public class AcceleratorParticle implements IPos3D
 
     private boolean isAlive = true;
 
+    public AcceleratorParticle(NBTTagCompound nbt)
+    {
+        unique_id = nbt.hasKey(NBT_ID) ? NBTUtil.getUUIDFromTag(nbt.getCompoundTag(NBT_ID)) : UUID.randomUUID();
+        load(nbt);
+    }
+
     public AcceleratorParticle(int dim, BlockPos start, EnumFacing moveDirection, float energy)
     {
-        this.ID = UUID.randomUUID();
-        this.dim_id = dim;
+        this.unique_id = UUID.randomUUID();
+        this.dim = dim;
         this.x = start.getX() + 0.5f;
         this.y = start.getY() + 0.5f;
         this.z = start.getZ() + 0.5f;
         this.moveDirection = moveDirection;
         this.energy = energy;
-        this.movementPerTick = .1f; //TODO calculate speed from energy and mass of the itemstack
+        this.velocity = .1f; //TODO calculate speed from energy and mass of the itemstack
     }
 
     public void update(int worldTick)
@@ -67,7 +87,7 @@ public class AcceleratorParticle implements IPos3D
         //TODO center on tube
 
         //How much we can move in a single go
-        float distanceToMove = movementPerTick;
+        float distanceToMove = velocity;
 
         //Get current node we are pathing
         IAcceleratorNode currentNode = getCurrentNode();
@@ -160,17 +180,22 @@ public class AcceleratorParticle implements IPos3D
 
     public void setVelocity(float v)
     {
-        this.movementPerTick = v;
+        this.velocity = v;
     }
 
     public void addVelocity(float acceleration)
     {
-        setVelocity(movementPerTick + acceleration);
+        setVelocity(velocity + acceleration);
     }
 
     public float getVelocity()
     {
-        return movementPerTick;
+        return velocity;
+    }
+
+    public int dim()
+    {
+        return dim;
     }
 
     @Override
@@ -244,6 +269,10 @@ public class AcceleratorParticle implements IPos3D
 
     public EnumFacing getMoveDirection()
     {
+        if(moveDirection == null)
+        {
+            moveDirection = EnumFacing.NORTH;
+        }
         return moveDirection;
     }
 
@@ -263,5 +292,41 @@ public class AcceleratorParticle implements IPos3D
     public String toString()
     {
         return String.format("AcceleratorParticle[Pos: %.2f, %.2f, %.2f", x, y, z) + " Dir:" + moveDirection + "]@" + hashCode();
+    }
+
+    @Override
+    public NBTTagCompound save(NBTTagCompound nbt)
+    {
+        //Immutable data
+        nbt.setTag(NBT_ID, NBTUtil.createUUIDTag(unique_id));
+
+        //Mutable data
+        nbt.setFloat(NBT_VELOCITY, velocity);
+        nbt.setFloat(NBT_ENERGY, energy);
+        nbt.setInteger(NBT_DIM, dim);
+        nbt.setFloat(NBT_X, x);
+        nbt.setFloat(NBT_Y, y);
+        nbt.setFloat(NBT_Z, z);
+        nbt.setByte(NBT_DIR, (byte)getMoveDirection().ordinal());
+        nbt.setTag(NBT_STACK, itemStack.serializeNBT());
+        nbt.setBoolean(NBT_IN_TUBE, notInTube);
+        nbt.setBoolean(NBT_ALIVE, isAlive);
+        return nbt;
+    }
+
+    @Override
+    public void load(NBTTagCompound nbt)
+    {
+        //Constructor reads dim and UUID
+        velocity = nbt.getFloat(NBT_VELOCITY);
+        energy = nbt.getFloat(NBT_ENERGY);
+        dim = nbt.getInteger(NBT_DIM);
+        x = nbt.getFloat(NBT_X);
+        y = nbt.getFloat(NBT_Y);
+        z = nbt.getFloat(NBT_Z);
+        moveDirection = EnumFacing.byIndex(nbt.getByte(NBT_DIR));
+        itemStack = new ItemStack(nbt.getCompoundTag(NBT_STACK));
+        notInTube = nbt.getBoolean(NBT_IN_TUBE);
+        isAlive = nbt.getBoolean(NBT_ALIVE);
     }
 }

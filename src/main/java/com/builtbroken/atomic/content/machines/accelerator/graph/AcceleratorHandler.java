@@ -60,18 +60,6 @@ public class AcceleratorHandler
                 if (event.side.isServer())
                 {
                     acceleratorWorld.update(world);
-
-                    acceleratorWorld.particles.forEach(acceleratorParticle -> {
-
-                        //System.out.println(acceleratorParticle);
-
-                        PacketAcceleratorParticleSync packet = new PacketAcceleratorParticleSync(acceleratorParticle); //TODO implement flywheel pattern
-
-                        PacketSystem.INSTANCE.sendToAllAround(packet,
-                                new NetworkRegistry.TargetPoint(world.provider.getDimension(),
-                                        acceleratorParticle.x(), acceleratorParticle.y(), acceleratorParticle.z(),
-                                        30));
-                    });
                 }
             }
         }
@@ -114,7 +102,7 @@ public class AcceleratorHandler
                 .setItem(item.copy());
 
         //Add
-        acceleratorWorld.particles.add(particle);
+        node.add(particle);
 
         //System.out.println("Created particle " + particle);
 

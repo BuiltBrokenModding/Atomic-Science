@@ -67,6 +67,8 @@ public class BlockAcceleratorTube extends BlockPrefab
                     playerIn.sendMessage(new TextComponentString("---Pos: " + pos));
                     playerIn.sendMessage(new TextComponentString("---Dir: " + ((TileEntityAcceleratorTube) tile).getDirection() + "==" + state.getValue(ROTATION_PROP)));
                     playerIn.sendMessage(new TextComponentString("---Connection: " + state.getValue(CONNECTION_PROP)));
+                    playerIn.sendMessage(new TextComponentString("---Network: " + ((TileEntityAcceleratorTube) tile).getNode().getNetwork()));
+                    playerIn.sendMessage(new TextComponentString("---Network: " + ((TileEntityAcceleratorTube) tile).getNode().getParticles().size()));
                 }
                 return true;
             }
@@ -213,7 +215,13 @@ public class BlockAcceleratorTube extends BlockPrefab
                 && !((TileEntityAcceleratorTube) tile).world().isRemote)
         {
             //((TileEntityAcceleratorTube) tile).updateConnections(true); - breaks connections
-            ((TileEntityAcceleratorTube) tile).getNode().updateConnections(world);
+            if(((TileEntityAcceleratorTube) tile).getNode().updateConnections(world))
+            {
+                if(((TileEntityAcceleratorTube) tile).getNode().getNetwork() != null)
+                {
+                    ((TileEntityAcceleratorTube) tile).getNode().getNetwork().destroy();
+                }
+            }
         }
     }
 

@@ -13,6 +13,7 @@ import com.builtbroken.atomic.content.machines.laser.emitter.TileEntityLaserEmit
 import com.builtbroken.atomic.content.prefab.TileEntityMachine;
 import com.builtbroken.atomic.lib.timer.TickTimerTileEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -25,14 +26,14 @@ import javax.annotation.Nullable;
  */
 public class TileEntityAcceleratorGun extends TileEntityMachine
 {
-    private AcceleratorNetwork network;
+    public static final String NBT_NODE = "accelerator_node";
 
-    private final AcceleratorNode acceleratorNode = new AcceleratorNode();
+    public final AcceleratorNode acceleratorNode = new AcceleratorNode(() -> dim(), () -> !isInvalid(), () -> markDirty());
     private final IAcceleratorTube tubeCap = new AcceleratorTubeCap(() -> getPos(), () -> acceleratorNode);
 
     public TileEntityAcceleratorGun()
     {
-        tickServer.add(TickTimerTileEntity.newConditional(20, (tick) -> validateNetwork(), () -> getNetwork() == null || getNetwork().nodes.isEmpty()));
+        tickServer.add(TickTimerTileEntity.newConditional(20, (tick) -> validateNetwork(), () -> acceleratorNode.getNetwork() == null || acceleratorNode.getNetwork().isDead()));
     }
 
     @Override
@@ -44,7 +45,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
     private void validateNetwork()
     {
         //If we have no network try to locate a tube with a network
-        if (getNetwork() == null)
+        if (acceleratorNode.getNetwork() == null)
         {
             final EnumFacing facing = getDirection();
 
@@ -52,33 +53,21 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
             final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, null);
             if (tube != null)
             {
-                //Set network
-                setNetwork(tube.getNode().getNetwork());
-
-                //Connect to fake node
+                //Connection to node to create or join a network
                 tube.getNode().connect(acceleratorNode, getDirection().getOpposite());
-
-                //If network null create
-                if (getNetwork() == null)
-                {
-                    setNetwork(new AcceleratorNetwork());
-                    getNetwork().connect(tube.getNode());
-                }
-
-                //Link to network
-                if (getNetwork() != null)
-                {
-                    getNetwork().guns.add(this);
-                    getNetwork().connect(acceleratorNode);
-                }
             }
         }
 
         //Find tubes
-        if (getNetwork() != null)
+        if (acceleratorNode.getNetwork() != null)
         {
-            getNetwork().path(getWorld(), getPos().offset(getDirection()));
+            acceleratorNode.getNetwork().init(getWorld(), getPos().offset(getDirection()));
         }
+    }
+
+    private void createNewNetwork()
+    {
+        acceleratorNode.setNetwork(new AcceleratorNetwork(dim()));
     }
 
     /**
@@ -148,16 +137,6 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
         return null;
     }
 
-    public AcceleratorNetwork getNetwork()
-    {
-        return network;
-    }
-
-    public void setNetwork(AcceleratorNetwork network)
-    {
-        this.network = network;
-    }
-
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
     {
@@ -173,5 +152,19 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
             return (T) tubeCap;
         }
         return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound)
+    {
+        super.readFromNBT(compound);
+        acceleratorNode.load(compound.getCompoundTag(NBT_NODE));
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    {
+        compound.setTag(NBT_NODE, acceleratorNode.save(new NBTTagCompound()));
+        return super.writeToNBT(compound);
     }
 }

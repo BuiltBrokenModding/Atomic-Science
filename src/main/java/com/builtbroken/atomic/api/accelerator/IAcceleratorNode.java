@@ -5,9 +5,13 @@ import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNetwork;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.List;
 
 /**
  * Created by Dark(DarkGuardsman, Robert) on 4/20/2019.
@@ -21,6 +25,13 @@ public interface IAcceleratorNode
      * @return array of connections to other nodes
      */
     IAcceleratorNode[] getNodes();
+
+    /**
+     * Called each update tick of the network
+     *
+     * @param world
+     */
+    void update(World world, int tick);
 
     /**
      * Called to move the particle
@@ -45,12 +56,15 @@ public interface IAcceleratorNode
      */
     AcceleratorNetwork getNetwork(); //TODO interface for network
 
+    List<AcceleratorParticle> getParticles();
+
     /**
      * Called to update connections to nearby tubes
      *
      * @param world - world to access
+     * @return true if connection state changed
      */
-    void updateConnections(IBlockAccess world);
+    boolean updateConnections(IBlockAccess world);
 
     /**
      * Called to connect the node to the side
@@ -100,7 +114,6 @@ public interface IAcceleratorNode
     TubeConnectionType getConnectionType();
 
 
-
     /**
      * Gets the connection state for the side
      *
@@ -116,4 +129,15 @@ public interface IAcceleratorNode
     {
         return getConnectionType().getTypeForSide(side);
     }
+
+    NBTTagCompound save(NBTTagCompound nbt);
+
+    void load(NBTTagCompound nbt);
+
+    /**
+     * Checks if the node is dead
+     *
+     * @return
+     */
+    boolean isDead();
 }

@@ -4,6 +4,7 @@ import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -15,7 +16,9 @@ import javax.annotation.Nullable;
  */
 public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
 {
-    protected final AcceleratorNode acceleratorNode = new AcceleratorNode();
+    public static final String NBT_NODE = "accelerator_node";
+
+    protected final AcceleratorNode acceleratorNode = new AcceleratorNode(() -> dim(), () -> !isInvalid(), () -> markDirty());
     protected final IAcceleratorTube tubeCap = new AcceleratorTubeCap(() -> getPos(), () -> acceleratorNode);
 
     public AcceleratorNode getNode()
@@ -38,6 +41,20 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
             return (T) tubeCap;
         }
         return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound)
+    {
+       super.readFromNBT(compound);
+       acceleratorNode.load(compound.getCompoundTag(NBT_NODE));
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    {
+        compound.setTag(NBT_NODE, acceleratorNode.save(new NBTTagCompound()));
+        return super.writeToNBT(compound);
     }
 
     @Override

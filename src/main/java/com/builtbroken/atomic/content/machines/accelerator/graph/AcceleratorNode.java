@@ -6,31 +6,42 @@ import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
+import com.builtbroken.atomic.lib.CallTrigger;
 import com.builtbroken.atomic.lib.math.BlockPosHelpers;
 import com.builtbroken.atomic.lib.math.MathConstF;
 import com.builtbroken.atomic.lib.math.SideMathHelper;
+import com.builtbroken.atomic.network.netty.PacketSystem;
+import com.builtbroken.atomic.network.packet.client.PacketAcceleratorParticleSync;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.IntSupplier;
 
 /**
  * Created by Dark(DarkGuardsman, Robert) on 12/15/2018.
  */
 public class AcceleratorNode implements IAcceleratorNode
 {
+    public static final String NBT_TURN_INDEX = "turn_index";
+    public static final String NBT_PARTICLES = "particles";
 
     //Connections
     private final IAcceleratorNode[] nodes = new IAcceleratorNode[6];
 
     //direction and connection data
     private EnumFacing facing;
+    private IntSupplier dim;
     private BlockPos pos = BlockPos.ORIGIN;
     private TubeConnectionType connectionType;
 
@@ -39,6 +50,7 @@ public class AcceleratorNode implements IAcceleratorNode
 
     //Used to track particles in case we break the node
     private List<AcceleratorParticle> currentParticles = new ArrayList(3);
+    private final Queue<AcceleratorParticle> newParticles = new LinkedList();
 
     public int turnIndex = 0;
 
@@ -48,8 +60,14 @@ public class AcceleratorNode implements IAcceleratorNode
     public Consumer<AcceleratorParticle> onMoveCallback;
     public BiFunction<AcceleratorParticle, ImmutableList<TubeSide>, TubeSide> turnController;
 
-    public AcceleratorNode()
+    public BooleanSupplier isHostAlive;
+    public CallTrigger markDirty;
+
+    public AcceleratorNode(IntSupplier dim, BooleanSupplier isHostAlive, CallTrigger markDirty) //TODO convert to host interface
     {
+        this.dim = dim;
+        this.isHostAlive = isHostAlive;
+        this.markDirty = markDirty;
         onLeaveCallback = (particle) -> AcceleratorHandler.spawnParticleInWorld(particle);
     }
 
@@ -64,22 +82,88 @@ public class AcceleratorNode implements IAcceleratorNode
     }
 
     @Override
-    public void updateConnections(IBlockAccess world)
+    public List<AcceleratorParticle> getParticles()
     {
+        return currentParticles;
+    }
+
+    public void add(AcceleratorParticle particle)
+    {
+        currentParticles.add(particle);
+    }
+
+    @Override
+    public void update(World world, int tick)
+    {
+        if (newParticles.peek() != null)
+        {
+            markDirty.trigger();
+            //Particles added, prevents concurrent errors
+            do
+            {
+                AcceleratorParticle particle = newParticles.poll();
+                particle.setCurrentNode(this);
+                currentParticles.add(particle);
+            }
+            while (newParticles.peek() != null);
+        }
+
+        //Only loop if we have something
+        if (currentParticles.size() > 0)
+        {
+            markDirty.trigger();
+
+            //Update particles
+            final Iterator<AcceleratorParticle> iterator = currentParticles.iterator();
+            while (iterator.hasNext())
+            {
+                final AcceleratorParticle particle = iterator.next();
+                if (particle.isInvalid() || particle.getCurrentNode() != this)
+                {
+                    iterator.remove();
+                }
+                else
+                {
+                    particle.update(tick);
+                }
+            }
+
+            //Network handling
+            currentParticles.forEach(acceleratorParticle -> {
+
+                //System.out.println(acceleratorParticle);
+
+                PacketAcceleratorParticleSync packet = new PacketAcceleratorParticleSync(acceleratorParticle); //TODO implement flywheel pattern
+
+                PacketSystem.INSTANCE.sendToAllAround(packet,
+                        new NetworkRegistry.TargetPoint(world.provider.getDimension(),
+                                acceleratorParticle.x(), acceleratorParticle.y(), acceleratorParticle.z(),
+                                30));
+            });
+        }
+    }
+
+    @Override
+    public boolean updateConnections(IBlockAccess world)
+    {
+        boolean connectionStateChanged = false;
         //Find tubes
         for (EnumFacing facing : EnumFacing.HORIZONTALS)
         {
             final IAcceleratorNode node = getNode(world, facing);
+
+            //Lost a connection
             if (node == null && getNode(facing) != null)
             {
-                if (getNetwork() != null)
-                {
-                    getNetwork().destroy();
-                }
-                return;
+                connectionStateChanged = true;
             }
             else if (node != null)
             {
+                //Gained a connection
+                if (getNode(facing) == null)
+                {
+                    connectionStateChanged = true;
+                }
                 nodes[facing.ordinal()] = node;
             }
         }
@@ -100,6 +184,8 @@ public class AcceleratorNode implements IAcceleratorNode
                 }
             }
         }
+
+        return connectionStateChanged;
     }
 
     /**
@@ -132,9 +218,10 @@ public class AcceleratorNode implements IAcceleratorNode
             {
                 if (getNetwork() == null)
                 {
-                    setNetwork(new AcceleratorNetwork());
+                    setNetwork(new AcceleratorNetwork(dim.getAsInt()));
                     getNetwork().connect(this);
                     getNetwork().connect(acceleratorNode);
+                    getNetwork().registerNetwork();
                 }
                 else
                 {
@@ -297,10 +384,10 @@ public class AcceleratorNode implements IAcceleratorNode
         if (getPossibleExitCount() > 1)
         {
             //Advanced logic controller
-            if(turnController != null)
+            if (turnController != null)
             {
                 final TubeSide side = turnController.apply(particle, getConnectionType().outputSides);
-                if(side != null)
+                if (side != null)
                 {
                     return side.getFacing(facing);
                 }
@@ -421,12 +508,19 @@ public class AcceleratorNode implements IAcceleratorNode
      */
     public void onParticleEnter(AcceleratorParticle particle)
     {
-        this.currentParticles.add(particle);
-        particle.setCurrentNode(this);
+        addParticle(particle);
 
         if (onEnterCallback != null)
         {
             onEnterCallback.accept(particle);
+        }
+    }
+
+    public void addParticle(AcceleratorParticle particle)
+    {
+        if (particle != null)
+        {
+            newParticles.offer(particle);
         }
     }
 
@@ -437,9 +531,7 @@ public class AcceleratorNode implements IAcceleratorNode
      */
     public void onParticleExit(AcceleratorParticle particle)
     {
-        this.currentParticles.remove(particle);
         particle.setCurrentNode(null);
-
         if (onExitCallback != null)
         {
             onExitCallback.accept(particle);
@@ -483,6 +575,49 @@ public class AcceleratorNode implements IAcceleratorNode
     public TubeConnectionType getConnectionType()
     {
         return connectionType;
+    }
+
+    @Override
+    public NBTTagCompound save(NBTTagCompound nbt)
+    {
+        nbt.setInteger(NBT_TURN_INDEX, turnIndex);
+        if (!currentParticles.isEmpty())
+        {
+            final NBTTagList list = new NBTTagList();
+            for (AcceleratorParticle particle : currentParticles)
+            {
+                if (!particle.isInvalid())
+                {
+                    final NBTTagCompound save = new NBTTagCompound();
+                    particle.save(save);
+                    list.appendTag(save);
+                }
+            }
+            nbt.setTag(NBT_PARTICLES, list);
+        }
+        return nbt;
+    }
+
+    @Override
+    public void load(NBTTagCompound nbt)
+    {
+        turnIndex = nbt.getInteger(NBT_TURN_INDEX);
+        if (nbt.hasKey(NBT_PARTICLES))
+        {
+            currentParticles.clear();
+            final NBTTagList list = nbt.getTagList(NBT_PARTICLES, 10);
+            for (int i = 0; i < list.tagCount(); i++)
+            {
+                final NBTTagCompound save = list.getCompoundTagAt(i);
+                addParticle(new AcceleratorParticle(save));
+            }
+        }
+    }
+
+    @Override
+    public boolean isDead()
+    {
+        return !isHostAlive.getAsBoolean();
     }
 
     public void setConnectionType(TubeConnectionType type)

@@ -3,7 +3,6 @@ package com.builtbroken.atomic.content.machines.accelerator.graph;
 import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
-import com.builtbroken.atomic.content.machines.accelerator.gun.TileEntityAcceleratorGun;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -18,54 +17,59 @@ import java.util.*;
  */
 public class AcceleratorNetwork
 {
-
     public final UUID uuid;
+    public final int dim;
+
+    private boolean destroyNetwork = false;
+    private boolean init = false;
 
     /**
      * All nodes in the network
      */
-    public final Set<IAcceleratorNode> nodes = new HashSet();
+    private final Set<IAcceleratorNode> nodes = new HashSet();
 
-    /**
-     * Any guns in the network
-     */
-    public final Set<TileEntityAcceleratorGun> guns = new HashSet();
-
-    public AcceleratorNetwork()
+    public AcceleratorNetwork(int dim)
     {
-        uuid = UUID.randomUUID();
+        this(dim, UUID.randomUUID());
     }
 
-    public AcceleratorNetwork(UUID uuid) //TODO use for load
+    public AcceleratorNetwork(int dim, UUID uuid) //TODO use for load
     {
+        this.dim = dim;
         this.uuid = uuid;
     }
 
-    /**
-     * Joins two networks together
-     *
-     * @param network
-     */
-    public void join(AcceleratorNetwork network)
+    public AcceleratorNetwork registerNetwork()
     {
-        //Add nodes
-        nodes.addAll(network.nodes);
-        network.nodes.forEach(node -> node.setNetwork(this));
-
-        //Add guns
-        guns.addAll(network.guns);
-        network.guns.forEach(gun -> gun.setNetwork(this));
-
-        //Clear old
-        network.clear();
-
-        //Validate
-        validate();
+        AcceleratorHandler.getOrCreate(dim).add(this);
+        return this;
     }
 
-    public void validate()
+    public void init(World world, BlockPos start)
     {
-        guns.removeIf(gun -> gun == null || gun.isInvalid());
+        if (!init)
+        {
+            init = true;
+            path(world, start);
+        }
+    }
+
+    /**
+     * Called each tick to update the network.
+     *
+     * @param world
+     * @param tick
+     */
+    public void update(World world, int tick)
+    {
+        if (getNodes().removeIf(node -> node.isDead()))
+        {
+            destroy();
+        }
+        else
+        {
+            getNodes().forEach(node -> node.update(world, tick));
+        }
     }
 
     /**
@@ -84,8 +88,7 @@ public class AcceleratorNetwork
      */
     public void clear()
     {
-        nodes.clear();
-        guns.clear();
+        getNodes().clear();
     }
 
     /**
@@ -93,8 +96,18 @@ public class AcceleratorNetwork
      */
     public void destroy()
     {
-        nodes.forEach(node -> node.setNetwork(null));
-        guns.forEach(gun -> gun.setNetwork(null));
+        if (!init)
+        {
+            destroyNetwork = true;
+        }
+    }
+
+    /**
+     * Does the actual destroy process
+     */
+    public void onNetworkRemoved()
+    {
+        getNodes().forEach(node -> node.setNetwork(null));
         clear();
     }
 
@@ -161,6 +174,17 @@ public class AcceleratorNetwork
         }
 
         //Add nodes to network
-        this.nodes.addAll(posToNode.values());
+        this.getNodes().addAll(posToNode.values());
+        destroyNetwork = false; //Temp fix for connection update calling destroy
+    }
+
+    public boolean isDead()
+    {
+        return nodes.isEmpty() || destroyNetwork;
+    }
+
+    public Set<IAcceleratorNode> getNodes()
+    {
+        return nodes;
     }
 }

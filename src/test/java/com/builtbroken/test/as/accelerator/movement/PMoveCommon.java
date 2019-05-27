@@ -65,7 +65,7 @@ public class PMoveCommon extends ATubeTestCommon
         particle.setVelocity(SPEED);
 
         //Create tube
-        particle.setCurrentNode(new AcceleratorNode().setData(BLOCK_POS_ZERO, facing, type));
+        particle.setCurrentNode(new AcceleratorNode(()-> 0, () -> true, () -> {}).setData(BLOCK_POS_ZERO, facing, type));
 
         //Set position
         BlockPosHelpers.centerOnEdge(BLOCK_POS_ZERO, startSide,

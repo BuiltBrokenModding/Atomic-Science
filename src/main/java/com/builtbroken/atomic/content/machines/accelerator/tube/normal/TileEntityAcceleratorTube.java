@@ -229,7 +229,10 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         }
 
         //Update connections on node
-        acceleratorNode.updateConnections(access);
+        if(acceleratorNode.updateConnections(access) && acceleratorNode.getNetwork() != null)
+        {
+            acceleratorNode.getNetwork().destroy();
+        }
 
         //Update block state
         return updateState ? updateState(false, updateBlockState) : null;

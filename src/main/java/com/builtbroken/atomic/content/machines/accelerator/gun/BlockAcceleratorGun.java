@@ -43,7 +43,7 @@ public class BlockAcceleratorGun extends BlockMachine
             {
                 if (!world.isRemote)
                 {
-                    AcceleratorDebug.printNetwork(((TileEntityAcceleratorGun)gunTile).getNetwork());
+                    AcceleratorDebug.printNetwork(((TileEntityAcceleratorGun)gunTile).acceleratorNode.getNetwork());
                 }
                 return true;
             }

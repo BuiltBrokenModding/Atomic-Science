@@ -41,7 +41,7 @@ public class ATubeTestCommon
     public static AcceleratorNode newNode(BlockPos pos, EnumFacing facing, TubeConnectionType connectionType)
     {
         //Create
-        AcceleratorNode node = new AcceleratorNode().setData(pos, facing, connectionType);
+        AcceleratorNode node = new AcceleratorNode(()-> 0, () -> true, () -> {}).setData(pos, facing, connectionType);
 
         validateNodeInit(node, pos, facing, connectionType);
 
