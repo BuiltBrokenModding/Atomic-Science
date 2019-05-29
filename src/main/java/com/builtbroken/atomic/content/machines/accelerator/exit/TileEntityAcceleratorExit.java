@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.content.machines.accelerator.exit;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.tube.imp.TileEntityAcceleratorTubePrefab;
 import com.builtbroken.atomic.content.machines.container.item.TileEntityItemContainer;
 import net.minecraft.block.Block;
@@ -19,8 +19,8 @@ public class TileEntityAcceleratorExit extends TileEntityAcceleratorTubePrefab
     @Override
     public void onLoad()
     {
-        acceleratorNode.setData(getPos(), getDirection(), TubeConnectionType.END_CAP);
-        acceleratorNode.onExitCallback = (particle) -> onParticleExit(particle);
+        getNode().setData(getPos(), getDirection(), TubeConnectionType.END_CAP);
+        getNode().onExitCallback = (particle) -> onParticleExit(particle);
     }
 
     public void onParticleExit(AcceleratorParticle particle)

@@ -2,6 +2,8 @@ package com.builtbroken.atomic.content.machines.accelerator.tube.imp;
 
 import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
@@ -12,26 +14,48 @@ import java.util.function.Supplier;
  */
 public class AcceleratorTubeCap implements IAcceleratorTube
 {
-    Supplier<BlockPos> posSupplier;
-    Supplier<IAcceleratorNode> nodeSupplier;
+    private final TileEntity tileEntity;
 
-    public AcceleratorTubeCap(Supplier<BlockPos> posSupplier, Supplier<IAcceleratorNode> nodeSupplier)
+    protected final AcceleratorNode acceleratorNode = new AcceleratorNode(this);
+
+    public AcceleratorTubeCap(TileEntity tileEntity)
     {
-        this.posSupplier = posSupplier;
-        this.nodeSupplier = nodeSupplier;
+        this.tileEntity = tileEntity;
+    }
+
+    @Override
+    public int dim()
+    {
+        if (tileEntity.getWorld() == null || tileEntity.getWorld().provider == null)
+        {
+            return 0;
+        }
+        return tileEntity.getWorld().provider.getDimension();
+    }
+
+    @Override
+    public boolean isDead()
+    {
+        return tileEntity.isInvalid();
+    }
+
+    @Override
+    public void markDirty()
+    {
+        tileEntity.markDirty();
     }
 
     @Nonnull
     @Override
     public BlockPos getPosition()
     {
-        return posSupplier.get();
+        return tileEntity.getPos();
     }
 
     @Nonnull
     @Override
-    public IAcceleratorNode getNode()
+    public AcceleratorNode getNode()
     {
-        return nodeSupplier.get();
+        return acceleratorNode;
     }
 }

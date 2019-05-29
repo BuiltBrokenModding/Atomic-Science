@@ -6,7 +6,6 @@ import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorHandler;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNetwork;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.machines.accelerator.tube.imp.AcceleratorTubeCap;
 import com.builtbroken.atomic.content.machines.container.item.TileEntityItemContainer;
 import com.builtbroken.atomic.content.machines.laser.emitter.TileEntityLaserEmitter;
@@ -28,24 +27,23 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
 {
     public static final String NBT_NODE = "accelerator_node";
 
-    public final AcceleratorNode acceleratorNode = new AcceleratorNode(() -> dim(), () -> !isInvalid(), () -> markDirty());
-    private final IAcceleratorTube tubeCap = new AcceleratorTubeCap(() -> getPos(), () -> acceleratorNode);
+    public final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this);
 
     public TileEntityAcceleratorGun()
     {
-        tickServer.add(TickTimerTileEntity.newConditional(20, (tick) -> validateNetwork(), () -> acceleratorNode.getNetwork() == null || acceleratorNode.getNetwork().isDead()));
+        tickServer.add(TickTimerTileEntity.newConditional(20, (tick) -> validateNetwork(), () -> tubeCap.getNode().getNetwork() == null || tubeCap.getNode().getNetwork().isDead()));
     }
 
     @Override
     public void onLoad()
     {
-        acceleratorNode.setData(getPos(), getDirection(), TubeConnectionType.START_CAP);
+        tubeCap.getNode().setData(getPos(), getDirection(), TubeConnectionType.START_CAP);
     }
 
     private void validateNetwork()
     {
         //If we have no network try to locate a tube with a network
-        if (acceleratorNode.getNetwork() == null)
+        if (tubeCap.getNode().getNetwork() == null)
         {
             final EnumFacing facing = getDirection();
 
@@ -54,20 +52,20 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
             if (tube != null)
             {
                 //Connection to node to create or join a network
-                tube.getNode().connect(acceleratorNode, getDirection().getOpposite());
+                tube.getNode().connect(tubeCap.getNode(), getDirection().getOpposite());
             }
         }
 
         //Find tubes
-        if (acceleratorNode.getNetwork() != null)
+        if (tubeCap.getNode().getNetwork() != null)
         {
-            acceleratorNode.getNetwork().init(getWorld(), getPos().offset(getDirection()));
+            tubeCap.getNode().getNetwork().init(getWorld(), getPos().offset(getDirection()));
         }
     }
 
     private void createNewNetwork()
     {
-        acceleratorNode.setNetwork(new AcceleratorNetwork(dim()));
+        tubeCap.getNode().setNetwork(new AcceleratorNetwork(dim()));
     }
 
     /**
@@ -100,7 +98,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
      */
     public void createParticle(ItemStack item, int energyToStart)
     {
-        AcceleratorHandler.newParticle(world, acceleratorNode, item, energyToStart);
+        AcceleratorHandler.newParticle(world, tubeCap.getNode(), item, energyToStart);
     }
 
     /**
@@ -158,13 +156,13 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
     public void readFromNBT(NBTTagCompound compound)
     {
         super.readFromNBT(compound);
-        acceleratorNode.load(compound.getCompoundTag(NBT_NODE));
+        tubeCap.getNode().load(compound.getCompoundTag(NBT_NODE));
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
-        compound.setTag(NBT_NODE, acceleratorNode.save(new NBTTagCompound()));
+        compound.setTag(NBT_NODE, tubeCap.getNode().save(new NBTTagCompound()));
         return super.writeToNBT(compound);
     }
 }

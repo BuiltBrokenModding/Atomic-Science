@@ -26,12 +26,7 @@ public class ATestTube extends TileEntityAcceleratorTube
         tiles[side.ordinal()] = tile;
         if(tile instanceof TileEntityAcceleratorTube)
         {
-            acceleratorNode.connect(((TileEntityAcceleratorTube)tile).getNode(), side);
+            getNode().connect(((TileEntityAcceleratorTube)tile).getNode(), side);
         }
-    }
-
-    public AcceleratorNode getNode()
-    {
-        return acceleratorNode;
     }
 }

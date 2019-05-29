@@ -6,9 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 /**
  * Created by Dark(DarkGuardsman, Robert) on 5/26/2019.
  */
-public interface IAcceleratorParticle extends IPos3D
+public interface IAcceleratorParticle extends IPos3D, IAcceleratorComponent
 {
-    NBTTagCompound save(NBTTagCompound nbt);
 
-    void load(NBTTagCompound nbt);
 }

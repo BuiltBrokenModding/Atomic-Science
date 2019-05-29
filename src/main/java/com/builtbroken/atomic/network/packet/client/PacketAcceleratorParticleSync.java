@@ -1,7 +1,7 @@
 package com.builtbroken.atomic.network.packet.client;
 
 import com.builtbroken.atomic.CommonProxy;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import com.builtbroken.atomic.network.IPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

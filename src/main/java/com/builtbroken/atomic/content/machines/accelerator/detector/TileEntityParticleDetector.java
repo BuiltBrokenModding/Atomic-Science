@@ -6,7 +6,7 @@ import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import com.builtbroken.atomic.content.prefab.TileEntityMachine;
 import com.builtbroken.atomic.lib.timer.TickTimerConditional;
 import com.google.common.collect.ImmutableList;

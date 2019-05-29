@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.content.machines.accelerator.tube.imp;
 
 import com.builtbroken.atomic.api.AtomicScienceAPI;
+import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
@@ -18,12 +19,13 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
 {
     public static final String NBT_NODE = "accelerator_node";
 
-    protected final AcceleratorNode acceleratorNode = new AcceleratorNode(() -> dim(), () -> !isInvalid(), () -> markDirty());
-    protected final IAcceleratorTube tubeCap = new AcceleratorTubeCap(() -> getPos(), () -> acceleratorNode);
+
+    protected final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this);
+
 
     public AcceleratorNode getNode()
     {
-        return acceleratorNode;
+        return tubeCap.getNode();
     }
 
     @Override
@@ -47,13 +49,13 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
     public void readFromNBT(NBTTagCompound compound)
     {
        super.readFromNBT(compound);
-       acceleratorNode.load(compound.getCompoundTag(NBT_NODE));
+        getNode().load(compound.getCompoundTag(NBT_NODE));
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
-        compound.setTag(NBT_NODE, acceleratorNode.save(new NBTTagCompound()));
+        compound.setTag(NBT_NODE, getNode().save(new NBTTagCompound()));
         return super.writeToNBT(compound);
     }
 
@@ -61,9 +63,9 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
     public void invalidate()
     {
         super.invalidate();
-        if (acceleratorNode.getNetwork() != null)
+        if (getNode().getNetwork() != null)
         {
-            acceleratorNode.getNetwork().destroy();
+            getNode().getNetwork().destroy();
         }
     }
 
@@ -71,21 +73,21 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
     public void onChunkUnload()
     {
         //TODO mark node as unloaded, find way to restore node
-        if (acceleratorNode.getNetwork() != null)
+        if (getNode().getNetwork() != null)
         {
-            acceleratorNode.getNetwork().destroy();
+            getNode().getNetwork().destroy();
         }
     }
 
     public void setDirection(EnumFacing direction)
     {
-        acceleratorNode.setDirection(direction);
+        getNode().setDirection(direction);
     }
 
     @Override
     public void setPos(BlockPos posIn)
     {
         super.setPos(posIn);
-        acceleratorNode.setPos(pos);
+        getNode().setPos(pos);
     }
 }

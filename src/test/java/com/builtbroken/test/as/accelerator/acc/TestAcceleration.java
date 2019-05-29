@@ -1,7 +1,7 @@
 package com.builtbroken.test.as.accelerator.acc;
 
 import com.builtbroken.atomic.config.content.ConfigContent;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.tube.powered.TileEntityAcceleratorTubePowered;
 import com.builtbroken.test.as.TestHelpers;
 import net.minecraft.util.EnumFacing;

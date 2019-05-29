@@ -2,8 +2,9 @@ package com.builtbroken.test.as.accelerator.movement;
 
 import com.builtbroken.atomic.content.effects.effects.FloatSupplier;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorFakeTube;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import com.builtbroken.atomic.lib.math.BlockPosHelpers;
 import com.builtbroken.atomic.lib.math.MathConstF;
 import com.builtbroken.atomic.lib.math.SideMathHelper;
@@ -65,7 +66,7 @@ public class PMoveCommon extends ATubeTestCommon
         particle.setVelocity(SPEED);
 
         //Create tube
-        particle.setCurrentNode(new AcceleratorNode(()-> 0, () -> true, () -> {}).setData(BLOCK_POS_ZERO, facing, type));
+        particle.setCurrentNode(new AcceleratorFakeTube(0, BLOCK_POS_ZERO).getNode().setData(BLOCK_POS_ZERO, facing, type));
 
         //Set position
         BlockPosHelpers.centerOnEdge(BLOCK_POS_ZERO, startSide,

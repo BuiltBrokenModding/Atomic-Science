@@ -1,6 +1,7 @@
 package com.builtbroken.test.as.accelerator;
 
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorFakeTube;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -41,7 +42,7 @@ public class ATubeTestCommon
     public static AcceleratorNode newNode(BlockPos pos, EnumFacing facing, TubeConnectionType connectionType)
     {
         //Create
-        AcceleratorNode node = new AcceleratorNode(()-> 0, () -> true, () -> {}).setData(pos, facing, connectionType);
+        AcceleratorNode node = new AcceleratorFakeTube(0, pos).getNode().setData(pos, facing, connectionType);
 
         validateNodeInit(node, pos, facing, connectionType);
 

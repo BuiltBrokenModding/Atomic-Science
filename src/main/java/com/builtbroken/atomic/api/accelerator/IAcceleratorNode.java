@@ -4,19 +4,23 @@ import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionTy
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNetwork;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
-import net.minecraft.nbt.NBTTagCompound;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.List;
 
 /**
+ * Node of the accelerator network graph
+ * <p>
+ * Most of the time a node will be a tube in the network.
+ * However, it also includes exit and entry points. Which have
+ * slightly different logic then a standard node.
+ * <p>
  * Created by Dark(DarkGuardsman, Robert) on 4/20/2019.
  */
-public interface IAcceleratorNode
+public interface IAcceleratorNode extends IAcceleratorComponent
 {
 
     /**
@@ -27,7 +31,12 @@ public interface IAcceleratorNode
     IAcceleratorNode[] getNodes();
 
     /**
-     * Called each update tick of the network
+     * Called each update tick of the network.
+     * <p>
+     * In a normal node this will handle
+     * movement of the particles {@link #getParticles()}
+     * as well introducing new particles that were added
+     * the tick before into the tube.
      *
      * @param world
      */
@@ -56,6 +65,16 @@ public interface IAcceleratorNode
      */
     AcceleratorNetwork getNetwork(); //TODO interface for network
 
+    /**
+     * Particles current present in the tube.
+     * <p>
+     * This is not a complete list as newly
+     * added particles will wait until next
+     * tick before being added to avoid concurrent
+     * modification errors.
+     *
+     * @return list of particles, do not modify
+     */
     List<AcceleratorParticle> getParticles();
 
     /**
@@ -93,13 +112,6 @@ public interface IAcceleratorNode
     //TODO add side of exit
 
     /**
-     * Location of the node in the world
-     *
-     * @return
-     */
-    BlockPos getPos();
-
-    /**
      * Direction the tube is facing
      *
      * @return
@@ -130,14 +142,4 @@ public interface IAcceleratorNode
         return getConnectionType().getTypeForSide(side);
     }
 
-    NBTTagCompound save(NBTTagCompound nbt);
-
-    void load(NBTTagCompound nbt);
-
-    /**
-     * Checks if the node is dead
-     *
-     * @return
-     */
-    boolean isDead();
 }

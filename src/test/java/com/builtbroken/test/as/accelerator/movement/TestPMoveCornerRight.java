@@ -1,6 +1,6 @@
 package com.builtbroken.test.as.accelerator.movement;
 
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.lib.math.MathConstF;
 import com.builtbroken.test.as.TestHelpers;

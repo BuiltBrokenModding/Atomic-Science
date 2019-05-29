@@ -3,7 +3,7 @@ package com.builtbroken.atomic.content.machines.accelerator.tube.normal;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.tube.imp.TileEntityAcceleratorTubePrefab;
 import com.builtbroken.jlib.data.science.units.UnitDisplay;
 import io.netty.buffer.ByteBuf;
@@ -48,8 +48,8 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     @Override
     public void onLoad()
     {
-        acceleratorNode.setData(getPos(), getDirection(), getConnectionType());
-        acceleratorNode.onMoveCallback = (particle) -> debugSpeed(particle);
+        getNode().setData(getPos(), getDirection(), getConnectionType());
+        getNode().onMoveCallback = (particle) -> debugSpeed(particle);
         if (isServer())
         {
             updateState(false, true);
@@ -140,7 +140,7 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         state = state.withProperty(BlockAcceleratorTube.CONNECTION_PROP, getConnectionType());
 
         //Update node in network
-        acceleratorNode.setData(getPos(), direction, getConnectionType());
+        getNode().setData(getPos(), direction, getConnectionType());
 
         //Update actual block
         if (setBlock && world != null) //JUnit world may be null
@@ -229,9 +229,9 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         }
 
         //Update connections on node
-        if(acceleratorNode.updateConnections(access) && acceleratorNode.getNetwork() != null)
+        if(getNode().updateConnections(access) && getNode().getNetwork() != null)
         {
-            acceleratorNode.getNetwork().destroy();
+            getNode().getNetwork().destroy();
         }
 
         //Update block state
@@ -240,10 +240,10 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
 
     public TubeConnectionType calcConnectionType(IBlockAccess access)
     {
-        final TubeSideType front = acceleratorNode.getConnectedTubeState(access, TubeSide.FRONT);
-        final TubeSideType left = acceleratorNode.getConnectedTubeState(access, TubeSide.LEFT);
-        final TubeSideType right = acceleratorNode.getConnectedTubeState(access, TubeSide.RIGHT);
-        final TubeSideType back = acceleratorNode.getConnectedTubeState(access, TubeSide.BACK);
+        final TubeSideType front = getNode().getConnectedTubeState(access, TubeSide.FRONT);
+        final TubeSideType left = getNode().getConnectedTubeState(access, TubeSide.LEFT);
+        final TubeSideType right = getNode().getConnectedTubeState(access, TubeSide.RIGHT);
+        final TubeSideType back = getNode().getConnectedTubeState(access, TubeSide.BACK);
 
         //Get connection type
         return TubeConnectionType.getTypeForLayout(front, left, right, back, true);
@@ -251,9 +251,9 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
 
     public TubeConnectionType guessConnectionType(IBlockAccess access)
     {
-        final TubeSideType left = acceleratorNode.getConnectedTubeState(access, TubeSide.LEFT);
-        final TubeSideType right = acceleratorNode.getConnectedTubeState(access, TubeSide.RIGHT);
-        final TubeSideType back = acceleratorNode.getConnectedTubeState(access, TubeSide.BACK);
+        final TubeSideType left = getNode().getConnectedTubeState(access, TubeSide.LEFT);
+        final TubeSideType right = getNode().getConnectedTubeState(access, TubeSide.RIGHT);
+        final TubeSideType back = getNode().getConnectedTubeState(access, TubeSide.BACK);
 
         //Get connection type
         return TubeConnectionType.getTypeForLayout(TubeSideType.EXIT, left, right, back, true);
@@ -279,7 +279,7 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     public void setPos(BlockPos posIn)
     {
         super.setPos(posIn);
-        acceleratorNode.setPos(pos);
+        getNode().setPos(pos);
     }
 
     public TubeConnectionType getConnectionType()
@@ -297,7 +297,7 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         if (prev != type)
         {
             this._connectionType = type;
-            acceleratorNode.setConnectionType(_connectionType);
+            getNode().setConnectionType(_connectionType);
         }
     }
 }

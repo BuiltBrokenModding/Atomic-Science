@@ -1,15 +1,13 @@
 package com.builtbroken.atomic.content.machines.accelerator.graph;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.network.netty.PacketSystem;
-import com.builtbroken.atomic.network.packet.client.PacketAcceleratorParticleSync;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.HashMap;
 

@@ -6,6 +6,7 @@ import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import com.builtbroken.atomic.lib.CallTrigger;
 import com.builtbroken.atomic.lib.math.BlockPosHelpers;
 import com.builtbroken.atomic.lib.math.MathConstF;
@@ -26,12 +27,11 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.IntSupplier;
 
 /**
  * Created by Dark(DarkGuardsman, Robert) on 12/15/2018.
  */
-public class AcceleratorNode implements IAcceleratorNode
+public class AcceleratorNode extends AcceleratorComponent implements IAcceleratorNode
 {
     public static final String NBT_TURN_INDEX = "turn_index";
     public static final String NBT_PARTICLES = "particles";
@@ -41,8 +41,6 @@ public class AcceleratorNode implements IAcceleratorNode
 
     //direction and connection data
     private EnumFacing facing;
-    private IntSupplier dim;
-    private BlockPos pos = BlockPos.ORIGIN;
     private TubeConnectionType connectionType;
 
     //Current network
@@ -60,14 +58,12 @@ public class AcceleratorNode implements IAcceleratorNode
     public Consumer<AcceleratorParticle> onMoveCallback;
     public BiFunction<AcceleratorParticle, ImmutableList<TubeSide>, TubeSide> turnController;
 
-    public BooleanSupplier isHostAlive;
-    public CallTrigger markDirty;
+    public IAcceleratorTube host;
 
-    public AcceleratorNode(IntSupplier dim, BooleanSupplier isHostAlive, CallTrigger markDirty) //TODO convert to host interface
+    public AcceleratorNode(IAcceleratorTube tube) //TODO convert to host interface
     {
-        this.dim = dim;
-        this.isHostAlive = isHostAlive;
-        this.markDirty = markDirty;
+        super(() -> tube.dim());
+        this.host = tube;
         onLeaveCallback = (particle) -> AcceleratorHandler.spawnParticleInWorld(particle);
     }
 
@@ -97,7 +93,7 @@ public class AcceleratorNode implements IAcceleratorNode
     {
         if (newParticles.peek() != null)
         {
-            markDirty.trigger();
+            host.markDirty();
             //Particles added, prevents concurrent errors
             do
             {
@@ -111,14 +107,14 @@ public class AcceleratorNode implements IAcceleratorNode
         //Only loop if we have something
         if (currentParticles.size() > 0)
         {
-            markDirty.trigger();
+            host.markDirty();
 
             //Update particles
             final Iterator<AcceleratorParticle> iterator = currentParticles.iterator();
             while (iterator.hasNext())
             {
                 final AcceleratorParticle particle = iterator.next();
-                if (particle.isInvalid() || particle.getCurrentNode() != this)
+                if (particle.isDead() || particle.getCurrentNode() != this)
                 {
                     iterator.remove();
                 }
@@ -218,7 +214,7 @@ public class AcceleratorNode implements IAcceleratorNode
             {
                 if (getNetwork() == null)
                 {
-                    setNetwork(new AcceleratorNetwork(dim.getAsInt()));
+                    setNetwork(new AcceleratorNetwork(dim()));
                     getNetwork().connect(this);
                     getNetwork().connect(acceleratorNode);
                     getNetwork().registerNetwork();
@@ -292,6 +288,7 @@ public class AcceleratorNode implements IAcceleratorNode
     /**
      * Sets the data of the node
      */
+    @Deprecated //TODO being moved to host
     public AcceleratorNode setData(BlockPos pos, EnumFacing facing, TubeConnectionType type)
     {
         setPos(pos);
@@ -550,22 +547,6 @@ public class AcceleratorNode implements IAcceleratorNode
     }
 
     /**
-     * Position of the node in world
-     *
-     * @return
-     */
-    @Override
-    public BlockPos getPos()
-    {
-        return pos;
-    }
-
-    public void setPos(BlockPos pos)
-    {
-        this.pos = pos;
-    }
-
-    /**
      * Type of node, combined with  {@link #getDirection()} to
      * figure out the path of the particles in the node.
      *
@@ -577,6 +558,7 @@ public class AcceleratorNode implements IAcceleratorNode
         return connectionType;
     }
 
+
     @Override
     public NBTTagCompound save(NBTTagCompound nbt)
     {
@@ -586,7 +568,7 @@ public class AcceleratorNode implements IAcceleratorNode
             final NBTTagList list = new NBTTagList();
             for (AcceleratorParticle particle : currentParticles)
             {
-                if (!particle.isInvalid())
+                if (!particle.isDead())
                 {
                     final NBTTagCompound save = new NBTTagCompound();
                     particle.save(save);
@@ -617,7 +599,7 @@ public class AcceleratorNode implements IAcceleratorNode
     @Override
     public boolean isDead()
     {
-        return !isHostAlive.getAsBoolean();
+        return host == null || host.isDead();
     }
 
     public void setConnectionType(TubeConnectionType type)
@@ -648,7 +630,8 @@ public class AcceleratorNode implements IAcceleratorNode
     @Override
     public String toString()
     {
-        return "AcceleratorNode[" + pos + ", " + facing + ", " + connectionType + "]";
+        return "AcceleratorNode[" + getPos() + ", " + facing + ", " + connectionType + "]";
     }
+
 }
 

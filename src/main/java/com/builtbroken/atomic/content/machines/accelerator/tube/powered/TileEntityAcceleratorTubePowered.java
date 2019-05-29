@@ -2,7 +2,7 @@ package com.builtbroken.atomic.content.machines.accelerator.tube.powered;
 
 import com.builtbroken.atomic.api.accelerator.AcceleratorHelpers;
 import com.builtbroken.atomic.config.content.ConfigContent;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorParticle;
+import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
 import com.builtbroken.atomic.content.machines.accelerator.magnet.TileEntityMagnet;
 import com.builtbroken.atomic.content.machines.accelerator.tube.normal.TileEntityAcceleratorTube;
 import com.builtbroken.atomic.lib.power.Battery;
@@ -37,7 +37,7 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
     public void onLoad()
     {
         super.onLoad();
-        acceleratorNode.onMoveCallback = (particle) -> accelerate(particle);
+        getNode().onMoveCallback = (particle) -> accelerate(particle);
     }
 
     @Override

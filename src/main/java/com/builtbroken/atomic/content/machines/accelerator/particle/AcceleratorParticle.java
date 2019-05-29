@@ -1,7 +1,9 @@
-package com.builtbroken.atomic.content.machines.accelerator.graph;
+package com.builtbroken.atomic.content.machines.accelerator.particle;
 
 import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorParticle;
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorComponent;
+import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.lib.math.MathConstF;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -276,7 +278,8 @@ public class AcceleratorParticle implements IAcceleratorParticle
         return moveDirection;
     }
 
-    public boolean isInvalid()
+    @Override
+    public boolean isDead()
     {
         return notInTube || !isAlive;
     }

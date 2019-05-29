@@ -15,6 +15,27 @@ public interface IAcceleratorTube
 {
 
     /**
+     * Current dimension of the tube
+     *
+     * @return
+     */
+    int dim();
+
+    /**
+     * Is the tube still alive
+     *
+     * @return
+     */
+    boolean isDead();
+
+    /**
+     * Call back for node to tell the tube
+     * that it has changed and will need to be
+     * marked for saving.
+     */
+    void markDirty();
+
+    /**
      * Wrappers to {@link TileEntity#getPos()}
      *
      * @return
