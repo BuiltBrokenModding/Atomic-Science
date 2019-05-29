@@ -18,6 +18,7 @@ import java.util.UUID;
  */
 public class AcceleratorParticle implements IAcceleratorParticle
 {
+
     public static final String NBT_ID = "id";
     public static final String NBT_DIM = "dim";
     public static final String NBT_VELOCITY = "velocity";
@@ -40,9 +41,7 @@ public class AcceleratorParticle implements IAcceleratorParticle
 
     //Position data
     private int dim;
-    private float x;
-    private float y;
-    private float z;
+    private IMovablePos pos;
 
     //Movement direction
     private EnumFacing moveDirection;
@@ -68,12 +67,19 @@ public class AcceleratorParticle implements IAcceleratorParticle
     {
         this.unique_id = UUID.randomUUID();
         this.dim = dim;
-        this.x = start.getX() + 0.5f;
-        this.y = start.getY() + 0.5f;
-        this.z = start.getZ() + 0.5f;
+        this.pos().set(start);
         this.moveDirection = moveDirection;
         this.energy = energy;
         this.velocity = .1f; //TODO calculate speed from energy and mass of the itemstack
+    }
+
+    protected IMovablePos pos()
+    {
+        if (pos == null)
+        {
+            pos = new MovablePos();
+        }
+        return pos;
     }
 
     public void update(int worldTick)
@@ -138,23 +144,11 @@ public class AcceleratorParticle implements IAcceleratorParticle
             //TODO destroy or fire off into world
             notInTube = true;
         }
-
-        //Fix precision problems
-        normalizePosition();
     }
 
     public void move(float x, float y, float z)
     {
-        this.x += x;
-        this.y += y;
-        this.z += z;
-    }
-
-    public void normalizePosition()
-    {
-        x = Math.round(x * 1000) / 1000f;
-        y = Math.round(y * 1000) / 1000f;
-        z = Math.round(z * 1000) / 1000f;
+        pos().move(x, y, z);
     }
 
     public void move(float moveAmount, EnumFacing direction)
@@ -203,44 +197,42 @@ public class AcceleratorParticle implements IAcceleratorParticle
     @Override
     public double z()
     {
-        return z;
+        return pos().x();
     }
 
     @Override
     public double x()
     {
-        return x;
+        return pos().x();
     }
 
     @Override
     public double y()
     {
-        return y;
+        return pos().y();
     }
 
     @Override
     public float zf()
     {
-        return z;
+        return pos().zf();
     }
 
     @Override
     public float xf()
     {
-        return x;
+        return pos().xf();
     }
 
     @Override
     public float yf()
     {
-        return y;
+        return pos().yf();
     }
 
     public void setPos(float x, float y, float z)
     {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        pos().set(x, y, z);
     }
 
     public IAcceleratorNode getCurrentNode()
@@ -271,7 +263,7 @@ public class AcceleratorParticle implements IAcceleratorParticle
 
     public EnumFacing getMoveDirection()
     {
-        if(moveDirection == null)
+        if (moveDirection == null)
         {
             moveDirection = EnumFacing.NORTH;
         }
@@ -294,7 +286,7 @@ public class AcceleratorParticle implements IAcceleratorParticle
     @Override
     public String toString()
     {
-        return String.format("AcceleratorParticle[Pos: %.2f, %.2f, %.2f", x, y, z) + " Dir:" + moveDirection + "]@" + hashCode();
+        return String.format("AcceleratorParticle[Pos: %.2f, %.2f, %.2f", x(), y(), z()) + " Dir:" + moveDirection + "]@" + hashCode();
     }
 
     @Override
@@ -307,10 +299,10 @@ public class AcceleratorParticle implements IAcceleratorParticle
         nbt.setFloat(NBT_VELOCITY, velocity);
         nbt.setFloat(NBT_ENERGY, energy);
         nbt.setInteger(NBT_DIM, dim);
-        nbt.setFloat(NBT_X, x);
-        nbt.setFloat(NBT_Y, y);
-        nbt.setFloat(NBT_Z, z);
-        nbt.setByte(NBT_DIR, (byte)getMoveDirection().ordinal());
+        nbt.setFloat(NBT_X, xf());
+        nbt.setFloat(NBT_Y, yf());
+        nbt.setFloat(NBT_Z, zf());
+        nbt.setByte(NBT_DIR, (byte) getMoveDirection().ordinal());
         nbt.setTag(NBT_STACK, itemStack.serializeNBT());
         nbt.setBoolean(NBT_IN_TUBE, notInTube);
         nbt.setBoolean(NBT_ALIVE, isAlive);
@@ -324,9 +316,11 @@ public class AcceleratorParticle implements IAcceleratorParticle
         velocity = nbt.getFloat(NBT_VELOCITY);
         energy = nbt.getFloat(NBT_ENERGY);
         dim = nbt.getInteger(NBT_DIM);
-        x = nbt.getFloat(NBT_X);
-        y = nbt.getFloat(NBT_Y);
-        z = nbt.getFloat(NBT_Z);
+        setPos(
+                nbt.getFloat(NBT_X),
+                nbt.getFloat(NBT_Y),
+                nbt.getFloat(NBT_Z)
+        );
         moveDirection = EnumFacing.byIndex(nbt.getByte(NBT_DIR));
         itemStack = new ItemStack(nbt.getCompoundTag(NBT_STACK));
         notInTube = nbt.getBoolean(NBT_IN_TUBE);
