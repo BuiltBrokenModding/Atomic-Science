@@ -6,6 +6,7 @@ import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -45,7 +46,7 @@ public class AcceleratorNetwork
         return this;
     }
 
-    public void init(World world, BlockPos start)
+    public void init(IBlockAccess world, BlockPos start)
     {
         if (!init)
         {
@@ -119,7 +120,7 @@ public class AcceleratorNetwork
      * @param world
      * @param start
      */
-    public void path(World world, BlockPos start)
+    public void path(IBlockAccess world, BlockPos start)
     {
         //Positions already pathed
         final Set<BlockPos> pathedPositions = new HashSet();
