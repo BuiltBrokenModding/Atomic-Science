@@ -56,21 +56,26 @@ public class FractionAxis
      */
     public void add(double add)
     {
-        //Convert to double
-        double n = get();
+        if(add > 0)
+        {
+            //Get whole numbers from add
+            int whole = (int) Math.round(add);
+            add -= whole;
 
-        //Add
-        n += add;
+            //Add to shole
+            wholeNumbers += whole;
 
-        //Restore whole number
-        wholeNumbers = (int) Math.floor(n);
+            //Get partial
+            numerator += (int) Math.round(add * denominator);
 
-        //Remove whole number
-        n -= wholeNumbers;
-
-        //Restore particle
-        n *= denominator;
-        numerator = (int) Math.floor(n);
+            //Reduce partial if above
+            if (numerator >= denominator)
+            {
+                whole = numerator / denominator;
+                numerator -= whole * denominator;
+                wholeNumbers += whole;
+            }
+        }
     }
 
     /**
