@@ -11,8 +11,6 @@ public class MovablePos implements IMovablePos
     private float y;
     private float z;
 
-    private float precision = 1000;
-
     @Override
     public void move(double x, double y, double z)
     {

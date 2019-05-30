@@ -12,7 +12,7 @@ public class FractionAxis
     //Top of the fraction
     private int numerator;
     //Bottom of the fraction
-    private int denominator; //TODO add a IntSupplier to allow scaling, keep the field to check for change in scale
+    private int denominator;
 
     public FractionAxis()
     {
@@ -56,7 +56,7 @@ public class FractionAxis
      */
     public void add(double add)
     {
-        if(add != 0)
+        if (add != 0)
         {
             //Get whole numbers from add
             int whole = (int) Math.round(add);
@@ -66,13 +66,13 @@ public class FractionAxis
             wholeNumbers += whole;
 
             //Get partial
-            numerator += (int) Math.round(add * denominator);
+            numerator += (int) Math.round(add * getDenominator());
 
             //Reduce partial if above
-            if (numerator >= denominator)
+            if (getNumerator() >= denominator)
             {
-                whole = numerator / denominator;
-                numerator -= whole * denominator;
+                whole = getNumerator() / getDenominator();
+                numerator -= whole * getDenominator();
                 wholeNumbers += whole;
             }
         }
@@ -85,7 +85,7 @@ public class FractionAxis
      */
     public double get()
     {
-        return wholeNumbers + getDecimal();
+        return getWhole() + getDecimal();
     }
 
     /**
@@ -125,6 +125,24 @@ public class FractionAxis
      */
     public double getDecimal()
     {
-        return numerator / (double) denominator;
+        return getNumerator() / (double) getDenominator();
+    }
+
+    /**
+     * Called to set the {@link #denominator}
+     *
+     * @param precision
+     */
+    public void setPrecision(int precision)
+    {
+        if (precision != denominator)
+        {
+            if(numerator != 0)
+            {
+                double number = getDecimal();
+                numerator = (int)Math.round(number * precision);
+            }
+            denominator = precision;
+        }
     }
 }

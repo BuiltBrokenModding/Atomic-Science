@@ -1,11 +1,9 @@
 package com.builtbroken.atomic.content.machines.accelerator.particle;
 
-import com.builtbroken.jlib.data.vector.IPos3D;
-
 /**
  * Created by Dark(DarkGuardsman, Robert) on 2019-05-29.
  */
-public class FractionPos implements  IMovablePos
+public class FractionPos implements IMovablePos
 {
 
     private final FractionAxis x = new FractionAxis(1000);
@@ -26,6 +24,18 @@ public class FractionPos implements  IMovablePos
         this.x.set(x);
         this.y.set(y);
         this.z.set(z);
+    }
+
+    /**
+     * Sets the precision of the position data
+     *
+     * @param precision
+     */
+    public void setPrecision(int precision)
+    {
+        x.setPrecision(precision);
+        y.setPrecision(precision);
+        z.setPrecision(precision);
     }
 
     @Override
