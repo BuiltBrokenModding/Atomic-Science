@@ -1,15 +1,13 @@
-package com.builtbroken.atomic.content.machines.accelerator.particle;
-
-import com.builtbroken.jlib.data.vector.IPos3D;
+package com.builtbroken.atomic.lib.transform.move;
 
 /**
  * Created by Dark(DarkGuardsman, Robert) on 2019-05-29.
  */
-public class MovableFPos implements IMovablePos
+public class MovableDPos implements IMovablePos
 {
-    private float x;
-    private float y;
-    private float z;
+    private double x;
+    private double y;
+    private double z;
 
     @Override
     public void move(double x, double y, double z)
@@ -23,9 +21,9 @@ public class MovableFPos implements IMovablePos
     @Override
     public void set(double x, double y, double z)
     {
-        this.x = (float)x;
-        this.y = (float)y;
-        this.z = (float)z;
+        this.x = x;
+        this.y = y;
+        this.z = z;
         normalizePosition();
     }
 
@@ -36,7 +34,7 @@ public class MovableFPos implements IMovablePos
         z = normalize(z);
     }
 
-    protected float normalize(float v)
+    protected float normalize(double v)
     {
         return Math.round(v * getPrecision()) / getPrecision();
     }

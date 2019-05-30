@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.accelerator.particle;
+package com.builtbroken.atomic.lib.transform.move;
 
 /**
  * Created by Dark(DarkGuardsman, Robert) on 2019-05-29.

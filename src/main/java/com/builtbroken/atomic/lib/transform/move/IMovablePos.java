@@ -1,4 +1,4 @@
-package com.builtbroken.atomic.content.machines.accelerator.particle;
+package com.builtbroken.atomic.lib.transform.move;
 
 import com.builtbroken.jlib.data.vector.IPos3D;
 import net.minecraft.util.math.BlockPos;

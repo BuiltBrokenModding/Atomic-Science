@@ -1,4 +1,9 @@
-package com.builtbroken.atomic.content.machines.accelerator.particle;
+package com.builtbroken.tools.as;
+
+import com.builtbroken.atomic.lib.transform.move.FractionPos;
+import com.builtbroken.atomic.lib.transform.move.IMovablePos;
+import com.builtbroken.atomic.lib.transform.move.MovableDPos;
+import com.builtbroken.atomic.lib.transform.move.MovableFPos;
 
 import java.io.FileWriter;
 import java.io.IOException;
