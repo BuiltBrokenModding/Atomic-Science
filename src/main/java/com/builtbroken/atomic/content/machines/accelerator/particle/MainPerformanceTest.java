@@ -24,7 +24,7 @@ public class MainPerformanceTest
             final IMovablePos floatPos = new MovableFPos();
             final IMovablePos doublePos = new MovableDPos();
             final FractionPos fractionPos = new FractionPos();
-            fractionPos.setPrecision(1000000);
+            fractionPos.setPrecision(1000);
 
             BigDecimal bigDecimal = new BigDecimal(0);
 
@@ -33,7 +33,7 @@ public class MainPerformanceTest
                 bigDecimal = bigDecimal.add(movement);
 
                 System.out.println();
-                System.out.println(String.format("Expected: ....%s ....%s", bigDecimal, movement));
+                System.out.println(String.format("Expected: ....%s ....%s", bigDecimal, m));
 
                 final DataOut dataOut = new DataOut();
                 dataOut.move = m;
@@ -49,7 +49,7 @@ public class MainPerformanceTest
                 dataOut.doubleTime = System.nanoTime();
                 doublePos.move(m, 0, 0);
                 dataOut.doubleOutput = doublePos.x();
-                dataOut.doubleTime = System.nanoTime() - dataOut.floatTime;
+                dataOut.doubleTime = System.nanoTime() - dataOut.doubleTime;
 
                 //Fraction
                 dataOut.fractionTime = System.nanoTime();
