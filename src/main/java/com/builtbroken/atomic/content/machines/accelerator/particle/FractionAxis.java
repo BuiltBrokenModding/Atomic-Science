@@ -69,11 +69,11 @@ public class FractionAxis
             numerator += (int) Math.round(add * getDenominator());
 
             //Reduce partial if above
-            if (getNumerator() >= denominator)
+            if (getNumerator() >= getDenominator())
             {
-                whole = getNumerator() / getDenominator();
-                numerator -= whole * getDenominator();
-                wholeNumbers += whole;
+                wholeNumbers += 1;
+                numerator -= getDenominator();
+
             }
         }
     }
