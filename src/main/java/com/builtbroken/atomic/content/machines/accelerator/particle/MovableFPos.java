@@ -5,7 +5,7 @@ import com.builtbroken.jlib.data.vector.IPos3D;
 /**
  * Created by Dark(DarkGuardsman, Robert) on 2019-05-29.
  */
-public class MovablePos implements IMovablePos
+public class MovableFPos implements IMovablePos
 {
     private float x;
     private float y;

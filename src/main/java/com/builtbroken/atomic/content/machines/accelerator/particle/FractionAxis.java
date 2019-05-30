@@ -54,26 +54,25 @@ public class FractionAxis
      *
      * @param add - value to add
      */
-    public void add(double add)
+    public void add(final double add)
     {
         if (add != 0)
         {
             //Get whole numbers from add
-            int whole = (int) Math.round(add);
-            add -= whole;
+            int whole = (int) Math.floor(add);
+            double remain = add - whole;
 
-            //Add to shole
+            //Add to whole
             wholeNumbers += whole;
 
             //Get partial
-            numerator += (int) Math.round(add * getDenominator());
+            numerator += (int) Math.floor(remain * getDenominator());
 
             //Reduce partial if above
             if (getNumerator() >= getDenominator())
             {
                 wholeNumbers += 1;
                 numerator -= getDenominator();
-
             }
         }
     }

@@ -1,7 +1,5 @@
 package com.builtbroken.atomic.content.machines.accelerator.particle;
 
-import com.builtbroken.jlib.lang.StringHelpers;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -13,58 +11,98 @@ import java.util.List;
  */
 public class MainPerformanceTest
 {
+
     public static void main(String... args) throws IOException
     {
-        final IMovablePos pos = new MovablePos();
-        final FractionPos fpos = new FractionPos();
-        fpos.setPrecision(1000000);
+        final List<DataOut> data = new LinkedList();
 
-        List<Long> pTime = new LinkedList();
-        List<Long> fTime = new LinkedList();
-
-        final double m = Math.random();
-        final BigDecimal movement = new BigDecimal(m);
-
-
-        BigDecimal bigDecimal = new BigDecimal(0);
-
-        for(int i = 0; i < 1000000; i++)
+        for (int tr = 0; tr < 100; tr++)
         {
-            bigDecimal = bigDecimal.add(movement);
+            final double m = ((int) Math.round(Math.random() * 1000)) / 1000f;
+            final BigDecimal movement = new BigDecimal(m);
 
-            System.out.println();
-            System.out.println(String.format("Expected: ....%s ....%s", bigDecimal, movement));
+            final IMovablePos floatPos = new MovableFPos();
+            final IMovablePos doublePos = new MovableDPos();
+            final FractionPos fractionPos = new FractionPos();
+            fractionPos.setPrecision(1000000);
 
-            //Float
-            long time = System.nanoTime();
-            pos.move(m, 0,0 );
-            time = System.nanoTime() - time;
-            pTime.add(time);
+            BigDecimal bigDecimal = new BigDecimal(0);
 
-            //Fraction
-            long time2 = System.nanoTime();
-            fpos.move(m, 0,0 );
-            time2 = System.nanoTime() - time2;
-            fTime.add(time2);
+            for (int it = 0; it < 1000; it++)
+            {
+                bigDecimal = bigDecimal.add(movement);
 
-            //output
-            outputResult(time, pos.x(), bigDecimal);
-            outputResult(time2, fpos.x(), bigDecimal);
+                System.out.println();
+                System.out.println(String.format("Expected: ....%s ....%s", bigDecimal, movement));
 
-            long delta = time2 - time;
-            long us = ((delta % 1000000000) % 1000000) / 1000;
-            long ns = ((delta % 1000000000) % 1000000) % 1000;
-            System.out.println(String.format("Time Diff: %3s us %3s ns", us, ns));
+                final DataOut dataOut = new DataOut();
+                dataOut.move = m;
+                dataOut.expected = bigDecimal.doubleValue();
+
+                //Float
+                dataOut.floatTime = System.nanoTime();
+                floatPos.move(m, 0, 0);
+                dataOut.floatOutput = floatPos.x();
+                dataOut.floatTime = System.nanoTime() - dataOut.floatTime;
+
+                //Float
+                dataOut.doubleTime = System.nanoTime();
+                doublePos.move(m, 0, 0);
+                dataOut.doubleOutput = doublePos.x();
+                dataOut.doubleTime = System.nanoTime() - dataOut.floatTime;
+
+                //Fraction
+                dataOut.fractionTime = System.nanoTime();
+                fractionPos.move(m, 0, 0);
+                dataOut.fractionOutput = fractionPos.x();
+                dataOut.fractionTime = System.nanoTime() - dataOut.fractionTime;
+
+                //output
+                outputResult(dataOut.floatTime, dataOut.floatOutput, bigDecimal);
+                outputResult(dataOut.doubleTime, dataOut.doubleOutput, bigDecimal);
+                outputResult(dataOut.fractionTime, dataOut.fractionOutput, bigDecimal);
+
+                //Output delta in time
+                long delta = dataOut.fractionTime - dataOut.floatTime;
+                long us = ((delta % 1000000000) % 1000000) / 1000;
+                long ns = ((delta % 1000000000) % 1000000) % 1000;
+                System.out.println(String.format("Fr vs F: %3s us %3s ns", us, ns));
+
+                delta = dataOut.fractionTime - dataOut.doubleTime;
+                us = ((delta % 1000000000) % 1000000) / 1000;
+                ns = ((delta % 1000000000) % 1000000) % 1000;
+                System.out.println(String.format("Fr v D: %3s us %3s ns", us, ns));
+            }
         }
 
         //Export results as csv for import into excel for graphing
         FileWriter writer = new FileWriter("results" + System.currentTimeMillis() + ".csv");
-        writer.append("Pos,FPos\n");
-        for(int i = 0; i < pTime.size(); i++)
+        writer.append("Fraction Time," +
+                "Double Time," +
+                "Float Time," +
+                "Move," +
+                "Expected Result," +
+                "Float Result," +
+                "Double Result," +
+                "Fraction Result" +
+                "\n");
+        for (DataOut dataOut : data)
         {
-            writer.append("" + pTime.get(i));
+            writer.append("" + dataOut.floatTime);
             writer.append(",");
-            writer.append("" + fTime.get(i));
+            writer.append("" + dataOut.doubleTime);
+            writer.append(",");
+            writer.append("" + dataOut.fractionTime);
+            writer.append(",");
+            writer.append("" + dataOut.move);
+            writer.append(",");
+            writer.append("" + dataOut.expected);
+            writer.append(",");
+            writer.append("" + dataOut.floatOutput);
+            writer.append(",");
+            writer.append("" + dataOut.doubleOutput);
+            writer.append(",");
+            writer.append("" + dataOut.fractionOutput);
             writer.append("\n");
         }
         writer.flush();
@@ -74,6 +112,20 @@ public class MainPerformanceTest
         System.exit(0);
     }
 
+    public static class DataOut
+    {
+        long floatTime;
+        long doubleTime;
+        long fractionTime;
+
+        double move;
+        double expected;
+
+        double floatOutput;
+        double doubleOutput;
+        double fractionOutput;
+    }
+
     public static void outputResult(long nano, double result, BigDecimal expected)
     {
         long us = ((nano % 1000000000) % 1000000) / 1000;
@@ -81,6 +133,6 @@ public class MainPerformanceTest
 
         double delta = expected.subtract(new BigDecimal(result)).doubleValue();
 
-        System.out.println(String.format("%3s us %3s ns %.10f %s%.10f", us, ns, result,delta >= 0 ? " " : "", delta));
+        System.out.println(String.format("%3s us %3s ns %.10f %s%.10f", us, ns, result, delta >= 0 ? " " : "", delta));
     }
 }

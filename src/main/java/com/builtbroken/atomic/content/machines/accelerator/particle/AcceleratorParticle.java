@@ -3,7 +3,6 @@ package com.builtbroken.atomic.content.machines.accelerator.particle;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorParticle;
 import com.builtbroken.atomic.config.content.ConfigContent;
-import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorComponent;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.lib.math.MathConstF;
 import net.minecraft.item.ItemStack;
@@ -84,7 +83,7 @@ public class AcceleratorParticle implements IAcceleratorParticle
             }
             else
             {
-                pos = new MovablePos();
+                pos = new MovableFPos();
             }
         }
         return pos;
