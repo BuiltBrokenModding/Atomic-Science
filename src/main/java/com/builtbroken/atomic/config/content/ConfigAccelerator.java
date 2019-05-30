@@ -22,4 +22,11 @@ public class ConfigAccelerator
     @Config.Comment("Largest amount of acceleration a single ring can produce")
     @Config.LangKey("config.atomicscience:content.accelerator.max.title")
     public float ACCELERATION_MAX = 0.1f;
+
+
+    @Config.Name("fraction_math")
+    @Config.Comment("Set to true to use fraction math when possible. In most cases this is faster and more precise. " +
+            "However, can be disabled if you notice issues with particle movement.")
+    @Config.LangKey("config.atomicscience:content.accelerator.fraction.math.title")
+    public boolean FRACTION_MATH = true;
 }

@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.machines.accelerator.particle;
 
 import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorParticle;
+import com.builtbroken.atomic.config.content.ConfigContent;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorComponent;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.lib.math.MathConstF;
@@ -77,7 +78,14 @@ public class AcceleratorParticle implements IAcceleratorParticle
     {
         if (pos == null)
         {
-            pos = new MovablePos();
+            if (ConfigContent.ACCELERATOR.FRACTION_MATH)
+            {
+                pos = new FractionPos();
+            }
+            else
+            {
+                pos = new MovablePos();
+            }
         }
         return pos;
     }

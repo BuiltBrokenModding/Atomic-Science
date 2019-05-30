@@ -56,7 +56,7 @@ public class FractionAxis
      */
     public void add(double add)
     {
-        if(add > 0)
+        if(add != 0)
         {
             //Get whole numbers from add
             int whole = (int) Math.round(add);
