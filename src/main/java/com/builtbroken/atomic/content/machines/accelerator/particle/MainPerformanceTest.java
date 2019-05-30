@@ -71,6 +71,6 @@ public class MainPerformanceTest
 
         double delta = expected - result;
 
-        System.out.println(String.format("%3s us %3s ns %-20s %s", us, ns, result, delta));
+        System.out.println(String.format("%3s us %3s ns %.10f %s%.10f", us, ns, result,delta >= 0 ? " " : "", delta));
     }
 }
