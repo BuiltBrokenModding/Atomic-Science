@@ -20,13 +20,13 @@ public class MainPerformanceTest
         List<Long> pTime = new LinkedList();
         List<Long> fTime = new LinkedList();
 
-        final double movement = 0.1;
+        final double movement = Math.random();
 
-        for(int i = 0; i < 100; i++)
+        for(int i = 0; i < 1000000; i++)
         {
             final double expected = (i + 1) * movement;
             System.out.println();
-            System.out.println(String.format("Expected: ....%s", expected));
+            System.out.println(String.format("Expected: ....%s ....%s", expected, movement));
 
             //Float
             long time = System.nanoTime();
