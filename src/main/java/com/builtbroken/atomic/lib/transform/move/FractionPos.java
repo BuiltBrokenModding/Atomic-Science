@@ -6,9 +6,9 @@ package com.builtbroken.atomic.lib.transform.move;
 public class FractionPos implements IMovablePos
 {
 
-    private final FractionAxis x = new FractionAxis(1000);
-    private final FractionAxis y = new FractionAxis(1000);
-    private final FractionAxis z = new FractionAxis(1000);
+    private final FractionAxis x = new FractionAxis(10000);
+    private final FractionAxis y = new FractionAxis(10000);
+    private final FractionAxis z = new FractionAxis(10000);
 
     @Override
     public void move(double x, double y, double z)

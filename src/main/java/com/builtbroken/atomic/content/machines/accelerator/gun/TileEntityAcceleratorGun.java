@@ -27,7 +27,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
 {
     public static final String NBT_NODE = "accelerator_node";
 
-    public final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this);
+    public final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this, () -> getDirection());
 
     public TileEntityAcceleratorGun()
     {

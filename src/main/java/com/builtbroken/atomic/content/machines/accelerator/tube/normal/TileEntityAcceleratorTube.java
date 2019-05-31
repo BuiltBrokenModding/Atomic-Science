@@ -269,13 +269,6 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     }
 
     @Override
-    public void setDirection(EnumFacing direction)
-    {
-        this.direction = direction;
-        super.setDirection(direction);
-    }
-
-    @Override
     public void setPos(BlockPos posIn)
     {
         super.setPos(posIn);
@@ -299,5 +292,10 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
             this._connectionType = type;
             getNode().setConnectionType(_connectionType);
         }
+    }
+
+    public void setDirection(EnumFacing horizontalFacing)
+    {
+        direction = horizontalFacing;
     }
 }

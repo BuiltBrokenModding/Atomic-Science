@@ -42,7 +42,7 @@ public class ATubeTestCommon
     public static AcceleratorNode newNode(BlockPos pos, EnumFacing facing, TubeConnectionType connectionType)
     {
         //Create
-        AcceleratorNode node = new AcceleratorFakeTube(0, pos).getNode().setData(pos, facing, connectionType);
+        AcceleratorNode node = new AcceleratorFakeTube(0, pos, facing).getNode().setData(pos, facing, connectionType);
 
         validateNodeInit(node, pos, facing, connectionType);
 
@@ -57,8 +57,8 @@ public class ATubeTestCommon
         Assertions.assertEquals(0, node.turnIndex);
 
         //Match we are the right facing and type
-        Assertions.assertEquals(facing, node.getDirection());
-        Assertions.assertEquals(connectionType, node.getConnectionType());
+        Assertions.assertEquals(facing, node.getDirection(), "Failed to setup tube with right facing direction");
+        Assertions.assertEquals(connectionType, node.getConnectionType(), "Failed to set tube with right type");
 
         //Should start with an array of 6 sides all empty
         Assertions.assertEquals(6, node.getNodes().length);
@@ -102,9 +102,6 @@ public class ATubeTestCommon
         //Set node data
         tube.getNode().setData(pos, facing, type != null ? type : TubeConnectionType.NORMAL);
 
-        //Do normal validations for nodes
-        validateNodeInit(tube.getNode(), pos, facing, type != null ? type : TubeConnectionType.NORMAL);
-
         //Set tube data
         if (type != null)
         {
@@ -112,6 +109,9 @@ public class ATubeTestCommon
         }
         tube.setDirection(facing);
         tube.setPos(pos);
+
+        //Do normal validations for nodes
+        validateNodeInit(tube.getNode(), pos, facing, type != null ? type : TubeConnectionType.NORMAL);
 
         //Test position
         Assertions.assertEquals(pos.getX(), tube.xi());

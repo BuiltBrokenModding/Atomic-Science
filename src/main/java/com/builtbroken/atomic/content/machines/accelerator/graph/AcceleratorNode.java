@@ -40,7 +40,6 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     private final IAcceleratorNode[] nodes = new IAcceleratorNode[6];
 
     //direction and connection data
-    private EnumFacing facing;
     private TubeConnectionType connectionType;
 
     //Current network
@@ -292,7 +291,6 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     public AcceleratorNode setData(BlockPos pos, EnumFacing facing, TubeConnectionType type)
     {
         setPos(pos);
-        setDirection(facing);
         setConnectionType(type);
         return this;
     }
@@ -386,15 +384,15 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
                 final TubeSide side = turnController.apply(particle, getConnectionType().outputSides);
                 if (side != null)
                 {
-                    return side.getFacing(facing);
+                    return side.getFacing(host.getDirection());
                 }
             }
 
             //Default index picker
             final TubeSide side = getConnectionType().outputSides.get(turnIndex);
-            return side.getFacing(facing);
+            return side.getFacing(host.getDirection());
         }
-        return facing;
+        return host.getDirection();
     }
 
     private int incrementTurnIndex()
@@ -422,7 +420,7 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
 
     private TubeSide getSideFacingOut(EnumFacing side)
     {
-        return TubeSide.getSideFacingOut(facing, side);
+        return TubeSide.getSideFacingOut(host.getDirection(), side);
     }
 
     private float moveToCenter(AcceleratorParticle particle, float deltaX, float deltaZ, float distanceToMove)
@@ -538,12 +536,7 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     @Override
     public EnumFacing getDirection()
     {
-        return facing;
-    }
-
-    public void setDirection(EnumFacing facing)
-    {
-        this.facing = facing;
+        return host.getDirection();
     }
 
     /**
@@ -630,7 +623,7 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     @Override
     public String toString()
     {
-        return "AcceleratorNode[" + getPos() + ", " + facing + ", " + connectionType + "]";
+        return "AcceleratorNode[" + getPos() + ", " + host.getDirection() + ", " + connectionType + "]";
     }
 
 }

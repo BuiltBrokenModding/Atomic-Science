@@ -44,6 +44,14 @@ public interface IAcceleratorTube
     BlockPos getPosition();
 
     /**
+     * Facing direction of the tube
+     *
+     * @return
+     */
+    @Nonnull
+    EnumFacing getDirection();
+
+    /**
      * The node that represents this tube in the network
      * <p>
      * Keep in mind the node can exist when the world is unload

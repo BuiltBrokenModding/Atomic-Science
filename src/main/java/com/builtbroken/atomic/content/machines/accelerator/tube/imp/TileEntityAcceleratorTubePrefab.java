@@ -20,7 +20,7 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
     public static final String NBT_NODE = "accelerator_node";
 
 
-    protected final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this);
+    protected final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this, () -> getDirection());
 
 
     public AcceleratorNode getNode()
@@ -77,11 +77,6 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
         {
             getNode().getNetwork().destroy();
         }
-    }
-
-    public void setDirection(EnumFacing direction)
-    {
-        getNode().setDirection(direction);
     }
 
     @Override

@@ -66,7 +66,7 @@ public class FractionAxis
             wholeNumbers += whole;
 
             //Get partial
-            numerator += (int) Math.floor(remain * getDenominator());
+            numerator += (int) Math.round(remain * getDenominator());
 
             //Reduce partial if above
             if (getNumerator() >= getDenominator())
