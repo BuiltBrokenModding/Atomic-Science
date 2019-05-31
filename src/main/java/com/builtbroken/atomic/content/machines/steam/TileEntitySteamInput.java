@@ -48,7 +48,7 @@ public class TileEntitySteamInput extends TileEntityActive
         do
         {
             //Get block
-            blockState = world.getBlockState(pos);
+            blockState = getState(pos);
             block = blockState.getBlock();
 
             //Check if block can produce vapor
