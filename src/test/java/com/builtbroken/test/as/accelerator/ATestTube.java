@@ -2,6 +2,8 @@ package com.builtbroken.test.as.accelerator;
 
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.machines.accelerator.tube.normal.TileEntityAcceleratorTube;
+import com.builtbroken.atomic.content.prefab.BlockMachine;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
  */
 public class ATestTube extends TileEntityAcceleratorTube
 {
+    private EnumFacing direction;
 
     public final TileEntity[] tiles = new TileEntity[6];
 
@@ -28,5 +31,17 @@ public class ATestTube extends TileEntityAcceleratorTube
         {
             getNode().connect(((TileEntityAcceleratorTube)tile).getNode(), side);
         }
+    }
+
+    @Override
+    public EnumFacing getDirection()
+    {
+        return direction;
+    }
+
+    @Override
+    public void setDirection(EnumFacing facing)
+    {
+        direction = facing;
     }
 }

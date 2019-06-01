@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.prefab.BlockMachine;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -28,6 +29,21 @@ public class BlockAcceleratorExit extends BlockMachine
         setRegistryName(AtomicScience.PREFIX + "accelerator_exit");
         setTranslationKey(AtomicScience.PREFIX + "accelerator.exit");
         setDefaultState(getDefaultState().withProperty(ROTATION_PROP, EnumFacing.NORTH));
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+    {
+        EnumFacing placement = getPlacement(facing, hitX, hitY, hitZ);
+        if(placer.isSneaking())
+        {
+           placement = placement.getOpposite();
+        }
+        if(placement.getAxis() == EnumFacing.Axis.Y)
+        {
+            placement = placer.getHorizontalFacing();
+        }
+        return getDefaultState().withProperty(ROTATION_PROP, placement);
     }
 
     @Override

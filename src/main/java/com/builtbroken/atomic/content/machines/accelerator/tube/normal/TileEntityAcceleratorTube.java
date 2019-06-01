@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- *
  * Created by Dark(DarkGuardsman, Robert) on 11/10/2018.
  */
 public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
@@ -32,7 +31,7 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     public static final String NBT_ROTATION = "rotation";
     public static final String NBT_CONNECTION = "connection";
 
-    protected EnumFacing direction;
+    protected EnumFacing _direction;
     private TubeConnectionType _connectionType = TubeConnectionType.NORMAL;
 
     private static final UnitDisplay.Unit SPEED = new UnitDisplay.Unit("Meters per Tick", "m/t");
@@ -70,15 +69,15 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
 
     public void setSign(BlockPos pos, String speed)
     {
-        if(world.isBlockLoaded(pos))
+        if (world.isBlockLoaded(pos))
         {
             TileEntity tile = getTileEntityIfLoaded(pos);
             IBlockState iblockstate = world.getBlockState(pos);
-            if(tile instanceof TileEntitySign)
+            if (tile instanceof TileEntitySign)
             {
                 TileEntitySign sign = (TileEntitySign) tile;
                 String signText1 = sign.signText[0] != null ? sign.signText[0].getUnformattedText() : null;
-                if(signText1 != null && signText1.trim().equalsIgnoreCase("[SPEED]"))
+                if (signText1 != null && signText1.trim().equalsIgnoreCase("[SPEED]"))
                 {
                     sign.signText[1] = new TextComponentString(speed);
                     sign.markDirty();
@@ -100,7 +99,7 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         super.readFromNBT(compound);
         if (compound.hasKey(NBT_ROTATION))
         {
-            direction = EnumFacing.byIndex(compound.getByte(NBT_ROTATION));
+            _direction = EnumFacing.byIndex(compound.getByte(NBT_ROTATION));
         }
         if (compound.hasKey(NBT_CONNECTION))
         {
@@ -117,7 +116,6 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
 
     protected void saveStateNBT(NBTTagCompound compound)
     {
-        compound.setByte(NBT_ROTATION, (byte) getDirection().ordinal());
         compound.setByte(NBT_CONNECTION, (byte) getConnectionType().ordinal());
     }
 
@@ -133,14 +131,14 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     {
         //Build state
         IBlockState state = getState();
-        if (direction != null)
+        if (getDirection() != null)
         {
-            state = state.withProperty(BlockAcceleratorTube.ROTATION_PROP, direction);
+            state = state.withProperty(BlockAcceleratorTube.ROTATION_PROP, getDirection());
         }
         state = state.withProperty(BlockAcceleratorTube.CONNECTION_PROP, getConnectionType());
 
         //Update node in network
-        getNode().setData(getPos(), direction, getConnectionType());
+        getNode().setData(getPos(), getDirection(), getConnectionType());
 
         //Update actual block
         if (setBlock && world != null) //JUnit world may be null
@@ -195,14 +193,12 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     @Override
     protected void writeDescPacket(List<Object> dataList, EntityPlayer player)
     {
-        dataList.add((byte) getDirection().ordinal());
         dataList.add((byte) getConnectionType().ordinal());
     }
 
     @Override
     protected void readDescPacket(ByteBuf buf, EntityPlayer player)
     {
-        direction = EnumFacing.byIndex(buf.readByte());
         setConnectionType(TubeConnectionType.byIndex(buf.readByte()));
     }
 
@@ -229,7 +225,7 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         }
 
         //Update connections on node
-        if(getNode().updateConnections(access) && getNode().getNetwork() != null)
+        if (getNode().updateConnections(access) && getNode().getNetwork() != null)
         {
             getNode().getNetwork().destroy();
         }
@@ -259,13 +255,21 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         return TubeConnectionType.getTypeForLayout(TubeSideType.EXIT, left, right, back, true);
     }
 
+    @Override
     public EnumFacing getDirection()
     {
-        if (direction == null)
+        if (_direction == null)
         {
-            direction = EnumFacing.NORTH;
+            _direction = super.getDirection();
         }
-        return direction;
+        return _direction;
+    }
+
+    @Override
+    public void setDirection(EnumFacing facing)
+    {
+        super.setDirection(facing);
+        _direction = null;
     }
 
     @Override
@@ -292,10 +296,5 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
             this._connectionType = type;
             getNode().setConnectionType(_connectionType);
         }
-    }
-
-    public void setDirection(EnumFacing horizontalFacing)
-    {
-        direction = horizontalFacing;
     }
 }

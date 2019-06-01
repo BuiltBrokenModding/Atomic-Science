@@ -5,6 +5,7 @@ import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorDebu
 import com.builtbroken.atomic.content.prefab.BlockMachine;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.tileentity.TileEntity;
@@ -31,6 +32,21 @@ public class BlockAcceleratorGun extends BlockMachine
         setRegistryName(AtomicScience.PREFIX + "accelerator_gun");
         setTranslationKey(AtomicScience.PREFIX + "accelerator.gun");
         setDefaultState(getDefaultState().withProperty(ROTATION_PROP, EnumFacing.NORTH));
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+    {
+        EnumFacing placement = getPlacement(facing, hitX, hitY, hitZ);
+        if(placer.isSneaking())
+        {
+            placement = placement.getOpposite();
+        }
+        if(placement.getAxis() == EnumFacing.Axis.Y)
+        {
+            placement = placer.getHorizontalFacing();
+        }
+        return getDefaultState().withProperty(ROTATION_PROP, placement);
     }
 
     @Override

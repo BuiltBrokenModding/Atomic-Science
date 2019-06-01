@@ -207,7 +207,7 @@ public class AcceleratorParticle implements IAcceleratorParticle
     @Override
     public double z()
     {
-        return pos().x();
+        return pos().z();
     }
 
     @Override

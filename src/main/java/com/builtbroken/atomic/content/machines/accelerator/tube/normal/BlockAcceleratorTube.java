@@ -5,6 +5,7 @@ import com.builtbroken.atomic.content.ASBlocks;
 import com.builtbroken.atomic.content.ASItems;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
+import com.builtbroken.atomic.content.prefab.BlockMachine;
 import com.builtbroken.atomic.content.prefab.BlockPrefab;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
@@ -35,10 +36,9 @@ import java.util.Arrays;
 /**
  * Created by Dark(DarkGuardsman, Robert) on 11/10/2018.
  */
-public class BlockAcceleratorTube extends BlockPrefab
+public class BlockAcceleratorTube extends BlockMachine
 {
     public static final PropertyEnum<TubeConnectionType> CONNECTION_PROP = PropertyEnum.create("connection", TubeConnectionType.class, Arrays.asList(TubeConnectionType.values()));
-    public static final PropertyDirection ROTATION_PROP = PropertyDirection.create("rotation");
 
     public BlockAcceleratorTube(Material material)
     {
@@ -50,6 +50,21 @@ public class BlockAcceleratorTube extends BlockPrefab
         this(Material.IRON);
         setRegistryName(AtomicScience.PREFIX + "accelerator_tube");
         setTranslationKey(AtomicScience.PREFIX + "accelerator.tube");
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+    {
+        EnumFacing placement = getPlacement(facing, hitX, hitY, hitZ);
+        if(placer.isSneaking())
+        {
+            placement = placement.getOpposite();
+        }
+        if(placement.getAxis() == EnumFacing.Axis.Y)
+        {
+            placement = placer.getHorizontalFacing();
+        }
+        return getDefaultState().withProperty(ROTATION_PROP, placement);
     }
 
     @Override
@@ -68,7 +83,7 @@ public class BlockAcceleratorTube extends BlockPrefab
                     playerIn.sendMessage(new TextComponentString("---Dir: " + ((TileEntityAcceleratorTube) tile).getDirection() + "==" + state.getValue(ROTATION_PROP)));
                     playerIn.sendMessage(new TextComponentString("---Connection: " + state.getValue(CONNECTION_PROP)));
                     playerIn.sendMessage(new TextComponentString("---Network: " + ((TileEntityAcceleratorTube) tile).getNode().getNetwork()));
-                    playerIn.sendMessage(new TextComponentString("---Network: " + ((TileEntityAcceleratorTube) tile).getNode().getParticles().size()));
+                    playerIn.sendMessage(new TextComponentString("---Particles: " + ((TileEntityAcceleratorTube) tile).getNode().getParticles().size()));
                 }
                 return true;
             }
@@ -158,18 +173,11 @@ public class BlockAcceleratorTube extends BlockPrefab
     }
 
     @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
-    {
-        return getStateFromMeta(meta).withProperty(ROTATION_PROP, placer.getHorizontalFacing());
-    }
-
-    @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
     {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileEntityAcceleratorTube)
         {
-            ((TileEntityAcceleratorTube) tile).setDirection(placer.getHorizontalFacing());
             ((TileEntityAcceleratorTube) tile).updateConnections(world, true, true);
             ((TileEntityAcceleratorTube) tile).getNode().updateConnections(world);
         }
@@ -198,9 +206,7 @@ public class BlockAcceleratorTube extends BlockPrefab
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileEntityAcceleratorTube)
         {
-            return state
-                    .withProperty(ROTATION_PROP, ((TileEntityAcceleratorTube) tile).getDirection())
-                    .withProperty(CONNECTION_PROP, ((TileEntityAcceleratorTube) tile).getConnectionType());
+            return state.withProperty(CONNECTION_PROP, ((TileEntityAcceleratorTube) tile).getConnectionType());
         }
         return state;
     }
@@ -243,17 +249,5 @@ public class BlockAcceleratorTube extends BlockPrefab
     public boolean isOpaqueCube(IBlockState state)
     {
         return false;
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState();
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state)
-    {
-        return 0;
     }
 }

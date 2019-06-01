@@ -166,8 +166,8 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
         //Map connections
         for (EnumFacing facing : EnumFacing.HORIZONTALS)
         {
-            IAcceleratorNode node = getNode(facing);
-            if (node != null)
+            final IAcceleratorNode node = getNode(facing);
+            if (node != null && !node.isDead())
             {
                 if (canConnectToTubeOnSide(TubeSide.getSideFacingOut(getDirection(), facing)))
                 {
@@ -259,7 +259,7 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     {
         final TileEntity tileEntity = access.getTileEntity(getPos().offset(facing));
         final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, facing.getOpposite());
-        if (tube != null)
+        if (tube != null && !tube.isDead())
         {
             return tube.getNode();
         }

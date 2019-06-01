@@ -18,10 +18,24 @@ public class TestAcceleration
     {
         TileEntityAcceleratorTubePowered tube = new TileEntityAcceleratorTubePowered()
         {
+            private EnumFacing direction;
+
             @Override
             public float getMagnetPower()
             {
                 return BASE_MAGNET_POWER;
+            }
+
+            @Override
+            public EnumFacing getDirection()
+            {
+                return direction;
+            }
+
+            @Override
+            public void setDirection(EnumFacing facing)
+            {
+                direction = facing;
             }
         };
 

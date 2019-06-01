@@ -4,6 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.content.prefab.BlockMachine;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
@@ -25,6 +26,16 @@ public class BlockLaserBooster extends BlockMachine
         setRegistryName(AtomicScience.PREFIX + "laser_booster");
         setTranslationKey(AtomicScience.PREFIX + "laser.booster");
         setDefaultState(getDefaultState().withProperty(ROTATION_PROP, EnumFacing.NORTH));
+    }
+
+    @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
+    {
+        if(placer.isSneaking())
+        {
+            return getDefaultState().withProperty(ROTATION_PROP, getPlacement(facing, hitX, hitY, hitZ).getOpposite());
+        }
+        return getDefaultState().withProperty(ROTATION_PROP, getPlacement(facing, hitX, hitY, hitZ));
     }
 
     @Override

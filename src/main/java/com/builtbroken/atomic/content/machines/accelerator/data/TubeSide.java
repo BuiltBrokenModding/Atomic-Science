@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.content.machines.accelerator.data;
 
+import com.builtbroken.atomic.AtomicScience;
 import net.minecraft.util.EnumFacing;
 
 /**
@@ -34,7 +35,7 @@ public enum TubeSide
 
     public static TubeSide byIndex(int index)
     {
-        if(index >= 0 && index < values().length)
+        if (index >= 0 && index < values().length)
         {
             return values()[index];
         }
@@ -49,13 +50,13 @@ public enum TubeSide
      * tube on the north face of the existing tube. If the tube you were placing happened to be a right
      * corner and needed to connect with its right side to the existing tube left. This would then mean
      * that the tube needs to also face east for its placement to match.
-     *
+     * <p>
      * This method works by first getting the facing direction of exiting tube's side. Then using this
      * direction it gets the facing direction using the target side.
-     *
+     * <p>
      * Ex: North facing tube, left side, target right connection
-     *          left of north is west
-     *          right of west is north
+     * left of north is west
+     * right of west is north
      *
      * @param centerFace - facing direction of the center tube
      * @param targetSide - local side of the second tube
@@ -64,7 +65,7 @@ public enum TubeSide
     public EnumFacing getRotationRelative(EnumFacing centerFace, TubeSide targetSide)
     {
         final EnumFacing sideFace = this.getFacing(centerFace);
-        if(targetSide == FRONT || targetSide == BACK)
+        if (targetSide == FRONT || targetSide == BACK)
         {
             return targetSide.getFacing(sideFace.getOpposite());
         }
@@ -82,6 +83,14 @@ public enum TubeSide
     {
         if (side == null)
         {
+            return TubeSide.CENTER;
+        }
+        else if (side.getAxis() == EnumFacing.Axis.Y || facing.getAxis() == EnumFacing.Axis.Y)
+        {
+            if (AtomicScience.runningAsDev)
+            {
+                AtomicScience.logger.error("Something passed in the wrong side", new RuntimeException());
+            }
             return TubeSide.CENTER;
         }
         else if (side == facing)
@@ -131,7 +140,7 @@ public enum TubeSide
         else if (this == BACK)
         {
             return facing.getOpposite();
-        }
+        } 
         return null;
     }
 }

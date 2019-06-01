@@ -43,4 +43,73 @@ public abstract class BlockMachine extends BlockPrefab
     {
         return getDefaultState().withProperty(ROTATION_PROP, placer.getHorizontalFacing());
     }
+
+    public static EnumFacing getPlacement(EnumFacing blockSide, float hitX, float hitY, float hitZ)
+    {
+        final float spacing = 0.3f;
+        EnumFacing placement;
+
+        if (blockSide == EnumFacing.UP || blockSide == EnumFacing.DOWN)
+        {
+            //WEST
+            boolean left = hitX <= spacing;
+            //EAST
+            boolean right = hitX >= (1 - spacing);
+            //NORTH
+            boolean up = hitZ <= spacing;
+            //SOUTH
+            boolean down = hitZ >= (1 - spacing);
+
+            if (!up && !down && (left || right))
+            {
+                placement = left ? EnumFacing.WEST : EnumFacing.EAST;
+            }
+            else if (!left && !right && (up || down))
+            {
+                placement = up ? EnumFacing.NORTH : EnumFacing.SOUTH;
+            }
+            else if (!left && !right && !up && !down)
+            {
+                placement = blockSide;
+            }
+            else
+            {
+                placement = blockSide.getOpposite();
+            }
+        }
+        else
+        {
+            boolean z = blockSide.getAxis() == EnumFacing.Axis.Z;
+            boolean left = (z ? hitX : hitZ) <= spacing;
+            boolean right = (z ? hitX : hitZ) >= (1 - spacing);
+
+            boolean down = hitY <= spacing;
+            boolean up = hitY >= (1 - spacing);
+
+            if (!up && !down && (left || right))
+            {
+                if (z)
+                {
+                    placement = left ? EnumFacing.WEST : EnumFacing.EAST;
+                }
+                else
+                {
+                    placement = left ? EnumFacing.NORTH : EnumFacing.SOUTH;
+                }
+            }
+            else if (!left && !right && (up || down))
+            {
+                placement = up ? EnumFacing.UP : EnumFacing.DOWN;
+            }
+            else if (!left && !right && !up && !down)
+            {
+                placement = blockSide;
+            }
+            else
+            {
+                placement = blockSide.getOpposite();
+            }
+        }
+        return placement;
+    }
 }

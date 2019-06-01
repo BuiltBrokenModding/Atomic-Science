@@ -40,28 +40,35 @@ public class BlockParticleDetector extends BlockMachine
         {
             if (playerIn.getHeldItem(hand).getItem() == Items.STICK)
             {
-                final TileEntityParticleDetector detector = (TileEntityParticleDetector) tileEntity;
-                final IAcceleratorNode node = detector.node;
-                if (node != null)
+                if (!world.isRemote)
                 {
-                    TubeSide side = TubeSide.getSideFacingOut(node.getDirection(), sideClicked);
-                    if(node.getConnectionType().outputSides.contains(side))
+                    final TileEntityParticleDetector detector = (TileEntityParticleDetector) tileEntity;
+                    final IAcceleratorNode node = detector.node;
+                    if (node != null)
                     {
-                        float speed = 0;
-                        if(detector.speedSettings.containsKey(side))
+                        TubeSide side = TubeSide.getSideFacingOut(node.getDirection(), sideClicked);
+                        if (node.getConnectionType().outputSides.contains(side))
                         {
-                            speed = detector.speedSettings.get(side);
+                            float speed = 0;
+                            if (detector.speedSettings.containsKey(side))
+                            {
+                                speed = detector.speedSettings.get(side);
+                            }
+                            detector.speedSettings.put(side, speed + 0.1f);
+                            playerIn.sendMessage(new TextComponentString(side + " " + speed));
                         }
-                        detector.speedSettings.put(side, speed + 0.1f);
-                        playerIn.sendMessage(new TextComponentString(side + " " + speed));
                     }
                 }
+                return true;
             }
-            else if (!world.isRemote)
+            else if (playerIn.getHeldItem(hand).getItem() == Items.BLAZE_ROD)
             {
-                playerIn.sendMessage(new TextComponentString("Tube: " + ((TileEntityParticleDetector) tileEntity).node));
+                if (!world.isRemote)
+                {
+                    playerIn.sendMessage(new TextComponentString("Tube: " + ((TileEntityParticleDetector) tileEntity).node));
+                }
+                return true;
             }
-            return true;
         }
         return false;
     }
