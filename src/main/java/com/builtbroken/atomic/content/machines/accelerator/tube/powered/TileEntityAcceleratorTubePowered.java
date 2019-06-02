@@ -64,6 +64,10 @@ public class TileEntityAcceleratorTubePowered extends TileEntityAcceleratorTube 
 
     public float getMagnetPower()
     {
+        if (Double.isNaN(_magnetPower))
+        {
+            return 0;
+        }
         return _magnetPower;
     }
 

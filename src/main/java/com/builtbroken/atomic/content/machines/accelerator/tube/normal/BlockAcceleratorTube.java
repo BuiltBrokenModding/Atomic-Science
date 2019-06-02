@@ -82,7 +82,7 @@ public class BlockAcceleratorTube extends BlockMachine
                     playerIn.sendMessage(new TextComponentString("---Pos: " + pos));
                     playerIn.sendMessage(new TextComponentString("---Dir: " + ((TileEntityAcceleratorTube) tile).getDirection() + "==" + state.getValue(ROTATION_PROP)));
                     playerIn.sendMessage(new TextComponentString("---Connection: " + state.getValue(CONNECTION_PROP)));
-                    playerIn.sendMessage(new TextComponentString("---Network: " + ((TileEntityAcceleratorTube) tile).getNode().getNetwork()));
+                    playerIn.sendMessage(new TextComponentString("---Network: " + ((TileEntityAcceleratorTube) tile).getNode().getNetwork().uuid));
                     playerIn.sendMessage(new TextComponentString("---Particles: " + ((TileEntityAcceleratorTube) tile).getNode().getParticles().size()));
                 }
                 return true;
@@ -135,6 +135,9 @@ public class BlockAcceleratorTube extends BlockMachine
         tile.writeToNBT(save);
         save.removeTag("id");
 
+        //Destroy network and data connections
+        tile.invalidate();
+
         //Place new block
         world.setBlockState(pos, getSwitchState(currentState));
         currentState = world.getBlockState(pos);
@@ -146,6 +149,10 @@ public class BlockAcceleratorTube extends BlockMachine
             tile.readFromNBT(save);
             ((TileEntityAcceleratorTube) tile).updateConnections(world, false, true);
             ((TileEntityAcceleratorTube) tile).updateState(true, true);
+            if(((TileEntityAcceleratorTube) tile).getNode().getNetwork() != null)
+            {
+                ((TileEntityAcceleratorTube) tile).getNode().getNetwork().destroy();
+            }
 
             tile.markDirty();
             world.notifyBlockUpdate(pos, currentState, world.getBlockState(pos), 3);
@@ -214,18 +221,25 @@ public class BlockAcceleratorTube extends BlockMachine
     @Override
     public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
     {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityAcceleratorTube
-                //Make sure we are on a server to prevent render notification updates
-                && tile.getWorld() != null
-                && !((TileEntityAcceleratorTube) tile).world().isRemote)
+        final IBlockState state = world.getBlockState(neighbor);
+        if(state.getBlock() == ASBlocks.blockAcceleratorTube
+        || state.getBlock() == ASBlocks.blockAcceleratorTubePowered
+        || state.getBlock() == ASBlocks.blockAcceleratorExit
+        || state.getBlock() == ASBlocks.blockAcceleratorGun)
         {
-            //((TileEntityAcceleratorTube) tile).updateConnections(true); - breaks connections
-            if(((TileEntityAcceleratorTube) tile).getNode().updateConnections(world))
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof TileEntityAcceleratorTube
+                    //Make sure we are on a server to prevent render notification updates
+                    && tile.getWorld() != null
+                    && !((TileEntityAcceleratorTube) tile).world().isRemote)
             {
-                if(((TileEntityAcceleratorTube) tile).getNode().getNetwork() != null)
+                //((TileEntityAcceleratorTube) tile).updateConnections(true); - breaks connections
+                if (((TileEntityAcceleratorTube) tile).getNode().updateConnections(world))
                 {
-                    ((TileEntityAcceleratorTube) tile).getNode().getNetwork().destroy();
+                    if (((TileEntityAcceleratorTube) tile).getNode().getNetwork() != null)
+                    {
+                        ((TileEntityAcceleratorTube) tile).getNode().getNetwork().destroy();
+                    }
                 }
             }
         }

@@ -5,6 +5,8 @@ import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -63,7 +65,7 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
     public void invalidate()
     {
         super.invalidate();
-        if (getNode().getNetwork() != null)
+        if (!world.isRemote && getNode().getNetwork() != null)
         {
             getNode().getNetwork().destroy();
         }
@@ -73,7 +75,7 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
     public void onChunkUnload()
     {
         //TODO mark node as unloaded, find way to restore node
-        if (getNode().getNetwork() != null)
+        if (!world.isRemote && getNode().getNetwork() != null)
         {
             getNode().getNetwork().destroy();
         }
@@ -84,5 +86,14 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
     {
         super.setPos(posIn);
         getNode().setPos(pos);
+    }
+
+    @Override
+    public void markDirty()
+    {
+        if (this.world != null)
+        {
+            this.world.markChunkDirty(this.pos, this);
+        }
     }
 }

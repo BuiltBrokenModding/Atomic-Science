@@ -59,6 +59,14 @@ public interface IAcceleratorNode extends IAcceleratorComponent
     void setNetwork(AcceleratorNetwork acceleratorNetwork); //TODO interface for network
 
     /**
+     * Called when the network is destroyed
+     */
+    default void onNetworkRemoved()
+    {
+
+    }
+
+    /**
      * Network this node is contained as part
      *
      * @return

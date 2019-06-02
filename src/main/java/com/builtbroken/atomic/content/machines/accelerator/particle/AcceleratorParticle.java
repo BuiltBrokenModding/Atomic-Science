@@ -104,8 +104,13 @@ public class AcceleratorParticle implements IAcceleratorParticle
         //TODO update position
         //TODO center on tube
 
+        if (Double.isNaN(velocity) || velocity <= 0)
+        {
+            velocity = 0.1f;
+        }
+
         //How much we can move in a single go
-        float distanceToMove = velocity;
+        float distanceToMove = Math.max(velocity, .1f);
 
         //Get current node we are pathing
         IAcceleratorNode currentNode = getCurrentNode();

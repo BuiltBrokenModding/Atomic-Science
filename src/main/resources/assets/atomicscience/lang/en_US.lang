@@ -23,13 +23,16 @@ tile.atomicscience:reactor.cell.name=Fission Reactor Core
 tile.atomicscience:reactor.controller.name=Fission Reactor Controller
 
 tile.atomicscience:particle.detector.name=Particle Detector
+tile.atomicscience:particle.detector.info=Used to detect and control, the movement of particles
 
 tile.atomicscience:steam.funnel.name=Steam Funnel
+tile.atomicscience:steam.funnel.info=Captures steam generated under it
 
 tile.atomicscience:steam.generator.name=Steam Turbine
 tile.atomicscience:steam.generator.0.name=UE Steam Turbine
 tile.atomicscience:steam.generator.1.name=RF Steam Turbine
 tile.atomicscience:steam.generator.2.name=EU Steam Turbine
+tile.atomicscience:steam.generator.info=Generated power from steam
 
 tile.atomicscience:chem.centrifuge.name=Chemical Centrifuge
 tile.atomicscience:chem.centrifuge.gui=Chemical Centrifuge
@@ -65,10 +68,13 @@ tile.atomicscience:laser.booster.name=Laser Booster
 tile.atomicscience:laser.booster.info=Used to power the laser emitter, stack to increase power
 
 tile.atomicscience:item.container.name=Item Holder
-tile.atomicscience:item.container.info=Used to hold items in place, Combined with laser, to generate particles
+tile.atomicscience:item.container.info=Used to hold items, used with entry and exit tubes
 
-tile.atomicscience:accelerator.gun.name=Accelerator Gun Tip
-tile.atomicscience:accelerator.gun.info=End of the Accelerator gun, used as the start of particles
+tile.atomicscience:accelerator.gun.name=Accelerator Entry
+tile.atomicscience:accelerator.gun.info=Allows particles to enter, the accelerator without damage
+
+tile.atomicscience:accelerator.exit.name=Accelerator Exit
+tile.atomicscience:accelerator.exit.info=Allows particles to exit, the accelerator without damage
 
 ## Items
 item.atomicscience:hazmat.mask.name=Hazmat Mask M1A

@@ -7,7 +7,6 @@ import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionTy
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import com.builtbroken.atomic.content.machines.accelerator.particle.AcceleratorParticle;
-import com.builtbroken.atomic.lib.CallTrigger;
 import com.builtbroken.atomic.lib.math.BlockPosHelpers;
 import com.builtbroken.atomic.lib.math.MathConstF;
 import com.builtbroken.atomic.lib.math.SideMathHelper;
@@ -25,7 +24,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 /**
@@ -55,6 +53,7 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     public Consumer<AcceleratorParticle> onLeaveCallback;
     public Consumer<AcceleratorParticle> onEnterCallback;
     public Consumer<AcceleratorParticle> onMoveCallback;
+    public Consumer<AcceleratorNode> onNetworkDestroyed;
     public BiFunction<AcceleratorParticle, ImmutableList<TubeSide>, TubeSide> turnController;
 
     public IAcceleratorTube host;
@@ -77,14 +76,24 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     }
 
     @Override
+    public void onNetworkRemoved()
+    {
+        if (onNetworkDestroyed != null)
+        {
+            onNetworkDestroyed.accept(this);
+        }
+    }
+
+    @Override
     public List<AcceleratorParticle> getParticles()
     {
         return currentParticles;
     }
 
+    @Deprecated
     public void add(AcceleratorParticle particle)
     {
-        currentParticles.add(particle);
+        newParticles.add(particle);
     }
 
     @Override
@@ -510,6 +519,7 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
             onEnterCallback.accept(particle);
         }
     }
+
 
     public void addParticle(AcceleratorParticle particle)
     {

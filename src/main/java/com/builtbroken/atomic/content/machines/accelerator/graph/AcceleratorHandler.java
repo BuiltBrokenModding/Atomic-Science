@@ -100,7 +100,7 @@ public class AcceleratorHandler
                 .setItem(item.copy());
 
         //Add
-        node.add(particle);
+        node.addParticle(particle);
 
         //System.out.println("Created particle " + particle);
 

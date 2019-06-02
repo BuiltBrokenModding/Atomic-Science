@@ -97,7 +97,7 @@ public class AcceleratorNetwork
      */
     public void destroy()
     {
-        if (!init)
+        if (init)
         {
             destroyNetwork = true;
         }
@@ -109,6 +109,7 @@ public class AcceleratorNetwork
     public void onNetworkRemoved()
     {
         getNodes().forEach(node -> node.setNetwork(null));
+        getNodes().forEach(node -> node.onNetworkRemoved());
         clear();
     }
 

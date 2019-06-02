@@ -25,7 +25,7 @@ public class TileEntityMagnet extends TileEntity
         {
             return true;
         }
-        else if (getOwner() != null && facing != null)
+        else if (getOwner() != null && facing != null && capability == CapabilityEnergy.ENERGY) //TODO add a can support capability option
         {
             return getOwner().hasCapability(capability, facing);
         }
@@ -44,7 +44,7 @@ public class TileEntityMagnet extends TileEntity
         {
             return getOwner() instanceof TileEntityAcceleratorTubePowered ? (T) ((TileEntityAcceleratorTubePowered) getOwner()).battery : null;
         }
-        else if (getOwner() != null && facing != null)
+        else if (getOwner() != null && facing != null && capability == CapabilityEnergy.ENERGY)
         {
             return getOwner().getCapability(capability, facing);
         }

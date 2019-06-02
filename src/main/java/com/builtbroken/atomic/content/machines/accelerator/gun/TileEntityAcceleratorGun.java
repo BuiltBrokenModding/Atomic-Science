@@ -20,7 +20,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import javax.annotation.Nullable;
 
 /**
- *
  * Created by Dark(DarkGuardsman, Robert) on 12/15/2018.
  */
 public class TileEntityAcceleratorGun extends TileEntityMachine
@@ -29,37 +28,45 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
 
     public final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this, () -> getDirection());
 
+    private boolean hasValidatedThisTick = true;
+
     public TileEntityAcceleratorGun()
     {
         tickServer.add(TickTimerTileEntity.newConditional(20, (tick) -> validateNetwork(), () -> tubeCap.getNode().getNetwork() == null || tubeCap.getNode().getNetwork().isDead()));
+        tickServer.add(TickTimerTileEntity.newSimple((tick) -> hasValidatedThisTick = false));
     }
 
     @Override
     public void onLoad()
     {
         tubeCap.getNode().setData(getPos(), getDirection(), TubeConnectionType.START_CAP);
+        tubeCap.getNode().onNetworkDestroyed = (node) -> validateNetwork();
     }
 
     private void validateNetwork()
     {
-        //If we have no network try to locate a tube with a network
-        if (tubeCap.getNode().getNetwork() == null)
+        if (!hasValidatedThisTick)
         {
-            final EnumFacing facing = getDirection();
-
-            final TileEntity tileEntity = world.getTileEntity(getPos().offset(facing));
-            final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, null);
-            if (tube != null)
+            hasValidatedThisTick = true;
+            //If we have no network try to locate a tube with a network
+            if (tubeCap.getNode().getNetwork() == null)
             {
-                //Connection to node to create or join a network
-                tube.getNode().connect(tubeCap.getNode(), getDirection().getOpposite());
-            }
-        }
+                final EnumFacing facing = getDirection();
 
-        //Find tubes
-        if (tubeCap.getNode().getNetwork() != null)
-        {
-            tubeCap.getNode().getNetwork().init(getWorld(), getPos().offset(getDirection()));
+                final TileEntity tileEntity = world.getTileEntity(getPos().offset(facing));
+                final IAcceleratorTube tube = AcceleratorHelpers.getAcceleratorTube(tileEntity, null);
+                if (tube != null)
+                {
+                    //Connection to node to create or join a network
+                    tube.getNode().connect(tubeCap.getNode(), getDirection().getOpposite());
+                }
+            }
+
+            //Find tubes
+            if (tubeCap.getNode().getNetwork() != null)
+            {
+                tubeCap.getNode().getNetwork().init(getWorld(), getPos().offset(getDirection()));
+            }
         }
     }
 
@@ -76,7 +83,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
      */
     public void onLaserFiredInto(TileEntityItemContainer container, TileEntityLaserEmitter laserEmitter)
     {
-        if(laserEmitter.getDirection() == getDirection())
+        if (laserEmitter.getDirection() == getDirection())
         {
             final ItemStack heldItem = container.getHeldItem();
             if (!heldItem.isEmpty())
@@ -145,7 +152,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
     @Nullable
     public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing)
     {
-        if(capability == AtomicScienceAPI.ACCELERATOR_TUBE_CAPABILITY)
+        if (capability == AtomicScienceAPI.ACCELERATOR_TUBE_CAPABILITY)
         {
             return (T) tubeCap;
         }
