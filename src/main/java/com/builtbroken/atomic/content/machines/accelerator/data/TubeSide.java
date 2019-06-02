@@ -140,7 +140,7 @@ public enum TubeSide
         else if (this == BACK)
         {
             return facing.getOpposite();
-        } 
+        }
         return null;
     }
 }

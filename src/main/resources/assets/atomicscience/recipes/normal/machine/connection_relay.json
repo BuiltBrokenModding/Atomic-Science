@@ -1,32 +1,23 @@
 {
   "result": {
-    "item": "atomicscience:chem_extractor",
+    "item": "atomicscience:cap_relay",
     "data": 0,
-    "count": 1
+    "count": 4
   },
   "pattern": [
-    "IPI",
-    "MCM",
-    "IPI"
+    "RPR",
+    "HTH",
+    "RPR"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {
-    "I": {
-      "type": "forge:ore_dict",
-      "ore": "ingotSteel"
+    "T": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
     },
-    "M": {
-      "type": "atomicscience:first_match",
-      "items": [
-        {
-          "type": "forge:ore_dict",
-          "ore": "motor"
-        },
-        {
-          "item": "minecraft:piston",
-          "data": 0
-        }
-      ]
+    "H": {
+      "item": "minecraft:piston",
+      "data": 0
     },
     "P": {
       "type": "atomicscience:first_match",
@@ -49,16 +40,24 @@
         }
       ]
     },
-    "C": {
+    "R": {
       "type": "atomicscience:first_match",
       "items": [
         {
           "type": "forge:ore_dict",
-          "ore": "circuitElite"
+          "ore": "rodSteel"
         },
         {
           "type": "forge:ore_dict",
-          "ore": "circuitAdvance"
+          "ore": "rodIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
         }
       ]
     }

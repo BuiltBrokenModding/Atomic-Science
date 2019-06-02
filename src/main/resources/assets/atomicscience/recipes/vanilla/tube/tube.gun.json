@@ -1,0 +1,37 @@
+{
+  "result": {
+    "item": "atomicscience:accelerator_gun",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "TP",
+    "CH"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "minecraft:hopper",
+      "data": 0
+    },
+    "C": {
+      "item": "minecraft:repeater",
+      "data": 0
+    },
+    "T": {
+      "item": "atomicscience:accelerator_tube",
+      "data": 0
+    },
+    "P": {
+      "item": "minecraft:piston",
+      "data": 0
+    }
+  },
+  "conditions": [
+    {
+      "type": "atomicscience:ore_value",
+      "condition": "false",
+      "value": "circuitAdvanced"
+    }
+  ]
+}

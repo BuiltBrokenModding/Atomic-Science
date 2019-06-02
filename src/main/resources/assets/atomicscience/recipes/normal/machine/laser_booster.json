@@ -1,30 +1,38 @@
 {
   "result": {
-    "item": "atomicscience:chem_extractor",
+    "item": "atomicscience:laser_booster",
     "data": 0,
     "count": 1
   },
   "pattern": [
-    "IPI",
-    "MCM",
-    "IPI"
+    "MRM",
+    "MRM",
+    "PCP"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {
-    "I": {
-      "type": "forge:ore_dict",
-      "ore": "ingotSteel"
-    },
     "M": {
+      "item": "atomicscience:magnet",
+      "data": 0
+    },
+    "R": {
       "type": "atomicscience:first_match",
       "items": [
         {
           "type": "forge:ore_dict",
-          "ore": "motor"
+          "ore": "rodSteel"
         },
         {
-          "item": "minecraft:piston",
-          "data": 0
+          "type": "forge:ore_dict",
+          "ore": "rodIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
         }
       ]
     },
@@ -50,17 +58,8 @@
       ]
     },
     "C": {
-      "type": "atomicscience:first_match",
-      "items": [
-        {
-          "type": "forge:ore_dict",
-          "ore": "circuitElite"
-        },
-        {
-          "type": "forge:ore_dict",
-          "ore": "circuitAdvance"
-        }
-      ]
+      "type": "forge:ore_dict",
+      "ore": "circuitAdvanced"
     }
   }
 }

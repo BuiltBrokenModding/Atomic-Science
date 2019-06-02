@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "atomicscience:reactor_controller",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "CR",
+    "PC"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "atomicscience:rod_pipe_inv",
+      "data": 0
+    },
+    "P": {
+      "item": "minecraft:piston",
+      "data": 0
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "circuitAdvanced"
+    }
+  }
+}

@@ -22,6 +22,8 @@ gui.atomicscience:sensor.thermal.redstone.label.redstone=Redstone:
 tile.atomicscience:reactor.cell.name=Fission Reactor Core
 tile.atomicscience:reactor.controller.name=Fission Reactor Controller
 
+tile.atomicscience:particle.detector.name=Particle Detector
+
 tile.atomicscience:steam.funnel.name=Steam Funnel
 
 tile.atomicscience:steam.generator.name=Steam Turbine

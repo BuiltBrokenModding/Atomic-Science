@@ -1,0 +1,44 @@
+{
+  "result": {
+    "item": "atomicscience:accelerator_tube",
+    "data": 0,
+    "count": 8
+  },
+  "pattern": [
+    "IPI",
+    "PRP",
+    "IPI"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    },
+    "P": {
+      "item": "minecraft:glass_pane",
+      "data": 0
+    },
+    "I": {
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "rodSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "rodIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    }
+  }
+}

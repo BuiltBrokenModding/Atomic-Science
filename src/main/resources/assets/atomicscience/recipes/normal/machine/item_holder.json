@@ -1,0 +1,44 @@
+{
+  "result": {
+    "item": "atomicscience:item_container",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "RMR",
+    "MTM",
+    "RMR"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "rodSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "rodIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    },
+    "M": {
+      "item": "atomicscience:magnet",
+      "data": 0
+    },
+    "T": {
+      "item": "atomicscience:cell_empty",
+      "data": 0
+    }
+  }
+}

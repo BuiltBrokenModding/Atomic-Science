@@ -1,0 +1,41 @@
+{
+  "result": {
+    "item": "atomicscience:magnet",
+    "data": 0,
+    "count": 4
+  },
+  "pattern": [
+    "CCC",
+    "CIC",
+    "CCC"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "wireCopper"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotCopper"
+        }
+      ]
+    },
+    "I": {
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "rodIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    }
+  }
+}

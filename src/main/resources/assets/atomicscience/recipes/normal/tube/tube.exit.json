@@ -1,0 +1,30 @@
+{
+  "result": {
+    "item": "atomicscience:accelerator_exit",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "HC",
+    "PT"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "H": {
+      "item": "minecraft:hopper",
+      "data": 0
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "circuitAdvanced"
+    },
+    "T": {
+      "item": "atomicscience:accelerator_tube",
+      "data": 0
+    },
+    "P": {
+      "item": "minecraft:piston",
+      "data": 0
+    }
+  }
+}

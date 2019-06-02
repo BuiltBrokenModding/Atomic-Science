@@ -1,32 +1,27 @@
 {
   "result": {
-    "item": "atomicscience:chem_extractor",
+    "item": "atomicscience:laser_emitter",
     "data": 0,
     "count": 1
   },
   "pattern": [
-    "IPI",
-    "MCM",
-    "IPI"
+    "PGP",
+    "MDM",
+    "PCP"
   ],
   "type": "minecraft:crafting_shaped",
   "key": {
-    "I": {
-      "type": "forge:ore_dict",
-      "ore": "ingotSteel"
+    "G": {
+      "item": "minecraft:glass",
+      "data": 0
+    },
+    "D": {
+      "item": "minecraft:diamond",
+      "data": 0
     },
     "M": {
-      "type": "atomicscience:first_match",
-      "items": [
-        {
-          "type": "forge:ore_dict",
-          "ore": "motor"
-        },
-        {
-          "item": "minecraft:piston",
-          "data": 0
-        }
-      ]
+      "item": "atomicscience:magnet",
+      "data": 0
     },
     "P": {
       "type": "atomicscience:first_match",
@@ -50,17 +45,25 @@
       ]
     },
     "C": {
-      "type": "atomicscience:first_match",
-      "items": [
+      "item": "minecraft:redstone_lamp",
+      "data": 0
+    }
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
         {
-          "type": "forge:ore_dict",
-          "ore": "circuitElite"
+          "type": "atomicscience:ore_value",
+          "condition": "false",
+          "value": "circuitAdvanced"
         },
         {
-          "type": "forge:ore_dict",
-          "ore": "circuitAdvance"
+          "type": "atomicscience:ore_value",
+          "condition": "false",
+          "value": "circuitElite"
         }
       ]
     }
-  }
+  ]
 }

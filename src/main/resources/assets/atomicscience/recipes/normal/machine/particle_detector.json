@@ -1,0 +1,48 @@
+{
+  "result": {
+    "item": "atomicscience:particle_detector",
+    "data": 0,
+    "count": 1
+  },
+  "pattern": [
+    "RCR",
+    "MLM",
+    "R R"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "type": "atomicscience:first_match",
+      "items": [
+        {
+          "type": "forge:ore_dict",
+          "ore": "rodSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "rodIron"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotSteel"
+        },
+        {
+          "type": "forge:ore_dict",
+          "ore": "ingotIron"
+        }
+      ]
+    },
+    "M": {
+      "item": "atomicscience:magnet",
+      "data": 0
+    },
+    "L": {
+      "item": "atomicscience:laser_emitter",
+      "data": 0
+    },
+    "C": {
+      "type": "forge:ore_dict",
+      "ore": "circuitAdvanced"
+    }
+  }
+}
