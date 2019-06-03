@@ -1,10 +1,9 @@
 package com.builtbroken.atomic.content.machines.steam;
 
 import com.builtbroken.atomic.content.prefab.TileEntityActive;
-import com.builtbroken.atomic.lib.thermal.ThermalHandler;
+import com.builtbroken.atomic.lib.vapor.VaporHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -43,26 +42,19 @@ public class TileEntitySteamInput extends TileEntityActive
         topMostBlock = null;
 
         BlockPos pos = getPos().down();
-        IBlockState blockState;
-        Block block;
         do
         {
-            //Get block
-            blockState = getState(pos);
-            block = blockState.getBlock();
-
             //Check if block can produce vapor
-            if (ThermalHandler.isSupportedVaporFluid(world, pos))
+            if (VaporHandler.isSupportedVaporFluid(world, pos))
             {
                 if (topMostBlock == null)
                 {
                     topMostBlock = pos;
                 }
-                int vaporRate = ThermalHandler.getVaporRate(world, pos);
-                steam += vaporRate;
+                steam += VaporHandler.getVaporRate(world, pos);
             }
             //Stop if we hit a none-air block
-            else if (!ThermalHandler.canSteamPassThrough(world, pos)) //TODO ignore blocks with small colliders
+            else if (!VaporHandler.canSteamPassThrough(world, pos))
             {
                 break;
             }

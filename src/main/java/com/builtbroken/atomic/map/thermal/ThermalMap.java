@@ -7,6 +7,7 @@ import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import com.builtbroken.atomic.config.server.ConfigServer;
 import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
+import com.builtbroken.atomic.lib.vapor.VaporHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
 import com.builtbroken.atomic.network.netty.PacketSystem;
@@ -173,7 +174,7 @@ public class ThermalMap implements IThermalSystem
             }
         }
 
-        int vap = ThermalHandler.getVaporRate(world, pos, heat * 1000 + getEnvironmentalJoules(world, pos));
+        int vap = VaporHandler.getVaporRate(world, pos, heat * 1000 + getEnvironmentalJoules(world, pos));
 
         final int dim = world.provider.getDimension();
         if (!steamSources.containsKey(dim))
@@ -211,7 +212,7 @@ public class ThermalMap implements IThermalSystem
                     BlockPos pos = it.next();
                     if (world.isBlockLoaded(pos))
                     {
-                        int vap = ThermalHandler.getVaporRate(world, pos);
+                        int vap = VaporHandler.getVaporRate(world, pos);
                         if (vap > 0)
                         {
                             if(event.world.rand.nextFloat() > 0.6)

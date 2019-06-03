@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.items;
 
 import com.builtbroken.atomic.content.prefab.ItemPrefab;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
+import com.builtbroken.atomic.lib.vapor.VaporHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.jlib.data.science.units.UnitDisplay;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,7 +54,7 @@ public class ItemHeatProbe extends ItemPrefab
                     )
             );
 
-            int vap = ThermalHandler.getVaporRate(world, pos);
+            int vap = VaporHandler.getVaporRate(world, pos);
             player.sendMessage(new TextComponentString("Vap: " + vap));
 
         }

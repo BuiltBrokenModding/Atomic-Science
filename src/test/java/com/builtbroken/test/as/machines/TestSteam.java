@@ -1,6 +1,6 @@
 package com.builtbroken.test.as.machines;
 
-import com.builtbroken.atomic.lib.thermal.ThermalHandler;
+import com.builtbroken.atomic.lib.vapor.VaporHandler;
 import com.builtbroken.test.as.world.FakeWorldAccess;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -32,7 +32,7 @@ public class TestSteam
     {
         FakeWorldAccess fakeWorldAccess = new FakeWorldAccess();
         fakeWorldAccess.addBlock(BlockPos.ORIGIN, block.getDefaultState());
-        Assertions.assertEquals(yes, ThermalHandler.canSteamPassThrough(fakeWorldAccess, BlockPos.ORIGIN));
+        Assertions.assertEquals(yes, VaporHandler.canSteamPassThrough(fakeWorldAccess, BlockPos.ORIGIN));
     }
 
     private static Stream<Arguments> shouldPathThroughData()
