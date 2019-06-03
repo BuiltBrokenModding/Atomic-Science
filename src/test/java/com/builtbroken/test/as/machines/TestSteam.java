@@ -3,8 +3,11 @@ package com.builtbroken.test.as.machines;
 import com.builtbroken.atomic.lib.vapor.VaporHandler;
 import com.builtbroken.test.as.world.FakeWorldAccess;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockTorch;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Bootstrap;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,29 +31,34 @@ public class TestSteam
 
     @ParameterizedTest
     @MethodSource("shouldPathThroughData")
-    public void testShouldPath(Block block, boolean yes)
+    public void testShouldPath(IBlockState blockstate, boolean yes)
     {
         FakeWorldAccess fakeWorldAccess = new FakeWorldAccess();
-        fakeWorldAccess.addBlock(BlockPos.ORIGIN, block.getDefaultState());
+        fakeWorldAccess.addBlock(BlockPos.ORIGIN, blockstate);
         Assertions.assertEquals(yes, VaporHandler.canSteamPassThrough(fakeWorldAccess, BlockPos.ORIGIN));
     }
 
     private static Stream<Arguments> shouldPathThroughData()
     {
         return Stream.of(
-                Arguments.of(Blocks.AIR, true),
-                Arguments.of(Blocks.WATER, true),
-                Arguments.of(Blocks.ACACIA_FENCE, true),
-                Arguments.of(Blocks.IRON_BARS, true),
-                Arguments.of(Blocks.CACTUS, true),
-                Arguments.of(Blocks.TORCH, true),
-                Arguments.of(Blocks.REDSTONE_TORCH, true),
+                Arguments.of(Blocks.AIR.getDefaultState(), true),
+                Arguments.of(Blocks.WATER.getDefaultState(), true),
+                Arguments.of(Blocks.ACACIA_FENCE.getDefaultState(), true),
+                Arguments.of(Blocks.IRON_BARS.getDefaultState(), true),
+                Arguments.of(Blocks.CACTUS.getDefaultState(), true),
+                Arguments.of(Blocks.TORCH.getDefaultState(), true),
+                Arguments.of(Blocks.TORCH.getDefaultState().withProperty(BlockTorch.FACING, EnumFacing.NORTH), true),
+                Arguments.of(Blocks.TORCH.getDefaultState().withProperty(BlockTorch.FACING, EnumFacing.SOUTH), true),
+                Arguments.of(Blocks.TORCH.getDefaultState().withProperty(BlockTorch.FACING, EnumFacing.EAST), true),
+                Arguments.of(Blocks.TORCH.getDefaultState().withProperty(BlockTorch.FACING, EnumFacing.WEST), true),
+                Arguments.of(Blocks.REDSTONE_TORCH.getDefaultState(), true),
+                Arguments.of(Blocks.GLASS_PANE.getDefaultState(), true),
 
-                Arguments.of(Blocks.GRASS, false),
-                Arguments.of(Blocks.STONE, false),
-                Arguments.of(Blocks.GLASS, false),
-                Arguments.of(Blocks.BEDROCK, false),
-                Arguments.of(Blocks.CLAY, false)
+                Arguments.of(Blocks.GRASS.getDefaultState(), false),
+                Arguments.of(Blocks.STONE.getDefaultState(), false),
+                Arguments.of(Blocks.GLASS.getDefaultState(), false),
+                Arguments.of(Blocks.BEDROCK.getDefaultState(), false),
+                Arguments.of(Blocks.CLAY.getDefaultState(), false)
         );
     }
 }
