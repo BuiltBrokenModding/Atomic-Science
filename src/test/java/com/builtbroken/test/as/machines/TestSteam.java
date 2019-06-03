@@ -40,6 +40,15 @@ public class TestSteam
         return Stream.of(
                 Arguments.of(Blocks.AIR, true),
                 Arguments.of(Blocks.WATER, true),
+                Arguments.of(Blocks.ACACIA_FENCE, true),
+                Arguments.of(Blocks.IRON_BARS, true),
+                Arguments.of(Blocks.CACTUS, true),
+                Arguments.of(Blocks.TORCH, true),
+                Arguments.of(Blocks.REDSTONE_TORCH, true),
+
+                Arguments.of(Blocks.GRASS, false),
+                Arguments.of(Blocks.STONE, false),
+                Arguments.of(Blocks.GLASS, false),
                 Arguments.of(Blocks.BEDROCK, false),
                 Arguments.of(Blocks.CLAY, false)
         );

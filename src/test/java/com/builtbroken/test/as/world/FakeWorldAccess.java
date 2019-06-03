@@ -49,7 +49,7 @@ public class FakeWorldAccess implements IBlockAccess
     @Override
     public IBlockState getBlockState(BlockPos pos)
     {
-        return blocks.containsKey(pos) ? blocks.get(pos) : null; //TODO air
+        return blocks.containsKey(pos) ? blocks.get(pos) : Blocks.AIR.getDefaultState();
     }
 
     @Override

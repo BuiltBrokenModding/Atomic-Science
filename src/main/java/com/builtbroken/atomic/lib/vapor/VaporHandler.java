@@ -152,11 +152,8 @@ public class VaporHandler
             {
                 return true;
             }
-            else if (state.isSideSolid(world, pos, EnumFacing.UP))
-            {
-                final AxisAlignedBB bb = state.getCollisionBoundingBox(world, pos);
-                return !(bb.minX <= 0 && bb.maxX >= 1 && bb.minZ <= 0 && bb.maxX >= 1);
-            }
+            final AxisAlignedBB bb = state.getCollisionBoundingBox(world, pos);
+            return bb == null || !(bb.minX <= 0 && bb.maxX >= 1 && bb.minZ <= 0 && bb.maxX >= 1);
         }
         return false;
     }
