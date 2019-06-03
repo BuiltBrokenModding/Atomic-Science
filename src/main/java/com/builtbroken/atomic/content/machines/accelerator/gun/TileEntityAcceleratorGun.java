@@ -26,7 +26,7 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
 {
     public static final String NBT_NODE = "accelerator_node";
 
-    public final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this, () -> getDirection());
+    public final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this, () -> getDirection(), ()-> TubeConnectionType.START_CAP);
 
     private boolean hasValidatedThisTick = true;
 
@@ -39,7 +39,6 @@ public class TileEntityAcceleratorGun extends TileEntityMachine
     @Override
     public void onLoad()
     {
-        tubeCap.getNode().setData(getPos(), getDirection(), TubeConnectionType.START_CAP);
         tubeCap.getNode().onNetworkDestroyed = (node) -> validateNetwork();
     }
 

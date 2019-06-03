@@ -4,6 +4,7 @@ import com.builtbroken.atomic.api.accelerator.IAcceleratorComponent;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 /**
  * Created by Dark(DarkGuardsman, Robert) on 2019-05-29.
@@ -11,11 +12,12 @@ import java.util.function.IntSupplier;
 public abstract class AcceleratorComponent implements IAcceleratorComponent
 {
     private final IntSupplier dimSupplier;
-    private BlockPos pos = BlockPos.ORIGIN;
+    private final Supplier<BlockPos> posSupplier;
 
-    public AcceleratorComponent(IntSupplier dimSupplier)
+    public AcceleratorComponent(IntSupplier dimSupplier, Supplier<BlockPos> posSupplier)
     {
         this.dimSupplier = dimSupplier;
+        this.posSupplier = posSupplier;
     }
 
     @Override
@@ -26,69 +28,64 @@ public abstract class AcceleratorComponent implements IAcceleratorComponent
 
     //<editor-fold desc="Pos3D">
 
-    public void setPos(BlockPos pos)
-    {
-        this.pos = pos;
-    }
-
     @Override
     public BlockPos getPos()
     {
-        return pos;
+        return posSupplier.get();
     }
 
     @Override
     public double x()
     {
-        return pos.getX() + 0.5;
+        return getPos().getX() + 0.5;
     }
 
     @Override
     public double y()
     {
-        return pos.getY() + 0.5;
+        return getPos().getY() + 0.5;
     }
 
     @Override
     public double z()
     {
-        return pos.getZ() + 0.5;
+        return getPos().getZ() + 0.5;
     }
 
     @Override
     public float xf()
     {
-        return pos.getX() + 0.5f;
+        return getPos().getX() + 0.5f;
     }
 
     @Override
     public float yf()
     {
-        return pos.getY() + 0.5f;
+        return getPos().getY() + 0.5f;
     }
 
     @Override
     public float zf()
     {
-        return pos.getZ() + 0.5f;
+        return getPos().getZ() + 0.5f;
     }
 
     @Override
     public int xi()
     {
-        return pos.getX();
+        return getPos().getX();
     }
 
     @Override
     public int yi()
     {
-        return pos.getY();
+        return getPos().getY();
     }
 
     @Override
     public int zi()
     {
-        return pos.getZ();
+        return getPos().getZ();
     }
     //</editor-fold>
 }

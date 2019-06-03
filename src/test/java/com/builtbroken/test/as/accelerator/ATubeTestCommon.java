@@ -42,7 +42,7 @@ public class ATubeTestCommon
     public static AcceleratorNode newNode(BlockPos pos, EnumFacing facing, TubeConnectionType connectionType)
     {
         //Create
-        AcceleratorNode node = new AcceleratorFakeTube(0, pos, facing).getNode().setData(pos, facing, connectionType);
+        AcceleratorNode node = new AcceleratorFakeTube(0, pos, facing, connectionType).getNode();
 
         validateNodeInit(node, pos, facing, connectionType);
 
@@ -98,9 +98,6 @@ public class ATubeTestCommon
 
         //Check that we have a node
         Assertions.assertNotNull(tube.getNode());
-
-        //Set node data
-        tube.getNode().setData(pos, facing, type != null ? type : TubeConnectionType.NORMAL);
 
         //Set tube data
         if (type != null)

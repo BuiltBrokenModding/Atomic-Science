@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.api.accelerator;
 
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSide;
 import com.builtbroken.atomic.content.machines.accelerator.data.TubeSideType;
 import net.minecraft.tileentity.TileEntity;
@@ -61,4 +62,5 @@ public interface IAcceleratorTube
     @Nonnull
     IAcceleratorNode getNode();
 
+    TubeConnectionType getConnectionType();
 }

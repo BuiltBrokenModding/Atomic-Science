@@ -46,11 +46,13 @@ public class TestSteam
                 Arguments.of(Blocks.ACACIA_FENCE.getDefaultState(), true),
                 Arguments.of(Blocks.IRON_BARS.getDefaultState(), true),
                 Arguments.of(Blocks.CACTUS.getDefaultState(), true),
+
                 Arguments.of(Blocks.TORCH.getDefaultState(), true),
                 Arguments.of(Blocks.TORCH.getDefaultState().withProperty(BlockTorch.FACING, EnumFacing.NORTH), true),
                 Arguments.of(Blocks.TORCH.getDefaultState().withProperty(BlockTorch.FACING, EnumFacing.SOUTH), true),
                 Arguments.of(Blocks.TORCH.getDefaultState().withProperty(BlockTorch.FACING, EnumFacing.EAST), true),
                 Arguments.of(Blocks.TORCH.getDefaultState().withProperty(BlockTorch.FACING, EnumFacing.WEST), true),
+
                 Arguments.of(Blocks.REDSTONE_TORCH.getDefaultState(), true),
                 Arguments.of(Blocks.GLASS_PANE.getDefaultState(), true),
 

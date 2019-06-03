@@ -37,9 +37,6 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     //Connections
     private final IAcceleratorNode[] nodes = new IAcceleratorNode[6];
 
-    //direction and connection data
-    private TubeConnectionType connectionType;
-
     //Current network
     private AcceleratorNetwork network;
 
@@ -60,7 +57,7 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
 
     public AcceleratorNode(IAcceleratorTube tube) //TODO convert to host interface
     {
-        super(() -> tube.dim());
+        super(() -> tube.dim(), () -> tube.getPosition());
         this.host = tube;
         onLeaveCallback = (particle) -> AcceleratorHandler.spawnParticleInWorld(particle);
     }
@@ -291,17 +288,6 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     {
         final TubeSideType state = getConnectedTubeState(null, localSide);
         return state != TubeSideType.NONE && getConnectionType().getTypeForSide(localSide) == state;
-    }
-
-    /**
-     * Sets the data of the node
-     */
-    @Deprecated //TODO being moved to host
-    public AcceleratorNode setData(BlockPos pos, EnumFacing facing, TubeConnectionType type)
-    {
-        setPos(pos);
-        setConnectionType(type);
-        return this;
     }
 
     /**
@@ -558,7 +544,7 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     @Override
     public TubeConnectionType getConnectionType()
     {
-        return connectionType;
+        return host.getConnectionType();
     }
 
 
@@ -605,11 +591,6 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
         return host == null || host.isDead();
     }
 
-    public void setConnectionType(TubeConnectionType type)
-    {
-        this.connectionType = type;
-    }
-
     @Override
     public int hashCode()
     {
@@ -633,7 +614,7 @@ public class AcceleratorNode extends AcceleratorComponent implements IAccelerato
     @Override
     public String toString()
     {
-        return "AcceleratorNode[" + getPos() + ", " + host.getDirection() + ", " + connectionType + "]";
+        return "AcceleratorNode[" + getPos() + ", " + getDirection() + ", " + getConnectionType() + "]";
     }
 
 }

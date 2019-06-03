@@ -3,6 +3,7 @@ package com.builtbroken.atomic.content.machines.accelerator.tube.imp;
 import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import com.builtbroken.atomic.content.prefab.TileEntityPrefab;
 import net.minecraft.block.state.IBlockState;
@@ -17,18 +18,20 @@ import javax.annotation.Nullable;
 /**
  * Created by Dark(DarkGuardsman, Robert) on 4/20/2019.
  */
-public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
+public abstract class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
 {
     public static final String NBT_NODE = "accelerator_node";
 
 
-    protected final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this, () -> getDirection());
+    protected final AcceleratorTubeCap tubeCap = new AcceleratorTubeCap(this, () -> getDirection(), () -> getConnectionType());
 
 
     public AcceleratorNode getNode()
     {
         return tubeCap.getNode();
     }
+
+    public abstract TubeConnectionType getConnectionType();
 
     @Override
     public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing)
@@ -79,13 +82,6 @@ public class TileEntityAcceleratorTubePrefab extends TileEntityPrefab
         {
             getNode().getNetwork().destroy();
         }
-    }
-
-    @Override
-    public void setPos(BlockPos posIn)
-    {
-        super.setPos(posIn);
-        getNode().setPos(pos);
     }
 
     @Override

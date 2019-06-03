@@ -2,6 +2,7 @@ package com.builtbroken.atomic.content.machines.accelerator.tube.imp;
 
 import com.builtbroken.atomic.api.accelerator.IAcceleratorNode;
 import com.builtbroken.atomic.api.accelerator.IAcceleratorTube;
+import com.builtbroken.atomic.content.machines.accelerator.data.TubeConnectionType;
 import com.builtbroken.atomic.content.machines.accelerator.graph.AcceleratorNode;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -17,13 +18,15 @@ public class AcceleratorTubeCap implements IAcceleratorTube
 {
     private final TileEntity tileEntity;
     private final Supplier<EnumFacing> direction;
+    private final Supplier<TubeConnectionType> tubeConnectionType;
 
     protected final AcceleratorNode acceleratorNode = new AcceleratorNode(this);
 
-    public AcceleratorTubeCap(TileEntity tileEntity, Supplier<EnumFacing> direction)
+    public AcceleratorTubeCap(TileEntity tileEntity, Supplier<EnumFacing> direction, Supplier<TubeConnectionType> tubeConnectionType)
     {
         this.tileEntity = tileEntity;
         this.direction = direction;
+        this.tubeConnectionType = tubeConnectionType;
     }
 
     @Override
@@ -67,5 +70,11 @@ public class AcceleratorTubeCap implements IAcceleratorTube
     public AcceleratorNode getNode()
     {
         return acceleratorNode;
+    }
+
+    @Override
+    public TubeConnectionType getConnectionType()
+    {
+        return tubeConnectionType.get();
     }
 }

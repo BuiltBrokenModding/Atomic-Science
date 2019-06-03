@@ -19,7 +19,7 @@ public class TileEntityAcceleratorExit extends TileEntityAcceleratorTubePrefab
     @Override
     public void onLoad()
     {
-        getNode().setData(getPos(), getDirection(), TubeConnectionType.END_CAP);
+        super.onLoad();
         getNode().onExitCallback = (particle) -> onParticleExit(particle);
     }
 
@@ -67,5 +67,11 @@ public class TileEntityAcceleratorExit extends TileEntityAcceleratorTubePrefab
                 break;
             }
         }
+    }
+
+    @Override
+    public TubeConnectionType getConnectionType()
+    {
+        return TubeConnectionType.END_CAP;
     }
 }

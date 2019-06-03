@@ -47,7 +47,6 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     @Override
     public void onLoad()
     {
-        getNode().setData(getPos(), getDirection(), getConnectionType());
         getNode().onMoveCallback = (particle) -> debugSpeed(particle);
         if (isServer())
         {
@@ -136,9 +135,6 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
             state = state.withProperty(BlockAcceleratorTube.ROTATION_PROP, getDirection());
         }
         state = state.withProperty(BlockAcceleratorTube.CONNECTION_PROP, getConnectionType());
-
-        //Update node in network
-        getNode().setData(getPos(), getDirection(), getConnectionType());
 
         //Update actual block
         if (setBlock && world != null) //JUnit world may be null
@@ -273,17 +269,11 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
     }
 
     @Override
-    public void setPos(BlockPos posIn)
-    {
-        super.setPos(posIn);
-        getNode().setPos(pos);
-    }
-
     public TubeConnectionType getConnectionType()
     {
         if (_connectionType == null)
         {
-            setConnectionType(TubeConnectionType.NORMAL);
+            this._connectionType = TubeConnectionType.NORMAL;
         }
         return _connectionType;
     }
@@ -294,7 +284,6 @@ public class TileEntityAcceleratorTube extends TileEntityAcceleratorTubePrefab
         if (prev != type)
         {
             this._connectionType = type;
-            getNode().setConnectionType(_connectionType);
         }
     }
 }
