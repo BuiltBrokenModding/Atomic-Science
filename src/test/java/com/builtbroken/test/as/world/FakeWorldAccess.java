@@ -28,6 +28,11 @@ public class FakeWorldAccess implements IBlockAccess
         tiles.put(pos, tile);
     }
 
+    public void addBlock(BlockPos pos, IBlockState tile)
+    {
+        blocks.put(pos, tile);
+    }
+
     @Nullable
     @Override
     public TileEntity getTileEntity(BlockPos pos)
@@ -44,7 +49,7 @@ public class FakeWorldAccess implements IBlockAccess
     @Override
     public IBlockState getBlockState(BlockPos pos)
     {
-        return blocks.containsKey(pos) ? blocks.get(blocks) : null; //TODO air
+        return blocks.containsKey(pos) ? blocks.get(pos) : null; //TODO air
     }
 
     @Override

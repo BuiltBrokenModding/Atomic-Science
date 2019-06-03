@@ -8,11 +8,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 
 /**
- *
  * Created by Dark(DarkGuardsman, Robert) on 5/15/2018.
  */
 public class TileEntitySteamInput extends TileEntityActive
 {
+
     protected boolean checkSteam = true;
     protected int steam = 0;
     protected BlockPos topMostBlock;
@@ -52,16 +52,17 @@ public class TileEntitySteamInput extends TileEntityActive
             block = blockState.getBlock();
 
             //Check if block can produce vapor
-            if (block == Blocks.WATER || block == Blocks.FLOWING_WATER)
+            if (ThermalHandler.isSupportedVaporFluid(world, pos))
             {
                 if (topMostBlock == null)
                 {
                     topMostBlock = pos;
                 }
-                steam += ThermalHandler.getVaporRate(world, pos);
+                int vaporRate = ThermalHandler.getVaporRate(world, pos);
+                steam += vaporRate;
             }
             //Stop if we hit a none-air block
-            else if (!block.isAir(blockState, world, pos)) //TODO ignore blocks with small colliders
+            else if (!ThermalHandler.canSteamPassThrough(world, pos)) //TODO ignore blocks with small colliders
             {
                 break;
             }

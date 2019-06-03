@@ -11,7 +11,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -19,11 +22,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- *
  * Created by Dark(DarkGuardsman, Robert) on 5/11/2018.
  */
 public class ThermalHandler
 {
+
     //Thermal data about blocks
     private static final HashMap<Block, ThermalData> blockThermalDataMap = new HashMap();
     private static final HashMap<Material, ThermalData> materialThermalDataMap = new HashMap();
@@ -77,7 +80,7 @@ public class ThermalHandler
         {
             return blockThermalDataMap.get(block);
         }
-        else if(materialThermalDataMap.containsKey(blockState.getMaterial()))
+        else if (materialThermalDataMap.containsKey(blockState.getMaterial()))
         {
             return materialThermalDataMap.get(blockState.getMaterial());
         }
@@ -187,14 +190,14 @@ public class ThermalHandler
     {
         Block block = world.getBlockState(pos).getBlock();
         double temperature = MapHandler.THERMAL_MAP.getTemperature(world, pos, heat);
-        if (block == Blocks.WATER)
+        if (block == Blocks.WATER) //TODO add handler for vapor rate
         {
             if (temperature > 373)
             {
                 return (int) Math.min(ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE, Math.ceil(ConfigLogic.STEAM.WATER_VAPOR_RATE * (temperature / 373)));
             }
         }
-        else if (block == Blocks.FLOWING_WATER)
+        else if (block == Blocks.FLOWING_WATER) //TODO add handler for vapor rate
         {
             if (temperature > 373)
             {
@@ -202,5 +205,57 @@ public class ThermalHandler
             }
         }
         return 0;
+    }
+
+    /**
+     * Called to check if the fluid is supported by the vaporization system
+     *
+     * @param world
+     * @param pos
+     * @return
+     */
+    public static boolean isSupportedVaporFluid(IBlockAccess world, BlockPos pos)
+    {
+        final IBlockState state = world.getBlockState(pos);
+        if (state != null)
+        {
+            final Block block = world.getBlockState(pos).getBlock();
+            return block == Blocks.WATER || block == Blocks.FLOWING_WATER; //TODO add handler for vapor rate
+        }
+        return false;
+    }
+
+    /**
+     * Called to check if steam can pass through the block
+     *
+     * @param world
+     * @param pos
+     * @return
+     */
+    public static boolean canSteamPassThrough(IBlockAccess world, BlockPos pos)
+    {
+        final IBlockState state = world.getBlockState(pos);
+        if (state != null)
+        {
+            final Block block = state.getBlock();
+            if (state.getMaterial() == Material.WATER)
+            {
+                return true;
+            }
+            else if (block.isAir(state, world, pos))
+            {
+                return true;
+            }
+            else if(!block.isCollidable())
+            {
+                return true;
+            }
+            else if (state.isSideSolid(world, pos, EnumFacing.UP))
+            {
+                final AxisAlignedBB bb = state.getCollisionBoundingBox(world, pos);
+                return !(bb.minX <= 0 && bb.maxX >= 1 && bb.minZ <= 0 && bb.maxX >= 1);
+            }
+        }
+        return false;
     }
 }
