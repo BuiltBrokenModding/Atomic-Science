@@ -61,7 +61,7 @@ tile.atomicscience:accelerator.tube.info=Vacuum sealed tube for accelerating par
 tile.atomicscience:accelerator.tube.error.normal.conversion=Can only convert normal connection tubes to and from powered state
 
 tile.atomicscience:laser.emitter.name=Laser Emitter
-tile.atomicscience:laser.emitter.info=Emittes a laser for use, in other process such as, pushing particles
+tile.atomicscience:laser.emitter.info=Emits a laser for use, in other process such as, pushing particles
 tile.atomicscience:laser.emitter.laser.mode.set.field=Laser Upgraded to field projector mode
 
 tile.atomicscience:laser.booster.name=Laser Booster
@@ -184,6 +184,7 @@ item.atomicscience:wrench.color.yellow.info=Color: Yellow
 item.atomicscience:wrench.color.red.info=Color: Red
 item.atomicscience:wrench.color.blue.info=Color: Blue
 item.atomicscience:wrench.color.purple.info=Color: Purple
+item.atomicscience:wrench.color.orange.info=Color: Orange
 
 item.atomicscience:wrench.more.info=Hold §bSHIFT§f for more
 
