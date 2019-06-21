@@ -41,21 +41,22 @@ import java.util.List;
 public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandlerModifiable> implements IFissionReactor
 {
     public static final int SLOT_FUEL_ROD = 0;
+
     /** Client side */
-    public boolean _running = false;
     public boolean _renderFuel = false;
     public float _renderFuelLevel = 0f;
 
+    /** Is the reactor currently running this tick */
+    public boolean isRunning = false;
+
+    /** is the reactor enabled */
     public boolean enabled = true; ///TODO add a spin up and down time, prevent instant enable/disable of reactors
 
-    private final RadSourceTile<TileEntityReactorCell> radiationSource = new RadSourceTile(this, () -> getRadioactiveMaterial(), () -> canOperate());
-    private final ThermalSource<TileEntityReactorCell> thermalSource = new ThermalSourceTile(this, () -> getHeatGenerated(), () -> canOperate());
+    private int heatCache;
+    private int radCache;
 
-    @Override
-    public boolean hasFastRenderer()
-    {
-        return true;
-    }
+    private final RadSourceTile<TileEntityReactorCell> radiationSource = new RadSourceTile(this, () -> radCache, () -> isRunning);
+    private final ThermalSource<TileEntityReactorCell> thermalSource = new ThermalSourceTile(this, () -> heatCache, () -> isRunning);
 
     @Override
     protected void firstTick(boolean isClient)
@@ -85,7 +86,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
                 //Disable if not fuel rod
                 if (!(stack.getItem() instanceof IFuelRodItem))
                 {
-                    _running = false;
+                    isRunning = false;
                 }
 
                 //If not the same item, trigger update
@@ -171,8 +172,12 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         {
             doRodMovement(ticks);
             doRunChecks(ticks);
+
+            //Cache values for faster runtime of threads
+            heatCache = getHeatGenerated();
+            radCache = getRadioactiveMaterial();
         }
-        else if (_running)
+        else if (isRunning)
         {
             AtomicScience.sideProxy.spawnParticle(EffectRefs.REACTOR_RUNNING, xi() + 0.5, yi() + 0.5, zi() + 0.5, 0, 0, 0);
         }
@@ -181,13 +186,13 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     protected void doRunChecks(int ticks)
     {
         //Track previous state
-        final boolean prev_running = _running;
+        final boolean prev_running = isRunning;
 
         //Check if we can operate
         if (canOperate())
         {
             //Set run status
-            _running = true;
+            isRunning = true;
 
             //Consume fuel
             consumeFuel(ticks);
@@ -201,17 +206,17 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         //if not in operation status, set running to false
         else
         {
-            _running = false;
+            isRunning = false;
         }
 
         //If state changed cycle grid
-        if (prev_running != _running)
+        if (prev_running != isRunning)
         {
             onRunStateChanged();
         }
 
         //If state changes or every so often sync data to client
-        if (prev_running != _running || ticks % 20 == 0) //TODO see if %20 is needed
+        if (prev_running != isRunning || ticks % 20 == 0) //TODO see if %20 is needed
         {
             syncClientNextTick();
         }
@@ -371,7 +376,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
         this.markDirty();
         if (!canOperate())
         {
-            _running = false;
+            isRunning = false;
             _renderFuel = false;
             _renderFuelLevel = 0f;
         }
@@ -495,7 +500,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     protected void writeDescPacket(List<Object> dataList, EntityPlayer player)
     {
         super.writeDescPacket(dataList, player);
-        dataList.add(_running || canOperate());
+        dataList.add(isRunning || canOperate());
         dataList.add(hasFuel());
         dataList.add(getFuelRenderLevel());
     }
@@ -504,7 +509,7 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     protected void readDescPacket(ByteBuf buf, EntityPlayer player)
     {
         super.readDescPacket(buf, player);
-        _running = buf.readBoolean();
+        isRunning = buf.readBoolean();
         _renderFuel = buf.readBoolean();
         _renderFuelLevel = buf.readFloat();
     }
@@ -586,5 +591,11 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     public String toString()
     {
         return "ReactorCell[W: " + worldName() + " | D: " + dim() + " | Pos(" + xi() + ", " + yi() + ", " + zi() + ")]@" + hashCode();
+    }
+
+    @Override
+    public boolean hasFastRenderer()
+    {
+        return true;
     }
 }
