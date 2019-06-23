@@ -1,20 +1,14 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "forge:multi-layer",
-    "custom": {
-      "Solid": "atomicscience:item_container_a",
-      "Translucent": "atomicscience:item_container_b"
-    }
+    "model": "atomicscience:item_frame"
   },
   "variants": {
     "normal": [
       {}
     ],
     "inventory": [
-      {
-        "model": "atomicscience:item_frame"
-      }
+      {}
     ],
     "model": {
       "normal": {

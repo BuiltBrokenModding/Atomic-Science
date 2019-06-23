@@ -36,7 +36,7 @@ public class TESRItemContainer extends TileEntitySpecialRenderer<TileEntityItemC
     public void render(TileEntityItemContainer tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
         renderItem(tile, x, y, z, partialTicks, destroyStage, alpha);
-        renderGlass(tile, x, y, z, partialTicks, destroyStage, alpha);
+        //renderGlass(tile, x, y, z, partialTicks, destroyStage, alpha);
     }
 
     private void renderGlass(TileEntityItemContainer tile, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
