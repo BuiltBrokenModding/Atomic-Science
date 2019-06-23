@@ -22,6 +22,12 @@ public class TileEntityRodPipe extends TileEntityDirectionalPipe
     }
 
     @Override
+    protected EnumFacing getOutDirection(EnumFacing input)
+    {
+        return EnumFacing.DOWN;
+    }
+
+    @Override
     public boolean canSupport(Capability capability)
     {
         return canPipeSupport(capability);
