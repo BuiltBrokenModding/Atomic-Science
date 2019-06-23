@@ -572,7 +572,10 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
 
     private boolean canConnect(IBlockState block)
     {
-        return block.getBlock() == ASBlocks.blockReactorCell || block.getBlock() == ASBlocks.blockReactorController;
+        return block.getBlock() == ASBlocks.blockReactorCell
+                || block.getBlock() == ASBlocks.blockReactorController
+                || block.getBlock() == ASBlocks.blockRodPipe
+                || block.getBlock() == ASBlocks.blockRodPipeInv;
     }
 
     @Override
