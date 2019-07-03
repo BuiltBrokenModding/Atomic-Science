@@ -31,8 +31,8 @@ public class VaporHandler
 
     static
     {
-        setVaporData(Blocks.FLOWING_WATER, () -> WATER_BOIL_TEMP, () -> ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE, () -> ConfigLogic.STEAM.WATER_FLOWING_VAPOR_RATE);
-        setVaporData(Blocks.WATER, () -> WATER_BOIL_TEMP, () -> ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE, () -> ConfigLogic.STEAM.WATER_VAPOR_RATE);
+        setVaporData(Blocks.FLOWING_WATER, () -> WATER_BOIL_TEMP, () -> ConfigLogic.STEAM.WATER_FLOWING_VAPOR_RATE, () -> ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE);
+        setVaporData(Blocks.WATER, () -> WATER_BOIL_TEMP, () -> ConfigLogic.STEAM.WATER_VAPOR_RATE, () -> ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE);
 
         allowVaporThrough(Blocks.TRAPDOOR);
         allowVaporThrough(Blocks.IRON_BARS);
