@@ -1,7 +1,13 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "atomicscience:pipe/reactor"
+    "model": "atomicscience:pipe/reactor",
+    "textures": {
+      "0": "atomicscience:blocks/pipe/reactor_side",
+      "1": "atomicscience:blocks/pipe/reactor_top",
+      "2": "atomicscience:blocks/pipe/reactor_bottom",
+      "particle": "atomicscience:blocks/pipe/reactor_side"
+    }
   },
   "variants": {
     "normal": [
