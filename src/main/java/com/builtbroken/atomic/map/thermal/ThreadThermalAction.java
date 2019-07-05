@@ -1,6 +1,7 @@
 package com.builtbroken.atomic.map.thermal;
 
 import com.builtbroken.atomic.AtomicScience;
+import com.builtbroken.atomic.api.thermal.IThermalNode;
 import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.lib.thermal.HeatSpreadDirection;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
@@ -8,21 +9,31 @@ import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
-import com.builtbroken.atomic.api.thermal.IThermalNode;
 import com.builtbroken.atomic.map.thermal.node.ThermalNode;
 import com.builtbroken.jlib.lang.StringHelpers;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 /**
  * Handles updating the radiation map
- *
- *
+ * <p>
+ * <p>
  * Created by Dark(DarkGuardsman, Robert) on 4/28/2018.
  */
 public class ThreadThermalAction extends ThreadDataChange
@@ -118,22 +129,23 @@ public class ThreadThermalAction extends ThreadDataChange
      * its assumed heat will constantly be generated. Thus migrating heat is not needed beyond
      * estimating how much heat would be moved.
      *
-     * @param world  - map to pull data from
-     * @param cx   - center of heat
-     * @param cy   - center of heat
-     * @param cz   - center of heat
-     * @param heat - amount of heat to move
+     * @param world - map to pull data from
+     * @param cx    - center of heat
+     * @param cy    - center of heat
+     * @param cz    - center of heat
+     * @param heat  - amount of heat to move
      * @return positions and changes (first pos is position, second is data (x -> heat, y -> heat used))
      */
     protected HashMap<DataPos, DataPos> calculateHeatSpread(final World world, final int cx, final int cy, final int cz, final int heat)
     {
         final DataPos center = DataPos.get(cx, cy, cz);
+        final IBlockState blockState = world.getBlockState(center.getPos());
         //TODO consider splitting over several threads
         //TODO map fluid(water, air, lava, etc) pockets to allow convection currents
         //TODO use fluid pockets to equalize heat levels
 
         //Max range, hard coded until algs can be completed
-        final int range = 50;
+        final int range = 10;
 
         //Track data, also used to prevent looping same tiles (first pos is location, second stores data)
         final HashMap<DataPos, DataPos> heatSpreadData = new HashMap();
@@ -162,7 +174,7 @@ public class ThreadThermalAction extends ThreadDataChange
             //Breadth first pathfinder
             while (!currentPathQueue.isEmpty() || !nextPathQueue.isEmpty())
             {
-                if(currentPathQueue.isEmpty())
+                if (currentPathQueue.isEmpty())
                 {
                     Collections.sort(nextPathQueue, Comparator.comparingDouble(pos -> pos.distance(center)));
                     currentPathQueue.addAll(nextPathQueue);
@@ -191,8 +203,18 @@ public class ThreadThermalAction extends ThreadDataChange
                         //Add to set
                         spreadDirections.add(direction);
 
-                        //Increase heat spread ratio
-                        heatRateTotal += ThermalHandler.getHeatTransferRate(world, new BlockPos(x, y, z));
+                        //Get block
+                        IBlockState nextBlock = world.getBlockState(new BlockPos(x, y, z)); //TODO use mutable pos
+
+                        if (blockState.getMaterial() == Material.WATER && nextBlock.getMaterial() == Material.WATER)
+                        {
+                            heatRateTotal += 10;
+                        }
+                        else
+                        {
+                            //Increase heat spread ratio
+                            heatRateTotal += ThermalHandler.getHeatTransferRate(world, new BlockPos(x, y, z)); //TODO use mutable pos
+                        }
                     }
                 }
 
