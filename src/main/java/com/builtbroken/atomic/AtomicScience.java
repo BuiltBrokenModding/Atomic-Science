@@ -18,12 +18,11 @@ import com.builtbroken.atomic.lib.MassHandler;
 import com.builtbroken.atomic.lib.placement.PlacementQueue;
 import com.builtbroken.atomic.lib.radiation.RadiationHandler;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
-import com.builtbroken.atomic.lib.transform.vector.Location;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
-import com.builtbroken.atomic.map.exposure.node.RadiationSource;
+import com.builtbroken.atomic.map.exposure.node.RadSourceMap;
 import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
-import com.builtbroken.atomic.map.thermal.node.ThermalSource;
+import com.builtbroken.atomic.map.thermal.node.ThermalSourceMap;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.proxy.Mods;
 import com.builtbroken.atomic.proxy.ProxyLoader;
@@ -37,7 +36,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.World;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -49,7 +48,13 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.LogManager;
@@ -60,8 +65,8 @@ import java.io.File;
 
 /**
  * Main mod class, handles references and registry calls
- *
- *
+ * <p>
+ * <p>
  * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
 @Mod(modid = AtomicScience.DOMAIN, name = "Atomic Science", version = AtomicScience.VERSION, dependencies = AtomicScience.DEPENDENCIES)
@@ -198,38 +203,7 @@ public class AtomicScience
 
                     }
                 },
-                () -> new RadiationSource<Location>(null)
-                {
-                    @Override
-                    public double x()
-                    {
-                        return host != null ? host.x() : 0;
-                    }
-
-                    @Override
-                    public double y()
-                    {
-                        return host != null ? host.y() : 0;
-                    }
-
-                    @Override
-                    public double z()
-                    {
-                        return host != null ? host.z() : 0;
-                    }
-
-                    @Override
-                    public World world()
-                    {
-                        return host != null ? host.world() : null;
-                    }
-
-                    @Override
-                    public int getRadioactiveMaterial()
-                    {
-                        return 0;
-                    }
-                });
+                () -> new RadSourceMap(0, BlockPos.ORIGIN, 0));
 
         CapabilityManager.INSTANCE.register(IThermalSource.class, new Capability.IStorage<IThermalSource>()
                 {
@@ -246,38 +220,7 @@ public class AtomicScience
 
                     }
                 },
-                () -> new ThermalSource<Location>(null)
-                {
-                    @Override
-                    public double x()
-                    {
-                        return host != null ? host.x() : 0;
-                    }
-
-                    @Override
-                    public double y()
-                    {
-                        return host != null ? host.y() : 0;
-                    }
-
-                    @Override
-                    public double z()
-                    {
-                        return host != null ? host.z() : 0;
-                    }
-
-                    @Override
-                    public World world()
-                    {
-                        return host != null ? host.world() : null;
-                    }
-
-                    @Override
-                    public int getHeatGenerated()
-                    {
-                        return 0;
-                    }
-                });
+                () -> new ThermalSourceMap(0, BlockPos.ORIGIN, 0));
 
         CapabilityManager.INSTANCE.register(IRadiationResistant.class, new Capability.IStorage<IRadiationResistant>()
                 {

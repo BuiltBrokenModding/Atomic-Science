@@ -1,23 +1,24 @@
-package com.builtbroken.atomic.map.exposure.node;
+package com.builtbroken.atomic.map.thermal.node;
 
 import com.builtbroken.atomic.map.MapHandler;
+import com.builtbroken.atomic.map.exposure.node.RadiationSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
 /**
- * Radiation source taken from the map itself
+ * Thermal source taken from the map itself
  *
  *
- * Created by Dark(DarkGuardsman, Robert) on 9/21/2018.
+ * Created by Dark(DarkGuardsman, Robert) on 7/5/2019.
  */
-public class RadSourceMap extends RadiationSource<BlockPos>
+public class ThermalSourceMap extends ThermalSource<BlockPos>
 {
     private int value;
     private int dim;
     private BlockPos pos;
 
-    public RadSourceMap(int dim, BlockPos host, int value) //TODO apply flywheel pattern
+    public ThermalSourceMap(int dim, BlockPos host, int value) //TODO apply flywheel pattern
     {
         this.pos = host;
         this.dim = dim;
@@ -25,7 +26,7 @@ public class RadSourceMap extends RadiationSource<BlockPos>
     }
 
     @Override
-    public int getRadioactiveMaterial()
+    public int getHeatGenerated()
     {
         return value;
     }

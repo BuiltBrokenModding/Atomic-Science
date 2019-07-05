@@ -20,13 +20,13 @@ public class RadSourcePlayer extends RadSourceEntity<EntityPlayer>
     @Override
     public int getRadioactiveMaterial()
     {
-        if (host.isEntityAlive())
+        if (getHost().isEntityAlive())
         {
             int rad = 0;
 
-            for (int slot = 0; slot < host.inventory.getSizeInventory(); slot++)
+            for (int slot = 0; slot < getHost().inventory.getSizeInventory(); slot++)
             {
-                ItemStack slotStack = host.inventory.getStackInSlot(slot);
+                ItemStack slotStack = getHost().inventory.getStackInSlot(slot);
                 if (slotStack != null)
                 {
                     rad += RadItemHandler.getRadiationForItem(slotStack);
