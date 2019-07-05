@@ -14,11 +14,6 @@ public abstract class RadiationSource<E> extends MapNodeSource<E, IRadiationNode
 {
     public static final String NBT_RAD = "rad";
 
-    public RadiationSource(E host)
-    {
-        super(host);
-    }
-
     @Override
     public boolean isRadioactive()
     {

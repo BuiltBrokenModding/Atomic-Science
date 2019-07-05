@@ -386,11 +386,23 @@ public class TileEntityReactorCell extends TileEntityInventoryMachine<IItemHandl
     public void invalidate()
     {
         super.invalidate();
-        if (isServer())
-        {
-            MapDataSources.removeSource(getRadiationSource());
-            MapDataSources.removeSource(getHeatSource());
-        }
+        MapDataSources.removeSource(getRadiationSource());
+        MapDataSources.removeSource(getHeatSource());
+    }
+
+    @Override
+    public void onChunkUnload()
+    {
+        resetSources();
+    }
+
+    public void resetSources()
+    {
+        getRadiationSource().disconnectMapData();
+        getRadiationSource().clearMapData();
+
+        getHeatSource().disconnectMapData();
+        getHeatSource().clearMapData();
     }
 
     //-----------------------------------------------

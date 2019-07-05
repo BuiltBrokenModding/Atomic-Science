@@ -18,15 +18,9 @@ import java.util.Map;
  */
 public abstract class MapNodeSource<E, N extends IDataMapNode> implements IDataMapSource
 {
-    public E host;
     public HashMap<BlockPos, N> nodes;
 
     private boolean connected = false;
-
-    public MapNodeSource(E host)
-    {
-        this.host = host;
-    }
 
     public HashMap<BlockPos, N> getCurrentNodes()
     {
@@ -136,7 +130,7 @@ public abstract class MapNodeSource<E, N extends IDataMapNode> implements IDataM
     @Override
     public String toString()
     {
-        return getDebugName() + "[H: " + host + ", " +
+        return getDebugName() + "[H: " + getHost() + ", " +
                 "N: " + getNodeCount() + ", " +
                 "D: " + dim() + ", " +
                 "P: (" + xi() + ", " + yi() + ", " + zi() + ")," +
@@ -152,4 +146,6 @@ public abstract class MapNodeSource<E, N extends IDataMapNode> implements IDataM
     }
 
     protected abstract String getDebugName();
+
+    public abstract E getHost();
 }

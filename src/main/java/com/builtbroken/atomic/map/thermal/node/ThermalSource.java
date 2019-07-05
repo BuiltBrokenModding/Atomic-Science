@@ -14,11 +14,6 @@ public abstract class ThermalSource<E> extends MapNodeSource<E, IThermalNode> im
 {
     public static final String NBT_HEAT = "heat";
 
-    protected ThermalSource(E host)
-    {
-        super(host);
-    }
-
     @Override
     public boolean canGeneratingHeat()
     {

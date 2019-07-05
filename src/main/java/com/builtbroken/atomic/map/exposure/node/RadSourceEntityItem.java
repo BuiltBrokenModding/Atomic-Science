@@ -21,7 +21,7 @@ public class RadSourceEntityItem extends RadSourceEntity<EntityItem>
     @Override
     public int getRadioactiveMaterial()
     {
-        return RadItemHandler.getRadiationForItem(host.getItem());
+        return RadItemHandler.getRadiationForItem(getHost().getItem());
     }
 
     public static RadSourceEntityItem build(EntityItem entityItem)
