@@ -10,5 +10,5 @@ import net.minecraft.world.World;
 @FunctionalInterface
 public interface VaporCalculation
 {
-    int calculateVapor(World world, BlockPos pos, IBlockState state, double temp);
+    int calculateVapor(World world, BlockPos pos, IBlockState state, int heat);
 }

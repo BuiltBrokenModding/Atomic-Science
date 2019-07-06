@@ -24,6 +24,11 @@ public class DataPos implements IPos3D
         this.z = z;
     }
 
+    public static DataPos get(DataPos pos)
+    {
+        return get(pos.xi(), pos.yi(), pos.zi());
+    }
+
     public static DataPos get(DataPos pos, EnumFacing direction)
     {
         int i = pos.x + direction.getXOffset();

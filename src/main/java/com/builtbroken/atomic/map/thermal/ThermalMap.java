@@ -5,8 +5,6 @@ import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.api.thermal.IThermalSystem;
 import com.builtbroken.atomic.config.server.ConfigServer;
-import com.builtbroken.atomic.lib.MassHandler;
-import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.lib.vapor.VaporHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.events.MapSystemEvent;
@@ -33,111 +31,10 @@ public class ThermalMap implements IThermalSystem
 {
     private HashMap<Integer, HashSet<BlockPos>> steamSources = new HashMap();
 
-    /**
-     * Called to fire a source change event
-     *
-     * @param source
-     * @param newValue
-     */
-    protected void updateSourceValue(IThermalSource source, int newValue)
-    {
-        if (AtomicScience.runningAsDev)
-        {
-            AtomicScience.logger.info("ThermalMap: on changed " + source);
-        }
-
-    }
-
-    /**
-     * Energy in joules
-     *
-     * @param world
-     * @param pos   - location
-     * @return
-     */
-    public long getJoules(World world, BlockPos pos)
-    {
-        return getStoredValue(world, pos) * 1000L; //Map stores heat in kilo-joules
-    }
-
-    public int getStoredValue(World world, BlockPos pos)
+    public int getStoredHeat(World world, BlockPos pos)
     {
         return DataMapType.THERMAL.getValue(MapHandler.GLOBAL_DATA_MAP.getData(world, pos));
     }
-
-    public long getActualJoules(World world, BlockPos pos)
-    {
-        return getJoules(world, pos) + getEnvironmentalJoules(world, pos);
-    }
-
-    /**
-     * Gets the temperature of the block at the location
-     * <p>
-     * Uses the properties of the block to calculate the value from
-     * the heat + environmental values.
-     *
-     * @param world - map to pull data from
-     * @param pos   - location
-     * @return temperature in Kelvin
-     */
-    public double getTemperature(World world, BlockPos pos)
-    {
-        return getTemperature(world, pos, getActualJoules(world, pos));
-    }
-
-    /**
-     * Gets the temperature of the block at the location
-     * <p>
-     * Uses the properties of the block to calculate the value from
-     * the heat + environmental values.
-     *
-     * @param world  - map to pull data from
-     * @param pos    - location
-     * @param joules - heat energy
-     * @return temperature in Kelvin
-     */
-    public double getTemperature(World world, BlockPos pos, double joules)
-    {
-        return joules / (MassHandler.getMass(world, pos) * ThermalHandler.getSpecificHeat(world, pos) * 1000);
-    }
-
-    /**
-     * Gets the different in temperature between two locations
-     *
-     * @param world - map to pull data from
-     * @param pos   - location
-     * @param pos2  - location2
-     * @return temperature in Kelvin
-     */
-    public double getTemperatureDelta(World world, BlockPos pos, BlockPos pos2)
-    {
-        return getTemperature(world, pos) - getTemperature(world, pos2);
-    }
-
-    /**
-     * Gets the amount of heat energy naturally present in the block due to environmental values
-     *
-     * @param world - location
-     * @param pos   - location
-     * @return energy in joules
-     */
-    public long getEnvironmentalJoules(World world, BlockPos pos)
-    {
-        return ((long) Math.floor(getEnvironmentalTemperature(world, pos) * MassHandler.getMass(world, pos) * ThermalHandler.getSpecificHeat(world, pos))) * 1000L; //x1000 for kj -> j
-    }
-
-    /**
-     * Gets the natural resting temperature of the environment
-     *
-     * @param world - location
-     * @param pos   - location
-     * @return temperature in kelvin
-     */
-    public double getEnvironmentalTemperature(World world, BlockPos pos)
-    {
-        return 290; //Slightly under room temp
-    }
-
 
     public void onWorldUnload(World world)
     {
@@ -159,12 +56,13 @@ public class ThermalMap implements IThermalSystem
     {
         if (!event.getWorld().isRemote)
         {
-            checkForThermalChange(event.getWorld(), event.getPos(), getStoredValue(event.getWorld(), event.getPos()));
+            checkForThermalChange(event.getWorld(), event.getPos(), getStoredHeat(event.getWorld(), event.getPos()));
         }
     }
 
     protected void checkForThermalChange(World world, BlockPos pos, int heat)
     {
+        /*
         if (ThermalHandler.canChangeStates(world, pos))
         {
             long joules = heat * 1000L + getEnvironmentalJoules(world, pos); //x1000 for kj -> j
@@ -173,8 +71,9 @@ public class ThermalMap implements IThermalSystem
                 ThermalHandler.changeStates(world, pos);
             }
         }
+        */
 
-        int vap = VaporHandler.getVaporRate(world, pos, heat * 1000 + getEnvironmentalJoules(world, pos));
+        int vap = VaporHandler.getVaporRate(world, pos, heat);
 
         final int dim = world.provider.getDimension();
         if (!steamSources.containsKey(dim))

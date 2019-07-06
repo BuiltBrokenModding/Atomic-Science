@@ -2,13 +2,14 @@ package com.builtbroken.atomic.map.data;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.map.data.storage.DataChunk;
+import com.builtbroken.jlib.data.vector.IPos3D;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Generic thread used for calculating actions based on data changes in the main game world.
- *
- *
+ * <p>
+ * <p>
  * Created by Dark(DarkGuardsman, Robert) on 4/28/2018.
  */
 public abstract class ThreadDataChange extends Thread
@@ -133,18 +134,16 @@ public abstract class ThreadDataChange extends Thread
     /**
      * Single box shaped range check
      *
-     * @param x-    center point
-     * @param y-    center point
-     * @param z-    center point
-     * @param i     - point
-     * @param j     - point
-     * @param k     - point
-     * @param range - distance
+     * @param center - center to range from
+     * @param i      - point
+     * @param j      - point
+     * @param k      - point
+     * @param range  - distance
      * @return true if in range of center point
      */
-    protected boolean inRange(int x, int y, int z, int i, int j, int k, int range)
+    protected boolean inRange(IPos3D center, int i, int j, int k, int range)
     {
-        return inRange(x, i, range) && inRange(y, j, range) && inRange(z, k, range);
+        return inRange(center.xi(), i, range) && inRange(center.yi(), j, range) && inRange(center.zi(), k, range);
     }
 
     /**

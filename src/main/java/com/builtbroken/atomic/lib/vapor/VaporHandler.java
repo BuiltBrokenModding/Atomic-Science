@@ -7,14 +7,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
-import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 
 /**
@@ -24,15 +22,15 @@ import java.util.function.IntSupplier;
  */
 public class VaporHandler
 {
-    public static final int WATER_BOIL_TEMP = 375;
+    public static final int WATER_HEAT_MIN = 100;
 
     private static final HashMap<Block, IVaporData> vaporDataMap = new HashMap();
     private static final HashMap<Block, IVaporPathData> vaporPathMap = new HashMap();
 
     static
     {
-        setVaporData(Blocks.FLOWING_WATER, () -> WATER_BOIL_TEMP, () -> ConfigLogic.STEAM.WATER_FLOWING_VAPOR_RATE, () -> ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE);
-        setVaporData(Blocks.WATER, () -> WATER_BOIL_TEMP, () -> ConfigLogic.STEAM.WATER_VAPOR_RATE, () -> ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE);
+        setVaporData(Blocks.FLOWING_WATER, () -> WATER_HEAT_MIN, () -> ConfigLogic.STEAM.WATER_FLOWING_VAPOR_RATE, () -> ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE);
+        setVaporData(Blocks.WATER, () -> WATER_HEAT_MIN, () -> ConfigLogic.STEAM.WATER_VAPOR_RATE, () -> ConfigLogic.STEAM.WATER_VAPOR_MAX_RATE);
 
         allowVaporThrough(Blocks.TRAPDOOR);
         allowVaporThrough(Blocks.IRON_BARS);
@@ -41,16 +39,16 @@ public class VaporHandler
     /**
      * Called to add simple vapor data for a block
      *
-     * @param block             - block to specify for and all its subtypes
-     * @param temperatureKelvin - minimal temperature before vapor is generated at a noticeable rate
-     * @param vaporMin          - smallest amount of vapor to produce
-     * @param vaporMax          - largest amount of vapor to produce
+     * @param block    - block to specify for and all its subtypes
+     * @param minHeat  - minimal heat before vapor is generated at a noticeable rate
+     * @param vaporMin - smallest amount of vapor to produce
+     * @param vaporMax - largest amount of vapor to produce
      */
-    public static void setVaporData(Block block, DoubleSupplier temperatureKelvin, IntSupplier vaporMin, IntSupplier vaporMax)
+    public static void setVaporData(Block block, IntSupplier minHeat, IntSupplier vaporMin, IntSupplier vaporMax)
     {
         if (!vaporDataMap.containsKey(block))
         {
-            vaporDataMap.put(block, new VaporData(temperatureKelvin, vaporMin, vaporMax));
+            vaporDataMap.put(block, new VaporData(minHeat, vaporMin, vaporMax));
         }
         else
         {
@@ -80,7 +78,7 @@ public class VaporHandler
      */
     public static int getVaporRate(World world, BlockPos pos)
     {
-        return getVaporRate(world, pos, MapHandler.THERMAL_MAP.getActualJoules(world, pos));
+        return getVaporRate(world, pos, MapHandler.THERMAL_MAP.getStoredHeat(world, pos));
     }
 
     /**
@@ -90,14 +88,13 @@ public class VaporHandler
      * @param pos   - location
      * @return vapor in mb
      */
-    public static int getVaporRate(World world, BlockPos pos, long heat)
+    public static int getVaporRate(World world, BlockPos pos, int heat)
     {
         final IBlockState blockState = world.getBlockState(pos);
         final Block block = blockState.getBlock();
-        final double temperature = MapHandler.THERMAL_MAP.getTemperature(world, pos, heat);
         if (vaporDataMap.containsKey(block))
         {
-            return vaporDataMap.get(block).getVapor(world, pos, blockState, temperature);
+            return vaporDataMap.get(block).getVapor(world, pos, blockState, heat);
         }
         return 0;
     }

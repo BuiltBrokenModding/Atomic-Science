@@ -6,7 +6,7 @@ import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.map.exposure.RadiationMap;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThermalMap;
-import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
+import com.builtbroken.atomic.map.thermal.thread.ThreadThermalAction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;

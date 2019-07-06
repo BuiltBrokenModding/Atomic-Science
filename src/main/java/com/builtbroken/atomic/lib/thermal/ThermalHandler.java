@@ -32,12 +32,21 @@ public class ThermalHandler
 
     public static void init()
     {
-
+        setHeatMoveRate(Blocks.IRON_BLOCK, 10);
     }
 
-    public void setHeatMoveRate(Block block, float rate)
+    public static void setHeatMoveRate(Block block, float rate)
     {
         heatSpreadRate.put(block, (self, target) -> rate);
+    }
+
+    public static float getHeatMoveRate(IBlockState self, IBlockState target)
+    {
+        if(heatSpreadRate.containsKey(self.getBlock()))
+        {
+            return heatSpreadRate.get(self.getBlock()).getSpreadRate(self, target);
+        }
+        return 1;
     }
 
     /**

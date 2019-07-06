@@ -15,8 +15,8 @@ import net.minecraft.world.World;
 
 /**
  * Simple accessor of data in the map
- *
- *
+ * <p>
+ * <p>
  * Created by Dark(DarkGuardsman, Robert) on 5/14/2018.
  */
 public class ItemHeatProbe extends ItemPrefab
@@ -34,27 +34,23 @@ public class ItemHeatProbe extends ItemPrefab
     {
         if (!world.isRemote)
         {
+            BlockPos self = pos;
+            BlockPos target = pos;
             if (player.isSneaking())
             {
-                pos = pos.add(facing.getDirectionVec());
+                target = pos.offset(facing);
             }
-            double heat = MapHandler.THERMAL_MAP.getJoules(world, pos);
-            double env = MapHandler.THERMAL_MAP.getEnvironmentalJoules(world, pos);
-            double temp = MapHandler.THERMAL_MAP.getTemperature(world, pos);
-            //double heatDelta = temp - 300; //Difference from room temp
 
-            int tempDisplay = (int) Math.floor(temp);
+            //Display Heat
+            int heat = MapHandler.THERMAL_MAP.getStoredHeat(world, target);
+            player.sendMessage(new TextComponentString("Heat: " + formatTemp(heat)));
 
-            player.sendMessage(new TextComponentString("Heat: " + formatTemp(heat)
-                            + " + " + formatTemp(env)
-                            + "  Temp: " + tempDisplay + "k"
-                            + "  HTM: " + formatTemp(heat + env)
-                            + "/"
-                            + formatTemp(ThermalHandler.energyCostToChangeStates(world, pos))
-                    )
-            );
+            //Heat movement rate
+            float transferRate = ThermalHandler.getHeatMoveRate(world.getBlockState(self), world.getBlockState(target));
+            player.sendMessage(new TextComponentString(String.format("Transfer Rate: %.2f" + transferRate)));
 
-            int vap = VaporHandler.getVaporRate(world, pos);
+            //Display Vapor rate
+            int vap = VaporHandler.getVaporRate(world, target);
             player.sendMessage(new TextComponentString("Vap: " + vap));
 
         }

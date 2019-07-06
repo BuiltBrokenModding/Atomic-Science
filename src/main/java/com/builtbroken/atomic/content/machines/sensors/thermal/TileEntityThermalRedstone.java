@@ -40,7 +40,7 @@ public class TileEntityThermalRedstone extends TileEntityPrefab implements IGuiT
     @Override
     public void onLoad()
     {
-        updateRedstoneState(world.getBlockState(getPos()), MapHandler.THERMAL_MAP.getStoredValue(world, getPos()));
+        updateRedstoneState(world.getBlockState(getPos()), MapHandler.THERMAL_MAP.getStoredHeat(world, getPos()));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class TileEntityThermalRedstone extends TileEntityPrefab implements IGuiT
                     maxHeatTrigger = buf.readInt();
 
                     //TODO send to event queue to prevent packet spawn updating block
-                    int heat = MapHandler.THERMAL_MAP.getStoredValue(world, getPos());
+                    int heat = MapHandler.THERMAL_MAP.getStoredHeat(world, getPos());
                     updateRedstoneState(world.getBlockState(getPos()), heat);
                     sendGuiPacket();
 
@@ -66,7 +66,7 @@ public class TileEntityThermalRedstone extends TileEntityPrefab implements IGuiT
                 }
                 else if(id == GET_HEAT_PACKET_ID)
                 {
-                    int heat = MapHandler.THERMAL_MAP.getStoredValue(world, getPos());
+                    int heat = MapHandler.THERMAL_MAP.getStoredHeat(world, getPos());
                     PacketSystem.INSTANCE.sendToPlayer(new PacketTile("heat_send", GET_HEAT_PACKET_ID, this).addData(heat), player);
                     return true;
                 }

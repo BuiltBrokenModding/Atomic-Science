@@ -21,7 +21,7 @@ import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
 import com.builtbroken.atomic.map.exposure.node.RadSourceMap;
-import com.builtbroken.atomic.map.thermal.ThreadThermalAction;
+import com.builtbroken.atomic.map.thermal.thread.ThreadThermalAction;
 import com.builtbroken.atomic.map.thermal.node.ThermalSourceMap;
 import com.builtbroken.atomic.network.netty.PacketSystem;
 import com.builtbroken.atomic.proxy.Mods;

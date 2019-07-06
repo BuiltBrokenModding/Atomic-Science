@@ -21,10 +21,10 @@ public interface IVaporData
      * @param world
      * @param pos
      * @param state
-     * @param temperature
+     * @param heat
      * @return
      */
-    int getVapor(World world, BlockPos pos, IBlockState state, double temperature);
+    int getVapor(World world, BlockPos pos, IBlockState state, int heat);
 
     /**
      * Smallest amount of vapor for the block
@@ -47,14 +47,14 @@ public interface IVaporData
     int getMax(World world, BlockPos pos, IBlockState state);
 
     /**
-     * Minimal temperature to start producing noticeable amounts of vapor
+     * Minimal heat units require to start vaporizing
      *
      * @param world
      * @param pos
      * @param state
      * @return
      */
-    double getTemperature(World world, BlockPos pos, IBlockState state);
+    int getHeatRequired(World world, BlockPos pos, IBlockState state);
 
     /**
      * Can the block's subtype be supported as a producer of vapor.
