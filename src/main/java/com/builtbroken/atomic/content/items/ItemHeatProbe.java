@@ -46,8 +46,8 @@ public class ItemHeatProbe extends ItemPrefab
             player.sendMessage(new TextComponentString("Heat: " + formatTemp(heat)));
 
             //Heat movement rate
-            float transferRate = ThermalHandler.getHeatMoveRate(world.getBlockState(self), world.getBlockState(target));
-            player.sendMessage(new TextComponentString(String.format("Transfer Rate: %.2f" + transferRate)));
+            float transferRate = ThermalHandler.getHeatMoveWeight(world.getBlockState(self), world.getBlockState(target));
+            player.sendMessage(new TextComponentString(String.format("Transfer Rate: %.2f", transferRate)));
 
             //Display Vapor rate
             int vap = VaporHandler.getVaporRate(world, target);

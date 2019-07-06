@@ -223,13 +223,12 @@ public class ThreadThermalAction extends ThreadDataChange
         final Queue<HeatSpreadDirection> spreadDirections = new LinkedList();
 
         //Total heat transfer ratio, used to convert ratio to percentages when balancing heat flow
-        double heatRateTotal = calculateHeatSpread(thermalThreadData, currentPos, dir -> spreadDirections.add(dir));
-
+        int heatRateTotal = calculateHeatSpread(thermalThreadData, currentPos, dir -> spreadDirections.add(dir));
 
         final IBlockState centerBlock = thermalThreadData.world.getBlockState(new BlockPos(currentPos.xi(), currentPos.yi(), currentPos.zi()));
 
         //Only loop values we had within range
-        int heatAsPosition = (int) forEachHeatDirection(thermalThreadData.pos, currentPos, spreadDirections, (x, y, z, direction) ->
+        int heatAsPosition = forEachHeatDirection(thermalThreadData.pos, currentPos, spreadDirections, (x, y, z, direction) ->
         {
             final DataPos pos = DataPos.get(
                     currentPos.x + direction.offsetX,
@@ -258,10 +257,10 @@ public class ThreadThermalAction extends ThreadDataChange
                     IBlockState nextBlock = thermalThreadData.world.getBlockState(next); //TODO use mutable pos
 
                     //Calculate spread ratio from direction
-                    double transferRate = ThermalHandler.getHeatMoveRate(nextBlock, centerBlock);   //TODO recycle block pos
+                    double transferRate = ThermalHandler.getHeatMoveWeight(nextBlock, centerBlock);   //TODO recycle block pos
 
                     //Convert ratio into percentage
-                    double percentage = (transferRate / heatRateTotal) * direction.percentage;
+                    double percentage = (transferRate / (float) heatRateTotal) * direction.percentage;
 
                     //Calculate heat to move to current position from direction
                     int heatMoved = (int) Math.floor(heatAtNext * percentage);
@@ -282,7 +281,7 @@ public class ThreadThermalAction extends ThreadDataChange
         return heatAsPosition;
     }
 
-    private float calculateHeatSpread(final ThermalThreadData thermalThreadData, final DataPos currentPos, final Consumer<HeatSpreadDirection> consumer)
+    private int calculateHeatSpread(final ThermalThreadData thermalThreadData, final DataPos currentPos, final Consumer<HeatSpreadDirection> consumer)
     {
         final IBlockState centerBlock = thermalThreadData.world.getBlockState(new BlockPos(currentPos.xi(), currentPos.yi(), currentPos.zi())); //TODO use mutable pos
         return forEachHeatDirection(thermalThreadData.pos, currentPos, DIRECTIONS, (x, y, z, dir) ->
@@ -297,15 +296,15 @@ public class ThreadThermalAction extends ThreadDataChange
                 consumer.accept(dir);
 
                 //Return heat transfer rate
-                return ThermalHandler.getHeatMoveRate(nextBlock, centerBlock);
+                return ThermalHandler.getHeatMoveWeight(nextBlock, centerBlock);
             }
             return 0;
         });
     }
 
-    private float forEachHeatDirection(final DataPos center, final DataPos currentPos, Iterable<HeatSpreadDirection> dirs, HeatDirConsumer directionConsumer)
+    private int forEachHeatDirection(final DataPos center, final DataPos currentPos, Iterable<HeatSpreadDirection> dirs, HeatDirConsumer directionConsumer)
     {
-        float value = 0;
+        int value = 0;
         for (HeatSpreadDirection direction : dirs)
         {
             //Check range to prevent infinite spread
@@ -322,6 +321,6 @@ public class ThreadThermalAction extends ThreadDataChange
 
     public interface HeatDirConsumer
     {
-        float accept(int x, int y, int z, HeatSpreadDirection direction);
+        int accept(int x, int y, int z, HeatSpreadDirection direction);
     }
 }

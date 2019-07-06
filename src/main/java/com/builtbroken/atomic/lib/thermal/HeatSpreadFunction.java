@@ -8,5 +8,5 @@ import net.minecraft.block.state.IBlockState;
 @FunctionalInterface
 public interface HeatSpreadFunction
 {
-    float getSpreadRate(IBlockState self, IBlockState target);
+    int getSpreadWeight(IBlockState self, IBlockState target);
 }
