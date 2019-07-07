@@ -23,16 +23,16 @@ public class ConfigReactor
 
     //To boil 1 block of water takes 1,562,379.05 KJ
     /** Heat output from fuel rod when active in a reactor */
-    @Config.Name("fuel_rod_heat")
+    @Config.Name("rod_fuel_heat")
     @Config.Comment("How much heat the fuel rod produces")
     @Config.LangKey("config.atomicscience:content.reactor.fuel.rod.heat.title")
-    @Config.RangeInt(min = 1)
-    public int HEAT_REACTOR_FUEL_ROD = 1562379 * 20;
+    @Config.RangeInt(min = 100)
+    public int HEAT_REACTOR_FUEL_ROD = 1000;
 
     /** Heat output from fuel rod when active in a reactor */
-    @Config.Name("breeder_rod_heat")
+    @Config.Name("rod_breeder_heat")
     @Config.Comment("How much heat the fuel rod produces")
     @Config.LangKey("config.atomicscience:content.reactor.breeder.rod.heat.title")
-    @Config.RangeInt(min = 1)
-    public int HEAT_REACTOR_BREEDER_ROD = 1562379 * 10;
+    @Config.RangeInt(min = 100)
+    public int HEAT_REACTOR_BREEDER_ROD = 500;
 }

@@ -3,7 +3,6 @@ package com.builtbroken.atomic.map.thermal.thread;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.thermal.IThermalNode;
 import com.builtbroken.atomic.api.thermal.IThermalSource;
-import com.builtbroken.atomic.lib.thermal.HeatSpreadDirection;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
@@ -18,14 +17,13 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -38,7 +36,7 @@ public class ThreadThermalAction extends ThreadDataChange
 {
     //Max range, hard coded until algs can be completed
     public static final int RANGE = 10;
-    public static final List<HeatSpreadDirection> DIRECTIONS = Lists.newArrayList(HeatSpreadDirection.values());
+    public static final List<EnumFacing> DIRECTIONS = Lists.newArrayList(EnumFacing.values());
 
     public ThreadThermalAction()
     {
@@ -75,10 +73,10 @@ public class ThreadThermalAction extends ThreadDataChange
                     source.disconnectMapData();
 
                     //Add new data, recycle old nodes to reduce memory churn
-                    for (Map.Entry<DataPos, DataPos> entry : thermalThreadData.getData().entrySet()) //TODO move this to source to give full control over data structure
+                    for (Map.Entry<DataPos, ThermalData> entry : thermalThreadData.getData().entrySet()) //TODO move this to source to give full control over data structure
                     {
                         final BlockPos pos = entry.getKey().disposeReturnBlockPos();
-                        final int value = entry.getValue().x - entry.getValue().y;
+                        final int value = entry.getValue().getHeatAndDispose(); //TODO cap to capacity
 
                         if (oldMap != null && oldMap.containsKey(pos))
                         {
@@ -133,10 +131,10 @@ public class ThreadThermalAction extends ThreadDataChange
      * estimating how much heat would be moved.
      *
      * @param thermalThreadData - data about the current thread job
-     * @param heat              - amount of heat to move
+     * @param heatTotal         - amount of heat to move
      * @return positions and changes (first pos is position, second is data (x -> heat, y -> heat used))
      */
-    protected void calculateHeatSpread(final ThermalThreadData thermalThreadData, final int heat)
+    protected void calculateHeatSpread(final ThermalThreadData thermalThreadData, final int heatTotal)
     {
         //TODO consider splitting over several threads
         //TODO map fluid(water, air, lava, etc) pockets to allow convection currents
@@ -144,62 +142,48 @@ public class ThreadThermalAction extends ThreadDataChange
 
 
         long time = System.nanoTime();
-        if (heat > 6)
+        if (heatTotal > 6)
         {
             //Track tiles to path
             final Queue<DataPos> currentPathQueue = new LinkedList();
             final List<DataPos> nextPathQueue = new LinkedList();
+            final Set<DataPos> hasPathed = new HashSet();
 
             //Add center point
-            thermalThreadData.setData(DataPos.get(thermalThreadData.pos), DataPos.get(heat, 0, 0));
-
-            //Add connected tiles
-            for (EnumFacing direction : EnumFacing.VALUES)
-            {
-                DataPos pos = DataPos.get(thermalThreadData.pos, direction);
-                currentPathQueue.add(pos);
-                thermalThreadData.setData(pos, DataPos.get(0, 0, 0));
-            }
-
-            //List of node to add to path queue after each loop
-            final ArrayList<DataPos> tempHold = new ArrayList(6);
+            thermalThreadData.setHeat(DataPos.get(thermalThreadData.pos), heatTotal);
+            currentPathQueue.add(DataPos.get(thermalThreadData.pos));
+            hasPathed.add(DataPos.get(thermalThreadData.pos));
 
             //Breadth first pathfinder
             while (!currentPathQueue.isEmpty() || !nextPathQueue.isEmpty())
             {
+                //Path next shell
                 if (currentPathQueue.isEmpty())
                 {
-                    Collections.sort(nextPathQueue, Comparator.comparingDouble(pos -> pos.distance(thermalThreadData.pos)));
                     currentPathQueue.addAll(nextPathQueue);
-
                     nextPathQueue.clear();
                 }
+
                 //Get next
-                final DataPos currentPos = currentPathQueue.poll();
+                final DataPos nextPathPos = currentPathQueue.poll();
 
-                //Calculate heat pushed from all sides & look for new tiles to path
-                int heatAsPosition = pathNext(thermalThreadData, currentPos, dataPos -> tempHold.add(dataPos));
+                //Calculate heat pushed from all sides and look for new tiles to path
+                pathNext(thermalThreadData, nextPathPos, (pos, heat) -> {
 
-                //Only add positions from temp if there is heat to move from current
-                if (heatAsPosition > 0)
-                {
-                    //Add to path queue
-                    nextPathQueue.addAll(tempHold);
+                    if (!thermalThreadData.hasData(pos) && !hasPathed.contains(pos))
+                    {
+                        nextPathQueue.add(DataPos.get(pos));
+                        hasPathed.add(DataPos.get(pos));
+                    }
+                    thermalThreadData.addHeat(pos, heat);
+                });
 
-                    //Add to map so we don't path over again and have init data to grab
-                    tempHold.forEach(e -> thermalThreadData.setData(e, DataPos.get(0, 0, 0)));
-                }
-                else
-                {
-                    //Recycle objects
-                    tempHold.forEach(e -> e.dispose());
-                }
-                //Clear for next run
-                tempHold.clear();
-
-                //Keep track of value
-                thermalThreadData.setHeat(currentPos, heatAsPosition);
+                //Recycle pathed position
+                nextPathPos.dispose();
             }
+
+            //Recycle all data
+            hasPathed.forEach(p -> p.dispose());
         }
 
         //Logging
@@ -208,7 +192,7 @@ public class ThreadThermalAction extends ThreadDataChange
             time = System.nanoTime() - time;
             AtomicScience.logger.info(String.format("%s: Spread heat %s | %s tiles | %s %s %s | in %s",
                     name,
-                    heat,
+                    heatTotal,
                     thermalThreadData.getData().size(),
                     thermalThreadData.pos.xi(),
                     thermalThreadData.pos.yi(),
@@ -217,71 +201,51 @@ public class ThreadThermalAction extends ThreadDataChange
         }
     }
 
-    private int pathNext(final ThermalThreadData thermalThreadData, final DataPos currentPos, Consumer<DataPos> tempHold)
+    private void pathNext(final ThermalThreadData thermalThreadData, final DataPos pushBlock, HeatPushCallback heatSetter)
     {
         //Find directions to spread heat and calculate max heat ratio
-        final Queue<HeatSpreadDirection> spreadDirections = new LinkedList();
+        final Queue<DataPos> spreadPositions = new LinkedList();
 
         //Total heat transfer ratio, used to convert ratio to percentages when balancing heat flow
-        int heatRateTotal = calculateHeatSpread(thermalThreadData, currentPos, dir -> spreadDirections.add(dir));
+        int heatRateTotal = calculateHeatSpread(thermalThreadData, pushBlock, pos -> spreadPositions.add(pos));
 
-        final IBlockState centerBlock = thermalThreadData.world.getBlockState(new BlockPos(currentPos.xi(), currentPos.yi(), currentPos.zi()));
+        //Block giving heat
+        final IBlockState giverBlock = thermalThreadData.world.getBlockState(pushBlock.getPos());
+
+        //Total heat to give
+        final int totalMovementHeat = thermalThreadData.getHeatToMove(pushBlock);
 
         //Only loop values we had within range
-        int heatAsPosition = forEachHeatDirection(thermalThreadData.pos, currentPos, spreadDirections, (x, y, z, direction) ->
+        for (DataPos pos : spreadPositions)
         {
-            final DataPos pos = DataPos.get(
-                    currentPos.x + direction.offsetX,
-                    currentPos.y + direction.offsetY,
-                    currentPos.z + direction.offsetZ);
-
-            //If we have no path position add to queue
-            if (!thermalThreadData.hasData(pos))
+            final BlockPos next = pos.getPos();
+            if (thermalThreadData.world.isBlockLoaded(next))
             {
-                //Only add if only sides, do not path corners. As it will result in low heat spread.
-                if (direction.ordinal() < 6)
-                {
-                    tempHold.accept(pos);
-                }
+                //Block receiving heat
+                final IBlockState receiverBlock = thermalThreadData.world.getBlockState(next); //TODO use mutable pos
+
+                //Amount of heat lost in the movement
+                final int heatLoss = ThermalHandler.getBlockLoss(giverBlock);
+
+                //Calculate spread ratio from direction
+                double transferRate = ThermalHandler.getHeatMoveWeight(giverBlock, receiverBlock);
+
+                //Convert ratio into percentage
+                double percentage = (transferRate / (float) heatRateTotal);
+
+                //Calculate heat to move to current position from direction
+                int heatMoved = Math.max(0, (int) Math.floor(totalMovementHeat * percentage) - heatLoss);
+
+                //Push heat
+                heatSetter.pushHeat(pos, heatMoved);
+
+                //Recycle
+                pos.dispose();
             }
-            //If we have data do heat movement
-            else
-            {
-                final BlockPos next = new BlockPos(x, y, z);
-                if (thermalThreadData.world.isBlockLoaded(next))
-                {
-                    //Get heat from direction
-                    final int heatAtNext = thermalThreadData.getHeat(pos);
-
-                    //Get block
-                    IBlockState nextBlock = thermalThreadData.world.getBlockState(next); //TODO use mutable pos
-
-                    //Calculate spread ratio from direction
-                    double transferRate = ThermalHandler.getHeatMoveWeight(nextBlock, centerBlock);   //TODO recycle block pos
-
-                    //Convert ratio into percentage
-                    double percentage = (transferRate / (float) heatRateTotal) * direction.percentage;
-
-                    //Calculate heat to move to current position from direction
-                    int heatMoved = (int) Math.floor(heatAtNext * percentage);
-
-                    //Update direction position with heat moved
-                    thermalThreadData.addHeatMoved(pos, heatMoved);
-
-                    //Recycle
-                    pos.dispose();
-
-                    //Increase heat at position
-                    return heatMoved;
-                }
-            }
-            return 0;
-        });
-
-        return heatAsPosition;
+        }
     }
 
-    private int calculateHeatSpread(final ThermalThreadData thermalThreadData, final DataPos currentPos, final Consumer<HeatSpreadDirection> consumer)
+    private int calculateHeatSpread(final ThermalThreadData thermalThreadData, final DataPos currentPos, final Consumer<DataPos> consumer)
     {
         final IBlockState centerBlock = thermalThreadData.world.getBlockState(new BlockPos(currentPos.xi(), currentPos.yi(), currentPos.zi())); //TODO use mutable pos
         return forEachHeatDirection(thermalThreadData.pos, currentPos, DIRECTIONS, (x, y, z, dir) ->
@@ -289,28 +253,35 @@ public class ThreadThermalAction extends ThreadDataChange
             final BlockPos next = new BlockPos(x, y, z);
             if (thermalThreadData.world.isBlockLoaded(next))
             {
-                //Get block
-                IBlockState nextBlock = thermalThreadData.world.getBlockState(next); //TODO use mutable pos
+                final DataPos pos = DataPos.get(x, y, z);
+                if (thermalThreadData.canReceive(pos))
+                {
+                    //Get block
+                    IBlockState heatGiverBlock = thermalThreadData.world.getBlockState(next); //TODO use mutable pos
 
-                //Add to set
-                consumer.accept(dir);
+                    //Add to set
+                    consumer.accept(pos);
 
-                //Return heat transfer rate
-                return ThermalHandler.getHeatMoveWeight(nextBlock, centerBlock);
+                    //Return heat transfer rate
+                    return ThermalHandler.getHeatMoveWeight(heatGiverBlock, centerBlock);
+                }
+
+                //Recycle unused
+                pos.dispose();
             }
             return 0;
         });
     }
 
-    private int forEachHeatDirection(final DataPos center, final DataPos currentPos, Iterable<HeatSpreadDirection> dirs, HeatDirConsumer directionConsumer)
+    private int forEachHeatDirection(final DataPos center, final DataPos currentPos, Iterable<EnumFacing> dirs, HeatDirConsumer directionConsumer)
     {
         int value = 0;
-        for (HeatSpreadDirection direction : dirs)
+        for (EnumFacing direction : dirs)
         {
             //Check range to prevent infinite spread
-            int x = currentPos.x + direction.offsetX;
-            int y = currentPos.y + direction.offsetY;
-            int z = currentPos.z + direction.offsetZ;
+            int x = currentPos.x + direction.getXOffset();
+            int y = currentPos.y + direction.getYOffset();
+            int z = currentPos.z + direction.getZOffset();
             if (inRange(center, x, y, z, RANGE) && y >= 0 && y < 256)
             {
                 value += directionConsumer.accept(x, y, z, direction);
@@ -321,6 +292,6 @@ public class ThreadThermalAction extends ThreadDataChange
 
     public interface HeatDirConsumer
     {
-        int accept(int x, int y, int z, HeatSpreadDirection direction);
+        int accept(int x, int y, int z, EnumFacing direction);
     }
 }

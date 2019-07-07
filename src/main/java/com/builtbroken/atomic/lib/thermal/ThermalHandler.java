@@ -4,8 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,18 +16,37 @@ public class ThermalHandler
 {
     private static final Map<Block, HeatSpreadFunction> blockHeatFunction = new HashMap();
 
+    //Heat weight is treated as a percentage of pressure. For each block contacting the surface heat
+    //  spread logic will calculate a total and then break it down into a precentage. So if you have two
+    //  blocks with 20 and 80. The total heat weight would be 100. The first block would get 20% and the second 80%.
+
+    //Weight of heat given for a material
     private static final Map<Material, IntSupplier> materialGiveRate = new HashMap();
+    //Weight of heat received for a material
     private static final Map<Material, IntSupplier> materialReceiveRate = new HashMap();
 
+    //Amount of heat the block can store
+    private static final Map<Material, IntSupplier> materialCapacity = new HashMap();
+    //Amount of heat lost transferring heat
+    private static final Map<Material, IntSupplier> materialLoss = new HashMap();
+
+    //Weight of heat given away
     private static final Map<Block, IntSupplier> blockGiveRate = new HashMap();
+    //Weight of heat received
     private static final Map<Block, IntSupplier> blockReceiveRate = new HashMap();
 
+    //Amount of heat the block can store
+    private static final Map<Block, IntSupplier> blockCapacity = new HashMap();
+    //Amount of heat lost transferring heat
+    private static final Map<Block, IntSupplier> blockLoss = new HashMap();
 
     public static void init()
     {
-        setHeatMoveRate(Blocks.IRON_BLOCK, 5000);
-        setHeatMoveRate(Blocks.WATER, 100, 1000);
-        setHeatMoveRate(Blocks.FLOWING_WATER, 100, 1000);
+        setHeatMoveRate(Material.IRON, 5000, 5000, 50, 2);
+
+        setHeatMoveRate(Blocks.GOLD_BLOCK, 8000, 8000, 200, 1);
+        setHeatMoveRate(Blocks.WATER, 100, 1000, 1000, 0);
+        setHeatMoveRate(Blocks.FLOWING_WATER, 100, 1000, 1000, 0);
         blockHeatFunction.put(Blocks.WATER, (self, target) -> {
             if (self.getMaterial() == target.getMaterial())
             {
@@ -46,29 +63,66 @@ public class ThermalHandler
         });
     }
 
-    public static void setHeatMoveRate(Block block, int heat)
-    {
-        setHeatMoveRate(block, heat, heat);
-    }
-
-    public static void setHeatMoveRate(Block block, int give, int receive)
+    public static void setHeatMoveRate(Block block, int give, int receive, int cap, int loss)
     {
         blockGiveRate.put(block, () -> give);
         blockReceiveRate.put(block, () -> receive);
+        blockCapacity.put(block, () -> cap);
+        blockLoss.put(block, () -> loss);
     }
 
-    public static int getHeatMoveWeight(IBlockState self, IBlockState target)
+    public static void setHeatMoveRate(Material material, int give, int receive, int cap, int loss)
     {
-        final Block selfBlock = self.getBlock();
+        materialGiveRate.put(material, () -> give);
+        materialReceiveRate.put(material, () -> receive);
+        materialCapacity.put(material, () -> cap);
+        materialLoss.put(material, () -> loss);
+    }
+
+    public static int getHeatMoveWeight(IBlockState giver, IBlockState receiver)
+    {
+        final Block selfBlock = giver.getBlock();
         if (blockHeatFunction.containsKey(selfBlock))
         {
-            int weight = blockHeatFunction.get(selfBlock).getSpreadWeight(self, target);
+            int weight = blockHeatFunction.get(selfBlock).getSpreadWeight(giver, receiver);
             if (weight >= 0)
             {
                 return weight;
             }
         }
-        return (int) Math.min(getBlockReceiveWeight(target), getBlockGiveWeight(self));
+        return (int) Math.min(getBlockReceiveWeight(receiver), getBlockGiveWeight(giver));
+    }
+
+    public static int getBlockLoss(IBlockState state)
+    {
+        final Block block = state.getBlock();
+        if (blockLoss.containsKey(block))
+        {
+            return blockLoss.get(block).getAsInt();
+        }
+
+        final Material material = state.getMaterial();
+        if (materialLoss.containsKey(material))
+        {
+            return materialLoss.get(material).getAsInt();
+        }
+        return 10;
+    }
+
+    public static int getBlockCapacity(IBlockState state)
+    {
+        final Block block = state.getBlock();
+        if (blockCapacity.containsKey(block))
+        {
+            return blockCapacity.get(block).getAsInt();
+        }
+
+        final Material material = state.getMaterial();
+        if (materialCapacity.containsKey(material))
+        {
+            return materialCapacity.get(material).getAsInt();
+        }
+        return 20;
     }
 
     public static int getBlockGiveWeight(IBlockState state)
@@ -100,33 +154,24 @@ public class ThermalHandler
         {
             return materialReceiveRate.get(material).getAsInt();
         }
-        return 1;
+        return 100;
     }
 
-    /**
-     * Can the block change states due to the thermal system
-     *
-     * @param world - location
-     * @param pos   - location
-     * @return true if it is possible to change states
-     */
-    public static boolean canChangeStates(World world, BlockPos pos)
+    public static void main(String... args)
     {
-        return false;
-    }
+        int[] heatRates = new int[]{100, 100, 1000, 1000, 5000, 5000};
+        int total = 12200;
 
-    public static void changeStates(World world, BlockPos pos)
-    {
-        /*
-        ThermalData data = getThermalData(world, pos);
-        if (data != null && data.blockFactory != null)
+        int heatToGive = 1000;
+
+        for (int i = 0; i < heatRates.length; i++)
         {
-            float mass = MassHandler.getMass(world, pos);
-            double stateChangeEnergy = data.energyToChangeStates(mass);
-            double energyToGetToChange = data.energyToGetToStateChange(mass);
-            PlacementQueue.queue(new ThermalPlacement(world, pos, data, (long) (stateChangeEnergy + energyToGetToChange)).delay(1 + (int) (Math.random() * 10)));
-        }
-        */
-    }
+            double per = heatRates[i] / (float) total;
 
+            int heat = (int) Math.floor(heatToGive * per);
+
+            System.out.printf("[%d] Rate: %d; Per: %.2f; Heat: %d\n", i, heatRates[i], per, heat);
+        }
+
+    }
 }

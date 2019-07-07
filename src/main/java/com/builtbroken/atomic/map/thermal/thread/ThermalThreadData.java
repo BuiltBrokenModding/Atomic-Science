@@ -17,7 +17,7 @@ public class ThermalThreadData implements IPosWorld
     public final int range;
 
     //Track data, also used to prevent looping same tiles (first pos is location, second stores data)
-    private final HashMap<DataPos, DataPos> heatSpreadData = new HashMap();
+    private final HashMap<DataPos, ThermalData> heatSpreadData = new HashMap();
 
     public ThermalThreadData(World world, int cx, int cy, int cz, int range)
     {
@@ -26,47 +26,53 @@ public class ThermalThreadData implements IPosWorld
         this.range = range;
     }
 
-    public void setData(DataPos pos, DataPos data)
-    {
-        heatSpreadData.put(pos, data);
-    }
-
     public boolean hasData(DataPos pos)
     {
         return heatSpreadData.containsKey(pos);
+    }
+
+    public boolean canReceive(DataPos pos)
+    {
+        if (heatSpreadData.containsKey(pos))
+        {
+            return !heatSpreadData.get(pos).hasPushedHeat();
+        }
+        return true;
+    }
+
+    public int getHeatToMove(DataPos pos)
+    {
+        if (heatSpreadData.containsKey(pos))
+        {
+            return heatSpreadData.get(pos).getHeatToPush();
+        }
+        return 0;
     }
 
     public int getHeat(DataPos currentPos)
     {
         if (heatSpreadData.containsKey(currentPos))
         {
-            return heatSpreadData.get(currentPos).x;
+            return heatSpreadData.get(currentPos).getHeat();
         }
         return 0;
     }
 
-    public void setHeat(DataPos currentPos, int heatAsPosition)
-    {
-        if (heatSpreadData.containsKey(currentPos))
-        {
-            heatSpreadData.get(currentPos).x = heatAsPosition;
-        }
-        else
-        {
-            setData(currentPos, DataPos.get(heatAsPosition, 0, 0));
-        }
-    }
-
-    public void addHeatMoved(DataPos pos, int heatMoved)
+    public void setHeat(DataPos pos, int heatAsPosition)
     {
         if (heatSpreadData.containsKey(pos))
         {
-            heatSpreadData.get(pos).y += heatMoved;
+            heatSpreadData.get(pos).setHeat(heatAsPosition);
         }
         else
         {
-            setData(pos, DataPos.get(0, heatMoved, 0));
+            heatSpreadData.put(DataPos.get(pos), ThermalData.get(heatAsPosition));
         }
+    }
+
+    public void addHeat(DataPos currentPos, int heatAsPosition)
+    {
+        setHeat(currentPos, getHeat(currentPos) + heatAsPosition);
     }
 
     @Override
@@ -111,7 +117,7 @@ public class ThermalThreadData implements IPosWorld
         return pos.y;
     }
 
-    public Map<DataPos, DataPos> getData()
+    public Map<DataPos, ThermalData> getData()
     {
         return heatSpreadData;
     }
