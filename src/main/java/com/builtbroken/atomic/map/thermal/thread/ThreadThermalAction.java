@@ -164,8 +164,8 @@ public class ThreadThermalAction extends ThreadDataChange
                     nextPathQueue.clear();
                 }
 
-                //Get next
-                final DataPos nextPathPos = currentPathQueue.poll();
+                //Get next and set to push heat
+                final DataPos nextPathPos = thermalThreadData.setToPush(currentPathQueue.poll());
 
                 //Calculate heat pushed from all sides and look for new tiles to path
                 pathNext(thermalThreadData, nextPathPos, (pos, heat) -> {
@@ -219,29 +219,27 @@ public class ThreadThermalAction extends ThreadDataChange
         for (DataPos pos : spreadPositions)
         {
             final BlockPos next = pos.getPos();
-            if (thermalThreadData.world.isBlockLoaded(next))
-            {
-                //Block receiving heat
-                final IBlockState receiverBlock = thermalThreadData.world.getBlockState(next); //TODO use mutable pos
 
-                //Amount of heat lost in the movement
-                final int heatLoss = ThermalHandler.getBlockLoss(giverBlock);
+            //Block receiving heat
+            final IBlockState receiverBlock = thermalThreadData.world.getBlockState(next); //TODO use mutable pos
 
-                //Calculate spread ratio from direction
-                double transferRate = ThermalHandler.getHeatMoveWeight(giverBlock, receiverBlock);
+            //Amount of heat lost in the movement
+            final int heatLoss = ThermalHandler.getBlockLoss(giverBlock);
 
-                //Convert ratio into percentage
-                double percentage = (transferRate / (float) heatRateTotal);
+            //Calculate spread ratio from direction
+            double transferRate = ThermalHandler.getHeatMoveWeight(giverBlock, receiverBlock);
 
-                //Calculate heat to move to current position from direction
-                int heatMoved = Math.max(0, (int) Math.floor(totalMovementHeat * percentage) - heatLoss);
+            //Convert ratio into percentage
+            double percentage = (transferRate / (float) heatRateTotal);
 
-                //Push heat
-                heatSetter.pushHeat(pos, heatMoved);
+            //Calculate heat to move to current position from direction
+            int heatMoved = Math.max(0, (int) Math.floor(totalMovementHeat * percentage) - heatLoss);
 
-                //Recycle
-                pos.dispose();
-            }
+            //Push heat
+            heatSetter.pushHeat(pos, heatMoved);
+
+            //Recycle
+            pos.dispose();
         }
     }
 

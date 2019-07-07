@@ -40,6 +40,15 @@ public class ThermalThreadData implements IPosWorld
         return true;
     }
 
+    public DataPos setToPush(DataPos nextPathPos)
+    {
+        if (heatSpreadData.containsKey(pos))
+        {
+            heatSpreadData.get(pos).setToPush();
+        }
+        return nextPathPos;
+    }
+
     public int getHeatToMove(DataPos pos)
     {
         if (heatSpreadData.containsKey(pos))

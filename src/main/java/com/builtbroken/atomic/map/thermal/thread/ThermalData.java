@@ -25,11 +25,11 @@ public class ThermalData
             if (data != null)
             {
                 data.heatToPush = -1;
-                data.heatValue = 0;
+                data.heatValue = heat;
                 return data;
             }
         }
-        return new ThermalData();
+        return new ThermalData().setHeat(heat);
     }
 
     public void setToPush()
