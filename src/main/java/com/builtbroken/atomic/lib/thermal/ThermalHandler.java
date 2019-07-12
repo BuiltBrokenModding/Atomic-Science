@@ -14,16 +14,12 @@ import java.util.function.IntSupplier;
  */
 public class ThermalHandler
 {
-    private static final Map<Block, HeatSpreadFunction> blockHeatFunction = new HashMap();
-
     //Heat weight is treated as a percentage of pressure. For each block contacting the surface heat
     //  spread logic will calculate a total and then break it down into a precentage. So if you have two
     //  blocks with 20 and 80. The total heat weight would be 100. The first block would get 20% and the second 80%.
 
     //Weight of heat given for a material
     private static final Map<Material, IntSupplier> materialGiveRate = new HashMap();
-    //Weight of heat received for a material
-    private static final Map<Material, IntSupplier> materialReceiveRate = new HashMap();
 
     //Amount of heat the block can store
     private static final Map<Material, IntSupplier> materialCapacity = new HashMap();
@@ -32,8 +28,6 @@ public class ThermalHandler
 
     //Weight of heat given away
     private static final Map<Block, IntSupplier> blockGiveRate = new HashMap();
-    //Weight of heat received
-    private static final Map<Block, IntSupplier> blockReceiveRate = new HashMap();
 
     //Amount of heat the block can store
     private static final Map<Block, IntSupplier> blockCapacity = new HashMap();
@@ -42,55 +36,31 @@ public class ThermalHandler
 
     public static void init()
     {
-        setHeatMoveRate(Material.IRON, 5000, 5000, 50, 2);
+        //Materials
+        setHeatMoveRate(Material.IRON, 5000, 50, 2);
 
-        setHeatMoveRate(Blocks.GOLD_BLOCK, 8000, 8000, 200, 1);
-        setHeatMoveRate(Blocks.WATER, 100, 1000, 1000, 0);
-        setHeatMoveRate(Blocks.FLOWING_WATER, 100, 1000, 1000, 0);
-        blockHeatFunction.put(Blocks.WATER, (self, target) -> {
-            if (self.getMaterial() == target.getMaterial())
-            {
-                return 1000;
-            }
-            return -1;
-        });
-        blockHeatFunction.put(Blocks.FLOWING_WATER, (self, target) -> {
-            if (self.getMaterial() == target.getMaterial())
-            {
-                return 1000;
-            }
-            return -1;
-        });
+        //Blocks
+        setHeatMoveRate(Blocks.GOLD_BLOCK, 8000, 200, 1);
+        setHeatMoveRate(Blocks.WATER, 100, 1000, 0);
+        setHeatMoveRate(Blocks.FLOWING_WATER, 100, 1000, 0);
+
+        //Inpassible
+        setHeatMoveRate(Blocks.BEDROCK, 0, 0, Integer.MAX_VALUE);
+        setHeatMoveRate(Blocks.BARRIER, 0, 0, Integer.MAX_VALUE);
     }
 
-    public static void setHeatMoveRate(Block block, int give, int receive, int cap, int loss)
+    public static void setHeatMoveRate(Block block, int give, int cap, int loss)
     {
         blockGiveRate.put(block, () -> give);
-        blockReceiveRate.put(block, () -> receive);
         blockCapacity.put(block, () -> cap);
         blockLoss.put(block, () -> loss);
     }
 
-    public static void setHeatMoveRate(Material material, int give, int receive, int cap, int loss)
+    public static void setHeatMoveRate(Material material, int give, int cap, int loss)
     {
         materialGiveRate.put(material, () -> give);
-        materialReceiveRate.put(material, () -> receive);
         materialCapacity.put(material, () -> cap);
         materialLoss.put(material, () -> loss);
-    }
-
-    public static int getHeatMoveWeight(IBlockState giver, IBlockState receiver)
-    {
-        final Block selfBlock = giver.getBlock();
-        if (blockHeatFunction.containsKey(selfBlock))
-        {
-            int weight = blockHeatFunction.get(selfBlock).getSpreadWeight(giver, receiver);
-            if (weight >= 0)
-            {
-                return weight;
-            }
-        }
-        return (int) Math.min(getBlockReceiveWeight(receiver), getBlockGiveWeight(giver));
     }
 
     public static int getBlockLoss(IBlockState state)
@@ -125,7 +95,7 @@ public class ThermalHandler
         return 20;
     }
 
-    public static int getBlockGiveWeight(IBlockState state)
+    public static int getHeatMovementWeight(IBlockState state)
     {
         final Block block = state.getBlock();
         if (blockGiveRate.containsKey(block))
@@ -137,22 +107,6 @@ public class ThermalHandler
         if (materialGiveRate.containsKey(material))
         {
             return materialGiveRate.get(material).getAsInt();
-        }
-        return 100;
-    }
-
-    public static float getBlockReceiveWeight(IBlockState state)
-    {
-        final Block block = state.getBlock();
-        if (blockReceiveRate.containsKey(block))
-        {
-            return blockReceiveRate.get(block).getAsInt();
-        }
-
-        final Material material = state.getMaterial();
-        if (materialReceiveRate.containsKey(material))
-        {
-            return materialReceiveRate.get(material).getAsInt();
         }
         return 100;
     }
