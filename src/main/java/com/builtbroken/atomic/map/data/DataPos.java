@@ -24,16 +24,16 @@ public class DataPos implements IPos3D
         this.z = z;
     }
 
-    public static DataPos get(DataPos pos)
+    public static DataPos get(IPos3D pos)
     {
         return get(pos.xi(), pos.yi(), pos.zi());
     }
 
-    public static DataPos get(DataPos pos, EnumFacing direction)
+    public static DataPos get(IPos3D pos, EnumFacing direction)
     {
-        int i = pos.x + direction.getXOffset();
-        int j = pos.y + direction.getYOffset();
-        int k = pos.z + direction.getZOffset();
+        int i = pos.xi() + direction.getXOffset();
+        int j = pos.yi() + direction.getYOffset();
+        int k = pos.zi() + direction.getZOffset();
         return get(i, j, k);
     }
 

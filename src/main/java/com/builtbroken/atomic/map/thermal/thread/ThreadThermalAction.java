@@ -8,6 +8,7 @@ import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
 import com.builtbroken.atomic.map.thermal.node.ThermalNode;
+import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.jlib.lang.StringHelpers;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
@@ -18,12 +19,10 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -149,8 +148,8 @@ public class ThreadThermalAction extends ThreadDataChange
             final List<DataPos> nextPathQueue = new LinkedList();
 
             //Add center point
-            thermalThreadData.setHeat(DataPos.get(thermalThreadData.pos), heatTotal);
-            currentPathQueue.add(DataPos.get(thermalThreadData.pos));
+            thermalThreadData.setHeat(DataPos.get(thermalThreadData), heatTotal);
+            currentPathQueue.add(DataPos.get(thermalThreadData));
 
             //Breadth first pathfinder
             while (!currentPathQueue.isEmpty() || !nextPathQueue.isEmpty())
@@ -167,12 +166,14 @@ public class ThreadThermalAction extends ThreadDataChange
 
                 //Calculate heat pushed from all sides and look for new tiles to path
                 pathNext(thermalThreadData, nextPathPos, (pos, heat) -> {
-
-                    if (!thermalThreadData.hasData(pos))
+                    if (heat > 0)
                     {
-                        nextPathQueue.add(DataPos.get(pos));
+                        if (!thermalThreadData.hasData(pos))
+                        {
+                            nextPathQueue.add(DataPos.get(pos));
+                        }
+                        thermalThreadData.addHeat(pos, heat);
                     }
-                    thermalThreadData.addHeat(pos, heat);
                 });
 
                 //Recycle pathed position
@@ -188,9 +189,9 @@ public class ThreadThermalAction extends ThreadDataChange
                     name,
                     heatTotal,
                     thermalThreadData.getData().size(),
-                    thermalThreadData.pos.xi(),
-                    thermalThreadData.pos.yi(),
-                    thermalThreadData.pos.zi(),
+                    thermalThreadData.xi(),
+                    thermalThreadData.yi(),
+                    thermalThreadData.zi(),
                     StringHelpers.formatNanoTime(time)));
         }
     }
@@ -239,7 +240,7 @@ public class ThreadThermalAction extends ThreadDataChange
 
     private int calculateHeatSpread(final ThermalThreadData thermalThreadData, final DataPos currentPos, final Consumer<DataPos> consumer)
     {
-        return forEachHeatDirection(thermalThreadData.pos, currentPos, DIRECTIONS, (x, y, z, dir) ->
+        return forEachHeatDirection(thermalThreadData, currentPos, DIRECTIONS, (x, y, z, dir) ->
         {
             final BlockPos next = new BlockPos(x, y, z);
             if (thermalThreadData.world.isBlockLoaded(next))
@@ -264,7 +265,7 @@ public class ThreadThermalAction extends ThreadDataChange
         });
     }
 
-    private int forEachHeatDirection(final DataPos center, final DataPos currentPos, Iterable<EnumFacing> dirs, HeatDirConsumer directionConsumer)
+    private int forEachHeatDirection(final IPos3D center, final DataPos currentPos, Iterable<EnumFacing> dirs, HeatDirConsumer directionConsumer)
     {
         int value = 0;
         for (EnumFacing direction : dirs)

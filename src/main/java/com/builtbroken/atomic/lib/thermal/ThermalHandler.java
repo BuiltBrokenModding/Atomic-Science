@@ -110,22 +110,4 @@ public class ThermalHandler
         }
         return 100;
     }
-
-    public static void main(String... args)
-    {
-        int[] heatRates = new int[]{100, 100, 1000, 1000, 5000, 5000};
-        int total = 12200;
-
-        int heatToGive = 1000;
-
-        for (int i = 0; i < heatRates.length; i++)
-        {
-            double per = heatRates[i] / (float) total;
-
-            int heat = (int) Math.floor(heatToGive * per);
-
-            System.out.printf("[%d] Rate: %d; Per: %.2f; Heat: %d\n", i, heatRates[i], per, heat);
-        }
-
-    }
 }

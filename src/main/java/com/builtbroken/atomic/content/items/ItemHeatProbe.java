@@ -34,23 +34,21 @@ public class ItemHeatProbe extends ItemPrefab
     {
         if (!world.isRemote)
         {
-            BlockPos self = pos;
-            BlockPos target = pos;
             if (player.isSneaking())
             {
-                target = pos.offset(facing);
+                pos = pos.offset(facing);
             }
 
             //Display Heat
-            int heat = MapHandler.THERMAL_MAP.getStoredHeat(world, target);
+            int heat = MapHandler.THERMAL_MAP.getStoredHeat(world, pos);
             player.sendMessage(new TextComponentString("Heat: " + formatTemp(heat)));
 
             //Heat movement rate
-            float transferRate = ThermalHandler.getHeatMoveWeight(world.getBlockState(self), world.getBlockState(target));
+            float transferRate = ThermalHandler.getHeatMovementWeight(world.getBlockState(pos));
             player.sendMessage(new TextComponentString(String.format("Transfer Rate: %.2f", transferRate)));
 
             //Display Vapor rate
-            int vap = VaporHandler.getVaporRate(world, target);
+            int vap = VaporHandler.getVaporRate(world, pos);
             player.sendMessage(new TextComponentString("Vap: " + vap));
 
         }

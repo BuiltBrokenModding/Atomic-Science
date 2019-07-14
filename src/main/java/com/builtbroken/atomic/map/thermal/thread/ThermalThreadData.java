@@ -13,7 +13,7 @@ import java.util.Map;
 public class ThermalThreadData implements IPosWorld
 {
     public final World world;
-    public final DataPos pos;
+    private final DataPos center;
     public final int range;
 
     //Track data, also used to prevent looping same tiles (first pos is location, second stores data)
@@ -22,7 +22,7 @@ public class ThermalThreadData implements IPosWorld
     public ThermalThreadData(World world, int cx, int cy, int cz, int range)
     {
         this.world = world;
-        this.pos = DataPos.get(cx, cy, cz);
+        this.center = DataPos.get(cx, cy, cz);
         this.range = range;
     }
 
@@ -40,13 +40,13 @@ public class ThermalThreadData implements IPosWorld
         return true;
     }
 
-    public DataPos setToPush(DataPos nextPathPos)
+    public DataPos setToPush(DataPos pos)
     {
         if (heatSpreadData.containsKey(pos))
         {
             heatSpreadData.get(pos).setToPush();
         }
-        return nextPathPos;
+        return pos;
     }
 
     public int getHeatToMove(DataPos pos)
@@ -93,37 +93,37 @@ public class ThermalThreadData implements IPosWorld
     @Override
     public double z()
     {
-        return pos.z;
+        return center.z;
     }
 
     @Override
     public double x()
     {
-        return pos.x;
+        return center.x;
     }
 
     @Override
     public double y()
     {
-        return pos.y;
+        return center.y;
     }
 
     @Override
     public int zi()
     {
-        return pos.z;
+        return center.z;
     }
 
     @Override
     public int xi()
     {
-        return pos.x;
+        return center.x;
     }
 
     @Override
     public int yi()
     {
-        return pos.y;
+        return center.y;
     }
 
     public Map<DataPos, ThermalData> getData()

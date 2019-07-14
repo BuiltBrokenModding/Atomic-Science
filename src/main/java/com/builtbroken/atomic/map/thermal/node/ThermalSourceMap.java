@@ -70,7 +70,7 @@ public class ThermalSourceMap extends ThermalSource<BlockPos>
     @Override
     public boolean isStillValid()
     {
-        return world() != null && world().isBlockLoaded(getHost()) && value == getType().getValue(MapHandler.GLOBAL_DATA_MAP.getData(world(), getHost()));
+        return world() != null && world().isBlockLoaded(getHost());
     }
 
     @Override
