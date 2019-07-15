@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.lib.thermal;
 
+import com.builtbroken.atomic.content.effects.effects.FloatSupplier;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -18,96 +19,88 @@ public class ThermalHandler
     //  spread logic will calculate a total and then break it down into a precentage. So if you have two
     //  blocks with 20 and 80. The total heat weight would be 100. The first block would get 20% and the second 80%.
 
-    //Weight of heat given for a material
-    private static final Map<Material, IntSupplier> materialGiveRate = new HashMap();
+    public static final BlockDataMap<FloatSupplier> heatMoveRate = new BlockDataMap<FloatSupplier>(() -> 0.05f);
+    public static final BlockDataMap<IntSupplier> heatCapacity = new BlockDataMap<IntSupplier>(() -> 100);
+    public static final BlockDataMap<IntSupplier> heatLossFlat = new BlockDataMap<IntSupplier>(() -> 10);
+    public static final BlockDataMap<FloatSupplier> heatLossPercentage = new BlockDataMap<FloatSupplier>(() -> 0f);
 
-    //Amount of heat the block can store
-    private static final Map<Material, IntSupplier> materialCapacity = new HashMap();
-    //Amount of heat lost transferring heat
-    private static final Map<Material, IntSupplier> materialLoss = new HashMap();
-
-    //Weight of heat given away
-    private static final Map<Block, IntSupplier> blockGiveRate = new HashMap();
-
-    //Amount of heat the block can store
-    private static final Map<Block, IntSupplier> blockCapacity = new HashMap();
-    //Amount of heat lost transferring heat
-    private static final Map<Block, IntSupplier> blockLoss = new HashMap();
 
     public static void init()
     {
         //Materials
-        setHeatMoveRate(Material.IRON, 5000, 50, 2);
+        setHeatMoveRate(Material.IRON, .40f, 400, 2);
 
         //Blocks
-        setHeatMoveRate(Blocks.GOLD_BLOCK, 8000, 200, 1);
-        setHeatMoveRate(Blocks.WATER, 100, 1000, 0);
-        setHeatMoveRate(Blocks.FLOWING_WATER, 100, 1000, 0);
+        setHeatMoveRate(Blocks.GOLD_BLOCK, .50f, 400, 1);
+        setHeatMoveRate(Blocks.WATER, .20f, 1000, 0);
+        setHeatMoveRate(Blocks.FLOWING_WATER, .20f, 1000, 0);
 
         //Inpassible
         setHeatMoveRate(Blocks.BEDROCK, 0, 0, Integer.MAX_VALUE);
         setHeatMoveRate(Blocks.BARRIER, 0, 0, Integer.MAX_VALUE);
     }
 
-    public static void setHeatMoveRate(Block block, int give, int cap, int loss)
+    public static void setHeatMoveRate(Block block, float give, int cap, int loss)
     {
-        blockGiveRate.put(block, () -> give);
-        blockCapacity.put(block, () -> cap);
-        blockLoss.put(block, () -> loss);
+        heatMoveRate.add(block, () -> give);
+        heatCapacity.add(block, () -> cap);
+        heatLossFlat.add(block, () -> loss);
     }
 
-    public static void setHeatMoveRate(Material material, int give, int cap, int loss)
+    public static void setHeatMoveRate(Material material, float give, int cap, int loss)
     {
-        materialGiveRate.put(material, () -> give);
-        materialCapacity.put(material, () -> cap);
-        materialLoss.put(material, () -> loss);
+        heatMoveRate.add(material, () -> give);
+        heatCapacity.add(material, () -> cap);
+        heatLossFlat.add(material, () -> loss);
     }
 
-    public static int getBlockLoss(IBlockState state)
+    public static int getHeatLost(IBlockState state, int heat)
     {
-        final Block block = state.getBlock();
-        if (blockLoss.containsKey(block))
-        {
-            return blockLoss.get(block).getAsInt();
-        }
-
-        final Material material = state.getMaterial();
-        if (materialLoss.containsKey(material))
-        {
-            return materialLoss.get(material).getAsInt();
-        }
-        return 10;
+        return heatLossFlat.get(state).getAsInt() + (int) (heatLossPercentage.get(state).getAsFloat() * heat);
     }
 
     public static int getBlockCapacity(IBlockState state)
     {
-        final Block block = state.getBlock();
-        if (blockCapacity.containsKey(block))
-        {
-            return blockCapacity.get(block).getAsInt();
-        }
-
-        final Material material = state.getMaterial();
-        if (materialCapacity.containsKey(material))
-        {
-            return materialCapacity.get(material).getAsInt();
-        }
-        return 20;
+        return heatCapacity.get(state).getAsInt();
     }
 
-    public static int getHeatMovementWeight(IBlockState state)
+    public static float getTransferRate(IBlockState state)
     {
-        final Block block = state.getBlock();
-        if (blockGiveRate.containsKey(block))
+        return heatMoveRate.get(state).getAsFloat();
+    }
+
+    public static int getHeatMoved(IBlockState state, int heat)
+    {
+        return (int)Math.floor(getTransferRate(state) * heat);
+    }
+
+    private static class BlockDataMap<A>
+    {
+
+        private final Map<Material, A> materials = new HashMap();
+        private final Map<Block, A> blocks = new HashMap();
+        private final A defaultValue;
+
+        public BlockDataMap(A defaultValue)
         {
-            return blockGiveRate.get(block).getAsInt();
+            this.defaultValue = defaultValue;
         }
 
-        final Material material = state.getMaterial();
-        if (materialGiveRate.containsKey(material))
+        public A get(IBlockState state)
         {
-            return materialGiveRate.get(material).getAsInt();
+            return blocks.getOrDefault(state.getBlock(),
+                    materials.getOrDefault(state.getMaterial(),
+                            defaultValue));
         }
-        return 100;
+
+        public void add(Block block, A value)
+        {
+            blocks.put(block, value);
+        }
+
+        public void add(Material material, A value)
+        {
+            materials.put(material, value);
+        }
     }
 }

@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
@@ -33,6 +34,7 @@ import java.util.function.Consumer;
  */
 public class ThreadThermalAction extends ThreadDataChange
 {
+
     //Max range, hard coded until algs can be completed
     public static final int RANGE = 10;
     public static final List<EnumFacing> DIRECTIONS = Lists.newArrayList(EnumFacing.values());
@@ -143,8 +145,13 @@ public class ThreadThermalAction extends ThreadDataChange
         long time = System.nanoTime();
         if (heatTotal > 6)
         {
-            //Track tiles to path
+            //Current nodes to path
             final Queue<DataPos> currentPathQueue = new LinkedList();
+
+            //Nodes pathed in last run
+            final Queue<DataPos> normalizeQueue = new LinkedList();
+
+            //Nodes to path in next run
             final List<DataPos> nextPathQueue = new LinkedList();
 
             //Add center point
@@ -154,9 +161,16 @@ public class ThreadThermalAction extends ThreadDataChange
             //Breadth first pathfinder
             while (!currentPathQueue.isEmpty() || !nextPathQueue.isEmpty())
             {
-                //Path next shell
                 if (currentPathQueue.isEmpty())
                 {
+                    //Normalize limits of tile before running pushes
+                    normalizeQueue.forEach(pos ->
+                    {
+                        thermalThreadData.normalize(pos);
+                        pos.dispose();
+                    });
+
+                    //Push next shell to queue
                     currentPathQueue.addAll(nextPathQueue);
                     nextPathQueue.clear();
                 }
@@ -165,19 +179,28 @@ public class ThreadThermalAction extends ThreadDataChange
                 final DataPos nextPathPos = thermalThreadData.setToPush(currentPathQueue.poll());
 
                 //Calculate heat pushed from all sides and look for new tiles to path
-                pathNext(thermalThreadData, nextPathPos, (pos, heat) -> {
+                pathNext(thermalThreadData, nextPathPos, (x, y, z, heat) ->
+                {
                     if (heat > 0)
                     {
+                        final DataPos pos = DataPos.get(x, y, z);
+
+                        //Check if we need to queue pathing, if we have head data its already in the queue
                         if (!thermalThreadData.hasData(pos))
                         {
                             nextPathQueue.add(DataPos.get(pos));
                         }
+
+                        //Add heat, will make a new pos as needed
                         thermalThreadData.addHeat(pos, heat);
+
+                        //Recycle
+                        pos.dispose();
                     }
                 });
 
-                //Recycle pathed position
-                nextPathPos.dispose();
+                //Queue so we can normalize before running next sheep
+                normalizeQueue.offer(nextPathPos);
             }
         }
 
@@ -196,79 +219,40 @@ public class ThreadThermalAction extends ThreadDataChange
         }
     }
 
-    private void pathNext(final ThermalThreadData thermalThreadData, final DataPos pushBlock, HeatPushCallback heatSetter)
+    private void pathNext(final ThermalThreadData thermalThreadData, final DataPos currentPos, HeatPushCallback heatSetter)
     {
-        //Find directions to spread heat and calculate max heat ratio
-        final LinkedList<DataPos> spreadPositions = new LinkedList();
-
-        //Total heat transfer ratio, used to convert ratio to percentages when balancing heat flow
-        int heatRateTotal = calculateHeatSpread(thermalThreadData, pushBlock, pos -> spreadPositions.add(pos));
-
         //Block giving heat
-        final IBlockState giverBlock = thermalThreadData.world.getBlockState(pushBlock.getPos());
-
-        //Amount of heat lost in the movement
-        final int heatLoss = ThermalHandler.getBlockLoss(giverBlock);
+        final IBlockState giverBlock = thermalThreadData.world.getBlockState(currentPos.getPos());
 
         //Total heat to give
-        final int totalMovementHeat = thermalThreadData.getHeatToMove(pushBlock);
+        final int totalMovementHeat = thermalThreadData.getHeatToMove(currentPos);
+
+        //Amount of heat lost in the movement
+        final int heatLoss = ThermalHandler.getHeatLost(giverBlock, totalMovementHeat);
 
         //Only loop values we had within range
-        for (DataPos pos : spreadPositions)
+        forEach(thermalThreadData, currentPos, (x, y, z, dir) ->
         {
-            final BlockPos next = pos.getPos(); //TODO use mutable pos
+            final BlockPos next = new BlockPos(x, y, z); //TODO use mutable pos
 
             //Block receiving heat
             final IBlockState targetBlock = thermalThreadData.world.getBlockState(next);
 
             //Calculate spread ratio from direction
-            double transferRate = ThermalHandler.getHeatMovementWeight(targetBlock);
-
-            //Convert ratio into percentage
-            double percentage = (transferRate / (float) heatRateTotal);
+            double transferRate = ThermalHandler.getTransferRate(targetBlock);
 
             //Calculate heat to move to current position from direction
-            int heatMoved = Math.max(0, (int) Math.floor(totalMovementHeat * percentage) - heatLoss);
+            int heatMoved = (int) Math.floor(totalMovementHeat * transferRate);
+            heatMoved = Math.max(0, heatMoved - heatLoss);
 
             //Push heat
-            heatSetter.pushHeat(pos, heatMoved);
-
-            //Recycle
-            pos.dispose();
-        }
-    }
-
-    private int calculateHeatSpread(final ThermalThreadData thermalThreadData, final DataPos currentPos, final Consumer<DataPos> consumer)
-    {
-        return forEachHeatDirection(thermalThreadData, currentPos, DIRECTIONS, (x, y, z, dir) ->
-        {
-            final BlockPos next = new BlockPos(x, y, z);
-            if (thermalThreadData.world.isBlockLoaded(next))
-            {
-                final DataPos pos = DataPos.get(x, y, z);
-                if (thermalThreadData.canReceive(pos))
-                {
-                    //Get block
-                    final IBlockState targetBlock = thermalThreadData.world.getBlockState(next); //TODO use mutable pos
-
-                    //Add to set
-                    consumer.accept(pos);
-
-                    //Return heat transfer rate
-                    return ThermalHandler.getHeatMovementWeight(targetBlock);
-                }
-
-                //Recycle unused
-                pos.dispose();
-            }
-            return 0;
+            heatSetter.pushHeat(x, y, z, heatMoved);
         });
     }
 
-    private int forEachHeatDirection(final IPos3D center, final DataPos currentPos, Iterable<EnumFacing> dirs, HeatDirConsumer directionConsumer)
+    private void forEach(final IPos3D center, final DataPos currentPos, HeatDirConsumer directionConsumer)
     {
-        int value = 0;
-        for (EnumFacing direction : dirs)
+        for (EnumFacing direction : EnumFacing.values())
         {
             //Check range to prevent infinite spread
             int x = currentPos.x + direction.getXOffset();
@@ -276,14 +260,14 @@ public class ThreadThermalAction extends ThreadDataChange
             int z = currentPos.z + direction.getZOffset();
             if (inRange(center, x, y, z, RANGE) && y >= 0 && y < 256)
             {
-                value += directionConsumer.accept(x, y, z, direction);
+                directionConsumer.accept(x, y, z, direction);
             }
         }
-        return value;
     }
 
     public interface HeatDirConsumer
     {
-        int accept(int x, int y, int z, EnumFacing direction);
+
+        void accept(int x, int y, int z, EnumFacing direction);
     }
 }

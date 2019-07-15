@@ -84,6 +84,15 @@ public class ThermalThreadData implements IPosWorld
         setHeat(currentPos, getHeat(currentPos) + heatAsPosition);
     }
 
+
+    public void normalize(DataPos pos)
+    {
+        if(heatSpreadData.containsKey(pos))
+        {
+            int heat = getHeat(pos);
+        }
+    }
+
     @Override
     public int dim()
     {

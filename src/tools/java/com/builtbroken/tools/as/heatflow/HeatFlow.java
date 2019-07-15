@@ -3,13 +3,11 @@ package com.builtbroken.tools.as.heatflow;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
 import com.builtbroken.atomic.map.data.DataChange;
-import com.builtbroken.atomic.map.thermal.ThermalMap;
 import com.builtbroken.atomic.map.thermal.node.ThermalSourceMap;
 import com.builtbroken.atomic.map.thermal.thread.ThreadThermalAction;
 import com.builtbroken.mc.testing.junit.world.FakeWorldServer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Bootstrap;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import org.apache.logging.log4j.LogManager;
@@ -27,6 +25,8 @@ public class HeatFlow
     {
         //Init
         Bootstrap.register();
+        ThermalHandler.init();
+
         final FakeWorldServer world = FakeWorldServer.newWorld("heatFlow");
 
         final ThermalSourceMap thermalSource = new ThermalSourceMap(0, new BlockPos(8, 61, 8), 1000);

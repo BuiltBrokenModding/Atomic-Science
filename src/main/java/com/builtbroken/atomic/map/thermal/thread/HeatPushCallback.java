@@ -8,5 +8,5 @@ import com.builtbroken.atomic.map.data.DataPos;
 @FunctionalInterface
 public interface HeatPushCallback
 {
-    void pushHeat(DataPos pos, int heat);
+    void pushHeat(int x, int y, int z, int heat);
 }
