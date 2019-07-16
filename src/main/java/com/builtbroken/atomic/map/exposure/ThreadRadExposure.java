@@ -5,6 +5,7 @@ import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.radiation.IRadiationNode;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
+import com.builtbroken.atomic.config.server.ConfigServer;
 import com.builtbroken.atomic.lib.radiation.RadiationHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
@@ -135,7 +136,7 @@ public class ThreadRadExposure extends ThreadDataChange
             final HashMap<BlockPos, Integer> radiationData = new HashMap();
 
             final int rad = RadiationHandler.getRadFromMaterial(value);
-            final int edit_range = Math.min(ConfigRadiation.MAX_UPDATE_RANGE, (int) Math.floor(RadiationHandler.getDecayRange(rad)));
+            final int edit_range = Math.min(ConfigServer.THREAD.THREAD_RADS_PATHING_RANGE, (int) Math.floor(RadiationHandler.getDecayRange(rad)));
 
             if (edit_range > 1)
             {

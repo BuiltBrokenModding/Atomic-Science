@@ -105,9 +105,6 @@ public class ConfigRadiation extends ContentProxy
     public static int RADIOACTIVE_REACTOR_VALUE_FUEL_ROD = RADIOACTIVE_MAT_VALUE_FUEL_ROD * 100;
     public static int RADIOACTIVE_REACTOR_VALUE_BREEDER_ROD = RADIOACTIVE_MAT_VALUE_BREEDER_ROD * 100;
 
-    /** Max distance in meters to update radiation on the map. */
-    public static int MAX_UPDATE_RANGE = 50;
-
     public static float RADIATION_DECAY_PER_BLOCK = 0.05f;
     public static float RADIATION_DECAY_PER_FLUID = 0.15f;
     public static float RADIATION_DECAY_METAL = 0.50f;
@@ -132,8 +129,6 @@ public class ConfigRadiation extends ContentProxy
 
         //Map settings
         final String cat_map = "rad_map";
-        MAX_UPDATE_RANGE = configuration.getInt("map_update_range", cat_map, MAX_UPDATE_RANGE, 10, 100,
-                "Max range to update radiation values when a radiation source has changed.");
 
         MAP_VALUE_TO_MILI_RAD = configuration.getFloat("material_to_radiation", cat_map, MAP_VALUE_TO_MILI_RAD, 0.0001f, 100,
                 "Conversation rate of material on the map to radiation values produced. Value is material -> milli-rad. " +
