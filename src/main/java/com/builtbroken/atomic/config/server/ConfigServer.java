@@ -15,7 +15,7 @@ public class ConfigServer
     @Config.LangKey("config.atomicscience:server.network.title")
     public static final ConfigNetwork NETWORK = new ConfigNetwork();
 
-    //@Config.Name("thread")
-    //@Config.LangKey("config.atomicscience:server.thread.title")
+    @Config.Name("thread")
+    @Config.LangKey("config.atomicscience:server.thread.title")
     public static final ConfigThread THREAD = new ConfigThread();
 }

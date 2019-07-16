@@ -17,7 +17,6 @@ public class DataChange implements IPosWorld
     private static final DataPool<DataChange> dataChangePool = new DataPool(100000);
 
     public IDataMapSource source;
-
     public Consumer<IDataMapSource> completionListener;
 
     public int value;

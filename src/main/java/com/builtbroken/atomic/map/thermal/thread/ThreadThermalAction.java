@@ -3,6 +3,7 @@ package com.builtbroken.atomic.map.thermal.thread;
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.thermal.IThermalNode;
 import com.builtbroken.atomic.api.thermal.IThermalSource;
+import com.builtbroken.atomic.config.server.ConfigServer;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
@@ -14,6 +15,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.PooledMutableBlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -34,11 +36,6 @@ import java.util.function.Consumer;
  */
 public class ThreadThermalAction extends ThreadDataChange
 {
-
-    //Max range, hard coded until algs can be completed
-    public static final int RANGE = 10;
-    public static final List<EnumFacing> DIRECTIONS = Lists.newArrayList(EnumFacing.values());
-
     public ThreadThermalAction()
     {
         super("ThreadThermalAction");
@@ -50,75 +47,53 @@ public class ThreadThermalAction extends ThreadDataChange
         //Get world
         final World world = DimensionManager.getWorld(change.dim());
 
+        //Position
         final int cx = change.xi();
         final int cy = change.yi();
         final int cz = change.zi();
 
+        //validate that we are the correct type to run
         if (world instanceof WorldServer && change.source instanceof IThermalSource)
         {
-            //Collect data
-            final ThermalThreadData thermalThreadData = new ThermalThreadData(world, cx, cy, cz, RANGE);
-            calculateHeatSpread(thermalThreadData, change.value); //TODO store data into heat source
+            //Setup data storage
+            final ThermalThreadData thermalThreadData = createData(world, cx, cy, cz, ConfigServer.THREAD.THREAD_HEAT_PATHING_RANGE);
 
-            //TODO convert to method or class
-            ((WorldServer) world).addScheduledTask(() ->
-            {
-                if (change.source instanceof IThermalSource)
-                {
-                    final IThermalSource source = ((IThermalSource) change.source);
-                    //Get data
-                    final HashMap<BlockPos, IThermalNode> oldMap = source.getCurrentNodes();
-                    final HashMap<BlockPos, IThermalNode> newMap = new HashMap();
+            //Run pathfinder
+            calculateHeatSpread(thermalThreadData, change.value);
 
-                    //Remove old data from map
-                    source.disconnectMapData();
-
-                    //Add new data, recycle old nodes to reduce memory churn
-                    for (Map.Entry<DataPos, ThermalData> entry : thermalThreadData.getData().entrySet()) //TODO move this to source to give full control over data structure
-                    {
-                        final BlockPos pos = entry.getKey().disposeReturnBlockPos();
-                        final int value = entry.getValue().getHeatAndDispose(); //TODO cap to capacity
-
-                        if (oldMap != null && oldMap.containsKey(pos))
-                        {
-                            final IThermalNode node = oldMap.get(pos);
-                            if (node != null)
-                            {
-                                //Update value
-                                node.setHeatValue(value);
-
-                                //Store in new map
-                                newMap.put(pos, node);
-                            }
-
-                            //Remove from old map
-                            oldMap.remove(pos);
-                        }
-                        else
-                        {
-                            newMap.put(pos, ThermalNode.get(source, value));
-                        }
-                    }
-
-                    //Clear old data
-                    source.disconnectMapData();
-                    source.clearMapData();
-
-                    //Set new data
-                    source.setCurrentNodes(newMap);
-
-                    //Tell the source to connect to the map
-                    source.connectMapData();
-
-                    //Trigger source update
-                    source.initMapData();
-                }
-            });
-
-
+            //Mark as completed
+            completeUpdateLocation(world, (IThermalSource) change.source, thermalThreadData);
             return true;
         }
         return false;
+    }
+
+    /**
+     * Creates a new data wrapper for the thread action. Use this to override the data storage
+     * system to introduce hooks.
+     *
+     * @param world
+     * @param cx
+     * @param cy
+     * @param cz
+     * @param range
+     * @return
+     */
+    protected ThermalThreadData createData(World world, int cx, int cy, int cz, int range)
+    {
+        return new ThermalThreadData(world, cx, cy, cz, range);
+    }
+
+    /**
+     * Called when the action has completed with pathing
+     *
+     * @param world
+     * @param source
+     * @param data
+     */
+    protected void completeUpdateLocation(World world, IThermalSource source, ThermalThreadData data)
+    {
+        ((WorldServer) world).addScheduledTask(new ThermalServerTask(source, data));
     }
 
     /**
@@ -230,27 +205,30 @@ public class ThreadThermalAction extends ThreadDataChange
         //Amount of heat lost in the movement
         final int heatLoss = ThermalHandler.getHeatLost(giverBlock, totalMovementHeat);
 
+        //Create a pooled blockpos for reuse to save memory
+        final PooledMutableBlockPos blockPos = PooledMutableBlockPos.retain();
+
         //Only loop values we had within range
         forEach(thermalThreadData, currentPos, (x, y, z, dir) ->
         {
-            final BlockPos next = new BlockPos(x, y, z); //TODO use mutable pos
+            blockPos.setPos(x, y, z); //TODO use mutable pos
 
             //Block receiving heat
-            final IBlockState targetBlock = thermalThreadData.world.getBlockState(next);
-
-            //Calculate spread ratio from direction
-            double transferRate = ThermalHandler.getTransferRate(targetBlock);
+            final IBlockState targetBlock = thermalThreadData.world.getBlockState(blockPos);
 
             //Calculate heat to move to current position from direction
-            int heatMoved = (int) Math.floor(totalMovementHeat * transferRate);
+            int heatMoved = ThermalHandler.getHeatMoved(targetBlock, totalMovementHeat);
             heatMoved = Math.max(0, heatMoved - heatLoss);
 
             //Push heat
             heatSetter.pushHeat(x, y, z, heatMoved);
         });
+
+        //Release block pos
+        blockPos.release();
     }
 
-    private void forEach(final IPos3D center, final DataPos currentPos, HeatDirConsumer directionConsumer)
+    private void forEach(final IPos3D center, final DataPos currentPos, HeatDirConsumer directionConsumer) //TODO move to helper
     {
         for (EnumFacing direction : EnumFacing.values())
         {
@@ -258,7 +236,7 @@ public class ThreadThermalAction extends ThreadDataChange
             int x = currentPos.x + direction.getXOffset();
             int y = currentPos.y + direction.getYOffset();
             int z = currentPos.z + direction.getZOffset();
-            if (inRange(center, x, y, z, RANGE) && y >= 0 && y < 256)
+            if (inRange(center, x, y, z, ConfigServer.THREAD.THREAD_HEAT_PATHING_RANGE) && y >= 0 && y < 256)
             {
                 directionConsumer.accept(x, y, z, direction);
             }
