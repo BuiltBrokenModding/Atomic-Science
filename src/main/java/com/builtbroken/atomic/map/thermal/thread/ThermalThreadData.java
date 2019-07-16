@@ -1,5 +1,6 @@
 package com.builtbroken.atomic.map.thermal.thread;
 
+import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.lib.transform.IPosWorld;
 import com.builtbroken.atomic.map.data.DataPos;
 import net.minecraft.world.World;
@@ -12,6 +13,7 @@ import java.util.Map;
  */
 public class ThermalThreadData implements IPosWorld
 {
+
     public final World world;
     private final DataPos center;
     public final int range;
@@ -87,9 +89,14 @@ public class ThermalThreadData implements IPosWorld
 
     public void normalize(DataPos pos)
     {
-        if(heatSpreadData.containsKey(pos))
+        if (heatSpreadData.containsKey(pos))
         {
             int heat = getHeat(pos);
+            int cap = ThermalHandler.getBlockCapacity(world.getBlockState(pos.getPos()));
+            if (heat > cap)
+            {
+                setHeat(pos, cap);
+            }
         }
     }
 

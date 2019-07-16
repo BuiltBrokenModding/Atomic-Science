@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class HeatFlow
 {
+
     private static Logger LOGGER = LogManager.getLogger();
 
     public static void main(String... args)
@@ -29,20 +30,26 @@ public class HeatFlow
 
         final FakeWorldServer world = FakeWorldServer.newWorld("heatFlow");
 
-        final ThermalSourceMap thermalSource = new ThermalSourceMap(0, new BlockPos(8, 61, 8), 1000);
+        final ThermalSourceMap thermalSource = new ThermalSourceMap(0, new BlockPos(5, 61, 5), 1000);
         final ThreadTher thread = new ThreadTher();
 
         //Build test
-        for (int z = 0; z < 16; z++)
+        for (int z = 0; z < 11; z++)
         {
-            for (int x = 0; x < 16; x++)
+            for (int x = 0; x < 11; x++)
             {
-                world.setBlockState(new BlockPos(x, 62, z), Blocks.WATER.getDefaultState());
-                world.setBlockState(new BlockPos(x, 61, z), Blocks.WATER.getDefaultState());
-                world.setBlockState(new BlockPos(x, 60, z), Blocks.STONE.getDefaultState());
+                if (x == 0 || x == 10)
+                {
+                    world.setBlockState(new BlockPos(x, 61, z), Blocks.BEDROCK.getDefaultState());
+                }
+                else
+                {
+                    world.setBlockState(new BlockPos(x, 61, z), Blocks.WATER.getDefaultState());
+                }
+                world.setBlockState(new BlockPos(x, 62, z), Blocks.BEDROCK.getDefaultState());
+                world.setBlockState(new BlockPos(x, 60, z), Blocks.BEDROCK.getDefaultState());
             }
         }
-
 
 
         //run thread
@@ -51,11 +58,19 @@ public class HeatFlow
         //Tick world
         Util.runTask(world.getMinecraftServer().futureTaskQueue.poll(), LOGGER);
 
-        for (int z = 0; z < 16; z++)
+        for (int z = 0; z < 11; z++)
         {
-            for (int x = 0; x < 16; x++)
+            for (int x = 0; x < 11; x++)
             {
-                System.out.printf(" %5d ", MapHandler.THERMAL_MAP.getStoredHeat(world, new BlockPos(x, 61, z)));
+                if (x == 0 || x == 10)
+                {
+                    System.out.printf(" %5s ", "x");
+                }
+                else
+                {
+                    System.out.printf(" %5d ", MapHandler.THERMAL_MAP.getStoredHeat(world, new BlockPos(x, 61, z)));
+                }
+
             }
             System.out.println();
         }
@@ -63,6 +78,7 @@ public class HeatFlow
 
     public static class ThreadTher extends ThreadThermalAction
     {
+
         @Override
         public boolean updateLocation(DataChange change)
         {
