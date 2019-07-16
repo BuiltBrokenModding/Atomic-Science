@@ -26,12 +26,13 @@ import static java.lang.Math.sin;
 
 /**
  * Handles updating the radiation map
- *
- *
+ * <p>
+ * <p>
  * Created by Dark(DarkGuardsman, Robert) on 4/28/2018.
  */
 public class ThreadRadExposure extends ThreadDataChange
 {
+
     public ThreadRadExposure()
     {
         super("ThreadRadExposure");
@@ -48,60 +49,7 @@ public class ThreadRadExposure extends ThreadDataChange
             final HashMap<BlockPos, Integer> collectedData = updateValue(world, change.xi(), change.yi(), change.zi(), change.value);
             if (shouldRun)
             {
-                //TODO convert to method or class
-                ((WorldServer) world).addScheduledTask(() ->
-                {
-                    if (change.source instanceof IRadiationSource)
-                    {
-                        final IRadiationSource source = ((IRadiationSource) change.source);
-                        //Get data
-                        final HashMap<BlockPos, IRadiationNode> oldMap = source.getCurrentNodes();
-                        final HashMap<BlockPos, IRadiationNode> newMap = new HashMap();
-
-                        //Remove old data from map
-                        source.disconnectMapData();
-
-                        //Add new data, recycle old nodes to reduce memory churn
-                        for (Map.Entry<BlockPos, Integer> entry : collectedData.entrySet()) //TODO move this to source to give full control over data structure
-                        {
-                            final int value = entry.getValue();
-                            final BlockPos pos = entry.getKey();
-
-                            if (oldMap != null && oldMap.containsKey(pos))
-                            {
-                                final IRadiationNode node = oldMap.get(pos);
-                                if (node != null)
-                                {
-                                    //Update value
-                                    node.setRadiationValue(value);
-
-                                    //Store in new map
-                                    newMap.put(pos, node);
-                                }
-
-                                //Remove from old map
-                                oldMap.remove(pos);
-                            }
-                            else
-                            {
-                                newMap.put(pos, RadiationNode.get(source, value));
-                            }
-                        }
-
-                        //Clear old data
-                        source.disconnectMapData();
-                        source.clearMapData();
-
-                        //Set new data
-                        source.setCurrentNodes(newMap);
-
-                        //Tell the source to connect to the map
-                        source.connectMapData();
-
-                        //Trigger source update
-                        source.initMapData();
-                    }
-                });
+                ((WorldServer) world).addScheduledTask(new RadServerTask((IRadiationSource) change.source, collectedData));
             }
 
             if (AtomicScience.runningAsDev)
@@ -198,7 +146,7 @@ public class ThreadRadExposure extends ThreadDataChange
             int yi = (int) Math.floor(y);
             int zi = (int) Math.floor(z);
 
-            if(y < 0 || y > world.getHeight()) //TODO hook into config to allow increase for cubic chunk maps
+            if (y < 0 || y > world.getHeight()) //TODO hook into config to allow increase for cubic chunk maps
             {
                 return;
             }
