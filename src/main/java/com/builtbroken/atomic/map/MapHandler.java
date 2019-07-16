@@ -4,7 +4,7 @@ import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.AtomicScienceAPI;
 import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.map.exposure.RadiationMap;
-import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
+import com.builtbroken.atomic.map.exposure.thread.ThreadRadExposure;
 import com.builtbroken.atomic.map.thermal.ThermalMap;
 import com.builtbroken.atomic.map.thermal.thread.ThreadThermalAction;
 import net.minecraftforge.common.MinecraftForge;

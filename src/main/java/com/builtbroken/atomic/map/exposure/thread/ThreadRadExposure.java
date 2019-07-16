@@ -1,10 +1,9 @@
-package com.builtbroken.atomic.map.exposure;
+package com.builtbroken.atomic.map.exposure.thread;
 
 import com.builtbroken.atomic.AtomicScience;
 import com.builtbroken.atomic.api.map.DataMapType;
 import com.builtbroken.atomic.api.radiation.IRadiationNode;
 import com.builtbroken.atomic.api.radiation.IRadiationSource;
-import com.builtbroken.atomic.config.logic.ConfigRadiation;
 import com.builtbroken.atomic.config.server.ConfigServer;
 import com.builtbroken.atomic.lib.radiation.RadiationHandler;
 import com.builtbroken.atomic.map.data.DataChange;

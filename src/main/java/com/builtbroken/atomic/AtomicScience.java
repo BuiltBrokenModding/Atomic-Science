@@ -19,7 +19,7 @@ import com.builtbroken.atomic.lib.placement.PlacementQueue;
 import com.builtbroken.atomic.lib.radiation.RadiationHandler;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.MapHandler;
-import com.builtbroken.atomic.map.exposure.ThreadRadExposure;
+import com.builtbroken.atomic.map.exposure.thread.ThreadRadExposure;
 import com.builtbroken.atomic.map.exposure.node.RadSourceMap;
 import com.builtbroken.atomic.map.thermal.thread.ThreadThermalAction;
 import com.builtbroken.atomic.map.thermal.node.ThermalSourceMap;
