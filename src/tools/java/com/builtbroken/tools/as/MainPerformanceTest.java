@@ -33,50 +33,55 @@ public class MainPerformanceTest
 
             BigDecimal bigDecimal = new BigDecimal(0);
 
-            for (int it = 0; it < 1000; it++)
+            for (int it = 0; it < 3000; it++)
             {
                 bigDecimal = bigDecimal.add(movement);
 
-                System.out.println();
-                System.out.println(String.format("Expected: ....%s ....%s", bigDecimal, m));
+                if(it < 1000)
+                {
 
-                final DataOut dataOut = new DataOut();
-                dataOut.move = m;
-                dataOut.expected = bigDecimal.doubleValue();
+                    System.out.println();
+                    System.out.println(String.format("Expected: ....%s ....%s", bigDecimal, m));
 
-                //Float
-                dataOut.floatTime = System.nanoTime();
-                floatPos.move(m, 0, 0);
-                dataOut.floatOutput = floatPos.x();
-                dataOut.floatTime = System.nanoTime() - dataOut.floatTime;
+                    final DataOut dataOut = new DataOut();
+                    dataOut.move = m;
+                    dataOut.expected = bigDecimal.doubleValue();
+                    data.add(dataOut);
 
-                //Float
-                dataOut.doubleTime = System.nanoTime();
-                doublePos.move(m, 0, 0);
-                dataOut.doubleOutput = doublePos.x();
-                dataOut.doubleTime = System.nanoTime() - dataOut.doubleTime;
+                    //Float
+                    dataOut.floatTime = System.nanoTime();
+                    floatPos.move(m, 0, 0);
+                    dataOut.floatOutput = floatPos.x();
+                    dataOut.floatTime = System.nanoTime() - dataOut.floatTime;
 
-                //Fraction
-                dataOut.fractionTime = System.nanoTime();
-                fractionPos.move(m, 0, 0);
-                dataOut.fractionOutput = fractionPos.x();
-                dataOut.fractionTime = System.nanoTime() - dataOut.fractionTime;
+                    //Float
+                    dataOut.doubleTime = System.nanoTime();
+                    doublePos.move(m, 0, 0);
+                    dataOut.doubleOutput = doublePos.x();
+                    dataOut.doubleTime = System.nanoTime() - dataOut.doubleTime;
 
-                //output
-                outputResult(dataOut.floatTime, dataOut.floatOutput, bigDecimal);
-                outputResult(dataOut.doubleTime, dataOut.doubleOutput, bigDecimal);
-                outputResult(dataOut.fractionTime, dataOut.fractionOutput, bigDecimal);
+                    //Fraction
+                    dataOut.fractionTime = System.nanoTime();
+                    fractionPos.move(m, 0, 0);
+                    dataOut.fractionOutput = fractionPos.x();
+                    dataOut.fractionTime = System.nanoTime() - dataOut.fractionTime;
 
-                //Output delta in time
-                long delta = dataOut.fractionTime - dataOut.floatTime;
-                long us = ((delta % 1000000000) % 1000000) / 1000;
-                long ns = ((delta % 1000000000) % 1000000) % 1000;
-                System.out.println(String.format("Fr vs F: %3s us %3s ns", us, ns));
+                    //output
+                    outputResult(dataOut.floatTime, dataOut.floatOutput, bigDecimal);
+                    outputResult(dataOut.doubleTime, dataOut.doubleOutput, bigDecimal);
+                    outputResult(dataOut.fractionTime, dataOut.fractionOutput, bigDecimal);
 
-                delta = dataOut.fractionTime - dataOut.doubleTime;
-                us = ((delta % 1000000000) % 1000000) / 1000;
-                ns = ((delta % 1000000000) % 1000000) % 1000;
-                System.out.println(String.format("Fr v D: %3s us %3s ns", us, ns));
+                    //Output delta in time
+                    long delta = dataOut.fractionTime - dataOut.floatTime;
+                    long us = ((delta % 1000000000) % 1000000) / 1000;
+                    long ns = ((delta % 1000000000) % 1000000) % 1000;
+                    System.out.println(String.format("Fr vs F: %3s us %3s ns", us, ns));
+
+                    delta = dataOut.fractionTime - dataOut.doubleTime;
+                    us = ((delta % 1000000000) % 1000000) / 1000;
+                    ns = ((delta % 1000000000) % 1000000) % 1000;
+                    System.out.println(String.format("Fr v D: %3s us %3s ns", us, ns));
+                }
             }
         }
 

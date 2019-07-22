@@ -38,7 +38,7 @@ public class HeatFlow
         {
             for (int x = 0; x < 11; x++)
             {
-                if (x == 0 || x == 10)
+                if (x == 0 || x == 10 || z == 0 || z == 10)
                 {
                     world.setBlockState(new BlockPos(x, 61, z), Blocks.BEDROCK.getDefaultState());
                 }
@@ -62,7 +62,7 @@ public class HeatFlow
         {
             for (int x = 0; x < 11; x++)
             {
-                if (x == 0 || x == 10)
+                if (x == 0 || x == 10 || z == 0 || z == 10)
                 {
                     System.out.printf(" %5s ", "x");
                 }
@@ -70,8 +70,8 @@ public class HeatFlow
                 {
                     System.out.printf(" %5d ", MapHandler.THERMAL_MAP.getStoredHeat(world, new BlockPos(x, 61, z)));
                 }
-
             }
+            System.out.println();
             System.out.println();
         }
     }
