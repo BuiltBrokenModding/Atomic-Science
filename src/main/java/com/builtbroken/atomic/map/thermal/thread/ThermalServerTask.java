@@ -36,7 +36,7 @@ public class ThermalServerTask implements Runnable
         //Add new data, recycle old nodes to reduce memory churn
         for (Map.Entry<DataPos, ThermalData> entry : thermalThreadData.getData().entrySet()) //TODO move this to source to give full control over data structure
         {
-            final BlockPos pos = entry.getKey().disposeReturnBlockPos();
+            final BlockPos pos = entry.getKey().unlock().disposeReturnBlockPos();
             final int value = entry.getValue().getHeatAndDispose();
 
             //Attempt to recycle old data points

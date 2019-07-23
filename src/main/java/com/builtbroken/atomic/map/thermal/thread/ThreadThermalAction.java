@@ -136,6 +136,7 @@ public class ThreadThermalAction extends ThreadDataChange
                         thermalThreadData.normalize(pos);
                         pos.unlock().dispose();
                     });
+                    normalizeQueue.clear();
 
                     //Push next shell to queue
                     currentPathQueue.addAll(nextPathQueue);
