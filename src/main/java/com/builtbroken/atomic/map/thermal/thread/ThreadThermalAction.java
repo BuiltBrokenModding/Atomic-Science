@@ -146,7 +146,6 @@ public class ThreadThermalAction extends ThreadDataChange
                 //Get next and set to push heat
                 final DataPos pooledPos = currentPathQueue.poll();
                 final DataPos nextPathPos = thermalThreadData.setToPush(pooledPos);
-                System.out.println("Pushing Heat: " + nextPathPos);
 
                 if(nextPathPos != null)
                 {
@@ -160,7 +159,6 @@ public class ThreadThermalAction extends ThreadDataChange
                             //Check if we need to queue pathing, if we have head data its already in the queue
                             if (!thermalThreadData.hasData(tempPos))
                             {
-                                System.out.println("Queue:" + tempPos);
                                 nextPathQueue.add(DataPos.get(x, y, z).lock());
                             }
 
@@ -205,13 +203,12 @@ public class ThreadThermalAction extends ThreadDataChange
         final int heatLoss = ThermalHandler.getHeatLost(giverBlock, totalMovementHeat);
 
         //Create a pooled blockpos for reuse to save memory
-        final PooledMutableBlockPos blockPos = PooledMutableBlockPos.retain();
+        final PooledMutableBlockPos blockPos = PooledMutableBlockPos.retain(); //TODO create pool for thread to use only
 
         //Only loop values we had within range
         forEach(thermalThreadData, currentPos, (x, y, z, dir) ->
         {
-            System.out.printf("Path: %d %d %d from %s\n", x, y, z, currentPos.toString());
-            blockPos.setPos(x, y, z); //TODO use mutable pos
+            blockPos.setPos(x, y, z);
 
             //Block receiving heat
             final IBlockState targetBlock = thermalThreadData.world.getBlockState(blockPos);
@@ -222,8 +219,6 @@ public class ThreadThermalAction extends ThreadDataChange
 
             //Push heat
             heatSetter.pushHeat(x, y, z, heatMoved);
-
-            System.out.println();
         });
 
         //Release block pos

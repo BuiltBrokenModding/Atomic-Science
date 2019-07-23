@@ -50,7 +50,6 @@ public class DataPos implements IPos3D
 
     public static DataPos get(int x, int y, int z)
     {
-        System.out.printf("Get: %d %d %d\n", x, y, z);
         if (dataPosPool.has())
         {
             final DataPos dataPos = dataPosPool.get();
@@ -174,7 +173,6 @@ public class DataPos implements IPos3D
 
     public void dispose()
     {
-        System.out.println("Release: " + this);
         if(released)
         {
             throw new RuntimeException(this + " has already been released");
