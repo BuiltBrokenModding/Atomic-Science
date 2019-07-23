@@ -1,32 +1,24 @@
 package com.builtbroken.atomic.map.thermal.thread;
 
 import com.builtbroken.atomic.AtomicScience;
-import com.builtbroken.atomic.api.thermal.IThermalNode;
 import com.builtbroken.atomic.api.thermal.IThermalSource;
 import com.builtbroken.atomic.config.server.ConfigServer;
 import com.builtbroken.atomic.lib.thermal.ThermalHandler;
 import com.builtbroken.atomic.map.data.DataChange;
 import com.builtbroken.atomic.map.data.DataPos;
 import com.builtbroken.atomic.map.data.ThreadDataChange;
-import com.builtbroken.atomic.map.thermal.node.ThermalNode;
 import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.jlib.lang.StringHelpers;
-import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.PooledMutableBlockPos;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-import java.util.function.Consumer;
 
 /**
  * Handles updating the radiation map
@@ -131,7 +123,7 @@ public class ThreadThermalAction extends ThreadDataChange
 
             //Add center point
             thermalThreadData.setHeat(DataPos.get(thermalThreadData), heatTotal);
-            currentPathQueue.add(DataPos.get(thermalThreadData));
+            currentPathQueue.add(DataPos.get(thermalThreadData).lock());
 
             //Breadth first pathfinder
             while (!currentPathQueue.isEmpty() || !nextPathQueue.isEmpty())
@@ -142,7 +134,7 @@ public class ThreadThermalAction extends ThreadDataChange
                     normalizeQueue.forEach(pos ->
                     {
                         thermalThreadData.normalize(pos);
-                        pos.dispose();
+                        pos.unlock().dispose();
                     });
 
                     //Push next shell to queue
@@ -151,31 +143,37 @@ public class ThreadThermalAction extends ThreadDataChange
                 }
 
                 //Get next and set to push heat
-                final DataPos nextPathPos = thermalThreadData.setToPush(currentPathQueue.poll());
+                final DataPos pooledPos = currentPathQueue.poll();
+                final DataPos nextPathPos = thermalThreadData.setToPush(pooledPos);
+                System.out.println("Pushing Heat: " + nextPathPos);
 
-                //Calculate heat pushed from all sides and look for new tiles to path
-                pathNext(thermalThreadData, nextPathPos, (x, y, z, heat) ->
+                if(nextPathPos != null)
                 {
-                    if (heat > 0)
+                    //Calculate heat pushed from all sides and look for new tiles to path
+                    pathNext(thermalThreadData, nextPathPos, (x, y, z, heat) ->
                     {
-                        final DataPos pos = DataPos.get(x, y, z);
-
-                        //Check if we need to queue pathing, if we have head data its already in the queue
-                        if (!thermalThreadData.hasData(pos))
+                        if (heat > 0)
                         {
-                            nextPathQueue.add(DataPos.get(pos));
+                            final DataPos tempPos = DataPos.get(x, y, z);
+
+                            //Check if we need to queue pathing, if we have head data its already in the queue
+                            if (!thermalThreadData.hasData(tempPos))
+                            {
+                                System.out.println("Queue:" + tempPos);
+                                nextPathQueue.add(DataPos.get(x, y, z).lock());
+                            }
+
+                            //Add heat, will make a new pos as needed
+                            thermalThreadData.addHeat(tempPos, heat);
+
+                            //Recycle
+                            tempPos.dispose();
                         }
+                    });
 
-                        //Add heat, will make a new pos as needed
-                        thermalThreadData.addHeat(pos, heat);
-
-                        //Recycle
-                        pos.dispose();
-                    }
-                });
-
-                //Queue so we can normalize before running next sheep
-                normalizeQueue.offer(nextPathPos);
+                    //Queue so we can normalize before running next sheep
+                    normalizeQueue.offer(nextPathPos.lock());
+                }
             }
         }
 
@@ -211,6 +209,7 @@ public class ThreadThermalAction extends ThreadDataChange
         //Only loop values we had within range
         forEach(thermalThreadData, currentPos, (x, y, z, dir) ->
         {
+            System.out.printf("Path: %d %d %d from %s\n", x, y, z, currentPos.toString());
             blockPos.setPos(x, y, z); //TODO use mutable pos
 
             //Block receiving heat
@@ -222,6 +221,8 @@ public class ThreadThermalAction extends ThreadDataChange
 
             //Push heat
             heatSetter.pushHeat(x, y, z, heatMoved);
+
+            System.out.println();
         });
 
         //Release block pos

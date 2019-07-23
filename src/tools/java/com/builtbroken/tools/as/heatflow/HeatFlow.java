@@ -135,7 +135,8 @@ public class HeatFlow
             if (heat > 0)
             {
                 //Get old value
-                final int oldheat = thermalThreadData.getHeatToMove(currentPos);
+                final int oldheat = thermalThreadData.getHeat(currentPos);
+                final int push = thermalThreadData.getHeatToMove(currentPos);
 
                 //Pass through orginal value
                 orginal.pushHeat(x, y, z, heat);
@@ -149,6 +150,7 @@ public class HeatFlow
                 log.y = y;
                 log.z = z;
                 log.heatNew = heat;
+                log.push = push;
                 log.heatOld = oldheat;
 
                 heatActionLog.offer(log);
@@ -161,15 +163,15 @@ public class HeatFlow
 
         int cx, cy, cz;
         int x, y, z;
-        int heatNew, heatOld;
+        int heatNew, push, heatOld;
 
         @Override
         public String toString()
         {
-            return String.format("HeatLog[%d %d %d; -> %d %d %d; %d -> %d]@%d",
+            return String.format("HeatLog[%d %d %d; -> %d %d %d; %d %d -> %d]@%d",
                     cx, cy, cz,
                     x, y, z,
-                    heatOld, heatNew,
+                    push, heatOld, heatNew,
                     hashCode());
         }
     }

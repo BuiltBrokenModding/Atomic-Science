@@ -48,7 +48,7 @@ public class ThermalThreadData implements IPosWorld
         {
             heatSpreadData.get(pos).setToPush();
         }
-        return pos;
+        return null;
     }
 
     public int getHeatToMove(DataPos pos)
@@ -77,7 +77,8 @@ public class ThermalThreadData implements IPosWorld
         }
         else
         {
-            heatSpreadData.put(DataPos.get(pos), ThermalData.get(heatAsPosition));
+            System.out.println("SetHeat: " + pos + "  " + heatAsPosition);
+            heatSpreadData.put(DataPos.get(pos).lock(), ThermalData.get(heatAsPosition));
         }
     }
 

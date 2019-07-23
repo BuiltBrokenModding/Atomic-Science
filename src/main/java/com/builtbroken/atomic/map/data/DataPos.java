@@ -50,14 +50,14 @@ public class DataPos implements IPos3D
 
     public static DataPos get(int x, int y, int z)
     {
+        System.out.printf("Get: %d %d %d\n", x, y, z);
         if (dataPosPool.has())
         {
             final DataPos dataPos = dataPosPool.get();
-            if (dataPos != null)
+            if (dataPos != null && dataPos.released)
             {
-                dataPos.x = x;
-                dataPos.y = y;
-                dataPos.z = z;
+                dataPos.unlock();
+                dataPos.set(x, y, z);
                 dataPos.released = false;
                 return dataPos;
             }
@@ -83,6 +83,24 @@ public class DataPos implements IPos3D
         return y;
     }
 
+    @Override
+    public int zi()
+    {
+        return z;
+    }
+
+    @Override
+    public int xi()
+    {
+        return x;
+    }
+
+    @Override
+    public int yi()
+    {
+        return y;
+    }
+
     public void set(int x, int y, int z)
     {
         if (mutable)
@@ -97,9 +115,15 @@ public class DataPos implements IPos3D
         }
     }
 
-    public DataPos toggleLock()
+    public DataPos lock()
     {
-        this.mutable = !mutable;
+        this.mutable = false;
+        return this;
+    }
+
+    public DataPos unlock()
+    {
+        this.mutable = true;
         return this;
     }
 
@@ -125,7 +149,9 @@ public class DataPos implements IPos3D
         }
         else if (object instanceof DataPos)
         {
-            return x == ((DataPos) object).x && y == ((DataPos) object).y && z == ((DataPos) object).z;
+            return x == ((DataPos) object).x
+                    && y == ((DataPos) object).y
+                    && z == ((DataPos) object).z;
         }
         return false;
     }
@@ -133,11 +159,7 @@ public class DataPos implements IPos3D
     @Override
     public int hashCode()
     {
-        int hash = 23;
-        hash = hash * 31 + x;
-        hash = hash * 31 + y;
-        hash = hash * 31 + z;
-        return hash;
+        return (this.yi() + this.zi() * 31) * 31 + this.xi();
     }
 
     @Override
@@ -152,14 +174,26 @@ public class DataPos implements IPos3D
 
     public void dispose()
     {
-        released = true;
-        dataPosPool.dispose(this);
+        System.out.println("Release: " + this);
+        if(released)
+        {
+            throw new RuntimeException(this + " has already been released");
+        }
+        else if(mutable)
+        {
+            released = true;
+            dataPosPool.dispose(this.lock());
+        }
+        else
+        {
+            throw new RuntimeException(this + " is locked and can not be recycled until unlocked.");
+        }
     }
 
     public BlockPos disposeReturnBlockPos()
     {
-        BlockPos pos = new BlockPos(xi(), yi(), zi());
-        dataPosPool.dispose(this);
+        final BlockPos pos = new BlockPos(xi(), yi(), zi());
+        dispose();
         return pos;
     }
 }
