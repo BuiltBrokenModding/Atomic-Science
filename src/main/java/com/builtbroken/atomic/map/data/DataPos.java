@@ -5,17 +5,20 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 /**
- *
  * Created by Dark(DarkGuardsman, Robert) on 5/12/2018.
  */
 @Deprecated
 public class DataPos implements IPos3D
 {
+
     private static final DataPool<DataPos> dataPosPool = new DataPool(100000);
 
-    public int x;
-    public int y;
-    public int z;
+    private int x;
+    private int y;
+    private int z;
+
+    private boolean released = false;
+    private boolean mutable = true;
 
     protected DataPos(int x, int y, int z)
     {
@@ -49,12 +52,13 @@ public class DataPos implements IPos3D
     {
         if (dataPosPool.has())
         {
-            DataPos dataPos = dataPosPool.get();
+            final DataPos dataPos = dataPosPool.get();
             if (dataPos != null)
             {
                 dataPos.x = x;
                 dataPos.y = y;
                 dataPos.z = z;
+                dataPos.released = false;
                 return dataPos;
             }
         }
@@ -79,9 +83,32 @@ public class DataPos implements IPos3D
         return y;
     }
 
+    public void set(int x, int y, int z)
+    {
+        if (mutable)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+        else
+        {
+            throw new RuntimeException(this + " is locked from being changed");
+        }
+    }
+
+    public DataPos toggleLock()
+    {
+        this.mutable = !mutable;
+        return this;
+    }
+
     public double distanceSQ(DataPos pos)
     {
-        return x * x + y * y + z * z;
+        int dx = pos.x - x;
+        int dy = pos.y - y;
+        int dz = pos.z - z;
+        return dx * dx + dy * dy + dz * dz;
     }
 
     public double distance(DataPos pos)
@@ -116,11 +143,16 @@ public class DataPos implements IPos3D
     @Override
     public String toString()
     {
-        return "DataPos[" + x + "," + y + "," + z + "]";
+        if (released)
+        {
+            return "DataPos[Pooled]";
+        }
+        return String.format("DataPos[%d, %d, %d]", x, y, z);
     }
 
     public void dispose()
     {
+        released = true;
         dataPosPool.dispose(this);
     }
 

@@ -109,37 +109,37 @@ public class ThermalThreadData implements IPosWorld
     @Override
     public double z()
     {
-        return center.z;
+        return center.zi();
     }
 
     @Override
     public double x()
     {
-        return center.x;
+        return center.xi();
     }
 
     @Override
     public double y()
     {
-        return center.y;
+        return center.yi();
     }
 
     @Override
     public int zi()
     {
-        return center.z;
+        return center.zi();
     }
 
     @Override
     public int xi()
     {
-        return center.x;
+        return center.xi();
     }
 
     @Override
     public int yi()
     {
-        return center.y;
+        return center.yi();
     }
 
     public Map<DataPos, ThermalData> getData()

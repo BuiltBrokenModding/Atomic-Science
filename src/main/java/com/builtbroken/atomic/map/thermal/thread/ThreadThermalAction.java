@@ -194,7 +194,7 @@ public class ThreadThermalAction extends ThreadDataChange
         }
     }
 
-    private void pathNext(final ThermalThreadData thermalThreadData, final DataPos currentPos, HeatPushCallback heatSetter)
+    protected void pathNext(final ThermalThreadData thermalThreadData, final DataPos currentPos, HeatPushCallback heatSetter)
     {
         //Block giving heat
         final IBlockState giverBlock = thermalThreadData.world.getBlockState(currentPos.getPos());
@@ -233,9 +233,9 @@ public class ThreadThermalAction extends ThreadDataChange
         for (EnumFacing direction : EnumFacing.values())
         {
             //Check range to prevent infinite spread
-            int x = currentPos.x + direction.getXOffset();
-            int y = currentPos.y + direction.getYOffset();
-            int z = currentPos.z + direction.getZOffset();
+            int x = currentPos.xi() + direction.getXOffset();
+            int y = currentPos.yi() + direction.getYOffset();
+            int z = currentPos.zi() + direction.getZOffset();
             if (inRange(center, x, y, z, ConfigServer.THREAD.THREAD_HEAT_PATHING_RANGE) && y >= 0 && y < 256)
             {
                 directionConsumer.accept(x, y, z, direction);
