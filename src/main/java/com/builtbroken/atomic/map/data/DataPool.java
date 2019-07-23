@@ -24,8 +24,12 @@ public class DataPool<E extends Object>
 
     public E get()
     {
-        objectPoleCount--;
-        return objectPole.poll();
+        if(objectPoleCount > 0)
+        {
+            objectPoleCount--;
+            return objectPole.poll();
+        }
+        return null;
     }
 
     public void dispose(E object)
