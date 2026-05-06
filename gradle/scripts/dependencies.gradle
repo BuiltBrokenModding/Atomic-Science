@@ -1,0 +1,62 @@
+apply from: 'gradle/scripts/helpers.gradle'
+
+repositories {
+    maven {
+        name 'CleanroomMC Maven'
+        url 'https://maven.cleanroommc.com'
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name 'CurseMaven'
+                url 'https://cursemaven.com'
+            }
+        }
+        filter {
+            includeGroup 'curse.maven'
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name 'Modrinth'
+                url 'https://api.modrinth.com/maven'
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
+        }
+    }
+    maven {
+        name 'BlameJared (JEI)'
+        url 'https://maven.blamejared.com/'
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name 'IC2 (player.to)'
+                url 'https://maven2.ic2.player.to/'
+            }
+        }
+        filter {
+            includeGroup 'net.industrial-craft'
+        }
+    }
+    mavenLocal() // Must be last for caching to work
+}
+
+dependencies {
+    // Include StripLatestForgeRequirements by default for the dev env, saves everyone a hassle
+    runtimeOnly 'com.cleanroommc:strip-latest-forge-requirements:1.0'
+    // Include OSXNarratorBlocker by default for the dev env, for M1+ Macs
+    runtimeOnly 'com.cleanroommc:osxnarratorblocker:1.0'
+
+    // JEI API (compile against the API only)
+    compileOnly rfg.deobf('mezz.jei:jei_1.12.2:4.12.0.216:api')
+    // Full JEI at runtime in the dev environment
+    runtimeOnly rfg.deobf('mezz.jei:jei_1.12.2:4.12.0.216')
+
+    // IC2 (Industrial Craft 2 Experimental) - API only, compile-only since the mod has runtime presence guards
+    compileOnly rfg.deobf('net.industrial-craft:industrialcraft-2:2.8.222-ex112:api')
+}
+

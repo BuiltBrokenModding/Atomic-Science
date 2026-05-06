@@ -69,19 +69,15 @@ import java.io.File;
  * <p>
  * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
-@Mod(modid = AtomicScience.DOMAIN, name = "Atomic Science", version = AtomicScience.VERSION, dependencies = AtomicScience.DEPENDENCIES)
+@Mod(modid = AtomicScience.DOMAIN, name = "Atomic Science", version = AtomicScience.VERSION, dependencies = AtomicScience.DEPENDENCIES, updateJSON = AtomicScience.UPDATE_JSON)
 @Mod.EventBusSubscriber
 public class AtomicScience
 {
     public static final String DOMAIN = "atomicscience";
     public static final String PREFIX = DOMAIN + ":";
 
-    public static final String MAJOR_VERSION = "@MAJOR@";
-    public static final String MINOR_VERSION = "@MINOR@";
-    public static final String REVISION_VERSION = "@REVIS@";
-    public static final String BUILD_VERSION = "@BUILD@";
-    public static final String MC_VERSION = "@MC@";
-    public static final String VERSION = MC_VERSION + "-" + MAJOR_VERSION + "." + MINOR_VERSION + "." + REVISION_VERSION + "." + BUILD_VERSION;
+    public static final String VERSION = Tags.VERSION;
+    public static final String UPDATE_JSON = Tags.UPDATE_JSON;
     public static final String DEPENDENCIES = "";
 
     public static final String TEXTURE_DIRECTORY = "textures/";
