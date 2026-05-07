@@ -5,8 +5,6 @@ import net.minecraftforge.common.config.Config;
 
 /**
  * Main config for the radiation system.
- *
- * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
 @Config(modid = AtomicScience.DOMAIN, name = AtomicScience.DOMAIN + "/radiation")
 @Config.LangKey("config.atomicscience:radiation.title")
