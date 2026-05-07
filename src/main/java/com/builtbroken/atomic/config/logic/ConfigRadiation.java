@@ -8,7 +8,7 @@ import net.minecraftforge.common.config.Config;
  *
  * Created by Dark(DarkGuardsman, Robert) on 4/18/2018.
  */
-@Config(modid = AtomicScience.DOMAIN, name = AtomicScience.DOMAIN + "/logic/radiation")
+@Config(modid = AtomicScience.DOMAIN, name = AtomicScience.DOMAIN + "/radiation")
 @Config.LangKey("config.atomicscience:radiation.title")
 public class ConfigRadiation
 {
